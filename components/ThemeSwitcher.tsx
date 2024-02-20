@@ -24,18 +24,18 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
       {theme === "dark" ? (
         <Image
           className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
-          src={"/icons/sun.svg"}
-          alt="sun"
-          width={20}
-          height={20}
+          src={"/icons/circum.svg"}
+          alt="moon"
+          width={24}
+          height={24}
         />
       ) : (
         <Image
           className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
-          src={"/icons/circum.svg"}
-          alt="moon"
-          width={20}
-          height={20}
+          src={"/icons/sun.svg"}
+          alt="sun"
+          width={24}
+          height={24}
         />
       )}
     </button>

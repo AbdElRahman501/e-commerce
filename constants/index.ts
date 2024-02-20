@@ -1,4 +1,6 @@
-const footerList = [
+import { FilterData } from "@/types";
+
+export const footerList = [
   {
     title: "About Us",
     links: [
@@ -52,7 +54,7 @@ const footerList = [
   },
 ];
 
-const categories = [
+export const categories = [
   {
     name: "Funny Prints",
     url: "/printed-t-shirts/funny-prints",
@@ -87,7 +89,7 @@ const categories = [
   },
 ];
 
-const faqSection = [
+export const faqSection = [
   {
     question: "How do I place an order?",
     answer:
@@ -119,5 +121,22 @@ const faqSection = [
       "For any questions or concerns, you can reach our customer support team through the 'Contact Us' page on our website or by emailing support@example.com. We aim to respond to inquiries promptly.",
   },
 ];
-
-export { footerList, categories, faqSection };
+export const filterData: FilterData = {
+  origin: ["Sale", "New", "A hit Sale"],
+  categories: [
+    { name: "Anime", count: 32, checked: false },
+    { name: "Quotes", count: 24, checked: false },
+    { name: "Nature", count: 26, checked: true },
+    { name: "Wildlife", count: 5, checked: false },
+    { name: "Painted", count: 11, checked: false },
+    { name: "Vintage", count: 2, checked: false },
+    { name: "Retro", count: 37, checked: false },
+    { name: "Graphic", count: 20, checked: false },
+    { name: "Pets", count: 10, checked: false },
+    { name: "Music", count: 13, checked: false },
+    { name: "Sports", count: 9, checked: false },
+    { name: "Gaming", count: 9, checked: false },
+  ],
+  sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
+  colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
+};

@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="mt-5 bg-primary_color px-5 py-7 md:px-20">
+    <footer className="mt-5 bg-primary_color px-5 py-5 md:px-20">
       <div className="flex flex-col gap-5">
         <div className="flex grid-cols-5 flex-col gap-5 px-5 py-5 md:grid">
           {footerList.map((item, index) => (
@@ -40,9 +40,9 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-5 px-5 py-5">
+        <div className="flex flex-col items-center justify-between gap-5 px-5 py-2 md:flex-row">
           <Image src="/logo.svg" alt="logo" width={450} height={100} />
-          <div className="flex flex-col items-end justify-end gap-1">
+          <div className="flex flex-col items-center gap-2">
             <GoUpButton />
             <p className="text-base font-medium text-gray-500">
               @2024 GIVACO All Rights reserved

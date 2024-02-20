@@ -3,13 +3,12 @@ import Image from "next/image";
 const ProductCard = () => {
   return (
     <div className="Product flex-col gap-4">
-      <div className="w-[240px] overflow-hidden rounded-3xl">
+      <div className="aspect-card relative overflow-hidden rounded-3xl">
         <Image
           src="/jacket.png"
           alt="jacket"
-          width={240}
-          height={300}
-          className="object-cover duration-300 hover:scale-110"
+          fill
+          className=" duration-300 hover:scale-110"
         />
       </div>
       <div className="flex items-center justify-between p-1">

@@ -19,7 +19,7 @@ const FAQSection = () => {
                   +
                 </h1>
               </div>
-              <div className="answer max-h-0 overflow-hidden text-lg font-medium text-gray-500 transition-all duration-1000  group-hover:max-h-40">
+              <div className="answer max-h-0 overflow-hidden text-lg font-medium text-gray-500 transition-all duration-1000  group-hover:max-h-96">
                 <p className="pb-3">{item.answer}</p>
               </div>
             </div>

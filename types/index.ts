@@ -31,3 +31,10 @@ export interface SectionTitleProps {
 export interface ThemeSwitcherProps {
   className?: string;
 }
+
+export interface FilterData {
+  origin: string[];
+  categories: { name: string; count: number; checked: boolean }[];
+  sizes: string[];
+  colors: string[];
+}

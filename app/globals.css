@@ -26,6 +26,14 @@
   /* Firefox */
 }
 
+.aspect-card {
+  aspect-ratio: 3/4;
+}
+
+.grid-container {
+  grid-template-columns: repeat(6, minmax(240px, 1fr));
+}
+
 body {
   background: var(--background);
 }

@@ -35,7 +35,7 @@ const NavBar = () => {
           Shop
         </Link>
       </div>
-      <div className="relative flex items-center gap-2 md:gap-10 ">
+      <div className="relative flex items-center gap-2 md:gap-8 ">
         <ThemeSwitcher className="absolute -left-8 text-black hover:text-gray-300 dark:text-white md:flex" />
         <Link href="/cart">
           <Image
