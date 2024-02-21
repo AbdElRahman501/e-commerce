@@ -2,7 +2,7 @@ import { ArrowButton } from ".";
 
 const Hero = () => {
   return (
-    <section className="bg-primary_bg">
+    <section>
       <div className="flex flex-col-reverse gap-4 px-5 py-5 lg:max-h-[calc(100vh-4rem)] lg:flex-row lg:px-20 ">
         <div className="flex flex-col gap-4 md:flex-row lg:flex-col">
           <div className="rounded-4xl relative flex h-full w-full items-end justify-start overflow-hidden max-md:max-h-64 ">

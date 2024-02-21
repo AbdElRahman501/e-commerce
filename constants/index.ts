@@ -40,16 +40,16 @@ export const footerList = [
     links: [
       {
         name: "Instagram",
-        url: "https://www.instagram.com/yourstore",
+        url: "https://www.instagram.com/givaco.eg",
       },
       {
         name: "Facebook",
-        url: "https://www.facebook.com/yourstore",
+        url: "https://www.facebook.com/profile.php?id=100084787940589",
       },
-      {
-        name: "Twitter",
-        url: "https://twitter.com/yourstore",
-      },
+      // {
+      //   name: "Twitter",
+      //   url: "https://twitter.com/yourstore",
+      // },
     ],
   },
 ];
@@ -57,35 +57,35 @@ export const footerList = [
 export const categories = [
   {
     name: "Funny Prints",
-    url: "/printed-t-shirts/funny-prints",
+    url: "#",
   },
   {
     name: "Graphic Designs",
-    url: "/printed-t-shirts/graphic-designs",
+    url: "#",
   },
   {
     name: "Quotes and Sayings",
-    url: "/printed-t-shirts/quotes-sayings",
+    url: "#",
   },
   {
     name: "Custom Prints",
-    url: "/printed-t-shirts/custom-prints",
+    url: "#",
   },
   {
     name: "Animal Prints",
-    url: "/printed-t-shirts/animal-prints",
+    url: "#",
   },
   {
     name: "Nature Inspired",
-    url: "/printed-t-shirts/nature-inspired",
+    url: "#",
   },
   {
     name: "Abstract Art",
-    url: "/printed-t-shirts/abstract-art",
+    url: "#",
   },
   {
     name: "Music and Bands",
-    url: "/printed-t-shirts/music-bands",
+    url: "#",
   },
 ];
 

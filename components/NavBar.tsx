@@ -4,9 +4,9 @@ import { MenuBurgerButton, ThemeSwitcher } from ".";
 
 const NavBar = () => {
   return (
-    <nav className="sticky top-0 z-30 flex max-h-16 justify-between bg-primary_color px-5 py-3 dark:bg-primary_color md:bg-white md:px-20 ">
+    <nav className="sticky top-0 z-30 flex max-h-16 justify-center bg-primary_color px-5 py-3 dark:bg-primary_color md:bg-white md:px-20 ">
       <MenuBurgerButton />
-      <Link href="/">
+      <Link href="/" className=" md:flex-1">
         <Image
           src="/logo.svg"
           alt="logo"
@@ -15,9 +15,9 @@ const NavBar = () => {
           className="h-8 invert-0 dark:invert-0 md:invert"
         />
       </Link>
-      <div className="max-ms:w-1/3 hidden gap-10 md:flex">
+      <div className=" hidden max-w-md flex-1 justify-center md:flex">
         <Link
-          className="uppercase text-black  hover:text-gray-300 dark:text-white"
+          className="mr-auto uppercase text-black  hover:text-gray-300 dark:text-white"
           href="/"
         >
           Home
@@ -29,14 +29,14 @@ const NavBar = () => {
           About
         </Link>
         <Link
-          className="uppercase text-black hover:text-gray-300 dark:text-white"
+          className="ml-auto uppercase text-black hover:text-gray-300 dark:text-white"
           href="/shop"
         >
           Shop
         </Link>
       </div>
-      <div className="relative flex items-center gap-2 md:gap-8 ">
-        <ThemeSwitcher className="absolute -left-8 text-black hover:text-gray-300 dark:text-white md:flex" />
+      <div className="flex flex-1 items-center justify-end gap-2 md:gap-8 ">
+        <ThemeSwitcher className=" text-black hover:text-gray-300 dark:text-white md:flex" />
         <Link href="/cart">
           <Image
             className="invert duration-300  hover:scale-110 dark:invert md:invert-0"

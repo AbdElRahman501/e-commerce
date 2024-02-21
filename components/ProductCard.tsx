@@ -1,16 +1,19 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const ProductCard = () => {
   return (
     <div className="Product flex-col gap-4">
-      <div className="aspect-card relative overflow-hidden rounded-3xl">
-        <Image
-          src="/jacket.png"
-          alt="jacket"
-          fill
-          className=" duration-300 hover:scale-110"
-        />
-      </div>
+      <Link href="/product-detail">
+        <div className="aspect-card relative overflow-hidden rounded-3xl">
+          <Image
+            src="/jacket.png"
+            alt="jacket"
+            fill
+            className=" duration-300 hover:scale-110"
+          />
+        </div>
+      </Link>
       <div className="flex items-center justify-between p-1">
         <div className="flex gap-2 ">
           <div className="h-5 w-5 rounded-full bg-orange-700 duration-200 hover:scale-110"></div>

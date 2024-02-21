@@ -5,6 +5,8 @@ export default function Home() {
     <main>
       <Hero />
       <ProductsRow />
+      <ProductsRow />
+      <ProductsRow />
       <Testimonials />
       <FAQSection />
     </main>
