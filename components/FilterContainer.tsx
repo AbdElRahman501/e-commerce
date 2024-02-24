@@ -40,11 +40,13 @@ const Categories = () => {
       <div className="flex flex-col gap-2">
         {filterData.categories.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
-            <button
-              className={`flex h-4 w-4 items-center justify-center rounded-sm border-2 border-primary_color ${item.checked ? "bg-primary_color" : ""} `}
-            >
-              {item.checked && <span className="text-white">&#x2713;</span>}
-            </button>
+            <input
+              id="bordered-checkbox-1"
+              type="checkbox"
+              value=""
+              name="bordered-checkbox"
+              className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+            ></input>
             <div className="flex w-full justify-between">
               <p className="flex  items-center text-sm text-primary_color  dark:text-white">
                 {item.name}
@@ -117,7 +119,7 @@ const Price = () => {
 };
 const FilterContainer = () => {
   return (
-    <div className="a-filter hidden w-1/3  min-w-52 flex-col gap-7 rounded-3xl border border-gray-300 px-5 py-5 md:flex">
+    <div className="a-filter hidden flex-col gap-7 rounded-3xl border border-gray-300 px-5 py-5 md:flex md:w-1/4 2xl:w-1/5">
       <Gender />
       <Origin />
       <Categories />

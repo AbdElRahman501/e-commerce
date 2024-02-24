@@ -1,6 +1,6 @@
 import { FilterData } from "@/types";
-
-export const footerList = [
+import products from "./products";
+const footerList = [
   {
     title: "About Us",
     links: [
@@ -54,7 +54,7 @@ export const footerList = [
   },
 ];
 
-export const categories = [
+const categories = [
   {
     name: "Funny Prints",
     url: "#",
@@ -89,7 +89,7 @@ export const categories = [
   },
 ];
 
-export const faqSection = [
+const faqSection = [
   {
     question: "How do I place an order?",
     answer:
@@ -121,7 +121,7 @@ export const faqSection = [
       "For any questions or concerns, you can reach our customer support team through the 'Contact Us' page on our website or by emailing support@example.com. We aim to respond to inquiries promptly.",
   },
 ];
-export const filterData: FilterData = {
+const filterData: FilterData = {
   origin: ["Sale", "New", "A hit Sale"],
   categories: [
     { name: "Anime", count: 32, checked: false },
@@ -140,3 +140,5 @@ export const filterData: FilterData = {
   sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
   colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
 };
+
+export { products, categories, faqSection, filterData, footerList };

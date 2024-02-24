@@ -4,7 +4,7 @@ import Link from "next/link";
 const SectionTitle = ({ title, url, className, theme }: SectionTitleProps) => {
   return (
     <div className={`title flex items-center justify-between ${className}`}>
-      <h1 className="text-3xl font-bold ">{title}</h1>
+      <h1 className="text-xl md:text-3xl font-bold ">{title}</h1>
       <Link
         href={url}
         className={`group flex items-center justify-between gap-2 rounded-full border ${theme === "dark" ? "border-white" : "border-black"} p-1 ps-3 text-base dark:border-white`}

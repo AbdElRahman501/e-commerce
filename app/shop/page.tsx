@@ -5,9 +5,11 @@ import {
   ProductCard,
   SearchField,
 } from "@/components";
+import { products } from "@/constants";
 import Image from "next/image";
 
-const page = () => {
+const ShopPage = () => {
+  const productsList = Array(3).fill(products).flat();
   return (
     <main>
       <CallToAction />
@@ -39,15 +41,13 @@ const page = () => {
           />
         </div>
       </div>
-      <div className="flex  gap-4 p-5 lg:px-20">
+      <div className="flex gap-4 p-5 lg:px-20">
         <FilterContainer />
-        <div className="rounded-4xl flex flex-col gap-4  ">
-          <div className="products grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
+        <div className="rounded-4xl flex flex-1 flex-col gap-4  ">
+          <div className=" grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
+            {productsList.map((product, index) => (
+              <ProductCard key={index} {...product} />
+            ))}
           </div>
         </div>
       </div>
@@ -55,4 +55,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ShopPage;

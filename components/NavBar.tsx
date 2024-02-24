@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MenuBurgerButton, ThemeSwitcher } from ".";
+import { CartButton, MenuBurgerButton, ThemeSwitcher } from ".";
 
 const NavBar = () => {
   return (
@@ -37,15 +37,7 @@ const NavBar = () => {
       </div>
       <div className="flex flex-1 items-center justify-end gap-2 md:gap-8 ">
         <ThemeSwitcher className=" text-black hover:text-gray-300 dark:text-white md:flex" />
-        <Link href="/cart">
-          <Image
-            className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
-            src={"/icons/cart.svg"}
-            alt="heart"
-            width={30}
-            height={30}
-          />
-        </Link>
+        <CartButton />
         <Link
           className="uppercase text-black hover:text-gray-300 dark:text-white"
           href="/favorites"

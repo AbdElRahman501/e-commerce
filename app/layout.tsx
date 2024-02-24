@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/theme-provider";
-import { Footer, NavBar } from "@/components";
+import { CartContextProvider, Footer, NavBar } from "@/components";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,9 +26,11 @@ export default function RootLayout({
         className={`${inter.className} bg-slate-50 duration-200 dark:bg-[#0d1117]`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <NavBar />
-          <main>{children}</main>
-          <Footer />
+          <CartContextProvider>
+            <NavBar />
+            <main>{children}</main>
+            <Footer />
+          </CartContextProvider>
         </ThemeProvider>
       </body>
     </html>

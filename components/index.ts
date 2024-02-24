@@ -15,8 +15,25 @@ import CallToAction from "./CallToAction";
 import SearchField from "./SearchField";
 import FilterButton from "./FilterButton";
 import FilterContainer from "./FilterContainer";
+import ProductDetailsComponent from "./ProductDetailsComponent";
+import ProductImages from "./ProductImages";
+import AmountButton from "./AmountButton";
+import BagCard from "./BagCard";
+import { CartContextProvider, CartContext } from "./CartContext";
+import CartButton from "./CartButton";
+import CartComponent from "./CartComponent";
+import CartPricing from "./CartPricing";
 
 export {
+  CartPricing,
+  CartComponent,
+  CartButton,
+  CartContextProvider,
+  CartContext,
+  BagCard,
+  AmountButton,
+  ProductImages,
+  ProductDetailsComponent,
   FilterContainer,
   FilterButton,
   SearchField,

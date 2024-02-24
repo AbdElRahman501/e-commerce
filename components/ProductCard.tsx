@@ -1,23 +1,33 @@
+import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 
-const ProductCard = () => {
+const ProductCard = ({ images, colors, id, title, price }: Product) => {
   return (
     <div className="Product flex-col gap-4">
-      <Link href="/product-detail">
+      <Link href={{ pathname: "/product-detail", query: { id: id } }}>
         <div className="aspect-card relative overflow-hidden rounded-3xl">
           <Image
-            src="/jacket.png"
+            src={images[colors[0]]}
             alt="jacket"
             fill
-            className=" duration-300 hover:scale-110"
+            className="duration-300 hover:scale-110"
           />
         </div>
       </Link>
       <div className="flex items-center justify-between p-1">
-        <div className="flex gap-2 ">
-          <div className="h-5 w-5 rounded-full bg-orange-700 duration-200 hover:scale-110"></div>
-          <div className="h-5 w-5 rounded-full bg-red-800 duration-200 hover:scale-110"></div>
+        <div className="flex items-center gap-1 ">
+          {colors.map((item, index) => (
+            <div
+              key={index}
+              className={`${index === 0 ? "scale-110  border-blue-900  dark:border-blue-400" : "border-transparent"} rounded-full border-2  p-[3px] duration-200 hover:scale-110`}
+            >
+              <span
+                style={{ backgroundColor: item }}
+                className="block h-5 w-5 rounded-full border"
+              ></span>
+            </div>
+          ))}
         </div>
         <Image
           src="/icons/heart.svg"
@@ -27,10 +37,8 @@ const ProductCard = () => {
           className="duration-200 hover:scale-110 dark:invert"
         />
       </div>
-      <h6 className="w-full text-base ">
-        Lorem Ipsum is simply dummy text of the printing
-      </h6>
-      <h5 className="text-xl font-bold">700 EGP</h5>
+      <h6 className="w-full text-base ">{title}</h6>
+      <h5 className="text-xl font-bold">{price} EGP</h5>
     </div>
   );
 };
