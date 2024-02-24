@@ -5,7 +5,7 @@ const GoUpButton = () => {
 
   function scrollToTop() {
     if (!isBrowser()) return;
-    window.scrollTo({ top: 0, behavior: "auto" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
   return (
     <div className="rotate-180 ">

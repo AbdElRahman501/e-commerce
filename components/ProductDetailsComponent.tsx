@@ -29,8 +29,11 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
     });
   }
   return (
-    <div className="flex flex-col gap-4 bg-white dark:bg-primary_bg sm:flex-row sm:p-5 lg:px-20">
-      <ProductImages images={images} />
+    <div className="flex flex-col bg-white dark:bg-primary_bg sm:flex-row sm:p-5 md:gap-4 lg:px-20">
+      <ProductImages
+        images={images}
+        selectedImage={product.images[selectedColor]}
+      />
       <div className="z-10 flex flex-col gap-3 bg-white p-5 dark:bg-primary_bg md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
           <Link

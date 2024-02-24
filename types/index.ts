@@ -62,3 +62,8 @@ export interface CartContextType {
   cart: CartProduct[];
   setCart: React.Dispatch<React.SetStateAction<CartProduct[]>>;
 }
+
+export interface FavoriteContextType {
+  favorite: string[];
+  setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
+}

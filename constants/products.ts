@@ -22,10 +22,10 @@ const products: Product[] = [
       },
     ],
     images: {
-      "#12355b": "/jacket.png",
+      "#12355b": "/blue-jacket.png",
       "#420039": "/jacket.png",
-      "#d72638": "/jacket.png",
-      "#ffffff": "/jacket.png",
+      "#d72638": "/men-collection.png",
+      "#ffffff": "/women-collection.png",
       "#ff570a": "/jacket.png",
     },
     categories: "Anime, Adventure",
