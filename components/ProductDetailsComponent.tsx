@@ -1,40 +1,66 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { faqSection } from "@/constants";
-import { AmountButton, CartContext } from "@/components";
+import { AmountButton, StoreContext } from "@/components";
 import { Product } from "@/types";
 import Image from "next/image";
 import ProductImages from "./ProductImages";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const ProductDetailsComponent = ({ product }: { product: Product }) => {
   const [selectedColor, setSelectedColor] = React.useState<string>("");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
   const [amount, setAmount] = React.useState<number>(1);
+  const router = useRouter();
 
   const images = getImages(product.images);
-  const { setCart } = React.useContext(CartContext);
+  const { cart, setCart, favorite, setFavorite } =
+    React.useContext(StoreContext);
+  const isFav = favorite.includes(product.id);
+  const isInCart = cart.some(
+    (item) =>
+      item.id === product.id &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize,
+  );
+
+  const [audio] = useState(new Audio("/sounds/short-success.mp3"));
 
   function addToCart() {
-    setCart((prev) => {
-      return [
-        ...prev,
-        {
-          ...product,
-          amount: amount,
-          selectedColor: selectedColor,
-          selectedSize: selectedSize,
-        },
-      ];
+    if (isInCart) {
+      router.push("/cart");
+    } else {
+      setCart((prev) => {
+        return [
+          ...prev,
+          {
+            ...product,
+            amount: amount,
+            selectedColor: selectedColor,
+            selectedSize: selectedSize,
+          },
+        ];
+      });
+      audio.play();
+    }
+  }
+
+  function toggleFavorite() {
+    setFavorite((prev) => {
+      return prev.includes(product.id)
+        ? prev.filter((item) => item !== product.id)
+        : [...prev, product.id];
     });
   }
+
   return (
-    <div className="flex flex-col bg-white dark:bg-primary_bg sm:flex-row sm:p-5 md:gap-4 lg:px-20">
+    <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={images}
         selectedImage={product.images[selectedColor]}
       />
-      <div className="z-10 flex flex-col gap-3 bg-white p-5 dark:bg-primary_bg md:col-span-2 md:py-0">
+      <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
           <Link
             href={"/shop"}
@@ -107,28 +133,31 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
           >
             <div className="flex aspect-square h-10 w-10 items-center justify-center rounded-full bg-white ">
               <Image
-                src="/icons/cart.svg"
+                src={isInCart ? "/icons/check.svg" : "/icons/cart.svg"}
                 alt="cart icon"
                 width={24}
                 height={24}
-                className="duration-300 "
+                className="w-auto duration-300 "
               />
             </div>
             <p className="w-full text-center text-lg duration-500">
-              Add to cart
+              {isInCart ? "In my cart" : "Add to cart"}
             </p>
           </button>
           <button
             type="button"
+            onClick={toggleFavorite}
             className=" flex aspect-square h-12 w-12 items-center justify-center rounded-full border  border-primary_bg bg-white py-1 text-lg dark:border-white "
           >
-            <Image
-              src="/icons/heart.svg"
-              alt="heart icon"
-              width={24}
-              height={24}
-              className="duration-300 hover:scale-125"
-            />
+            <div className="relative h-6 w-6">
+              <Image
+                src={isFav ? "/icons/heart-fill.svg" : "/icons/heart.svg"}
+                alt="heart icon"
+                fill
+                sizes="100%"
+                className="duration-200 hover:scale-125"
+              />
+            </div>
           </button>
         </div>
         <div className="mt-10">

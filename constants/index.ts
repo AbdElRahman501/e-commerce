@@ -1,5 +1,6 @@
-import { FilterData } from "@/types";
+import { FilterData, Order, PersonalInfo } from "@/types";
 import products from "./products";
+import formInputs from "./inputs";
 const footerList = [
   {
     title: "About Us",
@@ -141,4 +142,35 @@ const filterData: FilterData = {
   colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
 };
 
-export { products, categories, faqSection, filterData, footerList };
+const initialPersonalInfo: PersonalInfo = {
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  email: "",
+  streetAddress: "",
+  state: "",
+  comment: "",
+  promoCode: "",
+  paymentMethod: "",
+};
+
+const initialOrder: Order = {
+  id: "",
+  products: [],
+  personalInfo: initialPersonalInfo,
+  total: 0,
+  subTotal: 0,
+  shipping: 0,
+  discount: 0,
+};
+
+export {
+  initialOrder,
+  products,
+  categories,
+  faqSection,
+  filterData,
+  initialPersonalInfo,
+  formInputs,
+  footerList,
+};

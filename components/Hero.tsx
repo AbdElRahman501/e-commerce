@@ -28,7 +28,7 @@ const Hero = () => {
             />
           </div>
           <div className="rounded-4xl relative  flex min-h-[120px] w-full items-end overflow-hidden bg-primary_color md:w-[70%] lg:h-[70%] lg:w-full">
-            <h1 className="m-5 text-3xl text-white dark:text-white">
+            <h1 className="m-5 text-4xl text-white dark:text-white">
               sale 15%
             </h1>
             <ArrowButton

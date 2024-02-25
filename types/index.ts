@@ -58,12 +58,44 @@ export interface CartProduct extends Product {
   selectedSize: string;
 }
 
-export interface CartContextType {
+export interface StoreContextType {
   cart: CartProduct[];
   setCart: React.Dispatch<React.SetStateAction<CartProduct[]>>;
-}
-
-export interface FavoriteContextType {
   favorite: string[];
   setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
+  order: Order;
+  setOrder: React.Dispatch<React.SetStateAction<Order>>;
+}
+
+export interface FormInput {
+  label: string;
+  options?: string[];
+  type: string;
+  placeholder: string;
+  name: string;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
+}
+export interface PersonalInfo {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  streetAddress: string;
+  state: string;
+  comment: string;
+  promoCode: string;
+  paymentMethod: string;
+}
+
+export interface Order {
+  products: CartProduct[];
+  personalInfo: PersonalInfo;
+  id: string;
+  total: number;
+  subTotal: number;
+  shipping: number;
+  discount: number;
 }

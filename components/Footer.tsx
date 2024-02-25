@@ -41,7 +41,13 @@ const Footer = () => {
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-5 px-5 py-2 md:flex-row">
-          <Image src="/logo.svg" alt="logo" width={450} height={100} />
+          <Image
+            src="/logo.svg"
+            alt="logo"
+            width={450}
+            height={100}
+            className="w-auto"
+          />
           <div className="flex flex-col items-center gap-2">
             <GoUpButton />
             <p className="text-base font-medium text-gray-500">

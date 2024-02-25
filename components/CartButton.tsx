@@ -2,14 +2,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useContext } from "react";
-import { CartContext } from "./CartContext";
+import { StoreContext } from "./StoreContext";
 
 const CartButton = () => {
-  const { cart } = useContext(CartContext);
+  const { cart } = useContext(StoreContext);
   return (
     <Link href="/cart" className="relative">
       <Image
-        className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
+        className="w-auto invert duration-300 hover:scale-110 dark:invert md:invert-0"
         src={"/icons/cart.svg"}
         alt="heart"
         width={30}

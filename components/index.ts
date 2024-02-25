@@ -19,17 +19,19 @@ import ProductDetailsComponent from "./ProductDetailsComponent";
 import ProductImages from "./ProductImages";
 import AmountButton from "./AmountButton";
 import BagCard from "./BagCard";
-import { CartContextProvider, CartContext } from "./CartContext";
+import { StoreContextProvider, StoreContext } from "./StoreContext";
 import CartButton from "./CartButton";
 import CartComponent from "./CartComponent";
 import CartPricing from "./CartPricing";
+import CustomInput from "./CustomInput";
 
 export {
+  CustomInput,
   CartPricing,
   CartComponent,
   CartButton,
-  CartContextProvider,
-  CartContext,
+  StoreContextProvider,
+  StoreContext,
   BagCard,
   AmountButton,
   ProductImages,

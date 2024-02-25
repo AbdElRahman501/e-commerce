@@ -1,11 +1,17 @@
+import { CartProduct } from "@/types";
 import Link from "next/link";
 import React from "react";
 
-const CartPricing = ({ price }: { price: number }) => {
-  const discount = 100;
-  const total = price - discount;
+const CartPricing = ({ cart }: { cart: CartProduct[] }) => {
+  const subTotal = cart.reduce(
+    (acc, item) => acc + item.price * item.amount,
+    0,
+  );
+  const shipping = subTotal > 100 ? 0 : 10;
+  const discount = subTotal * 0.1;
+  const total = subTotal + shipping - discount;
   return (
-    <div className="flex w-full flex-col gap-2 rounded-3xl border border-gray-500 p-5 md:max-w-lg ">
+    <div className="flex h-fit w-full flex-col gap-2 rounded-3xl border border-gray-500 p-5 md:max-w-lg ">
       <div className="flex gap-2">
         <input
           type="text"
@@ -25,7 +31,7 @@ const CartPricing = ({ price }: { price: number }) => {
           <p className=" font-bold text-gray-600 dark:text-gray-300">
             Subtotal
           </p>
-          <p className="  font-medium ">{price.toFixed(2)} EGP</p>
+          <p className="  font-medium ">{subTotal.toFixed(2)} EGP</p>
         </div>
         <div className="flex justify-between">
           <p className=" font-bold text-gray-600 dark:text-gray-300">

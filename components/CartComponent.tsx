@@ -2,10 +2,10 @@
 import Link from "next/link";
 import React, { useContext } from "react";
 import BagCard from "./BagCard";
-import { CartContext, CartPricing } from ".";
+import { CartPricing, StoreContext } from ".";
 
 const CartComponent = () => {
-  const { cart } = useContext(CartContext);
+  const { cart } = useContext(StoreContext);
 
   if (cart.length === 0) {
     return (
@@ -22,7 +22,6 @@ const CartComponent = () => {
       </div>
     );
   }
-  const price = cart.reduce((sum, item) => sum + item.price, 0);
   return (
     <div className="p-5 lg:px-20">
       <h1 className="pb-5 text-xl md:text-3xl">
@@ -34,7 +33,7 @@ const CartComponent = () => {
             ? cart.map((item, index) => <BagCard {...item} key={index} />)
             : "Your cart is empty"}
         </div>
-        <CartPricing price={price} />
+        <CartPricing cart={cart} />
       </div>
     </div>
   );

@@ -119,7 +119,7 @@ const Price = () => {
 };
 const FilterContainer = () => {
   return (
-    <div className="a-filter hidden flex-col gap-7 rounded-3xl border border-gray-300 px-5 py-5 md:flex md:w-1/4 2xl:w-1/5">
+    <div className="a-filter hidden h-fit flex-col gap-7 rounded-3xl border border-gray-300 px-5 py-5 md:flex md:w-1/4 2xl:w-1/5">
       <Gender />
       <Origin />
       <Categories />
