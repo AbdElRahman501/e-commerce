@@ -27,7 +27,6 @@ export interface Product {
   id: string;
   title: string;
   keywords: string;
-  reviews: Review[];
   images: Record<string, string>; // Mapping color to image filename
   categories: string;
   price: number;
