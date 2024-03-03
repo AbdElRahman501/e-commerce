@@ -20,7 +20,8 @@ const FavoritePage = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setProducts(data);
+          if (!data) return;
+          if (data.products) setProducts(data.products);
           setLoading(false);
         });
     }
