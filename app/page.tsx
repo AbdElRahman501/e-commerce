@@ -3,6 +3,7 @@ import { fetchProducts } from "@/lib";
 
 export default async function Home() {
   const products = await fetchProducts();
+
   return (
     <main>
       <Hero />
