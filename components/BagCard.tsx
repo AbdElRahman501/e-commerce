@@ -40,7 +40,7 @@ const BagCard = ({
   return (
     <div className="relative flex w-full gap-5 border-b pb-2 ">
       <Link
-        href={{ pathname: "/product-detail", query: { id: id } }}
+        href={`/product/${id}`}
         style={{ pointerEvents: readonly ? "none" : "auto" }}
         className="aspect-card relative h-28 overflow-hidden rounded-2xl border md:h-32"
       >

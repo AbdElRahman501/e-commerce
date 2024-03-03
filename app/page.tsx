@@ -1,7 +1,8 @@
 import { FAQSection, Hero, ProductsRow, Testimonials } from "@/components";
-import { products } from "@/constants";
+import { fetchProducts } from "@/lib";
 
-export default function Home() {
+export default async function Home() {
+  const products = await fetchProducts();
   return (
     <main>
       <Hero />

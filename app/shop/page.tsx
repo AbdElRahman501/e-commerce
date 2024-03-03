@@ -5,10 +5,11 @@ import {
   ProductCard,
   SearchField,
 } from "@/components";
-import { products } from "@/constants";
+import { fetchProducts } from "@/lib";
 import Image from "next/image";
 
-const ShopPage = () => {
+const ShopPage = async () => {
+  const products = await fetchProducts();
   const productsList = Array(3).fill(products).flat();
   return (
     <main>

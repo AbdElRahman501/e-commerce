@@ -20,7 +20,7 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
   }
   return (
     <div className="Product flex-col gap-4">
-      <Link href={{ pathname: "/product-detail", query: { id: id } }}>
+      <Link href={`/product/${id}`}>
         <div className="aspect-card relative overflow-hidden rounded-3xl">
           <Image
             src={images[selectedColor]}

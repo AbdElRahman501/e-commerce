@@ -22,11 +22,20 @@ export function StoreContextProvider({
   const [cart, setCart] = useState<CartProduct[]>([]);
   const [favorite, setFavorite] = useState<string[]>([]);
   const [order, setOrder] = useState<Order>(initialOrder);
+  const newVersion = "1.0.0.0";
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     const storedFavorite = localStorage.getItem("favorite");
+    const oldVersion = localStorage.getItem("version");
+
+    if (oldVersion !== newVersion) {
+      localStorage.clear();
+      localStorage.setItem("version", newVersion);
+      window.location.reload();
+    }
+
     if (storedCart) {
       setCart(JSON.parse(storedCart));
     }
@@ -34,6 +43,7 @@ export function StoreContextProvider({
       setFavorite(JSON.parse(storedFavorite));
     }
   }, []);
+
   useEffect(() => {
     setMounted(true);
   }, []);

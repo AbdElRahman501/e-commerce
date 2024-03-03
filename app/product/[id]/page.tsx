@@ -1,11 +1,14 @@
 import React from "react";
 import { ProductDetailsComponent, ProductsRow } from "@/components";
-import { products } from "@/constants";
 import { ProductDetailPageProps } from "@/types";
+import { fetchProduct, fetchProducts } from "@/lib";
 
-const ProductDetailPage = ({ searchParams }: ProductDetailPageProps) => {
-  const id = searchParams.id;
-  const product = products.find((product) => product.id === id);
+const ProductDetailPage = async ({ params }: ProductDetailPageProps) => {
+  const id = params.id;
+
+  const product = await fetchProduct(id);
+  let products = await fetchProducts();
+  products = products.filter((product) => product.id !== id);
 
   if (!product) {
     return <div>Product not found</div>;

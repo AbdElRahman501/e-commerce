@@ -5,22 +5,6 @@ const products: Product[] = [
     id: "1",
     title: "Creative Anime Adventure T-Shirt",
     keywords: "anime, adventure, creative, t-shirt",
-    reviews: [
-      {
-        id: "review1",
-        username: "AnimeFan22",
-        rating: 5,
-        comment:
-          "Absolutely love the design and quality! Will definitely buy more.",
-      },
-      {
-        id: "review2",
-        username: "AdventureSeeker",
-        rating: 4,
-        comment:
-          "Great shirt for expressing my love for anime and adventure. Slightly tight around the sleeves.",
-      },
-    ],
     images: {
       "#12355b": "/blue-jacket.png",
       "#420039": "/jacket.png",
@@ -42,22 +26,6 @@ const products: Product[] = [
     id: "2",
     title: "Stylish Women's Collection T-Shirt",
     keywords: "women, collection, stylish, t-shirt",
-    reviews: [
-      {
-        id: "review1",
-        username: "Fashionista123",
-        rating: 5,
-        comment:
-          "Absolutely stunning design! Perfect fit and incredibly comfortable.",
-      },
-      {
-        id: "review2",
-        username: "TrendyExplorer",
-        rating: 4,
-        comment: "Great addition to my wardrobe. Love the unique patterns!",
-      },
-      // Add more reviews as needed
-    ],
     images: {
       "#12355b": "/women-collection.png",
       "#420039": "/women-collection.png",
@@ -79,23 +47,6 @@ const products: Product[] = [
     id: "3",
     title: "Blue Adventure Jacket",
     keywords: "blue, adventure, jacket, clothing",
-    reviews: [
-      {
-        id: "review1",
-        username: "OutdoorExplorer",
-        rating: 5,
-        comment:
-          "Perfect for outdoor adventures! The blue color is vibrant, and the material is durable.",
-      },
-      {
-        id: "review2",
-        username: "CasualAdventurer",
-        rating: 4,
-        comment:
-          "Great jacket for casual outings. Love the stylish and functional design.",
-      },
-      // Add more reviews as needed
-    ],
     images: {
       "#12355b": "/blue-jacket.png",
       "#420039": "/blue-jacket.png",
@@ -117,23 +68,6 @@ const products: Product[] = [
     id: "4",
     title: "Men's Casual Collection T-Shirt",
     keywords: "men, casual, collection, t-shirt",
-    reviews: [
-      {
-        id: "review1",
-        username: "CasualChic",
-        rating: 5,
-        comment:
-          "Perfect blend of style and comfort! The fabric is soft, and the fit is just right.",
-      },
-      {
-        id: "review2",
-        username: "EverydayElegance",
-        rating: 4,
-        comment:
-          "Great addition to my casual wardrobe. Love the versatility of the designs.",
-      },
-      // Add more reviews as needed
-    ],
     images: {
       "#12355b": "/men-collection.png",
       "#420039": "/men-collection.png",
