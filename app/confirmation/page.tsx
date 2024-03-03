@@ -2,10 +2,10 @@
 import { BagCard, StoreContext } from "@/components";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 const OrderConfirmationPage = () => {
-  const { order } = useContext(StoreContext);
+  const { order, setCart } = useContext(StoreContext);
   if (!order) {
     return (
       <div className="flex min-h-[88vh] items-center justify-center">
@@ -13,6 +13,11 @@ const OrderConfirmationPage = () => {
       </div>
     );
   }
+  useEffect(() => {
+    if (order) {
+      setCart([]);
+    }
+  }, [order]);
 
   const { products, personalInfo, id, total, subTotal, shipping, discount } =
     order;

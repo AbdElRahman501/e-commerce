@@ -1,7 +1,11 @@
 //actions
-import { fetchProducts, fetchProduct } from "./actions/product.actions";
+import {
+  fetchProducts,
+  fetchProduct,
+  fetchProductsById,
+} from "./actions/product.actions";
 
 //models
 import Product from "./models/product.model";
 
-export { fetchProducts, fetchProduct, Product };
+export { fetchProducts, fetchProduct, fetchProductsById, Product };

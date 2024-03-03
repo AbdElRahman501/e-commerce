@@ -30,7 +30,6 @@ const CheckOutPage = () => {
       discount: discount,
       total: total,
     });
-    setCart([]);
     router.push("/confirmation");
   };
 

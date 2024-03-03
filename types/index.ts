@@ -62,8 +62,8 @@ export interface StoreContextType {
   setCart: React.Dispatch<React.SetStateAction<CartProduct[]>>;
   favorite: string[];
   setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
-  order: Order;
-  setOrder: React.Dispatch<React.SetStateAction<Order>>;
+  order: Order | null;
+  setOrder: React.Dispatch<React.SetStateAction<Order | null>>;
 }
 
 export interface FormInput {
