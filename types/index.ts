@@ -27,7 +27,6 @@ export interface Product {
   id: string;
   title: string;
   keywords: string;
-  reviews: Review[];
   images: Record<string, string>; // Mapping color to image filename
   categories: string;
   price: number;
@@ -47,7 +46,7 @@ export interface Review {
 }
 
 export interface ProductDetailPageProps {
-  searchParams: {
+  params: {
     id: string;
   };
 }
@@ -63,8 +62,8 @@ export interface StoreContextType {
   setCart: React.Dispatch<React.SetStateAction<CartProduct[]>>;
   favorite: string[];
   setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
-  order: Order;
-  setOrder: React.Dispatch<React.SetStateAction<Order>>;
+  order: Order | null;
+  setOrder: React.Dispatch<React.SetStateAction<Order | null>>;
 }
 
 export interface FormInput {

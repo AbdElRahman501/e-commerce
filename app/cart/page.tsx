@@ -1,7 +1,8 @@
 import { CartComponent, ProductsRow } from "@/components";
-import { products } from "@/constants";
+import { fetchProducts } from "@/lib";
 
-const page = () => {
+const page = async () => {
+  const products = await fetchProducts();
   return (
     <section>
       <CartComponent />
