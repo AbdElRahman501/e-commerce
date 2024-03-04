@@ -109,7 +109,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
               setImages(rearrangeArray(images, index))
             }
             key={index}
-            className={`area-${index + 1}  aspect-card relative min-w-[100vw] snap-center overflow-hidden sm:min-w-full sm:rounded-3xl`}
+            className={`area-${index + 1}  aspect-card relative min-w-[100vw] snap-center overflow-hidden bg-gradient-to-r from-slate-100 to-slate-200 sm:min-w-full sm:rounded-3xl`}
           >
             <Image
               src={item}

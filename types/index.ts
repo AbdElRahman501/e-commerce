@@ -49,6 +49,9 @@ export interface ProductDetailPageProps {
   params: {
     id: string;
   };
+  searchParams: {
+    c?: string;
+  };
 }
 
 export interface CartProduct extends Product {
