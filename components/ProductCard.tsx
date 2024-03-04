@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { StoreContext } from "./StoreContext";
 
 const ProductCard = ({ images, colors, id, title, price }: Product) => {
-  const [selectedColor, setSelectedColor] = useState<string>(colors[0]);
+  const [selectedColor, setSelectedColor] = useState<string>("");
 
   const { favorite, setFavorite } = React.useContext(StoreContext);
   const isFav = favorite.includes(id);
@@ -20,10 +20,16 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
   }
   return (
     <div className="Product flex-col gap-4">
-      <Link href={`/product/${id}`}>
-        <div className="aspect-card relative overflow-hidden rounded-3xl">
+      <Link
+        href={
+          selectedColor
+            ? `/product/${id}?c=${selectedColor.slice(1)}`
+            : `/product/${id}`
+        }
+      >
+        <div className="aspect-card relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-100 to-slate-200">
           <Image
-            src={images[selectedColor]}
+            src={images[selectedColor || colors[0]]}
             alt="jacket"
             fill
             sizes="100%"
@@ -37,7 +43,7 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
             <button
               key={index}
               onClick={() => setSelectedColor(item)}
-              className={`${item === selectedColor ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} max-w-4 flex-1 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}
+              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} max-w-4 flex-1 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}
             >
               <span
                 style={{ backgroundColor: item }}

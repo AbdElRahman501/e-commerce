@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { faqSection } from "@/constants";
 import { AmountButton, StoreContext } from "@/components";
 import { Product } from "@/types";
@@ -8,8 +8,14 @@ import ProductImages from "./ProductImages";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const ProductDetailsComponent = ({ product }: { product: Product }) => {
-  const [selectedColor, setSelectedColor] = React.useState<string>("");
+const ProductDetailsComponent = ({
+  product,
+  color,
+}: {
+  product: Product;
+  color?: string;
+}) => {
+  const [selectedColor, setSelectedColor] = React.useState<string>(color || "");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
   const [amount, setAmount] = React.useState<number>(1);
   const router = useRouter();
@@ -25,7 +31,11 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
       item.selectedSize === selectedSize,
   );
 
-  const [audio] = useState(new Audio("/sounds/short-success.mp3"));
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    setAudio(new Audio("/sounds/short-success.mp3"));
+  }, []);
 
   function addToCart() {
     if (isInCart) {
@@ -42,7 +52,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
           },
         ];
       });
-      audio.play();
+      audio?.play();
     }
   }
 
@@ -181,7 +191,6 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
     </div>
   );
 };
-
 function getImages(images: Record<string, string>): string[] {
   let imageArray = [];
   for (let color in images) {

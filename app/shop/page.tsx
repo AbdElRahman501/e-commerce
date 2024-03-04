@@ -1,3 +1,4 @@
+"use client";
 import {
   CallToAction,
   FilterButton,
@@ -5,12 +6,30 @@ import {
   ProductCard,
   SearchField,
 } from "@/components";
-import { fetchProducts } from "@/lib";
+import { Product } from "@/types";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
-const ShopPage = async () => {
-  const products = await fetchProducts();
-  const productsList = Array(3).fill(products).flat();
+const ShopPage = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/products", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data) return;
+        if (data.products) setProducts(data.products);
+        setLoading(false);
+      });
+  }, []);
+
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <main>
       <CallToAction />
@@ -19,7 +38,7 @@ const ShopPage = async () => {
           Products
         </h1>
         <SearchField />
-        <FilterButton />
+        <FilterButton isOpen={isOpen} setIsOpen={setIsOpen} />
         <div className=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex">
           {/* <span className="sort-icon aspect-square w-6 text-2xl">&#8645;</span> */}
           <Image
@@ -43,10 +62,11 @@ const ShopPage = async () => {
         </div>
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
-        <FilterContainer />
-        <div className="rounded-4xl flex flex-1 flex-col gap-4  ">
+        <FilterContainer isOpen={isOpen} />
+        <div className="rounded-4xl flex min-h-[60vh] flex-1 flex-col gap-4  ">
+          {loading && <p>Loading...</p>}
           <div className=" grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
-            {productsList.map((product, index) => (
+            {products.map((product, index) => (
               <ProductCard key={index} {...product} />
             ))}
           </div>
