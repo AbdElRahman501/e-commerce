@@ -22,7 +22,7 @@ export function StoreContextProvider({
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorite, setFavorite] = useState<string[]>([]);
   const [order, setOrder] = useState<Order | null>(null);
-  const newVersion = "1.0.0.2";
+  const newVersion = "1.0.0.3";
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
