@@ -7,15 +7,17 @@ import {
   SearchField,
   Sorting,
 } from "@/components";
-import { Product } from "@/types";
+import { filterInitialData } from "@/constants";
+import { Product, FilterType } from "@/types";
 import React, { useEffect, useState } from "react";
 
 const ShopPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [query, setQuery] = useState<string>("");
   const [sorting, setSorting] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [filter, setFilter] = useState<FilterType>(filterInitialData);
 
   useEffect(() => {
     const ascendingPrice =
@@ -25,21 +27,34 @@ const ShopPage = () => {
           ? -1
           : 0;
 
-    fetch(`/api/products?query=${query}&priceSorting=${ascendingPrice}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    fetch(
+      `/api/products?query=${query}&priceSorting=${ascendingPrice}&selectedCategories=${filter.selectedCategories}&genderFilter=${filter.genderFilter}&minPrice=${filter.minPrice}&maxPrice=${filter.maxPrice}&keywordFilter=${filter.keywordFilter}&sizeFilter=${filter.sizeFilter}&colorFilter=${filter.colorFilter.map((item) => item.slice(1))}&originFilter=${filter.originFilter}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    })
+    )
       .then((res) => res.json())
       .then((data) => {
         if (!data) return;
         if (data.products) setProducts(data.products);
         setLoading(false);
       });
-  }, [query, sorting]);
+  }, [query, sorting, filter]);
 
-  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("max-md:overflow-hidden");
+    } else {
+      document.body.classList.remove("max-md:overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("max-md:overflow-hidden");
+    };
+  }, [isOpen]);
+
   return (
     <main>
       <CallToAction />
@@ -61,6 +76,8 @@ const ShopPage = () => {
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
         <FilterContainer
+          filter={filter}
+          setFilter={setFilter}
           isOpen={isOpen}
           setSorting={setSorting}
           sorting={sorting}

@@ -9,11 +9,11 @@ const FilterButton = ({
 }) => {
   const openFilter = () => {
     if (isOpen) {
-      document.body.classList.remove("scroll-Lock");
       setIsOpen(false);
     } else {
-      document.body.classList.add("scroll-Lock");
-      window.scrollTo({ top: 220, behavior: "smooth" });
+      setTimeout(() => {
+        window.scrollTo({ top: 220, behavior: "smooth" });
+      }, 300);
       setIsOpen(true);
     }
   };

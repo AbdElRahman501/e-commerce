@@ -18,6 +18,7 @@ const products: Product[] = [
     colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
     description:
       "Embark on a creative journey with this anime-inspired adventure t-shirt. Express yourself with vibrant colors and unique designs.",
+    gender: "female",
     name: "Anime Adventure Tee",
     quantity: 99,
     likes: 0,
@@ -39,6 +40,7 @@ const products: Product[] = [
     colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
     description:
       "Elevate your style with this stylish women's collection t-shirt. Featuring unique patterns and a comfortable fit, it's a must-have for fashion enthusiasts.",
+    gender: "female",
     name: "Stylish Women's Tee",
     quantity: 120,
     likes: 0,
@@ -60,6 +62,7 @@ const products: Product[] = [
     colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
     description:
       "Embark on adventures in style with this blue adventure jacket. Designed for both functionality and fashion, it's your go-to choice for outdoor escapades.",
+    gender: "male",
     name: "Blue Adventure Jacket",
     quantity: 80,
     likes: 0,
@@ -81,6 +84,7 @@ const products: Product[] = [
     colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
     description:
       "Upgrade your casual wardrobe with this men's casual collection t-shirt. Featuring versatile designs and a comfortable fit, it's perfect for everyday wear.",
+    gender: "male",
     name: "Men's Casual Tee",
     quantity: 110,
     likes: 0,

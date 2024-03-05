@@ -62,8 +62,8 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
           />
         </button>
       </div>
-      <h6 className="w-full text-sm md:text-base ">{title}</h6>
-      <h5 className="text-base  font-bold md:text-xl">{price} EGP</h5>
+      <p className="w-full text-sm md:text-base ">{title}</p>
+      <p className="text-base  font-bold md:text-xl">{price} EGP</p>
     </div>
   );
 };

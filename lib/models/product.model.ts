@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema(
     name: { type: String, required: true },
     quantity: { type: Number, required: true },
     likes: { type: Number, required: true },
+    gender: { type: String, required: true, default: "all" },
   },
   {
     toJSON: {

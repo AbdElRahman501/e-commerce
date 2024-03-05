@@ -20,7 +20,7 @@ export interface ThemeSwitcherProps {
 
 export interface FilterData {
   origin: string[];
-  categories: { name: string; count: number; checked: boolean }[];
+  categories: { name: string; count: number }[];
   sizes: string[];
   colors: string[];
 }
@@ -36,6 +36,7 @@ export interface Product {
   colors: string[];
   description: string;
   name: string;
+  gender: "male" | "female";
   quantity: number;
   likes: number;
 }
@@ -102,4 +103,15 @@ export interface Order {
   subTotal: number;
   shipping: number;
   discount: number;
+}
+
+export interface FilterType {
+  selectedCategories: string[];
+  originFilter: string[];
+  colorFilter: string[];
+  keywordFilter: string;
+  sizeFilter: string[];
+  minPrice: number;
+  maxPrice: number;
+  genderFilter: "male" | "female" | "all";
 }

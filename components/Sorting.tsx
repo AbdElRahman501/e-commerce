@@ -36,12 +36,7 @@ const Sorting = ({
         </option>
         {options &&
           options.map((option, i) => (
-            <option
-              selected={sorting ? sorting === option : i === 0}
-              key={i}
-              value={option}
-              className="dark:text-black"
-            >
+            <option key={i} value={option} className="dark:text-black">
               {option}
             </option>
           ))}
