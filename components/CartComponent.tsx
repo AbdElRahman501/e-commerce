@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useContext, useEffect } from "react";
 import BagCard from "./BagCard";
 import { CartPricing, StoreContext } from ".";
-import { CartProduct } from "@/types";
+import { CartItem, CartProduct } from "@/types";
 
 const CartComponent = () => {
   const { cart } = useContext(StoreContext);
@@ -24,11 +24,11 @@ const CartComponent = () => {
           if (!data) return;
           if (data.products)
             setCartProducts(
-              data.products.map((product: CartProduct) => {
-                const cartItem = cart.find(
-                  (item) => item.productId === product.id,
+              cart.map((cartItem: CartItem) => {
+                const product = data.products.find(
+                  (product: CartProduct) => product.id === cartItem.productId,
                 );
-                if (cartItem) {
+                if (product) {
                   return {
                     ...product,
                     amount: cartItem.amount,
@@ -38,7 +38,6 @@ const CartComponent = () => {
                 }
               }),
             );
-
           setLoading(false);
         });
     }
@@ -59,12 +58,15 @@ const CartComponent = () => {
       </div>
     );
   }
-  return (
+  return loading ? (
+    <div className="flex min-h-screen items-center justify-center p-5 text-xl lg:px-20 ">
+      <p>Loading...</p>
+    </div>
+  ) : (
     <div className="p-5 lg:px-20">
       <h1 className="pb-5 text-xl md:text-3xl">
         Shopping Bag ({cart.length}){" "}
       </h1>
-      {loading && <div>Loading...</div>}
       <div className="flex w-full flex-col justify-center gap-5 md:flex-row">
         <div className=" flex w-full flex-col gap-5 md:max-w-lg ">
           {cartProducts.length > 0 &&

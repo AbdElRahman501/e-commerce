@@ -103,7 +103,7 @@ export interface PersonalInfo {
 }
 
 export interface Order {
-  products: CartProduct[];
+  products: CartItem[];
   personalInfo: PersonalInfo;
   id: string;
   total: number;

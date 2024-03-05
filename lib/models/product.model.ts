@@ -16,6 +16,7 @@ const productSchema = new mongoose.Schema(
     gender: { type: String, required: true, default: "all" },
   },
   {
+    timestamps: true,
     toJSON: {
       virtuals: true, // Include virtual properties if any
       transform: function (doc, ret) {

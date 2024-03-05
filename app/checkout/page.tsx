@@ -3,11 +3,11 @@ import { BagCard, CustomInput, StoreContext } from "@/components";
 import { formInputs, initialPersonalInfo } from "@/constants";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CartProduct, PersonalInfo } from "@/types";
+import { CartItem, CartProduct, PersonalInfo } from "@/types";
 import Link from "next/link";
 
 const CheckOutPage = () => {
-  const { cart, setOrder, setCart } = useContext(StoreContext);
+  const { cart } = useContext(StoreContext);
   const [data, setData] = useState<PersonalInfo>(initialPersonalInfo);
 
   const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
@@ -27,11 +27,11 @@ const CheckOutPage = () => {
           if (!data) return;
           if (data.products)
             setCartProducts(
-              data.products.map((product: CartProduct) => {
-                const cartItem = cart.find(
-                  (item) => item.productId === product.id,
+              cart.map((cartItem: CartItem) => {
+                const product = data.products.find(
+                  (product: CartProduct) => product.id === cartItem.productId,
                 );
-                if (cartItem) {
+                if (product) {
                   return {
                     ...product,
                     amount: cartItem.amount,
@@ -58,16 +58,28 @@ const CheckOutPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // setOrder({
-    //   products: cart,
-    //   personalInfo: data,
-    //   id: Date.now().toString(),
-    //   subTotal: subTotal,
-    //   shipping: shipping,
-    //   discount: discount,
-    //   total: total,
-    // });
-    router.push("/confirmation");
+    const order = {
+      products: cart,
+      personalInfo: data,
+      id: Date.now().toString(),
+      subTotal: subTotal,
+      shipping: shipping,
+      discount: discount,
+      total: total,
+    };
+
+    fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ order }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data) return;
+        if (data.orderId) router.push(`/confirmation/${data.orderId}`);
+      });
   };
 
   if (cart.length === 0) {

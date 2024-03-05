@@ -101,6 +101,7 @@ const CustomInput = ({
             type={type}
             name={name}
             id={name}
+            value={value}
             onChange={(e) =>
               setData((prev) => ({ ...prev, [name]: e.target.value }))
             }
