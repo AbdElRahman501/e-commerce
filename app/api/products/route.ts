@@ -1,9 +1,12 @@
 import { fetchProducts, fetchProductsById } from "@/lib";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const query = searchParams.get("query") || "";
+  const priceSorting = Number(searchParams.get("priceSorting")) || 0;
   try {
-    const products = await fetchProducts();
+    const products = await fetchProducts({ query, priceSorting });
     return NextResponse.json({ products });
   } catch (error) {
     return NextResponse.json({

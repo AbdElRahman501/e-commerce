@@ -36,7 +36,10 @@ const NavBar = () => {
         </Link>
       </div>
       <div className="flex flex-1 items-center justify-end gap-2 md:gap-8 ">
-        <ThemeSwitcher className="hidden text-black hover:text-gray-300 dark:text-white md:flex" />
+        <ThemeSwitcher
+          className="hidden text-black hover:text-gray-300 dark:text-white md:flex"
+          onlyIcon
+        />
         <CartButton />
         <Link
           className="uppercase text-black hover:text-gray-300 dark:text-white"

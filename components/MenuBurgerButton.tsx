@@ -1,22 +1,11 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
+import { useState } from "react";
+import { ThemeSwitcher } from ".";
 
 const MenuBurgerButton = () => {
   const [menu, setMenu] = useState(false);
-
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
 
   const openMenu = () => {
     if (menu) {
@@ -45,7 +34,7 @@ const MenuBurgerButton = () => {
         className="fixed top-[58px] z-20 flex h-[calc(100dvh-50px)] w-screen items-center justify-center bg-black bg-opacity-50 bg-clip-padding px-4 py-10 shadow-lg ring-1 ring-white/5 duration-300 ease-in-out "
       >
         <ul className="flex w-full flex-col gap-1 text-center">
-          <li className=" group w-full overflow-hidden border-b-2  border-gray-400 p-4 text-2xl uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
+          <li className=" group w-full overflow-hidden border-b-2  border-gray-400 p-4 text-2xl  font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
             <Link
               onClick={openMenu}
               href="/"
@@ -54,7 +43,7 @@ const MenuBurgerButton = () => {
               Home
             </Link>
           </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
+          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
             <Link
               onClick={openMenu}
               href="/about"
@@ -63,7 +52,7 @@ const MenuBurgerButton = () => {
               About
             </Link>
           </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
+          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
             <Link
               onClick={openMenu}
               href="/shop"
@@ -72,7 +61,7 @@ const MenuBurgerButton = () => {
               Shop
             </Link>
           </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
+          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
             <Link
               onClick={openMenu}
               href="/shop"
@@ -81,7 +70,7 @@ const MenuBurgerButton = () => {
               categories
             </Link>
           </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
+          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
             <Link
               onClick={openMenu}
               href="/cart"
@@ -90,7 +79,7 @@ const MenuBurgerButton = () => {
               Cart
             </Link>
           </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
+          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
             <Link
               onClick={openMenu}
               href="/favorites"
@@ -99,23 +88,11 @@ const MenuBurgerButton = () => {
               Favorites
             </Link>
           </li>
-          <li className="group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
-            <button
-              onClick={() => {
-                setTheme(theme === "dark" ? "light" : "dark");
-                openMenu();
-              }}
+          <li className="group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
+            <ThemeSwitcher
               className="inline-flex items-center gap-1 duration-200 group-hover:scale-110"
-            >
-              <Image
-                className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
-                src={theme === "dark" ? "/icons/sun.svg" : "/icons/circum.svg"}
-                alt="moon"
-                width={30}
-                height={30}
-              />{" "}
-              <p>{theme === "dark" ? "Light mode" : "Dark mode"}</p>
-            </button>
+              additionalFunction={openMenu}
+            />
           </li>
         </ul>
       </div>

@@ -5,17 +5,27 @@ import {
   FilterContainer,
   ProductCard,
   SearchField,
+  Sorting,
 } from "@/components";
 import { Product } from "@/types";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const ShopPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [query, setQuery] = useState<string>("");
+  const [sorting, setSorting] = useState("");
+
   useEffect(() => {
-    fetch("/api/products", {
+    const ascendingPrice =
+      sorting === "Price: Low to High"
+        ? 1
+        : sorting === "Price: High to Low"
+          ? -1
+          : 0;
+
+    fetch(`/api/products?query=${query}&priceSorting=${ascendingPrice}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +37,7 @@ const ShopPage = () => {
         if (data.products) setProducts(data.products);
         setLoading(false);
       });
-  }, []);
+  }, [query, sorting]);
 
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -37,32 +47,24 @@ const ShopPage = () => {
         <h1 className=" mr-auto hidden text-3xl font-bold md:block">
           Products
         </h1>
-        <SearchField />
+        <SearchField
+          setIsOpen={setIsOpen}
+          query={query}
+          changeHandler={setQuery}
+        />
         <FilterButton isOpen={isOpen} setIsOpen={setIsOpen} />
-        <div className=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex">
-          {/* <span className="sort-icon aspect-square w-6 text-2xl">&#8645;</span> */}
-          <Image
-            src={"/icons/sort.svg"}
-            width={24}
-            height={24}
-            alt={"sort icon"}
-            className="dark:invert"
-          />
-          <span className="whitespace-nowrap  text-sm">Price Low to High</span>
-          {/* <span className="down-arrow aspect-square w-6 rotate-90 text-center text-3xl ">
-            &#8250;
-          </span> */}
-          <Image
-            src={"/icons/arrow-down.svg"}
-            width={24}
-            height={24}
-            alt={"sort icon"}
-            className="dark:invert"
-          />
-        </div>
+        <Sorting
+          classNames=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex"
+          setSorting={setSorting}
+          sorting={sorting}
+        />
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
-        <FilterContainer isOpen={isOpen} />
+        <FilterContainer
+          isOpen={isOpen}
+          setSorting={setSorting}
+          sorting={sorting}
+        />
         <div className="rounded-4xl flex min-h-[60vh] flex-1 flex-col gap-4  ">
           {loading && <p>Loading...</p>}
           <div className=" grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">

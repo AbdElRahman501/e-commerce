@@ -14,6 +14,8 @@ export interface SectionTitleProps {
 
 export interface ThemeSwitcherProps {
   className?: string;
+  additionalFunction?: () => void;
+  onlyIcon?: boolean;
 }
 
 export interface FilterData {

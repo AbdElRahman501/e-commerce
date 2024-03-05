@@ -1,9 +1,10 @@
 import { filterData } from "@/constants";
 import React from "react";
+import { Sorting } from ".";
 
 const Gender = () => {
   return (
-    <div className="relative flex h-10 min-h-10 max-w-xs flex-grow-0 rounded-full border">
+    <div className="relative flex h-14 min-h-14 w-full flex-grow-0 rounded-full border md:max-w-xs">
       <div className="absolute left-0 top-0 -z-10 m-[2px] h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full border bg-primary_color  text-center text-primary_color"></div>
       <button className="m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)]  items-center justify-center text-center  text-white">
         <span>men</span>
@@ -117,12 +118,25 @@ const Price = () => {
     </div>
   );
 };
-const FilterContainer = ({ isOpen }: { isOpen: boolean }) => {
+const FilterContainer = ({
+  isOpen,
+  setSorting,
+  sorting,
+}: {
+  isOpen: boolean;
+  setSorting: React.Dispatch<React.SetStateAction<string>>;
+  sorting: string;
+}) => {
   return (
     <div
       style={{ bottom: isOpen ? "0" : "-100vh" }}
-      className="scroll-bar-hidden fixed  left-0  z-20 flex h-fit max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-slate-100 px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
+      className=" scroll-bar-hidden fixed  left-0  z-20 flex h-fit max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-slate-100 px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
     >
+      <Sorting
+        classNames="  min-h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white flex md:hidden"
+        setSorting={setSorting}
+        sorting={sorting}
+      />
       <Gender />
       <Origin />
       <Categories />
