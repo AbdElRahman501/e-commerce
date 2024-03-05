@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { Product } from "@/lib";
 import { Product as ProductType } from "@/types";
 
-export async function fetchProducts(properties: any): Promise<ProductType[]> {
+export async function fetchProducts(properties?: any): Promise<ProductType[]> {
   const {
     query,
     categoryFilter,
