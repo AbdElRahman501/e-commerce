@@ -31,7 +31,7 @@ const MenuBurgerButton = () => {
       <button type="button" onClick={openMenu}>
         <Image
           className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
-          src={"/icons/menu-burger.svg"}
+          src={menu ? "/icons/close.svg" : "/icons/menu-burger.svg"}
           alt="menu"
           width={30}
           height={30}

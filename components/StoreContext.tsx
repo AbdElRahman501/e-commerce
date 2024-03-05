@@ -1,6 +1,6 @@
 "use client";
 import { initialOrder } from "@/constants";
-import { StoreContextType, CartProduct, Order } from "@/types";
+import { StoreContextType, Order, CartItem } from "@/types";
 import { createContext, useEffect, useState } from "react";
 
 const storeContextState = {
@@ -19,7 +19,7 @@ export function StoreContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [cart, setCart] = useState<CartProduct[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [favorite, setFavorite] = useState<string[]>([]);
   const [order, setOrder] = useState<Order | null>(null);
   const newVersion = "1.0.0.2";

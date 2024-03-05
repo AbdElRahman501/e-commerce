@@ -26,7 +26,7 @@ const FilterButton = ({
         className="flex h-14 w-14 flex-grow-0 items-center justify-center  rounded-2xl border bg-primary_color dark:bg-white md:hidden"
       >
         <Image
-          src={isOpen ? "/icons/sun.svg" : "/icons/filter.svg"}
+          src={isOpen ? "/icons/close.svg" : "/icons/filter.svg"}
           alt="search"
           width={30}
           height={30}

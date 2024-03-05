@@ -3,15 +3,52 @@ import { BagCard, CustomInput, StoreContext } from "@/components";
 import { formInputs, initialPersonalInfo } from "@/constants";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PersonalInfo } from "@/types";
+import { CartProduct, PersonalInfo } from "@/types";
 import Link from "next/link";
 
 const CheckOutPage = () => {
   const { cart, setOrder, setCart } = useContext(StoreContext);
   const [data, setData] = useState<PersonalInfo>(initialPersonalInfo);
 
+  const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      fetch("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ids: cart.map((item) => item.productId) }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data) return;
+          if (data.products)
+            setCartProducts(
+              data.products.map((product: CartProduct) => {
+                const cartItem = cart.find(
+                  (item) => item.productId === product.id,
+                );
+                if (cartItem) {
+                  return {
+                    ...product,
+                    amount: cartItem.amount,
+                    selectedColor: cartItem.selectedColor,
+                    selectedSize: cartItem.selectedSize,
+                  };
+                }
+              }),
+            );
+
+          setLoading(false);
+        });
+    }
+  }, [cart]);
+
   const router = useRouter();
-  const subTotal = cart.reduce(
+  const subTotal = cartProducts.reduce(
     (acc, item) => acc + item.price * item.amount,
     0,
   );
@@ -21,15 +58,15 @@ const CheckOutPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setOrder({
-      products: cart,
-      personalInfo: data,
-      id: Date.now().toString(),
-      subTotal: subTotal,
-      shipping: shipping,
-      discount: discount,
-      total: total,
-    });
+    // setOrder({
+    //   products: cart,
+    //   personalInfo: data,
+    //   id: Date.now().toString(),
+    //   subTotal: subTotal,
+    //   shipping: shipping,
+    //   discount: discount,
+    //   total: total,
+    // });
     router.push("/confirmation");
   };
 
@@ -54,6 +91,7 @@ const CheckOutPage = () => {
   return (
     <div className="p-5 lg:px-20">
       <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
+      {loading && <div>Loading...</div>}
       <form
         action=""
         onSubmit={handleSubmit}
@@ -91,7 +129,7 @@ const CheckOutPage = () => {
         <div className="flex w-full flex-col gap-5 ">
           <h1 className="pb-5 text-xl font-semibold md:text-3xl">Your Order</h1>
 
-          {cart.map((item, index) => (
+          {cartProducts.map((item, index) => (
             <BagCard readonly {...item} key={index} />
           ))}
 

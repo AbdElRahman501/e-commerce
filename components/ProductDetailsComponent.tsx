@@ -26,7 +26,7 @@ const ProductDetailsComponent = ({
   const isFav = favorite.includes(product.id);
   const isInCart = cart.some(
     (item) =>
-      item.id === product.id &&
+      item.productId === product.id &&
       item.selectedColor === selectedColor &&
       item.selectedSize === selectedSize,
   );
@@ -45,7 +45,7 @@ const ProductDetailsComponent = ({
         return [
           ...prev,
           {
-            ...product,
+            productId: product.id,
             amount: amount,
             selectedColor: selectedColor,
             selectedSize: selectedSize,

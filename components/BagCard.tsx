@@ -26,7 +26,7 @@ const BagCard = ({
     setCart((prev) =>
       prev.filter((item) => {
         const matchItem =
-          item.id === id &&
+          item.productId === id &&
           item.selectedColor === selectedColor &&
           item.selectedSize === selectedSize;
 

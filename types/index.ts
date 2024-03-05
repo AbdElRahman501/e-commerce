@@ -63,9 +63,16 @@ export interface CartProduct extends Product {
   selectedSize: string;
 }
 
+export interface CartItem {
+  productId: string;
+  amount: number;
+  selectedColor: string;
+  selectedSize: string;
+}
+
 export interface StoreContextType {
-  cart: CartProduct[];
-  setCart: React.Dispatch<React.SetStateAction<CartProduct[]>>;
+  cart: CartItem[];
+  setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
   favorite: string[];
   setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
   order: Order | null;
