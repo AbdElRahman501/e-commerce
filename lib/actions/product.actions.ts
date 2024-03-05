@@ -114,6 +114,7 @@ export async function fetchProductsById(ids: string[]): Promise<ProductType[]> {
 
 export const getCategoriesWithProductCount = async () => {
   try {
+    connectToDatabase();
     // Aggregate pipeline to group products by categories and count the number of products in each category
     const aggregationPipeline = [
       {
