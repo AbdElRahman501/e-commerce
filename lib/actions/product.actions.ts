@@ -73,7 +73,7 @@ export async function fetchProducts(properties?: any): Promise<ProductType[]> {
   };
 
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = priceSorting
       ? await Product.find(finalQuery).sort({ price: priceSorting })
       : await Product.find(finalQuery);
@@ -86,7 +86,7 @@ export async function fetchProducts(properties?: any): Promise<ProductType[]> {
 }
 export async function fetchProduct(id: string): Promise<ProductType | null> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Product.findById(id);
     const product: ProductType = JSON.parse(JSON.stringify(data));
     return product;
@@ -98,7 +98,7 @@ export async function fetchProduct(id: string): Promise<ProductType | null> {
 export async function fetchProductsById(ids: string[]): Promise<ProductType[]> {
   const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Product.find({
       _id: {
         $in: objectIdArray,
@@ -114,7 +114,7 @@ export async function fetchProductsById(ids: string[]): Promise<ProductType[]> {
 
 export const getCategoriesWithProductCount = async () => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     // Aggregate pipeline to group products by categories and count the number of products in each category
     const aggregationPipeline = [
       {

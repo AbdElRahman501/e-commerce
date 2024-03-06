@@ -9,33 +9,52 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const ProductDetailsComponent = ({
-  product,
   color,
+  productId,
 }: {
-  product: Product;
   color?: string;
+  productId: string;
 }) => {
   const [selectedColor, setSelectedColor] = React.useState<string>(color || "");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
   const [amount, setAmount] = React.useState<number>(1);
-  const router = useRouter();
-
-  const images = getImages(product.images);
-  const { cart, setCart, favorite, setFavorite } =
-    React.useContext(StoreContext);
-  const isFav = favorite.includes(product.id);
-  const isInCart = cart.some(
-    (item) =>
-      item.productId === product.id &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize,
-  );
-
+  const [product, setProduct] = React.useState<Product>();
+  const [loading, setLoading] = React.useState(true);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/products/${productId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("🚀 ~ .then ~ data:", data);
+        if (!data) return setLoading(false);
+        if (!data.product) return setLoading(false);
+        setProduct(data.product);
+      });
+  }, []);
 
   useEffect(() => {
     setAudio(new Audio("/sounds/short-success.mp3"));
   }, []);
+
+  const router = useRouter();
+
+  const images = product ? getImages(product.images) : [];
+
+  const { cart, setCart, favorite, setFavorite } =
+    React.useContext(StoreContext);
+  const isFav = favorite.includes(productId);
+  const isInCart = cart.some(
+    (item) =>
+      item.productId === productId &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize,
+  );
 
   function addToCart() {
     if (isInCart) {
@@ -45,7 +64,7 @@ const ProductDetailsComponent = ({
         return [
           ...prev,
           {
-            productId: product.id,
+            productId: productId,
             amount: amount,
             selectedColor: selectedColor,
             selectedSize: selectedSize,
@@ -58,12 +77,22 @@ const ProductDetailsComponent = ({
 
   function toggleFavorite() {
     setFavorite((prev) => {
-      return prev.includes(product.id)
-        ? prev.filter((item) => item !== product.id)
-        : [...prev, product.id];
+      return prev.includes(productId)
+        ? prev.filter((item) => item !== productId)
+        : [...prev, productId];
     });
   }
 
+  if (!product)
+    return (
+      <div>
+        {loading && (
+          <div className="flex min-h-screen items-center justify-center ">
+            <p>Loading...</p>
+          </div>
+        )}
+      </div>
+    );
   return (
     <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages

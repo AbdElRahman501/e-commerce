@@ -1,12 +1,10 @@
 import { CartComponent, ProductsRow } from "@/components";
-import { fetchProducts } from "@/lib";
 
-const page = async () => {
-  const products = await fetchProducts();
+const page = () => {
   return (
     <section>
       <CartComponent />
-      <ProductsRow title="You may also like" url="/shop" products={products} />
+      <ProductsRow title="You may also like" url="/shop" />
     </section>
   );
 };
