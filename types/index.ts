@@ -75,8 +75,8 @@ export interface StoreContextType {
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
   favorite: string[];
   setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
-  order: Order | null;
-  setOrder: React.Dispatch<React.SetStateAction<Order | null>>;
+  products: Product[];
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
 export interface FormInput {
@@ -121,4 +121,9 @@ export interface FilterType {
   minPrice: number;
   maxPrice: number;
   genderFilter: "male" | "female" | "all";
+}
+
+export interface CategoryCount {
+  name: string;
+  count: number;
 }

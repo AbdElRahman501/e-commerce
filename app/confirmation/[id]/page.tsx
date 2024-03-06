@@ -1,52 +1,18 @@
 "use client";
 import { BagCard, StoreContext } from "@/components";
-import { CartItem, CartProduct, Order } from "@/types";
+import { CartProduct, Order } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useContext, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { getCartProducts } from "@/utils";
 
 const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
   const orderId = params.id;
-  const { setCart } = useContext(StoreContext);
-  const router = useRouter();
+  const { setCart, products } = useContext(StoreContext);
   const [order, setOrder] = React.useState<Order>();
   const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [copied, setCopied] = React.useState(false);
-
-  if (!orderId) {
-    router.push("/");
-  }
-  const fetchProducts = ({ ids, cart }: { ids: string[]; cart: CartItem[] }) =>
-    fetch("/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ids }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data) return setLoading(false);
-        if (data.products)
-          setCartProducts(
-            cart.map((cartItem: CartItem) => {
-              const product = data.products.find(
-                (product: CartProduct) => product.id === cartItem.productId,
-              );
-              if (product) {
-                return {
-                  ...product,
-                  amount: cartItem.amount,
-                  selectedColor: cartItem.selectedColor,
-                  selectedSize: cartItem.selectedSize,
-                };
-              }
-            }),
-          );
-        setLoading(false);
-      });
 
   useEffect(() => {
     fetch(`/api/orders/${orderId}`, {
@@ -59,13 +25,11 @@ const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
       .then((data) => {
         if (!data) return setLoading(false);
         if (!data.order) return setLoading(false);
+        setLoading(false);
         setOrder(data.order);
-        fetchProducts({
-          ids: data.order.products.map((item: CartItem) => item.productId),
-          cart: data.order.products,
-        });
+        setCartProducts(getCartProducts(data.order.products, products));
       });
-  }, [orderId]);
+  }, [orderId, products]);
 
   useEffect(() => {
     if (order) {
@@ -83,8 +47,8 @@ const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
     );
   }
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText("EG-0416");
+  const copyToClipboard = (id: string) => {
+    navigator.clipboard.writeText(id);
     setCopied(true);
   };
   return (
@@ -95,7 +59,7 @@ const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
         <br /> Your order has been received
       </h1>
       <button
-        onClick={copyToClipboard}
+        onClick={() => copyToClipboard(order.id)}
         type="button"
         className="group flex w-full justify-center text-center text-xl font-medium text-gray-600 duration-200 hover:text-black dark:text-gray-300 dark:hover:text-white"
       >

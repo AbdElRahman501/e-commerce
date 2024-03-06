@@ -1,24 +1,9 @@
 "use client";
-import { Product } from "@/types";
-import { ProductCard, SectionTitle } from ".";
-import { useEffect, useState } from "react";
+import { ProductCard, SectionTitle, StoreContext } from ".";
+import { useContext } from "react";
 
 const ProductsRow = ({ title, url }: { url: string; title: string }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    fetch(`http://localhost:3000/api/products`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data) return;
-        if (data.products) return setProducts(data.products);
-      });
-  }, []);
+  const { products } = useContext(StoreContext);
 
   return (
     <section className="p-5 lg:px-20">

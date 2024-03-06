@@ -1,8 +1,9 @@
 "use client";
 import { filterData, filterInitialData } from "@/constants";
-import React, { useEffect } from "react";
-import { Sorting } from ".";
-import { FilterType } from "@/types";
+import React, { useContext, useEffect } from "react";
+import { Sorting, StoreContext } from ".";
+import { CategoryCount, FilterType } from "@/types";
+import { generateCategoryCounts } from "@/utils";
 
 const Gender = ({
   setFilter,
@@ -86,31 +87,16 @@ const Categories = ({
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }) => {
-  const [categories, setCategories] = React.useState<
-    { name: string; count: number }[]
-  >([]);
-  const [loading, setLoading] = React.useState(true);
+  const { products } = useContext(StoreContext);
+  const [categories, setCategories] = React.useState<CategoryCount[]>([]);
 
   useEffect(() => {
-    fetch(`/api/products/categories`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data) return;
-        if (data.categoriesWithProductCount)
-          setCategories(data.categoriesWithProductCount);
-        setLoading(false);
-      });
-  }, []);
+    setCategories(generateCategoryCounts(products));
+  }, [products]);
   return (
     <div className="flex flex-col gap-3">
       <h1>Categories</h1>
       <div className="flex flex-wrap gap-1">
-        {loading && <span>Loading...</span>}
         {categories.map((item, index) => {
           const selected = filter.selectedCategories.includes(item.name);
           return (

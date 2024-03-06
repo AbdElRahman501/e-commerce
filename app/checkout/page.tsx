@@ -3,49 +3,19 @@ import { BagCard, CustomInput, StoreContext } from "@/components";
 import { formInputs, initialPersonalInfo } from "@/constants";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CartItem, CartProduct, PersonalInfo } from "@/types";
+import { CartProduct, PersonalInfo } from "@/types";
 import Link from "next/link";
+import { getCartProducts } from "@/utils";
 
 const CheckOutPage = () => {
-  const { cart } = useContext(StoreContext);
+  const { cart, products } = useContext(StoreContext);
   const [data, setData] = useState<PersonalInfo>(initialPersonalInfo);
-
   const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
-    if (cart.length > 0) {
-      fetch("/api/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ids: cart.map((item) => item.productId) }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (!data) return;
-          if (data.products)
-            setCartProducts(
-              cart.map((cartItem: CartItem) => {
-                const product = data.products.find(
-                  (product: CartProduct) => product.id === cartItem.productId,
-                );
-                if (product) {
-                  return {
-                    ...product,
-                    amount: cartItem.amount,
-                    selectedColor: cartItem.selectedColor,
-                    selectedSize: cartItem.selectedSize,
-                  };
-                }
-              }),
-            );
-
-          setLoading(false);
-        });
-    }
-  }, [cart]);
+    setCartProducts(getCartProducts(cart, products));
+  }, [cart, products]);
 
   const router = useRouter();
   const subTotal = cartProducts.reduce(
@@ -67,7 +37,7 @@ const CheckOutPage = () => {
       discount: discount,
       total: total,
     };
-
+    setLoading(true);
     fetch("/api/orders", {
       method: "POST",
       headers: {
@@ -77,8 +47,9 @@ const CheckOutPage = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (!data) return;
-        if (data.orderId) router.push(`/confirmation/${data.orderId}`);
+        if (!data?.orderId) return;
+        setLoading(false);
+        router.push(`/confirmation/${data.orderId}`);
       });
   };
 
@@ -103,7 +74,6 @@ const CheckOutPage = () => {
   return (
     <div className="p-5 lg:px-20">
       <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
-      {loading && <div>Loading...</div>}
       <form
         action=""
         onSubmit={handleSubmit}
@@ -177,7 +147,7 @@ const CheckOutPage = () => {
             className="group mt-2 h-12 w-full rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
           >
             <p className="duration-500 group-hover:scale-110">
-              Place Order {total.toFixed(0)} EGP
+              {loading ? "Loading..." : `Place Order ${total.toFixed(0)} EGP`}
             </p>
           </button>
         </div>

@@ -6,43 +6,26 @@ import {
   ProductCard,
   SearchField,
   Sorting,
+  StoreContext,
 } from "@/components";
 import { filterInitialData } from "@/constants";
 import { Product, FilterType } from "@/types";
-import React, { useEffect, useState } from "react";
+import { filterAndSortProducts } from "@/utils";
+import React, { useContext, useEffect, useState } from "react";
 
 const ShopPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { products } = useContext(StoreContext);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [query, setQuery] = useState<string>("");
   const [sorting, setSorting] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>(filterInitialData);
 
   useEffect(() => {
-    const ascendingPrice =
-      sorting === "Price: Low to High"
-        ? 1
-        : sorting === "Price: High to Low"
-          ? -1
-          : 0;
-
-    fetch(
-      `/api/products?query=${query}&priceSorting=${ascendingPrice}&selectedCategories=${filter.selectedCategories}&genderFilter=${filter.genderFilter}&minPrice=${filter.minPrice}&maxPrice=${filter.maxPrice}&keywordFilter=${filter.keywordFilter}&sizeFilter=${filter.sizeFilter}&colorFilter=${filter.colorFilter.map((item) => item.slice(1))}&originFilter=${filter.originFilter}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data) return;
-        if (data.products) setProducts(data.products);
-        setLoading(false);
-      });
-  }, [query, sorting, filter]);
+    setFilteredProducts(
+      filterAndSortProducts(products, filter, sorting, query),
+    );
+  }, [query, sorting, filter, products]);
 
   useEffect(() => {
     if (isOpen) {
@@ -83,9 +66,8 @@ const ShopPage = () => {
           sorting={sorting}
         />
         <div className="rounded-4xl flex min-h-[60vh] flex-1 flex-col gap-4  ">
-          {loading && <p>Loading...</p>}
           <div className=" grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
-            {products.map((product, index) => (
+            {filteredProducts.map((product, index) => (
               <ProductCard key={index} {...product} />
             ))}
           </div>

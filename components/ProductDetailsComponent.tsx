@@ -15,28 +15,19 @@ const ProductDetailsComponent = ({
   color?: string;
   productId: string;
 }) => {
+  const { cart, setCart, favorite, setFavorite, products } =
+    React.useContext(StoreContext);
   const [selectedColor, setSelectedColor] = React.useState<string>(color || "");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
   const [amount, setAmount] = React.useState<number>(1);
-  const [product, setProduct] = React.useState<Product>();
-  const [loading, setLoading] = React.useState(true);
+  const [product, setProduct] = React.useState<Product | null>(
+    products.find((item) => item.id === productId) || null,
+  );
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    fetch(`/api/products/${productId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("🚀 ~ .then ~ data:", data);
-        if (!data) return setLoading(false);
-        if (!data.product) return setLoading(false);
-        setProduct(data.product);
-      });
-  }, []);
+    setProduct(products.find((item) => item.id === productId) || null);
+  }, [products]);
 
   useEffect(() => {
     setAudio(new Audio("/sounds/short-success.mp3"));
@@ -46,8 +37,6 @@ const ProductDetailsComponent = ({
 
   const images = product ? getImages(product.images) : [];
 
-  const { cart, setCart, favorite, setFavorite } =
-    React.useContext(StoreContext);
   const isFav = favorite.includes(productId);
   const isInCart = cart.some(
     (item) =>
@@ -86,11 +75,9 @@ const ProductDetailsComponent = ({
   if (!product)
     return (
       <div>
-        {loading && (
-          <div className="flex min-h-screen items-center justify-center ">
-            <p>Loading...</p>
-          </div>
-        )}
+        <div className="flex min-h-screen items-center justify-center ">
+          <p>Loading...</p>
+        </div>
       </div>
     );
   return (
