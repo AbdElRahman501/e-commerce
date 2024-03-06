@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 import { Product } from "@/lib";
 import { Product as ProductType } from "@/types";
 
-export async function fetchProducts(properties?: any): Promise<ProductType[]> {
+export async function fetchFilteredProducts(
+  properties?: any,
+): Promise<ProductType[]> {
   const {
     query,
     priceSorting,
@@ -77,6 +79,17 @@ export async function fetchProducts(properties?: any): Promise<ProductType[]> {
     const data = priceSorting
       ? await Product.find(finalQuery).sort({ price: priceSorting })
       : await Product.find(finalQuery);
+    const products: ProductType[] = JSON.parse(JSON.stringify(data));
+    return products;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+export async function fetchProducts(): Promise<ProductType[]> {
+  try {
+    await connectToDatabase();
+    const data = await Product.find({});
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     return products;
   } catch (error) {
