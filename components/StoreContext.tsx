@@ -56,7 +56,6 @@ export function StoreContextProvider({
       .then((data) => {
         if (!data) return;
         if (!data.products) return;
-        console.log("data.products");
         setProducts(data.products);
       });
   }, [products]);

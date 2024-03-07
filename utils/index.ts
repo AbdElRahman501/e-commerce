@@ -161,3 +161,7 @@ export function filterAndSortProducts(
   const filteredProducts = filterProducts(products, filters, query);
   return sortProducts(filteredProducts, sortOption);
 }
+
+import formatOrderItems from "./formatOrderItems";
+
+export { formatOrderItems };

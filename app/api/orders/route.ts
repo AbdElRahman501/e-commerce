@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { order } = await req.json();
-    const createdOrder = await createOrder(order);
+    const { order, products } = await req.json();
+    const createdOrder = await createOrder(order, products);
     if (createdOrder) {
       return NextResponse.json({ orderId: createdOrder.id });
     } else {

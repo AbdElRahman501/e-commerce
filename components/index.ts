@@ -25,8 +25,12 @@ import CartComponent from "./CartComponent";
 import CartPricing from "./CartPricing";
 import CustomInput from "./CustomInput";
 import Sorting from "./Sorting";
+import TotalCard from "./TotalCard";
+import CustomTable from "./CustomTable";
 
 export {
+  CustomTable,
+  TotalCard,
   Sorting,
   CustomInput,
   CartPricing,

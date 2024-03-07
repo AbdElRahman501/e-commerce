@@ -43,7 +43,7 @@ const CheckOutPage = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ order }),
+      body: JSON.stringify({ order, products: cartProducts }),
     })
       .then((res) => res.json())
       .then((data) => {

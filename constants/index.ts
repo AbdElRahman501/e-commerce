@@ -1,4 +1,10 @@
-import { FilterData, FilterType, Order, PersonalInfo } from "@/types";
+import {
+  DashboardCardProps,
+  FilterData,
+  FilterType,
+  Order,
+  PersonalInfo,
+} from "@/types";
 import products from "./products";
 import formInputs from "./inputs";
 const footerList = [
@@ -174,8 +180,56 @@ const filterInitialData: FilterType = {
   maxPrice: 100000,
   genderFilter: "all",
 };
-
+const dashboardCards: DashboardCardProps[] = [
+  {
+    image: "/icons/order.svg",
+    title: "Orders",
+    number: "10",
+    description: "+2",
+  },
+  {
+    image: "/icons/revenue.svg",
+    title: "Revenue",
+    number: "$1,200.59",
+    description: "+$150",
+  },
+  {
+    image: "/icons/sales.svg",
+    title: "Sales",
+    number: "$5,000",
+    description: "+$2,000",
+  },
+  {
+    image: "/icons/customers.svg",
+    title: "Customers",
+    number: "20",
+  },
+  {
+    image: "/icons/subscribers.svg",
+    title: "Subscribers",
+    number: "100",
+    description: "+2",
+  },
+  {
+    image: "/icons/visits.svg",
+    title: "Visits",
+    number: "100",
+    description: "+20",
+  },
+  {
+    image: "/icons/review.svg",
+    title: "Reviews",
+    number: "3.8",
+    description: "-0.1",
+  },
+  {
+    image: "/icons/products.svg",
+    title: "Products",
+    number: "100",
+  },
+];
 export {
+  dashboardCards,
   filterInitialData,
   initialOrder,
   products,

@@ -127,3 +127,9 @@ export interface CategoryCount {
   name: string;
   count: number;
 }
+export interface DashboardCardProps {
+  image: string;
+  title: string;
+  number: string;
+  description?: string;
+}
