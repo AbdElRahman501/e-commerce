@@ -55,6 +55,31 @@ export function generateCategoryCounts(products: Product[]): CategoryCount[] {
   );
 }
 
+export function getAllUniqueProperties<T extends keyof Product>(
+  products: Product[],
+  property: T,
+): string[] {
+  // Use a Set to automatically eliminate duplicates
+  const uniquePropertiesSet = new Set<string>();
+
+  // Iterate through each product and its properties
+  products.forEach((product) => {
+    const propertyValue = product[property];
+
+    // Check if the property value is an array before calling forEach
+    if (Array.isArray(propertyValue)) {
+      propertyValue.forEach((value) => {
+        uniquePropertiesSet.add(value);
+      });
+    }
+  });
+
+  // Convert the Set back to an array
+  const uniquePropertiesArray = Array.from(uniquePropertiesSet);
+
+  return uniquePropertiesArray;
+}
+
 export function filterProducts(
   products: Product[],
   filters: FilterType,

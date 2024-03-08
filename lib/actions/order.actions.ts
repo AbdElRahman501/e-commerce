@@ -68,7 +68,7 @@ export const sendEmail = async (
     const mailOptions = {
       from: process.env.PAGE_EMAIL,
       to: order.personalInfo.email,
-      subject: "Welcome to GIVACO Family! 🌟",
+      subject: "Order Confirmation! 🌟",
       html: replacedHtml,
     };
 

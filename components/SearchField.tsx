@@ -1,4 +1,6 @@
+"use client";
 import Image from "next/image";
+import { useRef } from "react";
 
 const SearchField = ({
   query,
@@ -9,8 +11,16 @@ const SearchField = ({
   query: string;
   changeHandler: (query: string) => void;
 }) => {
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const scrollToDiv = () => {
+    const offset = 64 + 12;
+    const position = divRef.current?.getBoundingClientRect();
+    const top = position?.top || 0;
+    return top + window.scrollY - offset;
+  };
   return (
-    <div className="relative w-full max-w-xl flex-grow-0">
+    <div ref={divRef} className="relative w-full max-w-xl flex-grow-0">
       <input
         type="text"
         name="search"
@@ -20,10 +30,10 @@ const SearchField = ({
         onFocus={() => {
           setIsOpen(false);
           if (window.innerWidth < 640) {
-            window.scroll(0, 220);
+            window.scroll(0, scrollToDiv());
           } else {
             setTimeout(() => {
-              window.scrollTo({ top: 220, behavior: "smooth" });
+              window.scrollTo({ top: scrollToDiv(), behavior: "smooth" });
             }, 300);
           }
         }}

@@ -132,4 +132,5 @@ export interface DashboardCardProps {
   title: string;
   number: string;
   description?: string;
+  url: string;
 }

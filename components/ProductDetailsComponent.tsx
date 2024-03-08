@@ -15,7 +15,7 @@ const ProductDetailsComponent = ({
   color?: string;
   productId: string;
 }) => {
-  const { cart, setCart, favorite, setFavorite, products } =
+  const { cart, setCart, favorite, setFavorite, products, setProducts } =
     React.useContext(StoreContext);
   const [selectedColor, setSelectedColor] = React.useState<string>(color || "");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
@@ -24,6 +24,7 @@ const ProductDetailsComponent = ({
     products.find((item) => item.id === productId) || null,
   );
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     setProduct(products.find((item) => item.id === productId) || null);
@@ -33,7 +34,25 @@ const ProductDetailsComponent = ({
     setAudio(new Audio("/sounds/short-success.mp3"));
   }, []);
 
-  const router = useRouter();
+  useEffect(() => {
+    fetch(`/api/products/${productId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data?.product) return;
+        setProduct(data.product);
+        setProducts((prev) => {
+          return [
+            ...prev.filter((item) => item.id !== productId),
+            data.product,
+          ];
+        });
+      });
+  }, []);
 
   const images = product ? getImages(product.images) : [];
 

@@ -48,6 +48,7 @@ const BagCard = ({
           src={images[selectedColor]}
           alt="jacket"
           fill
+          objectFit="cover"
           sizes="100%"
           className="duration-300 hover:scale-110"
         />

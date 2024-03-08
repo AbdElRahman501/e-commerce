@@ -48,8 +48,8 @@ const CheckOutPage = () => {
       .then((res) => res.json())
       .then((data) => {
         if (!data?.orderId) return;
-        setLoading(false);
         router.push(`/confirmation/${data.orderId}`);
+        setLoading(false);
       });
   };
 
@@ -89,8 +89,13 @@ const CheckOutPage = () => {
               required={true}
               minLength={2}
               maxLength={30}
-              data={data}
-              setData={setData}
+              value={data.firstName}
+              onChange={(e) =>
+                setData((prev: any) => ({
+                  ...prev,
+                  firstName: e.target.value,
+                }))
+              }
             />
             <CustomInput
               label="Last Name"
@@ -100,12 +105,27 @@ const CheckOutPage = () => {
               required={true}
               minLength={2}
               maxLength={30}
-              data={data}
-              setData={setData}
+              value={data.lastName}
+              onChange={(e) =>
+                setData((prev: any) => ({
+                  ...prev,
+                  lastName: e.target.value,
+                }))
+              }
             />
           </div>
           {formInputs.map((input, index) => (
-            <CustomInput key={index} {...input} data={data} setData={setData} />
+            <CustomInput
+              key={index}
+              {...input}
+              value={data[input.name as keyof PersonalInfo]}
+              onChange={(e) =>
+                setData((prev: any) => ({
+                  ...prev,
+                  [input.name]: e.target.value,
+                }))
+              }
+            />
           ))}
         </div>
         <div className="flex w-full flex-col gap-5 ">

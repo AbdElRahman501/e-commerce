@@ -3,7 +3,7 @@ import { filterData, filterInitialData } from "@/constants";
 import React, { useContext, useEffect } from "react";
 import { Sorting, StoreContext } from ".";
 import { CategoryCount, FilterType } from "@/types";
-import { generateCategoryCounts } from "@/utils";
+import { generateCategoryCounts, getAllUniqueProperties } from "@/utils";
 
 const Gender = ({
   setFilter,
@@ -130,11 +130,18 @@ const Size = ({
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }) => {
+  const { products } = useContext(StoreContext);
+  const [sizes, setSizes] = React.useState<string[]>([]);
+
+  useEffect(() => {
+    setSizes(getAllUniqueProperties(products, "sizes"));
+  }, [products]);
+
   return (
     <div className="flex flex-col gap-3">
       <h1>Sizes</h1>
       <div className="flex flex-wrap gap-1">
-        {filterData.sizes.map((item, index) => {
+        {sizes.map((item, index) => {
           const selected = filter.sizeFilter.includes(item);
           return (
             <button
@@ -165,11 +172,17 @@ const Colors = ({
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }) => {
+  const { products } = useContext(StoreContext);
+  const [colors, setColors] = React.useState<string[]>([]);
+
+  useEffect(() => {
+    setColors(getAllUniqueProperties(products, "colors"));
+  }, [products]);
   return (
     <div className="flex flex-col gap-3">
       <h1>Colors</h1>
       <div className="flex flex-wrap gap-3">
-        {filterData.colors.map((item, index) => {
+        {colors.map((item, index) => {
           const selected = filter.colorFilter.includes(item);
           return (
             <button

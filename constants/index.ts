@@ -6,7 +6,7 @@ import {
   PersonalInfo,
 } from "@/types";
 import products from "./products";
-import formInputs from "./inputs";
+import { formInputs, productInputs } from "./inputs";
 const footerList = [
   {
     title: "About Us",
@@ -186,46 +186,54 @@ const dashboardCards: DashboardCardProps[] = [
     title: "Orders",
     number: "10",
     description: "+2",
+    url: "/orders",
   },
   {
     image: "/icons/revenue.svg",
     title: "Revenue",
     number: "$1,200.59",
+    url: "#",
     description: "+$150",
   },
   {
     image: "/icons/sales.svg",
     title: "Sales",
     number: "$5,000",
+    url: "#",
     description: "+$2,000",
   },
   {
     image: "/icons/customers.svg",
     title: "Customers",
     number: "20",
+    url: "#",
   },
   {
     image: "/icons/subscribers.svg",
     title: "Subscribers",
     number: "100",
+    url: "#",
     description: "+2",
   },
   {
     image: "/icons/visits.svg",
     title: "Visits",
     number: "100",
+    url: "#",
     description: "+20",
   },
   {
     image: "/icons/review.svg",
     title: "Reviews",
     number: "3.8",
+    url: "#",
     description: "-0.1",
   },
   {
     image: "/icons/products.svg",
     title: "Products",
     number: "100",
+    url: "/products",
   },
 ];
 export {
@@ -239,4 +247,5 @@ export {
   initialPersonalInfo,
   formInputs,
   footerList,
+  productInputs,
 };

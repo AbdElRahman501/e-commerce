@@ -32,6 +32,7 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
             src={images[selectedColor || colors[0]]}
             alt="jacket"
             fill
+            objectFit="cover"
             sizes="100%"
             className="duration-300 hover:scale-110"
           />

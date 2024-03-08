@@ -1,5 +1,6 @@
 import { DashboardCardProps } from "@/types";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const TotalCard = ({
@@ -7,9 +8,13 @@ const TotalCard = ({
   title,
   number,
   description,
+  url,
 }: DashboardCardProps) => {
   return (
-    <div className="flex h-28 items-center  gap-3 rounded-3xl border border-blue-300 bg-white p-5 shadow-md ">
+    <Link
+      href={"/dashboard" + url}
+      className="flex h-28 items-center  gap-3 rounded-3xl border border-blue-300 bg-white p-5 shadow-md dark:border-gray-700 dark:bg-primary_color "
+    >
       <Image
         src={image}
         width={45}
@@ -26,7 +31,7 @@ const TotalCard = ({
           </span>
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 
