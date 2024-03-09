@@ -3,82 +3,9 @@ import {
   CartProduct,
   CategoryCount,
   FilterType,
+  Order,
   Product,
 } from "@/types";
-
-export const getCartProducts = (cart: CartItem[], products: Product[]) => {
-  if (cart.length === 0 || products.length === 0) return [];
-  const examples: CartProduct[] = [];
-  cart.forEach((item) => {
-    const product = products.find((product) => product.id === item.productId);
-    if (product) {
-      const example: CartProduct = {
-        ...product,
-        amount: item.amount,
-        selectedColor: item.selectedColor,
-        selectedSize: item.selectedSize,
-      };
-      examples.push(example);
-    }
-  });
-  return examples;
-};
-
-export function generateCategoryCounts(products: Product[]): CategoryCount[] {
-  if (!products.length) return [];
-  const categoryCounts: { [key: string]: number } = {};
-
-  // Count categories in the products array
-  products.forEach((product) => {
-    const productCategories = product.categories.split(", ");
-
-    productCategories.forEach((category) => {
-      if (categoryCounts[category]) {
-        categoryCounts[category]++;
-      } else {
-        categoryCounts[category] = 1;
-      }
-    });
-  });
-
-  // Convert category counts object to array of objects
-  const resultCategories: CategoryCount[] = Object.keys(categoryCounts).map(
-    (category) => {
-      return { name: category, count: categoryCounts[category] };
-    },
-  );
-
-  return resultCategories.filter(
-    (category) =>
-      category.name.toLocaleLowerCase() !== "men" &&
-      category.name.toLocaleLowerCase() !== "women",
-  );
-}
-
-export function getAllUniqueProperties<T extends keyof Product>(
-  products: Product[],
-  property: T,
-): string[] {
-  // Use a Set to automatically eliminate duplicates
-  const uniquePropertiesSet = new Set<string>();
-
-  // Iterate through each product and its properties
-  products.forEach((product) => {
-    const propertyValue = product[property];
-
-    // Check if the property value is an array before calling forEach
-    if (Array.isArray(propertyValue)) {
-      propertyValue.forEach((value) => {
-        uniquePropertiesSet.add(value);
-      });
-    }
-  });
-
-  // Convert the Set back to an array
-  const uniquePropertiesArray = Array.from(uniquePropertiesSet);
-
-  return uniquePropertiesArray;
-}
 
 export function filterProducts(
   products: Product[],
@@ -189,4 +116,196 @@ export function filterAndSortProducts(
 
 import formatOrderItems from "./formatOrderItems";
 
+export const getAllCategories = (
+  setCategories: React.Dispatch<React.SetStateAction<CategoryCount[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  fetch(`/api/products/categories`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data) return;
+      if (data.categoriesWithProductCount)
+        setCategories(data.categoriesWithProductCount);
+      setLoading(false);
+    });
+};
+export const getProducts = (
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  fetch(`/api/products`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data) return;
+      if (!data.products) return;
+      setProducts(data.products);
+      setLoading(false);
+    });
+};
+export const getFilteredProducts = ({
+  sorting = "",
+  filter = {} as FilterType,
+  query = "",
+  setProducts,
+  setLoading,
+}: {
+  sorting?: string;
+  filter?: FilterType;
+  query?: string;
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const ascendingPrice =
+    sorting === "Price: Low to High"
+      ? 1
+      : sorting === "Price: High to Low"
+        ? -1
+        : 0;
+
+  fetch(
+    `/api/products/filter?query=${query}&priceSorting=${ascendingPrice}&selectedCategories=${filter.selectedCategories}&genderFilter=${filter.genderFilter}&minPrice=${filter.minPrice}&maxPrice=${filter.maxPrice}&keywordFilter=${filter.keywordFilter}&sizeFilter=${filter.sizeFilter}&colorFilter=${filter.colorFilter.map((item) => item.slice(1))}&originFilter=${filter.originFilter}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data) return setLoading(false);
+      if (data.products) setProducts(data.products);
+      setLoading(false);
+    });
+};
+
+export const getProduct = (
+  setProduct: React.Dispatch<React.SetStateAction<Product>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  productId: string,
+) => {
+  fetch(`/api/products/${productId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data?.product) return setLoading(false);
+      setProduct(data.product);
+      setLoading(false);
+    });
+};
+
+export const getCartProducts = (
+  cart: CartItem[],
+  setCartProducts: React.Dispatch<React.SetStateAction<CartProduct[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  if (!cart?.length) return setLoading(false);
+  try {
+    fetch("/api/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids: cart.map((item) => item.productId) }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data) return setLoading(false);
+        if (data.products)
+          setCartProducts(
+            cart.map((cartItem: CartItem) => {
+              const product = data.products.find(
+                (product: CartProduct) => product.id === cartItem.productId,
+              );
+              if (product) {
+                return {
+                  ...product,
+                  amount: cartItem.amount,
+                  selectedColor: cartItem.selectedColor,
+                  selectedSize: cartItem.selectedSize,
+                };
+              }
+            }),
+          );
+        setLoading(false);
+      });
+  } catch (error) {
+    setLoading(false);
+    console.log(error);
+  }
+};
+export const getProductsByIds = (
+  ids: string[],
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  if (!ids?.length) return setLoading(false);
+  fetch("/api/products", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ids }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data) return setLoading(false);
+      if (data.products) setProducts(data.products);
+      setLoading(false);
+    });
+};
+
+export const createOrder = (
+  order: Order,
+  cartProducts: CartProduct[],
+  afterOrder: (orderId: string) => void,
+) => {
+  fetch("/api/orders", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ order, products: cartProducts }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data?.orderId) return;
+      afterOrder(data.orderId);
+    });
+};
+
+export const getOrder = (
+  orderId: string,
+  setOrder: React.Dispatch<React.SetStateAction<Order>>,
+  setCartProducts: React.Dispatch<React.SetStateAction<CartProduct[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  fetch(`/api/orders/${orderId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data) return setLoading(false);
+      if (!data.order) return setLoading(false);
+      setOrder(data.order);
+      getCartProducts(data.order.products, setCartProducts, setLoading);
+    });
+};
 export { formatOrderItems };

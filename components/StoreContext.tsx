@@ -1,6 +1,5 @@
 "use client";
-import { initialOrder } from "@/constants";
-import { StoreContextType, Order, CartItem, Product } from "@/types";
+import { StoreContextType, CartItem } from "@/types";
 import { createContext, useEffect, useState } from "react";
 
 const storeContextState = {
@@ -8,8 +7,6 @@ const storeContextState = {
   setCart: () => {},
   favorite: [],
   setFavorite: () => {},
-  products: [],
-  setProducts: () => {},
 };
 
 export const StoreContext = createContext<StoreContextType>(storeContextState);
@@ -21,7 +18,6 @@ export function StoreContextProvider({
 }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorite, setFavorite] = useState<string[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
   const newVersion = "1.0.0.3";
 
   const [mounted, setMounted] = useState(false);
@@ -45,22 +41,6 @@ export function StoreContextProvider({
   }, []);
 
   useEffect(() => {
-    if (products.length > 0) return;
-    fetch(`/api/products`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data) return;
-        if (!data.products) return;
-        setProducts(data.products);
-      });
-  }, [products]);
-
-  useEffect(() => {
     setMounted(true);
   }, []);
 
@@ -77,9 +57,7 @@ export function StoreContextProvider({
   }, [favorite]);
 
   return (
-    <StoreContext.Provider
-      value={{ cart, setCart, favorite, setFavorite, products, setProducts }}
-    >
+    <StoreContext.Provider value={{ cart, setCart, favorite, setFavorite }}>
       {children}
     </StoreContext.Provider>
   );

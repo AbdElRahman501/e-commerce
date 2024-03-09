@@ -1,23 +1,23 @@
 "use client";
 import {
   CustomTable,
-  FilterButton,
+  LoadingLogo,
   SearchField,
   Sorting,
-  StoreContext,
   TotalCard,
 } from "@/components";
 import ProductsAction from "@/components/ProductsAction";
 import { dashboardCards, filterInitialData } from "@/constants";
 import { Product } from "@/types";
-import { filterAndSortProducts } from "@/utils";
-import React, { useContext, useEffect, useState } from "react";
+import { filterAndSortProducts, getProducts } from "@/utils";
+import React, { useEffect, useState } from "react";
 
 const DashBoardPage = () => {
-  const { products } = useContext(StoreContext);
+  const [products, setProducts] = React.useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [query, setQuery] = useState<string>("");
   const [sorting, setSorting] = useState("");
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
     setFilteredProducts(
@@ -25,7 +25,13 @@ const DashBoardPage = () => {
     );
   }, [query, sorting, products]);
 
-  return (
+  useEffect(() => {
+    getProducts(setProducts, setLoading);
+  }, []);
+
+  return loading ? (
+    <LoadingLogo />
+  ) : (
     <div className=" flex flex-col gap-2 p-5 lg:p-20">
       <div className=" grid grid-cols-2 gap-2">
         {dashboardCards.map((card, index) => (

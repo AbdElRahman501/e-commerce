@@ -27,8 +27,12 @@ import CustomInput from "./CustomInput";
 import Sorting from "./Sorting";
 import TotalCard from "./TotalCard";
 import CustomTable from "./CustomTable";
+import { ProductSkeleton, CartSkeleton, LoadingLogo } from "./LoadingSkeleton";
 
 export {
+  LoadingLogo,
+  ProductSkeleton,
+  CartSkeleton,
   CustomTable,
   TotalCard,
   Sorting,

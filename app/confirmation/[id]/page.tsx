@@ -1,35 +1,24 @@
 "use client";
-import { BagCard, StoreContext } from "@/components";
+import { BagCard, LoadingLogo, StoreContext } from "@/components";
 import { CartProduct, Order } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useContext, useEffect } from "react";
-import { getCartProducts } from "@/utils";
+import { getOrder } from "@/utils";
 
 const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
   const orderId = params.id;
-  const { setCart, products } = useContext(StoreContext);
-  const [order, setOrder] = React.useState<Order>();
+  const { setCart } = useContext(StoreContext);
+  const [order, setOrder] = React.useState<Order>({} as Order);
   const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [copied, setCopied] = React.useState(false);
 
   useEffect(() => {
-    fetch(`/api/orders/${orderId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data) return setLoading(false);
-        if (!data.order) return setLoading(false);
-        setLoading(false);
-        setOrder(data.order);
-        setCartProducts(getCartProducts(data.order.products, products));
-      });
-  }, [orderId, products]);
+    if (orderId && !order.id) {
+      getOrder(orderId, setOrder, setCartProducts, setLoading);
+    }
+  }, [orderId]);
 
   useEffect(() => {
     if (order) {
@@ -37,21 +26,13 @@ const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
     }
   }, [order]);
 
-  if (!order || loading) {
-    return (
-      <div className="flex min-h-[88vh] items-center justify-center">
-        <h1 className="text-3xl font-bold text-gray-500">
-          {loading ? "Loading..." : "No Order found"}
-        </h1>
-      </div>
-    );
-  }
-
   const copyToClipboard = (id: string) => {
     navigator.clipboard.writeText(id);
     setCopied(true);
   };
-  return (
+  return loading ? (
+    <LoadingLogo />
+  ) : (
     <div className="flex w-full flex-col items-center gap-5 p-5 lg:px-20">
       <h1 className="max-w-md pb-5 text-center text-xl font-medium text-primary_color dark:text-white md:text-3xl">
         Thank You{" "}

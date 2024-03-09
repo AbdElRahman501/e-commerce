@@ -1,18 +1,24 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
-import { CustomInput, StoreContext } from "@/components";
+import React, { useEffect } from "react";
+import { CustomInput } from "@/components";
 import { productInputs } from "@/constants";
 import { Product } from "@/types";
 import { useRouter } from "next/navigation";
+import { getProduct } from "@/utils";
 
 const EditProduct = ({ params }: { params: { id: string } }) => {
-  const { products } = useContext(StoreContext);
-  const id = params.id;
-  const product = products.find((product) => product.id === id);
+  const [product, setProduct] = React.useState<Product>({} as Product);
+  const [loading, setLoading] = React.useState(true);
+  const productId = params.id;
   const [data, setData] = React.useState({} as Product);
-  const [loading, setLoading] = React.useState(false);
   const [keys, setKeys] = React.useState<string[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!product?.id) {
+      getProduct(setProduct, setLoading, productId);
+    }
+  }, [product]);
 
   useEffect(() => {
     if (product && data.id !== product?.id) {
@@ -25,7 +31,7 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
     e.preventDefault();
     setLoading(true);
 
-    fetch(`/api/products/${id}`, {
+    fetch(`/api/products/${productId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

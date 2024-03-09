@@ -1,12 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { faqSection } from "@/constants";
-import { AmountButton, StoreContext } from "@/components";
+import { AmountButton, StoreContext, LoadingLogo } from "@/components";
 import { Product } from "@/types";
 import Image from "next/image";
 import ProductImages from "./ProductImages";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getProduct } from "@/utils";
 
 const ProductDetailsComponent = ({
   color,
@@ -15,43 +16,24 @@ const ProductDetailsComponent = ({
   color?: string;
   productId: string;
 }) => {
-  const { cart, setCart, favorite, setFavorite, products, setProducts } =
+  const { cart, setCart, favorite, setFavorite } =
     React.useContext(StoreContext);
   const [selectedColor, setSelectedColor] = React.useState<string>(color || "");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
   const [amount, setAmount] = React.useState<number>(1);
-  const [product, setProduct] = React.useState<Product | null>(
-    products.find((item) => item.id === productId) || null,
-  );
+  const [product, setProduct] = React.useState<Product>({} as Product);
+  const [loading, setLoading] = React.useState<boolean>(true);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    setProduct(products.find((item) => item.id === productId) || null);
-  }, [products]);
+    if (!product?.id) {
+      getProduct(setProduct, setLoading, productId);
+    }
+  }, [product]);
 
   useEffect(() => {
     setAudio(new Audio("/sounds/short-success.mp3"));
-  }, []);
-
-  useEffect(() => {
-    fetch(`/api/products/${productId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data?.product) return;
-        setProduct(data.product);
-        setProducts((prev) => {
-          return [
-            ...prev.filter((item) => item.id !== productId),
-            data.product,
-          ];
-        });
-      });
   }, []);
 
   const images = product ? getImages(product.images) : [];
@@ -91,15 +73,9 @@ const ProductDetailsComponent = ({
     });
   }
 
-  if (!product)
-    return (
-      <div>
-        <div className="flex min-h-screen items-center justify-center ">
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
-  return (
+  return loading ? (
+    <LoadingLogo />
+  ) : (
     <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={images}

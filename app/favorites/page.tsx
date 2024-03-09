@@ -1,12 +1,20 @@
 "use client";
-import { ProductCard, StoreContext } from "@/components";
+import { LoadingLogo, ProductCard, StoreContext } from "@/components";
+import { Product } from "@/types";
+import { getProductsByIds } from "@/utils";
 import Link from "next/link";
 import React, { useContext } from "react";
 
 const FavoritePage = () => {
-  const { favorite, products } = useContext(StoreContext);
+  const { favorite } = useContext(StoreContext);
+  const [loading, setLoading] = React.useState(true);
+  const [products, setProducts] = React.useState<Product[]>([]);
 
-  if (favorite.length === 0) {
+  React.useEffect(() => {
+    getProductsByIds(favorite, setProducts, setLoading);
+  }, [favorite]);
+
+  if (favorite.length === 0 && !loading) {
     return (
       <div className="min-h-[88vh] p-5 lg:px-20">
         <h1 className="pb-5 text-xl font-semibold md:text-3xl">
@@ -24,7 +32,9 @@ const FavoritePage = () => {
     );
   }
 
-  return (
+  return loading ? (
+    <LoadingLogo />
+  ) : (
     <div className="min-h-[88vh] p-5 lg:px-20">
       <h1 className="pb-5 text-xl font-semibold md:text-3xl">
         Favorite Products

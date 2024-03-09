@@ -148,28 +148,6 @@ const filterData: FilterData = {
   colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
 };
 
-const initialPersonalInfo: PersonalInfo = {
-  firstName: "",
-  lastName: "",
-  phoneNumber: "",
-  email: "",
-  streetAddress: "",
-  state: "",
-  comment: "",
-  promoCode: "",
-  paymentMethod: "",
-};
-
-const initialOrder: Order = {
-  id: "",
-  products: [],
-  personalInfo: initialPersonalInfo,
-  total: 0,
-  subTotal: 0,
-  shipping: 0,
-  discount: 0,
-};
-
 const filterInitialData: FilterType = {
   selectedCategories: [],
   originFilter: [],
@@ -239,12 +217,10 @@ const dashboardCards: DashboardCardProps[] = [
 export {
   dashboardCards,
   filterInitialData,
-  initialOrder,
   products,
   categories,
   faqSection,
   filterData,
-  initialPersonalInfo,
   formInputs,
   footerList,
   productInputs,

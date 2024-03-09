@@ -89,6 +89,7 @@ export async function fetchFilteredProducts(
 export async function fetchProducts(): Promise<ProductType[]> {
   try {
     await connectToDatabase();
+    // const data = await Product.find({}).select("title price colors images");
     const data = await Product.find({});
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     return products;

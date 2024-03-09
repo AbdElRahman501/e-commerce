@@ -1,21 +1,28 @@
 "use client";
-import { BagCard, CustomInput, StoreContext } from "@/components";
-import { formInputs, initialPersonalInfo } from "@/constants";
+import {
+  BagCard,
+  CartSkeleton,
+  CustomInput,
+  LoadingLogo,
+  StoreContext,
+} from "@/components";
+import { formInputs } from "@/constants";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CartProduct, PersonalInfo } from "@/types";
 import Link from "next/link";
-import { getCartProducts } from "@/utils";
+import { createOrder, getCartProducts } from "@/utils";
 
 const CheckOutPage = () => {
-  const { cart, products } = useContext(StoreContext);
-  const [data, setData] = useState<PersonalInfo>(initialPersonalInfo);
+  const { cart } = useContext(StoreContext);
+  const [data, setData] = useState<PersonalInfo>({} as PersonalInfo);
   const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const [cartLoading, setCartLoading] = React.useState(true);
 
   useEffect(() => {
-    setCartProducts(getCartProducts(cart, products));
-  }, [cart, products]);
+    getCartProducts(cart, setCartProducts, setCartLoading);
+  }, [cart]);
 
   const router = useRouter();
   const subTotal = cartProducts.reduce(
@@ -38,22 +45,12 @@ const CheckOutPage = () => {
       total: total,
     };
     setLoading(true);
-    fetch("/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ order, products: cartProducts }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data?.orderId) return;
-        router.push(`/confirmation/${data.orderId}`);
-        setLoading(false);
-      });
+    createOrder(order, cartProducts, (orderId) => {
+      router.push(`/confirmation/${orderId}`);
+    });
   };
 
-  if (cart.length === 0) {
+  if (cart.length === 0 && !cartLoading) {
     return (
       <div className="p-5 lg:px-20">
         <h1 className="pb-5 text-xl md:text-3xl">Check Out</h1>
@@ -71,7 +68,9 @@ const CheckOutPage = () => {
     );
   }
 
-  return (
+  return cartLoading ? (
+    <LoadingLogo />
+  ) : (
     <div className="p-5 lg:px-20">
       <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
       <form
@@ -130,10 +129,13 @@ const CheckOutPage = () => {
         </div>
         <div className="flex w-full flex-col gap-5 ">
           <h1 className="pb-5 text-xl font-semibold md:text-3xl">Your Order</h1>
-
-          {cartProducts.map((item, index) => (
-            <BagCard readonly {...item} key={index} />
-          ))}
+          {cartLoading ? (
+            <CartSkeleton array={cart} />
+          ) : (
+            cartProducts.map((item, index) => (
+              <BagCard readonly {...item} key={index} />
+            ))
+          )}
 
           <div className="flex flex-col gap-2 border-b border-gray-500 pb-2">
             <div className="flex justify-between">
@@ -164,7 +166,7 @@ const CheckOutPage = () => {
 
           <button
             type="submit"
-            className="group mt-2 h-12 w-full rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
+            className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
           >
             <p className="duration-500 group-hover:scale-110">
               {loading ? "Loading..." : `Place Order ${total.toFixed(0)} EGP`}

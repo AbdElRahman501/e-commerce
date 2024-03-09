@@ -1,11 +1,20 @@
 "use client";
-import { ProductCard, SectionTitle, StoreContext } from ".";
-import { useContext } from "react";
+import { Product } from "@/types";
+import { ProductCard, SectionTitle, ProductSkeleton } from ".";
+import React from "react";
+import { getProducts } from "@/utils";
 
 const ProductsRow = ({ title, url }: { url: string; title: string }) => {
-  const { products } = useContext(StoreContext);
+  const [loading, setLoading] = React.useState(true);
+  const [products, setProducts] = React.useState<Product[]>([]);
 
-  return (
+  React.useEffect(() => {
+    getProducts(setProducts, setLoading);
+  }, []);
+
+  return loading ? (
+    <ProductSkeleton />
+  ) : (
     <section className="p-5 lg:px-20">
       <div className="rounded-4xl flex flex-col gap-4">
         <SectionTitle title={title} url={url} />
