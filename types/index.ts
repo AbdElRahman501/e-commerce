@@ -54,6 +54,7 @@ export interface ProductDetailPageProps {
   };
   searchParams: {
     c?: string;
+    hex?: string;
   };
 }
 

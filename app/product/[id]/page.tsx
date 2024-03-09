@@ -7,11 +7,12 @@ const ProductDetailPage = ({
   searchParams,
 }: ProductDetailPageProps) => {
   const id = params.id;
-  const c = searchParams.c;
+  const { c, hex } = searchParams;
+  const color = hex ? `#${hex}` : c;
 
   return (
     <section>
-      <ProductDetailsComponent productId={id} color={c ? `#${c}` : ""} />
+      <ProductDetailsComponent productId={id} color={color} />
       <ProductsRow title="You may also like" url="/shop" />
     </section>
   );

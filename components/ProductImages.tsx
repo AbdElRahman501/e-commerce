@@ -11,9 +11,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
   images: imagesList,
   selectedImage,
 }) => {
-  const [images, setImages] = useState(
-    Array(2).fill(imagesList).flat().slice(0, 6),
-  );
+  const [images, setImages] = useState(imagesList);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 

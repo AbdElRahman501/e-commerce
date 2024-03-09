@@ -28,8 +28,8 @@ const CustomTable = ({
         const colors: string[] = item[header];
         return (
           <div className="flex items-center">
-            {colors.map((item, index) => (
-              <div key={index} className="w-4 flex-1 rounded-full">
+            {colors?.map((item, index) => (
+              <div key={index} className="w-4 max-w-6 flex-1 rounded-full">
                 <span
                   style={{ backgroundColor: item }}
                   className="block aspect-square w-full rounded-full border"
@@ -45,7 +45,7 @@ const CustomTable = ({
 
   return (
     <div className="scroll-bar-hidden overflow-x-scroll rounded-3xl border border-blue-300 bg-white p-5 shadow-md  dark:border-gray-700 dark:bg-primary_color  ">
-      <table>
+      <table className="w-full">
         <thead className="border-b">
           <tr>
             {header.map((item, index) => (

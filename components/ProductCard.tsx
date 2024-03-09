@@ -18,13 +18,19 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
         : [...prev, id];
     });
   }
+
+  function colorDefiner() {
+    const hexColorRegex = /^#?([0-9A-F]{3}){1,2}$/i;
+    const isHex =
+      typeof selectedColor === "string" && hexColorRegex.test(selectedColor);
+    return isHex ? `hex=${selectedColor.slice(1)}` : `c=${selectedColor}`;
+  }
+
   return (
     <div className="Product flex-col gap-4">
       <Link
         href={
-          selectedColor
-            ? `/product/${id}?c=${selectedColor.slice(1)}`
-            : `/product/${id}`
+          selectedColor ? `/product/${id}?${colorDefiner()}` : `/product/${id}`
         }
       >
         <div className="aspect-card relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-100 to-slate-200">

@@ -33,6 +33,19 @@ export async function createOrder(
   }
 }
 
+export async function fetchOrders(): Promise<OrderType[]> {
+  try {
+    await connectToDatabase();
+    // const data = await Product.find({}).select("title price colors images");
+    const data = await Order.find({});
+    const products: OrderType[] = JSON.parse(JSON.stringify(data));
+    return products;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+
 export const sendEmail = async (
   order: OrderType,
   cartProducts: CartProduct[],

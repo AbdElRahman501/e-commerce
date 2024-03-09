@@ -8,14 +8,14 @@ export const ProductSkeleton: React.FC = () => {
     <section className="p-5 lg:px-20">
       <div className="rounded-4xl flex flex-col gap-4">
         <div className="title flex h-8 w-full items-center justify-between">
-          <div className="h-8 w-[40%] animate-pulse rounded-md bg-gray-300"></div>
-          <div className="h-8 w-[20%] animate-pulse rounded-md bg-gray-300"></div>
+          <div className="h-10 w-[40%] animate-pulse rounded-md bg-gray-300"></div>
+          <div className="h-10 w-[25%] animate-pulse rounded-full bg-gray-300"></div>
         </div>
         <div className="scroll-bar-hidden overflow-x-scroll md:overflow-hidden">
           <div className="grid-container grid w-full gap-4 md:grid-cols-4 lg:gap-8">
             {[...Array(4)].map((_, index) => (
               <div key={index} className="flex animate-pulse flex-col gap-2">
-                <div className="aspect-card rounded-lg bg-gray-300"></div>
+                <div className="aspect-card rounded-3xl bg-gray-300"></div>
                 <div className="h-4 w-3/4 rounded bg-gray-300"></div>
                 <div className="h-4 w-1/2 rounded bg-gray-300"></div>
               </div>
@@ -55,7 +55,7 @@ export const LoadingLogo = () => {
         alt="logo"
         width={150}
         height={100}
-        className="h-8 animate-pulse invert-0 dark:invert-0 md:invert"
+        className="h-8 animate-pulse invert dark:invert-0 md:invert"
       />
     </div>
   );

@@ -152,6 +152,24 @@ export const getProducts = (
       setLoading(false);
     });
 };
+export const getOrders = (
+  setOrders: React.Dispatch<React.SetStateAction<Order[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  fetch(`/api/orders`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data) return;
+      if (!data.orders) return;
+      setOrders(data.orders);
+      setLoading(false);
+    });
+};
 export const getFilteredProducts = ({
   sorting = "",
   filter = {} as FilterType,

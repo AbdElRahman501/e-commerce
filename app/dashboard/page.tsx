@@ -8,12 +8,13 @@ import {
 } from "@/components";
 import ProductsAction from "@/components/ProductsAction";
 import { dashboardCards, filterInitialData } from "@/constants";
-import { Product } from "@/types";
-import { filterAndSortProducts, getProducts } from "@/utils";
+import { Order, Product } from "@/types";
+import { filterAndSortProducts, getOrders, getProducts } from "@/utils";
 import React, { useEffect, useState } from "react";
 
 const DashBoardPage = () => {
   const [products, setProducts] = React.useState<Product[]>([]);
+  const [orders, setOrders] = React.useState<Order[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [query, setQuery] = useState<string>("");
   const [sorting, setSorting] = useState("");
@@ -27,6 +28,7 @@ const DashBoardPage = () => {
 
   useEffect(() => {
     getProducts(setProducts, setLoading);
+    getOrders(setOrders, setLoading);
   }, []);
 
   return loading ? (
@@ -74,6 +76,26 @@ const DashBoardPage = () => {
       <div>
         <button> addProduct </button>
       </div>
+      <CustomTable
+        data={orders.map((item) => ({
+          ...item,
+          id: "#" + item.id.slice(0, 5),
+          ...item.personalInfo,
+          products: products
+            .filter((product) =>
+              item.products.map((x) => x.productId).includes(product.id),
+            )
+            .map((y) => y.name)
+            .join(", "),
+          image: products
+            .filter((product) =>
+              item.products.map((x) => x.productId).includes(product.id),
+            )
+            .map((y) => y.images[y.colors[0]])[0],
+        }))}
+        header={["id", "firstName", "image", "products", "state", "total"]}
+        ActionComponent={ProductsAction}
+      />
     </div>
   );
 };

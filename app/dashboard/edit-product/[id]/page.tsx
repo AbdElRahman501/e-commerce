@@ -1,31 +1,25 @@
 "use client";
 import React, { useEffect } from "react";
-import { CustomInput } from "@/components";
+import { CustomInput, LoadingLogo } from "@/components";
 import { productInputs } from "@/constants";
 import { Product } from "@/types";
 import { useRouter } from "next/navigation";
 import { getProduct } from "@/utils";
+import PreviewProduct from "@/components/PreviewProduct";
 
 const EditProduct = ({ params }: { params: { id: string } }) => {
-  const [product, setProduct] = React.useState<Product>({} as Product);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
+  const [preview, setPreview] = React.useState(false);
+  const [productLoading, setProductLoading] = React.useState(true);
   const productId = params.id;
   const [data, setData] = React.useState({} as Product);
-  const [keys, setKeys] = React.useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    if (!product?.id) {
-      getProduct(setProduct, setLoading, productId);
+    if (!data?.id) {
+      getProduct(setData, setProductLoading, productId);
     }
-  }, [product]);
-
-  useEffect(() => {
-    if (product && data.id !== product?.id) {
-      setData(product);
-      setKeys(Object.keys(product.images || {}));
-    }
-  }, [product]);
+  }, [data]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,22 +40,20 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
       });
   };
 
-  return !product ? (
+  return productLoading ? (
+    <LoadingLogo />
+  ) : !data ? (
     <div>Product not found</div>
   ) : (
     <div className="p-5 lg:px-20">
       <h1 className="pb-5 text-xl font-semibold md:text-3xl">EditProduct</h1>
-      <form
-        action=""
-        onSubmit={handleSubmit}
-        className=" flex w-full flex-col gap-10 md:flex-row "
-      >
-        <div className="flex w-full flex-col gap-2 ">
-          {keys.map((key) => (
+      <div className=" flex w-full flex-col gap-10 md:flex-row ">
+        <form onSubmit={handleSubmit} className="flex w-full flex-col gap-2 ">
+          {Object.keys(data.images || {}).map((key) => (
             <div className="flex w-full items-end gap-2">
               <div className="flex min-w-[25%] max-w-[25%] flex-col gap-2">
                 <p>key</p>
-                <div className="h-14 w-full rounded-2xl border border-gray-400 bg-transparent p-2 px-4 pe-10  text-center text-base outline-none focus:border-orange-500 focus:ring-blue-500   dark:text-white dark:placeholder-gray-400  dark:focus:ring-gray-200">
+                <div className="flex h-14 w-full items-center justify-center overflow-hidden rounded-2xl border border-gray-400  text-center text-base   dark:text-white  ">
                   <p>{key}</p>
                 </div>
               </div>
@@ -84,18 +76,17 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
           ))}
           <CustomInput
             label="Colors"
-            type="text"
+            type="textarea"
             placeholder="Enter your Colors"
             name="Colors"
             required={true}
             minLength={2}
-            value={keys}
+            value={data.colors}
             onChange={(e) => {
               const keys = e.target.value.split(",").map((item) => item.trim());
-              setKeys(keys);
               setData((prev) => ({
                 ...prev,
-                images: filterObjectByKeys(keys, prev.images || {}),
+                images: matchKeys(keys, prev.images),
                 colors: keys,
               }));
             }}
@@ -116,33 +107,50 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
               }
             />
           ))}
+          <button
+            type="submit"
+            className="group  mt-2 h-12 w-full rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
+          >
+            <p className="duration-500 group-hover:scale-110">
+              {loading ? "Loading..." : "Update"}
+            </p>
+          </button>
+        </form>
+        <div className="w-full">
+          <button
+            type="button"
+            onClick={() => setPreview(!preview)}
+            className="group my-2  h-12 w-full rounded-2xl border border-primary_color uppercase md:hidden"
+          >
+            <p className="duration-500 group-hover:scale-110">
+              {preview ? "Close" : "Preview"}
+            </p>
+          </button>
+          <PreviewProduct
+            className={`${preview ? "block" : "hidden"} md:block`}
+            product={data}
+          />
         </div>
-        <button
-          type="submit"
-          className="group  mt-2 h-12 w-full rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
-        >
-          <p className="duration-500 group-hover:scale-110">
-            {loading ? "Loading..." : "Update"}
-          </p>
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
 
-function filterObjectByKeys<T>(
+function matchKeys(
   keys: string[],
-  obj: Record<string, T>,
-): Record<string, T> {
-  const filteredObject: Record<string, T> = {};
-
-  keys.forEach((key) => {
-    if (obj.hasOwnProperty(key)) {
-      filteredObject[key] = obj[key];
+  obj: Record<string, string>,
+): Record<string, string> {
+  Object.keys(obj).forEach((key) => {
+    if (!keys.includes(key)) {
+      delete obj[key];
     }
   });
-
-  return filteredObject;
+  keys.forEach((key) => {
+    if (!(key in obj)) {
+      obj[key] = "";
+    }
+  });
+  return obj;
 }
 
 export default EditProduct;

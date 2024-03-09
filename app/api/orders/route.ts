@@ -1,4 +1,4 @@
-import { createOrder } from "@/lib";
+import { createOrder, fetchOrders } from "@/lib";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -13,6 +13,18 @@ export async function POST(req: Request) {
         body: { error: "Failed to create order" },
       });
     }
+  } catch (error) {
+    return NextResponse.json({
+      status: 500,
+      body: { error: "Failed to fetch profile data" },
+    });
+  }
+}
+
+export async function GET(req: Request) {
+  try {
+    const orders = await fetchOrders();
+    return NextResponse.json({ orders });
   } catch (error) {
     return NextResponse.json({
       status: 500,

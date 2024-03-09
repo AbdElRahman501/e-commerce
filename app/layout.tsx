@@ -25,7 +25,12 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-slate-50 duration-200 dark:bg-[#0d1117]`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <StoreContextProvider>
             <NavBar />
             <main>{children}</main>
