@@ -1,41 +1,50 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { faqSection } from "@/constants";
-import { AmountButton, StoreContext } from "@/components";
+import { AmountButton, StoreContext, LoadingLogo } from "@/components";
 import { Product } from "@/types";
 import Image from "next/image";
 import ProductImages from "./ProductImages";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getAllImages, getProduct } from "@/utils";
 
 const ProductDetailsComponent = ({
-  product,
   color,
+  productId,
 }: {
-  product: Product;
   color?: string;
+  productId: string;
 }) => {
+  const { cart, setCart, favorite, setFavorite } =
+    React.useContext(StoreContext);
   const [selectedColor, setSelectedColor] = React.useState<string>(color || "");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
   const [amount, setAmount] = React.useState<number>(1);
+  const [product, setProduct] = React.useState<Product>({} as Product);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const router = useRouter();
 
-  const images = getImages(product.images);
-  const { cart, setCart, favorite, setFavorite } =
-    React.useContext(StoreContext);
-  const isFav = favorite.includes(product.id);
-  const isInCart = cart.some(
-    (item) =>
-      item.id === product.id &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize,
-  );
-
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  useEffect(() => {
+    if (!product?.id) {
+      getProduct(setProduct, setLoading, productId);
+    }
+  }, [product]);
 
   useEffect(() => {
     setAudio(new Audio("/sounds/short-success.mp3"));
   }, []);
+
+  const images = product?.id ? getAllImages(product.images) : [];
+
+  const isFav = favorite.includes(productId);
+  const isInCart = cart.some(
+    (item) =>
+      item.productId === productId &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize,
+  );
 
   function addToCart() {
     if (isInCart) {
@@ -45,7 +54,7 @@ const ProductDetailsComponent = ({
         return [
           ...prev,
           {
-            ...product,
+            productId: productId,
             amount: amount,
             selectedColor: selectedColor,
             selectedSize: selectedSize,
@@ -58,17 +67,23 @@ const ProductDetailsComponent = ({
 
   function toggleFavorite() {
     setFavorite((prev) => {
-      return prev.includes(product.id)
-        ? prev.filter((item) => item !== product.id)
-        : [...prev, product.id];
+      return prev.includes(productId)
+        ? prev.filter((item) => item !== productId)
+        : [...prev, productId];
     });
   }
 
-  return (
+  return loading ? (
+    <LoadingLogo />
+  ) : !product.id ? (
+    <div className="flex h-screen items-center justify-center">
+      <div> Product not found </div>
+    </div>
+  ) : (
     <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={images}
-        selectedImage={product.images[selectedColor]}
+        selectedImage={product.images[selectedColor]?.[0] || ""}
       />
       <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
@@ -191,13 +206,5 @@ const ProductDetailsComponent = ({
     </div>
   );
 };
-function getImages(images: Record<string, string>): string[] {
-  let imageArray = [];
-  for (let color in images) {
-    let imageSrc = images[color];
-    imageArray.push(imageSrc);
-  }
-  return imageArray;
-}
 
 export default ProductDetailsComponent;

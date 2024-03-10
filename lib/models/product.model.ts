@@ -4,7 +4,7 @@ const productSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     keywords: { type: String, required: true },
-    images: { type: Map, of: String },
+    images: { type: Map, of: Array },
     categories: { type: String, required: true },
     price: { type: Number, required: true },
     sizes: [String],
@@ -13,8 +13,10 @@ const productSchema = new mongoose.Schema(
     name: { type: String, required: true },
     quantity: { type: Number, required: true },
     likes: { type: Number, required: true },
+    gender: { type: String, required: true, default: "all" },
   },
   {
+    timestamps: true,
     toJSON: {
       virtuals: true, // Include virtual properties if any
       transform: function (doc, ret) {

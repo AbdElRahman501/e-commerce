@@ -14,11 +14,13 @@ export interface SectionTitleProps {
 
 export interface ThemeSwitcherProps {
   className?: string;
+  additionalFunction?: () => void;
+  onlyIcon?: boolean;
 }
 
 export interface FilterData {
   origin: string[];
-  categories: { name: string; count: number; checked: boolean }[];
+  categories: { name: string; count: number }[];
   sizes: string[];
   colors: string[];
 }
@@ -27,13 +29,14 @@ export interface Product {
   id: string;
   title: string;
   keywords: string;
-  images: Record<string, string>; // Mapping color to image filename
+  images: Record<string, string[]>; // Mapping color to image filename
   categories: string;
   price: number;
   sizes: string[];
   colors: string[];
   description: string;
   name: string;
+  gender: "male" | "female";
   quantity: number;
   likes: number;
 }
@@ -51,6 +54,7 @@ export interface ProductDetailPageProps {
   };
   searchParams: {
     c?: string;
+    hex?: string;
   };
 }
 
@@ -60,13 +64,18 @@ export interface CartProduct extends Product {
   selectedSize: string;
 }
 
+export interface CartItem {
+  productId: string;
+  amount: number;
+  selectedColor: string;
+  selectedSize: string;
+}
+
 export interface StoreContextType {
-  cart: CartProduct[];
-  setCart: React.Dispatch<React.SetStateAction<CartProduct[]>>;
+  cart: CartItem[];
+  setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
   favorite: string[];
   setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
-  order: Order | null;
-  setOrder: React.Dispatch<React.SetStateAction<Order | null>>;
 }
 
 export interface FormInput {
@@ -93,11 +102,34 @@ export interface PersonalInfo {
 }
 
 export interface Order {
-  products: CartProduct[];
+  products: CartItem[];
   personalInfo: PersonalInfo;
   id: string;
   total: number;
   subTotal: number;
   shipping: number;
   discount: number;
+}
+
+export interface FilterType {
+  selectedCategories: string[];
+  originFilter: string[];
+  colorFilter: string[];
+  keywordFilter: string;
+  sizeFilter: string[];
+  minPrice: number;
+  maxPrice: number;
+  genderFilter: "male" | "female" | "all";
+}
+
+export interface CategoryCount {
+  name: string;
+  count: number;
+}
+export interface DashboardCardProps {
+  image: string;
+  title: string;
+  number: string;
+  description?: string;
+  url: string;
 }

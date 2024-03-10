@@ -10,12 +10,14 @@ const Testimonials = () => {
           theme="dark"
           url="/testimonials"
         />
-        <div className="scroll-bar-hidden flex gap-4 overflow-x-scroll">
-          <TestimonialCard />
-          <TestimonialCard />
-          <TestimonialCard />
-          <TestimonialCard />
-          <TestimonialCard />
+        <div className="scroll-bar-hidden overflow-x-scroll md:overflow-hidden ">
+          <div className="grid-container grid w-full gap-4 md:grid-cols-4 lg:gap-8 ">
+            <TestimonialCard />
+            <TestimonialCard />
+            <TestimonialCard />
+            <TestimonialCard />
+            <TestimonialCard />
+          </div>
         </div>
       </div>
     </section>

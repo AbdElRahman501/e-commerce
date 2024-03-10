@@ -2,8 +2,13 @@ import { FormInput, PersonalInfo } from "@/types";
 import React from "react";
 
 type CustomInputProps = FormInput & {
-  setData: React.Dispatch<React.SetStateAction<PersonalInfo>>;
-  data: PersonalInfo;
+  onChange: (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+  ) => void;
+  value: any;
 };
 
 const CustomInput = ({
@@ -16,11 +21,9 @@ const CustomInput = ({
   minLength,
   maxLength,
   pattern,
-  setData,
-  data,
+  onChange,
+  value,
 }: CustomInputProps) => {
-  const value = data[name as keyof PersonalInfo];
-
   switch (type) {
     case "select":
       return (
@@ -31,15 +34,15 @@ const CustomInput = ({
             id={name}
             required={required}
             value={value}
-            onChange={(e) =>
-              setData((prev) => ({ ...prev, [name]: e.target.value }))
-            }
+            onChange={onChange}
             className="h-14 w-full rounded-2xl  border border-gray-400 bg-transparent p-2 px-4  pe-10 text-base outline-none focus:border-orange-500 focus:ring-blue-500   dark:text-white dark:placeholder-gray-400  dark:focus:ring-gray-200"
           >
-            <option value="">{placeholder}</option>
+            <option value="" disabled>
+              {placeholder}
+            </option>
             {options &&
               options.map((option) => (
-                <option key={option} value={option}>
+                <option key={option} value={option} className="dark:text-black">
                   {option}
                 </option>
               ))}
@@ -56,9 +59,7 @@ const CustomInput = ({
             placeholder={placeholder}
             required={required}
             value={value}
-            onChange={(e) =>
-              setData((prev) => ({ ...prev, [name]: e.target.value }))
-            }
+            onChange={onChange}
             className="h-20 w-full rounded-2xl  border border-gray-400 bg-transparent p-2 px-4  pe-10 text-base outline-none focus:border-orange-500 focus:ring-blue-500   dark:text-white dark:placeholder-gray-400  dark:focus:ring-gray-200"
           />
         </div>
@@ -78,9 +79,7 @@ const CustomInput = ({
                   name={name}
                   id={name}
                   value={option}
-                  onChange={(e) =>
-                    setData((prev) => ({ ...prev, [name]: e.target.value }))
-                  }
+                  onChange={onChange}
                   className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
                 ></input>
                 <p>{option}</p>
@@ -101,9 +100,8 @@ const CustomInput = ({
             type={type}
             name={name}
             id={name}
-            onChange={(e) =>
-              setData((prev) => ({ ...prev, [name]: e.target.value }))
-            }
+            value={value}
+            onChange={onChange}
             placeholder={placeholder}
             className="h-14 w-full rounded-2xl  border border-gray-400 bg-transparent p-2 px-4  pe-10 text-base outline-none focus:border-orange-500 focus:ring-blue-500   dark:text-white dark:placeholder-gray-400  dark:focus:ring-gray-200"
           />

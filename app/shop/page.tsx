@@ -3,73 +3,92 @@ import {
   CallToAction,
   FilterButton,
   FilterContainer,
+  LoadingLogo,
   ProductCard,
   SearchField,
+  Sorting,
 } from "@/components";
-import { Product } from "@/types";
-import Image from "next/image";
+import { filterInitialData } from "@/constants";
+import { Product, FilterType } from "@/types";
+import { getFilteredProducts } from "@/utils";
 import React, { useEffect, useState } from "react";
 
 const ShopPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = React.useState<Product[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [query, setQuery] = useState<string>("");
+  const [sorting, setSorting] = useState("");
+  const [limit, setLimit] = useState(12);
+  const [count, setCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [filter, setFilter] = useState<FilterType>(filterInitialData);
 
   useEffect(() => {
-    fetch("/api/products", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data) return;
-        if (data.products) setProducts(data.products);
-        setLoading(false);
-      });
-  }, []);
+    getFilteredProducts({
+      sorting,
+      filter,
+      query,
+      setProducts,
+      setLoading,
+      limit,
+      setCount,
+    });
+  }, [query, sorting, filter, limit]);
 
-  const [isOpen, setIsOpen] = useState(false);
-  return (
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("max-md:overflow-hidden");
+    } else {
+      document.body.classList.remove("max-md:overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("max-md:overflow-hidden");
+    };
+  }, [isOpen]);
+
+  return loading ? (
+    <LoadingLogo />
+  ) : (
     <main>
       <CallToAction />
       <div className="flex items-center justify-center gap-3 px-5 md:gap-5 lg:px-20">
         <h1 className=" mr-auto hidden text-3xl font-bold md:block">
           Products
         </h1>
-        <SearchField />
+        <SearchField
+          setIsOpen={setIsOpen}
+          query={query}
+          changeHandler={setQuery}
+        />
         <FilterButton isOpen={isOpen} setIsOpen={setIsOpen} />
-        <div className=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex">
-          {/* <span className="sort-icon aspect-square w-6 text-2xl">&#8645;</span> */}
-          <Image
-            src={"/icons/sort.svg"}
-            width={24}
-            height={24}
-            alt={"sort icon"}
-            className="dark:invert"
-          />
-          <span className="whitespace-nowrap  text-sm">Price Low to High</span>
-          {/* <span className="down-arrow aspect-square w-6 rotate-90 text-center text-3xl ">
-            &#8250;
-          </span> */}
-          <Image
-            src={"/icons/arrow-down.svg"}
-            width={24}
-            height={24}
-            alt={"sort icon"}
-            className="dark:invert"
-          />
-        </div>
+        <Sorting
+          classNames=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex"
+          setSorting={setSorting}
+          sorting={sorting}
+        />
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
-        <FilterContainer isOpen={isOpen} />
+        <FilterContainer
+          filter={filter}
+          setFilter={setFilter}
+          isOpen={isOpen}
+          setSorting={setSorting}
+          sorting={sorting}
+        />
         <div className="rounded-4xl flex min-h-[60vh] flex-1 flex-col gap-4  ">
-          {loading && <p>Loading...</p>}
           <div className=" grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
             {products.map((product, index) => (
               <ProductCard key={index} {...product} />
             ))}
           </div>
+          {count > limit && (
+            <button
+              onClick={() => setLimit(limit + 12)}
+              className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
+            >
+              <p className="duration-500 group-hover:scale-110"> Load More </p>
+            </button>
+          )}
         </div>
       </div>
     </main>

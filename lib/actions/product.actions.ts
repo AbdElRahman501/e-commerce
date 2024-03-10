@@ -2,11 +2,134 @@ import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
 import { Product } from "@/lib";
 import { Product as ProductType } from "@/types";
+import { products as productsConst } from "@/constants";
 
-export async function fetchProducts() {
+export async function fetchFilteredProducts({
+  query = "",
+  priceSorting = 0,
+  selectedCategories = [],
+  keywordFilter = "",
+  minPrice = 0,
+  maxPrice = 100000,
+  genderFilter = "all",
+  colorFilter = [],
+  sizeFilter = [],
+  limit = 10,
+}: {
+  query?: string;
+  priceSorting: any;
+  selectedCategories?: string[];
+  keywordFilter?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  genderFilter?: string;
+  colorFilter?: string[];
+  sizeFilter?: string[];
+  limit?: number;
+}): Promise<{ products: ProductType[]; count: number }> {
+  const textSearchCondition = query
+    ? {
+        $or: [
+          { name: { $regex: `\\b${query}`, $options: "i" } },
+          { title: { $regex: `\\b${query}`, $options: "i" } },
+          { keywords: { $regex: `\\b${query}`, $options: "i" } },
+          { categories: { $regex: `\\b${query}`, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const colorsFilter = colorFilter.map((color) => color.replace("HASH:", "#"));
+  const categoryFilterCondition =
+    selectedCategories?.length > 0
+      ? {
+          categories: {
+            $in: selectedCategories.map(
+              (category: string) => new RegExp(`\\b${category || ""}\\b`, "i"),
+            ),
+          },
+        }
+      : {};
+
+  const keywordFilterCondition = keywordFilter
+    ? {
+        keywords: { $regex: `\\b${keywordFilter}\\b`, $options: "i" },
+      }
+    : {};
+
+  const priceFilterCondition = {
+    price: { $gte: minPrice || 0, $lte: maxPrice || 100000 },
+  };
+
+  const sizeFilterCondition =
+    sizeFilter?.length > 0 ? { sizes: { $in: sizeFilter } } : {};
+
+  const colorFilterCondition =
+    colorsFilter?.length > 0 ? { colors: { $in: colorsFilter } } : {};
+
+  const genderFilterCondition = genderFilter
+    ? genderFilter !== "all"
+      ? { gender: genderFilter }
+      : { $or: [{ gender: "male" }, { gender: "female" }] }
+    : {};
+
+  const finalQuery: any = {
+    $and: [
+      textSearchCondition,
+      categoryFilterCondition,
+      keywordFilterCondition,
+      priceFilterCondition,
+      sizeFilterCondition,
+      colorFilterCondition,
+      genderFilterCondition,
+    ],
+  };
+
   try {
-    connectToDatabase();
+    await connectToDatabase();
+    const count = await Product.countDocuments(finalQuery);
+    const data = priceSorting
+      ? await Product.find(finalQuery)
+          .sort({ price: priceSorting })
+          .limit(limit)
+      : await Product.find(finalQuery).limit(limit);
+    const products: ProductType[] = JSON.parse(JSON.stringify(data));
+    return { products, count };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+export async function fetchProducts(): Promise<ProductType[]> {
+  try {
+    await connectToDatabase();
+    // const data = await Product.find({}).select("title price colors images");
     const data = await Product.find({});
+    const products: ProductType[] = JSON.parse(JSON.stringify(data));
+    return products;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+export async function getAllProperties(): Promise<{
+  sizes: string[];
+  colors: string[];
+}> {
+  try {
+    // Using distinct to get unique sizes
+    const sizes = await Product.distinct("sizes").exec();
+    const colors = await Product.distinct("colors").exec();
+    return { sizes, colors };
+  } catch (error) {
+    console.error("Error fetching sizes:", error);
+    throw new Error("Unable to fetch sizes");
+  }
+}
+export async function insertProducts(): Promise<ProductType[]> {
+  try {
+    await connectToDatabase();
+    // await Product.deleteMany({});
+    const data = await Product.insertMany(productsConst);
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     return products;
   } catch (error) {
@@ -16,7 +139,7 @@ export async function fetchProducts() {
 }
 export async function fetchProduct(id: string): Promise<ProductType | null> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Product.findById(id);
     const product: ProductType = JSON.parse(JSON.stringify(data));
     return product;
@@ -28,7 +151,7 @@ export async function fetchProduct(id: string): Promise<ProductType | null> {
 export async function fetchProductsById(ids: string[]): Promise<ProductType[]> {
   const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Product.find({
       _id: {
         $in: objectIdArray,
@@ -41,3 +164,40 @@ export async function fetchProductsById(ids: string[]): Promise<ProductType[]> {
     throw error;
   }
 }
+
+export const getCategoriesWithProductCount = async () => {
+  try {
+    await connectToDatabase();
+    // Aggregate pipeline to group products by categories and count the number of products in each category
+    const aggregationPipeline = [
+      {
+        $project: {
+          categories: { $split: ["$categories", ", "] }, // Split the categories by comma and space
+        },
+      },
+      {
+        $unwind: "$categories", // Unwind the categories array
+      },
+      {
+        $group: {
+          _id: "$categories",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id", // Rename _id to name
+          count: 1,
+        },
+      },
+    ];
+
+    // Execute the aggregation
+    const result = await Product.aggregate(aggregationPipeline);
+    return result;
+  } catch (error) {
+    console.error("Error fetching categories with product count:", error);
+    throw error;
+  }
+};

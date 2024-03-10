@@ -3,10 +3,10 @@ import Image from "next/image";
 
 const FAQSection = () => {
   return (
-    <section className="px-5 py-20 lg:px-20">
+    <section className="p-5 lg:p-20">
       <div className="flex gap-20">
         <div className="flex flex-col gap-4 md:w-1/2">
-          <h1 className="mb-10 text-3xl font-bold">
+          <h1 className="mb-10 text-xl font-semibold md:text-3xl">
             Frequently Asked Questions
           </h1>
           {faqSection.map((item, index) => (

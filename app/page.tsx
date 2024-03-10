@@ -1,15 +1,12 @@
 import { FAQSection, Hero, ProductsRow, Testimonials } from "@/components";
-import { fetchProducts } from "@/lib";
 
-export default async function Home() {
-  const products = await fetchProducts();
-
+export default function Home() {
   return (
     <main>
       <Hero />
-      <ProductsRow title="Trending" url="/shop" products={products} />
-      <ProductsRow title="New Arrivals" url="/shop" products={products} />
-      <ProductsRow title="Best Sellers" url="/shop" products={products} />
+      <ProductsRow title="Trending" url="/shop" />
+      <ProductsRow title="New Arrivals" url="/shop" />
+      <ProductsRow title="Best Sellers" url="/shop" />
       <Testimonials />
       <FAQSection />
     </main>

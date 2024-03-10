@@ -1,17 +1,31 @@
 "use client";
-import { BagCard, CustomInput, StoreContext } from "@/components";
-import { formInputs, initialPersonalInfo } from "@/constants";
+import {
+  BagCard,
+  CartSkeleton,
+  CustomInput,
+  LoadingLogo,
+  StoreContext,
+} from "@/components";
+import { formInputs } from "@/constants";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PersonalInfo } from "@/types";
+import { CartProduct, PersonalInfo } from "@/types";
 import Link from "next/link";
+import { createOrder, getCartProducts } from "@/utils";
 
 const CheckOutPage = () => {
-  const { cart, setOrder, setCart } = useContext(StoreContext);
-  const [data, setData] = useState<PersonalInfo>(initialPersonalInfo);
+  const { cart } = useContext(StoreContext);
+  const [data, setData] = useState<PersonalInfo>({} as PersonalInfo);
+  const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [cartLoading, setCartLoading] = React.useState(true);
+
+  useEffect(() => {
+    getCartProducts(cart, setCartProducts, setCartLoading);
+  }, [cart]);
 
   const router = useRouter();
-  const subTotal = cart.reduce(
+  const subTotal = cartProducts.reduce(
     (acc, item) => acc + item.price * item.amount,
     0,
   );
@@ -21,7 +35,7 @@ const CheckOutPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setOrder({
+    const order = {
       products: cart,
       personalInfo: data,
       id: Date.now().toString(),
@@ -29,11 +43,14 @@ const CheckOutPage = () => {
       shipping: shipping,
       discount: discount,
       total: total,
+    };
+    setLoading(true);
+    createOrder(order, cartProducts, (orderId) => {
+      router.push(`/confirmation/${orderId}`);
     });
-    router.push("/confirmation");
   };
 
-  if (cart.length === 0) {
+  if (cart.length === 0 && !cartLoading) {
     return (
       <div className="p-5 lg:px-20">
         <h1 className="pb-5 text-xl md:text-3xl">Check Out</h1>
@@ -51,7 +68,9 @@ const CheckOutPage = () => {
     );
   }
 
-  return (
+  return cartLoading ? (
+    <LoadingLogo />
+  ) : (
     <div className="p-5 lg:px-20">
       <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
       <form
@@ -69,8 +88,13 @@ const CheckOutPage = () => {
               required={true}
               minLength={2}
               maxLength={30}
-              data={data}
-              setData={setData}
+              value={data.firstName}
+              onChange={(e) =>
+                setData((prev: any) => ({
+                  ...prev,
+                  firstName: e.target.value,
+                }))
+              }
             />
             <CustomInput
               label="Last Name"
@@ -80,20 +104,38 @@ const CheckOutPage = () => {
               required={true}
               minLength={2}
               maxLength={30}
-              data={data}
-              setData={setData}
+              value={data.lastName}
+              onChange={(e) =>
+                setData((prev: any) => ({
+                  ...prev,
+                  lastName: e.target.value,
+                }))
+              }
             />
           </div>
           {formInputs.map((input, index) => (
-            <CustomInput key={index} {...input} data={data} setData={setData} />
+            <CustomInput
+              key={index}
+              {...input}
+              value={data[input.name as keyof PersonalInfo]}
+              onChange={(e) =>
+                setData((prev: any) => ({
+                  ...prev,
+                  [input.name]: e.target.value,
+                }))
+              }
+            />
           ))}
         </div>
         <div className="flex w-full flex-col gap-5 ">
           <h1 className="pb-5 text-xl font-semibold md:text-3xl">Your Order</h1>
-
-          {cart.map((item, index) => (
-            <BagCard readonly {...item} key={index} />
-          ))}
+          {cartLoading ? (
+            <CartSkeleton array={cart} />
+          ) : (
+            cartProducts.map((item, index) => (
+              <BagCard readonly {...item} key={index} />
+            ))
+          )}
 
           <div className="flex flex-col gap-2 border-b border-gray-500 pb-2">
             <div className="flex justify-between">
@@ -124,10 +166,10 @@ const CheckOutPage = () => {
 
           <button
             type="submit"
-            className="group mt-2 h-12 w-full rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
+            className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
           >
             <p className="duration-500 group-hover:scale-110">
-              Place Order {total.toFixed(0)} EGP
+              {loading ? "Loading..." : `Place Order ${total.toFixed(0)} EGP`}
             </p>
           </button>
         </div>

@@ -18,20 +18,27 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
         : [...prev, id];
     });
   }
+
+  function colorDefiner() {
+    const hexColorRegex = /^#?([0-9A-F]{3}){1,2}$/i;
+    const isHex =
+      typeof selectedColor === "string" && hexColorRegex.test(selectedColor);
+    return isHex ? `hex=${selectedColor.slice(1)}` : `c=${selectedColor}`;
+  }
+
   return (
     <div className="Product flex-col gap-4">
       <Link
         href={
-          selectedColor
-            ? `/product/${id}?c=${selectedColor.slice(1)}`
-            : `/product/${id}`
+          selectedColor ? `/product/${id}?${colorDefiner()}` : `/product/${id}`
         }
       >
         <div className="aspect-card relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-100 to-slate-200">
           <Image
-            src={images[selectedColor || colors[0]]}
+            src={images[selectedColor || colors[0]][0]}
             alt="jacket"
             fill
+            objectFit="cover"
             sizes="100%"
             className="duration-300 hover:scale-110"
           />
@@ -62,8 +69,8 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
           />
         </button>
       </div>
-      <h6 className="w-full text-sm md:text-base ">{title}</h6>
-      <h5 className="text-base  font-bold md:text-xl">{price} EGP</h5>
+      <p className="w-full text-sm md:text-base ">{title}</p>
+      <p className="text-base  font-bold md:text-xl">{price} EGP</p>
     </div>
   );
 };

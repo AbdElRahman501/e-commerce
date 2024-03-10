@@ -46,7 +46,7 @@ const Footer = () => {
             alt="logo"
             width={450}
             height={100}
-            className="w-auto"
+            className="w-auto max-w-[80%]"
           />
           <div className="flex flex-col items-center gap-2">
             <GoUpButton />

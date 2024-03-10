@@ -1,6 +1,12 @@
-import { FilterData, Order, PersonalInfo } from "@/types";
+import {
+  DashboardCardProps,
+  FilterData,
+  FilterType,
+  Order,
+  PersonalInfo,
+} from "@/types";
 import products from "./products";
-import formInputs from "./inputs";
+import { formInputs, productInputs } from "./inputs";
 const footerList = [
   {
     title: "About Us",
@@ -125,52 +131,97 @@ const faqSection = [
 const filterData: FilterData = {
   origin: ["Sale", "New", "A hit Sale"],
   categories: [
-    { name: "Anime", count: 32, checked: false },
-    { name: "Quotes", count: 24, checked: false },
-    { name: "Nature", count: 26, checked: true },
-    { name: "Wildlife", count: 5, checked: false },
-    { name: "Painted", count: 11, checked: false },
-    { name: "Vintage", count: 2, checked: false },
-    { name: "Retro", count: 37, checked: false },
-    { name: "Graphic", count: 20, checked: false },
-    { name: "Pets", count: 10, checked: false },
-    { name: "Music", count: 13, checked: false },
-    { name: "Sports", count: 9, checked: false },
-    { name: "Gaming", count: 9, checked: false },
+    { name: "Anime", count: 32 },
+    { name: "Quotes", count: 24 },
+    { name: "Nature", count: 26 },
+    { name: "Wildlife", count: 5 },
+    { name: "Painted", count: 11 },
+    { name: "Vintage", count: 2 },
+    { name: "Retro", count: 37 },
+    { name: "Graphic", count: 20 },
+    { name: "Pets", count: 10 },
+    { name: "Music", count: 13 },
+    { name: "Sports", count: 9 },
+    { name: "Gaming", count: 9 },
   ],
   sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
   colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
 };
 
-const initialPersonalInfo: PersonalInfo = {
-  firstName: "",
-  lastName: "",
-  phoneNumber: "",
-  email: "",
-  streetAddress: "",
-  state: "",
-  comment: "",
-  promoCode: "",
-  paymentMethod: "",
+const filterInitialData: FilterType = {
+  selectedCategories: [],
+  originFilter: [],
+  colorFilter: [],
+  keywordFilter: "",
+  sizeFilter: [],
+  minPrice: 0,
+  maxPrice: 100000,
+  genderFilter: "all",
 };
-
-const initialOrder: Order = {
-  id: "",
-  products: [],
-  personalInfo: initialPersonalInfo,
-  total: 0,
-  subTotal: 0,
-  shipping: 0,
-  discount: 0,
-};
-
+const dashboardCards: DashboardCardProps[] = [
+  {
+    image: "/icons/order.svg",
+    title: "Orders",
+    number: "10",
+    description: "+2",
+    url: "/orders",
+  },
+  {
+    image: "/icons/revenue.svg",
+    title: "Revenue",
+    number: "$1,200.59",
+    url: "#",
+    description: "+$150",
+  },
+  {
+    image: "/icons/sales.svg",
+    title: "Sales",
+    number: "$5,000",
+    url: "#",
+    description: "+$2,000",
+  },
+  {
+    image: "/icons/customers.svg",
+    title: "Customers",
+    number: "20",
+    url: "#",
+  },
+  {
+    image: "/icons/subscribers.svg",
+    title: "Subscribers",
+    number: "100",
+    url: "#",
+    description: "+2",
+  },
+  {
+    image: "/icons/visits.svg",
+    title: "Visits",
+    number: "100",
+    url: "#",
+    description: "+20",
+  },
+  {
+    image: "/icons/review.svg",
+    title: "Reviews",
+    number: "3.8",
+    url: "#",
+    description: "-0.1",
+  },
+  {
+    image: "/icons/products.svg",
+    title: "Products",
+    number: "100",
+    url: "/products",
+  },
+];
 export {
-  initialOrder,
+  dashboardCards,
+  filterInitialData,
   products,
   categories,
   faqSection,
   filterData,
-  initialPersonalInfo,
   formInputs,
   footerList,
+  productInputs,
 };

@@ -26,7 +26,7 @@ const BagCard = ({
     setCart((prev) =>
       prev.filter((item) => {
         const matchItem =
-          item.id === id &&
+          item.productId === id &&
           item.selectedColor === selectedColor &&
           item.selectedSize === selectedSize;
 
@@ -45,9 +45,10 @@ const BagCard = ({
         className="aspect-card relative h-28 overflow-hidden rounded-2xl border md:h-32"
       >
         <Image
-          src={images[selectedColor]}
+          src={images[selectedColor][0]}
           alt="jacket"
           fill
+          objectFit="cover"
           sizes="100%"
           className="duration-300 hover:scale-110"
         />

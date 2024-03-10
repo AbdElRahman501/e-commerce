@@ -56,5 +56,71 @@ const formInputs: FormInput[] = [
     name: "promoCode",
   },
 ];
+const productInputs: FormInput[] = [
+  {
+    label: "Title",
+    type: "text",
+    placeholder: "Enter product title",
+    name: "title",
+    required: true,
+  },
+  {
+    label: "Keywords",
+    type: "text",
+    placeholder: "Enter keywords",
+    name: "keywords",
+    required: true,
+  },
+  {
+    label: "Categories",
+    type: "text",
+    placeholder: "Enter product categories",
+    name: "categories",
+    required: true,
+  },
+  {
+    label: "Price",
+    type: "number",
+    placeholder: "Enter product price",
+    name: "price",
+    required: true,
+  },
+  {
+    label: "Sizes",
+    type: "array",
+    placeholder: "Enter available sizes",
+    name: "sizes",
+    required: true,
+  },
+  {
+    label: "Description",
+    type: "textarea",
+    placeholder: "Enter product description",
+    name: "description",
+    required: true,
+  },
+  {
+    label: "Name",
+    type: "text",
+    placeholder: "Enter product name",
+    name: "name",
+    required: true,
+  },
+  {
+    label: "Gender",
+    type: "select",
+    placeholder: "Enter gender (male/female /all)",
+    name: "gender",
+    options: ["male", "female", "all"],
+    required: true,
+  },
+  {
+    label: "Quantity",
+    type: "number",
+    placeholder: "Enter product quantity",
+    name: "quantity",
+    required: true,
+  },
+];
 
-export default formInputs;
+export { productInputs, formInputs };

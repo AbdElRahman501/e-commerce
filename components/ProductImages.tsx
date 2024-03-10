@@ -11,9 +11,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
   images: imagesList,
   selectedImage,
 }) => {
-  const [images, setImages] = useState(
-    Array(2).fill(imagesList).flat().slice(0, 6),
-  );
+  const [images, setImages] = useState(imagesList);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -115,6 +113,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
               src={item}
               alt="jacket"
               fill
+              objectFit="cover"
               sizes="100%"
               className="duration-300 hover:scale-110"
             />
