@@ -7,7 +7,7 @@ import Image from "next/image";
 import ProductImages from "./ProductImages";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getProduct } from "@/utils";
+import { getAllImages, getProduct } from "@/utils";
 
 const ProductDetailsComponent = ({
   color,
@@ -36,7 +36,7 @@ const ProductDetailsComponent = ({
     setAudio(new Audio("/sounds/short-success.mp3"));
   }, []);
 
-  const images = product ? getImages(product.images) : [];
+  const images = product?.id ? getAllImages(product.images) : [];
 
   const isFav = favorite.includes(productId);
   const isInCart = cart.some(
@@ -75,11 +75,15 @@ const ProductDetailsComponent = ({
 
   return loading ? (
     <LoadingLogo />
+  ) : !product.id ? (
+    <div className="flex h-screen items-center justify-center">
+      <div> Product not found </div>
+    </div>
   ) : (
     <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={images}
-        selectedImage={product.images[selectedColor]}
+        selectedImage={product.images[selectedColor]?.[0] || ""}
       />
       <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
@@ -202,13 +206,5 @@ const ProductDetailsComponent = ({
     </div>
   );
 };
-function getImages(images: Record<string, string>): string[] {
-  let imageArray = [];
-  for (let color in images) {
-    let imageSrc = images[color];
-    imageArray.push(imageSrc);
-  }
-  return imageArray;
-}
 
 export default ProductDetailsComponent;

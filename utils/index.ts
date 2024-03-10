@@ -326,4 +326,13 @@ export const getOrder = (
       getCartProducts(data.order.products, setCartProducts, setLoading);
     });
 };
+
+export function getAllImages(images: Record<string, string[]>) {
+  let allImages: string[] = [];
+  for (const color in images) {
+    allImages = allImages.concat(images[color]);
+  }
+  return allImages;
+}
+
 export { formatOrderItems };

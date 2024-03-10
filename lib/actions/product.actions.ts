@@ -2,6 +2,7 @@ import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
 import { Product } from "@/lib";
 import { Product as ProductType } from "@/types";
+import { products as productsConst } from "@/constants";
 
 export async function fetchFilteredProducts(
   properties?: any,
@@ -91,6 +92,18 @@ export async function fetchProducts(): Promise<ProductType[]> {
     await connectToDatabase();
     // const data = await Product.find({}).select("title price colors images");
     const data = await Product.find({});
+    const products: ProductType[] = JSON.parse(JSON.stringify(data));
+    return products;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+export async function insertProducts(): Promise<ProductType[]> {
+  try {
+    await connectToDatabase();
+    await Product.deleteMany({});
+    const data = await Product.insertMany(productsConst);
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     return products;
   } catch (error) {

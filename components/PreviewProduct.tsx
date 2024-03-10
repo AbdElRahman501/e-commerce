@@ -5,6 +5,7 @@ import { AmountButton } from "@/components";
 import { Product } from "@/types";
 import Image from "next/image";
 import ProductImages from "./ProductImages";
+import { getAllImages } from "@/utils";
 
 const PreviewProduct = ({
   className,
@@ -16,7 +17,7 @@ const PreviewProduct = ({
   const [selectedColor, setSelectedColor] = React.useState<string>("");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
   const [amount, setAmount] = React.useState<number>(1);
-  const images = product ? getImages(product.images) : [];
+  const images = product ? getAllImages(product.images) : [];
 
   return (
     <div
@@ -24,7 +25,7 @@ const PreviewProduct = ({
     >
       <ProductImages
         images={images}
-        selectedImage={product.images[selectedColor]}
+        selectedImage={product.images[selectedColor]?.[0]}
       />
       <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
@@ -139,13 +140,4 @@ const PreviewProduct = ({
     </div>
   );
 };
-function getImages(images: Record<string, string>): string[] {
-  let imageArray = [];
-  for (let color in images) {
-    let imageSrc = images[color];
-    imageArray.push(imageSrc);
-  }
-  return imageArray;
-}
-
 export default PreviewProduct;

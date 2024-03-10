@@ -68,7 +68,7 @@ const DashBoardPage = () => {
         data={filteredProducts.map((item) => ({
           ...item,
           sizes: item.sizes.join(", "),
-          image: item.images[item.colors[0]],
+          image: item.images[item.colors[0]][0],
         }))}
         header={["image", "name", "colors", "sizes", "price"]}
         ActionComponent={ProductsAction}
@@ -91,7 +91,7 @@ const DashBoardPage = () => {
             .filter((product) =>
               item.products.map((x) => x.productId).includes(product.id),
             )
-            .map((y) => y.images[y.colors[0]])[0],
+            .map((y) => y.images[y.colors[0]])[0][0],
         }))}
         header={["id", "firstName", "image", "products", "state", "total"]}
         ActionComponent={ProductsAction}

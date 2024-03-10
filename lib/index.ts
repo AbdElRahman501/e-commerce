@@ -5,6 +5,7 @@ import {
   fetchProductsById,
   getCategoriesWithProductCount,
   fetchFilteredProducts,
+  insertProducts,
 } from "./actions/product.actions";
 
 //orders
@@ -15,6 +16,7 @@ import Product from "./models/product.model";
 import Order from "./models/order.model";
 
 export {
+  insertProducts,
   fetchOrders,
   fetchFilteredProducts,
   fetchProducts,

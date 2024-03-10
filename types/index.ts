@@ -29,7 +29,7 @@ export interface Product {
   id: string;
   title: string;
   keywords: string;
-  images: Record<string, string>; // Mapping color to image filename
+  images: Record<string, string[]>; // Mapping color to image filename
   categories: string;
   price: number;
   sizes: string[];

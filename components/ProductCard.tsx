@@ -35,7 +35,7 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
       >
         <div className="aspect-card relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-100 to-slate-200">
           <Image
-            src={images[selectedColor || colors[0]]}
+            src={images[selectedColor || colors[0]][0]}
             alt="jacket"
             fill
             objectFit="cover"

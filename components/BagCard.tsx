@@ -45,7 +45,7 @@ const BagCard = ({
         className="aspect-card relative h-28 overflow-hidden rounded-2xl border md:h-32"
       >
         <Image
-          src={images[selectedColor]}
+          src={images[selectedColor][0]}
           alt="jacket"
           fill
           objectFit="cover"
