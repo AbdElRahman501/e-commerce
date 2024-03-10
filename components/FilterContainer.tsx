@@ -3,7 +3,7 @@ import { filterData, filterInitialData } from "@/constants";
 import React, { useEffect } from "react";
 import { Sorting } from ".";
 import { FilterType } from "@/types";
-import { getAllCategories } from "@/utils";
+import { getAllCategories, getProperties } from "@/utils";
 
 const Gender = ({
   setFilter,
@@ -90,10 +90,9 @@ const Categories = ({
   const [categories, setCategories] = React.useState<
     { name: string; count: number }[]
   >([]);
-  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
-    getAllCategories(setCategories, setLoading);
+    getAllCategories(setCategories);
   }, []);
   return (
     <div className="flex flex-col gap-3">
@@ -128,7 +127,9 @@ const Categories = ({
 const Size = ({
   setFilter,
   filter,
+  allSizes,
 }: {
+  allSizes: string[];
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }) => {
@@ -136,7 +137,7 @@ const Size = ({
     <div className="flex flex-col gap-3">
       <h1>Sizes</h1>
       <div className="flex flex-wrap gap-1">
-        {filterData.sizes.map((item, index) => {
+        {allSizes.map((item, index) => {
           const selected = filter.sizeFilter.includes(item);
           return (
             <button
@@ -163,7 +164,9 @@ const Size = ({
 const Colors = ({
   setFilter,
   filter,
+  allColors,
 }: {
+  allColors: string[];
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }) => {
@@ -171,7 +174,7 @@ const Colors = ({
     <div className="flex flex-col gap-3">
       <h1>Colors</h1>
       <div className="flex flex-wrap gap-3">
-        {filterData.colors.map((item, index) => {
+        {allColors.map((item, index) => {
           const selected = filter.colorFilter.includes(item);
           return (
             <button
@@ -254,6 +257,12 @@ const FilterContainer = ({
   setSorting: React.Dispatch<React.SetStateAction<string>>;
   sorting: string;
 }) => {
+  const [allColors, setColors] = React.useState<string[]>([]);
+  const [allSizes, setSizes] = React.useState<string[]>([]);
+
+  useEffect(() => {
+    getProperties({ setColors, setSizes });
+  });
   return (
     <div
       style={{ bottom: isOpen ? "0" : "-100vh" }}
@@ -267,8 +276,8 @@ const FilterContainer = ({
       <Gender filter={filter} setFilter={setFilter} />
       <Origin filter={filter} setFilter={setFilter} />
       <Categories filter={filter} setFilter={setFilter} />
-      <Size filter={filter} setFilter={setFilter} />
-      <Colors filter={filter} setFilter={setFilter} />
+      <Size allSizes={allSizes} filter={filter} setFilter={setFilter} />
+      <Colors allColors={allColors} filter={filter} setFilter={setFilter} />
       <Price filter={filter} setFilter={setFilter} />
 
       {filterInitialData !== filter && (

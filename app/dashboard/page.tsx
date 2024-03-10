@@ -87,13 +87,8 @@ const DashBoardPage = () => {
             )
             .map((y) => y.name)
             .join(", "),
-          image: products
-            .filter((product) =>
-              item.products.map((x) => x.productId).includes(product.id),
-            )
-            .map((y) => y.images[y.colors[0]])[0][0],
         }))}
-        header={["id", "firstName", "image", "products", "state", "total"]}
+        header={["id", "firstName", "products", "state", "total"]}
         ActionComponent={ProductsAction}
       />
     </div>

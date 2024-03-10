@@ -118,7 +118,6 @@ import formatOrderItems from "./formatOrderItems";
 
 export const getAllCategories = (
   setCategories: React.Dispatch<React.SetStateAction<CategoryCount[]>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   fetch(`/api/products/categories`, {
     method: "GET",
@@ -131,7 +130,6 @@ export const getAllCategories = (
       if (!data) return;
       if (data.categoriesWithProductCount)
         setCategories(data.categoriesWithProductCount);
-      setLoading(false);
     });
 };
 export const getProducts = (
@@ -195,7 +193,7 @@ export const getFilteredProducts = ({
         : 0;
 
   const colors = filter.colorFilter
-    ? filter.colorFilter.map((item) => item.slice(1))
+    ? filter.colorFilter.map((item) => item.replace("#", "HASH:"))
     : [];
 
   fetch(
@@ -343,5 +341,26 @@ export function getAllImages(images: Record<string, string[]>) {
   }
   return allImages;
 }
+
+export const getProperties = ({
+  setSizes,
+  setColors,
+}: {
+  setSizes?: React.Dispatch<React.SetStateAction<string[]>>;
+  setColors?: React.Dispatch<React.SetStateAction<string[]>>;
+}) => {
+  fetch(`/api/products/sizes`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data) return;
+      if (data.allSizes) setSizes && setSizes(data.allSizes);
+      if (data.allColors) setColors && setColors(data.allColors);
+    });
+};
 
 export { formatOrderItems };

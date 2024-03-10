@@ -38,6 +38,7 @@ export async function fetchFilteredProducts({
       }
     : {};
 
+  const colorsFilter = colorFilter.map((color) => color.replace("HASH:", "#"));
   const categoryFilterCondition =
     selectedCategories?.length > 0
       ? {
@@ -63,7 +64,7 @@ export async function fetchFilteredProducts({
     sizeFilter?.length > 0 ? { sizes: { $in: sizeFilter } } : {};
 
   const colorFilterCondition =
-    colorFilter?.length > 0 ? { colors: { $in: `#${colorFilter}` } } : {};
+    colorsFilter?.length > 0 ? { colors: { $in: colorsFilter } } : {};
 
   const genderFilterCondition = genderFilter
     ? genderFilter !== "all"
@@ -108,6 +109,20 @@ export async function fetchProducts(): Promise<ProductType[]> {
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
+  }
+}
+export async function getAllProperties(): Promise<{
+  sizes: string[];
+  colors: string[];
+}> {
+  try {
+    // Using distinct to get unique sizes
+    const sizes = await Product.distinct("sizes").exec();
+    const colors = await Product.distinct("colors").exec();
+    return { sizes, colors };
+  } catch (error) {
+    console.error("Error fetching sizes:", error);
+    throw new Error("Unable to fetch sizes");
   }
 }
 export async function insertProducts(): Promise<ProductType[]> {

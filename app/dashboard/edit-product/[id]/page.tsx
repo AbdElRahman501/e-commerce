@@ -64,11 +64,14 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
                 name="value"
                 required={true}
                 minLength={2}
-                value={data.images[key]}
+                value={data.images[key].join(", ")}
                 onChange={(e) =>
                   setData((prev: any) => ({
                     ...prev,
-                    images: { ...prev.images, [key]: e.target.value },
+                    images: {
+                      ...prev.images,
+                      [key]: e.target.value.split(", "),
+                    },
                   }))
                 }
               />
