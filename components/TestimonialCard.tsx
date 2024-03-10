@@ -3,7 +3,7 @@ import Rating from "./Rating";
 
 const TestimonialCard = () => {
   return (
-    <div className="rounded-4xl flex w-64 min-w-64 flex-col justify-center gap-1 bg-white p-6 py-6 text-center ">
+    <div className=" rounded-4xl flex w-full flex-col justify-center gap-1 bg-white p-6 py-6 text-center shadow-lg ">
       <Image
         src="/user.svg"
         alt="user"
