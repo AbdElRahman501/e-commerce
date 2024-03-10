@@ -18,6 +18,8 @@ const ShopPage = () => {
   const [loading, setLoading] = React.useState(true);
   const [query, setQuery] = useState<string>("");
   const [sorting, setSorting] = useState("");
+  const [limit, setLimit] = useState(12);
+  const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>(filterInitialData);
 
@@ -28,8 +30,10 @@ const ShopPage = () => {
       query,
       setProducts,
       setLoading,
+      limit,
+      setCount,
     });
-  }, [query, sorting, filter]);
+  }, [query, sorting, filter, limit]);
 
   useEffect(() => {
     if (isOpen) {
@@ -77,6 +81,14 @@ const ShopPage = () => {
               <ProductCard key={index} {...product} />
             ))}
           </div>
+          {count > limit && (
+            <button
+              onClick={() => setLimit(limit + 12)}
+              className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
+            >
+              <p className="duration-500 group-hover:scale-110"> Load More </p>
+            </button>
+          )}
         </div>
       </div>
     </main>

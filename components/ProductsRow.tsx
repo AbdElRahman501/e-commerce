@@ -1,15 +1,27 @@
 "use client";
-import { Product } from "@/types";
+import { FilterType, Product } from "@/types";
 import { ProductCard, SectionTitle, ProductSkeleton } from ".";
 import React from "react";
-import { getProducts } from "@/utils";
+import { getFilteredProducts } from "@/utils";
+import { filterInitialData } from "@/constants";
 
 const ProductsRow = ({ title, url }: { url: string; title: string }) => {
   const [loading, setLoading] = React.useState(true);
   const [products, setProducts] = React.useState<Product[]>([]);
+  const sorting = "";
+  const filter = filterInitialData;
+  const query = "";
+  const limit = 4;
 
   React.useEffect(() => {
-    getProducts(setProducts, setLoading);
+    getFilteredProducts({
+      sorting,
+      filter,
+      limit,
+      query,
+      setProducts,
+      setLoading,
+    });
   }, []);
 
   return loading ? (

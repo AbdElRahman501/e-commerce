@@ -4,21 +4,29 @@ import { Product } from "@/lib";
 import { Product as ProductType } from "@/types";
 import { products as productsConst } from "@/constants";
 
-export async function fetchFilteredProducts(
-  properties?: any,
-): Promise<ProductType[]> {
-  const {
-    query,
-    priceSorting,
-    selectedCategories,
-    keywordFilter,
-    minPrice,
-    maxPrice,
-    genderFilter,
-    colorFilter,
-    sizeFilter,
-  } = properties || {};
-
+export async function fetchFilteredProducts({
+  query = "",
+  priceSorting = 0,
+  selectedCategories = [],
+  keywordFilter = "",
+  minPrice = 0,
+  maxPrice = 100000,
+  genderFilter = "all",
+  colorFilter = [],
+  sizeFilter = [],
+  limit = 10,
+}: {
+  query?: string;
+  priceSorting: any;
+  selectedCategories?: string[];
+  keywordFilter?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  genderFilter?: string;
+  colorFilter?: string[];
+  sizeFilter?: string[];
+  limit?: number;
+}): Promise<{ products: ProductType[]; count: number }> {
   const textSearchCondition = query
     ? {
         $or: [
@@ -77,11 +85,14 @@ export async function fetchFilteredProducts(
 
   try {
     await connectToDatabase();
+    const count = await Product.countDocuments(finalQuery);
     const data = priceSorting
-      ? await Product.find(finalQuery).sort({ price: priceSorting })
-      : await Product.find(finalQuery);
+      ? await Product.find(finalQuery)
+          .sort({ price: priceSorting })
+          .limit(limit)
+      : await Product.find(finalQuery).limit(limit);
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
-    return products;
+    return { products, count };
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -102,7 +113,7 @@ export async function fetchProducts(): Promise<ProductType[]> {
 export async function insertProducts(): Promise<ProductType[]> {
   try {
     await connectToDatabase();
-    await Product.deleteMany({});
+    // await Product.deleteMany({});
     const data = await Product.insertMany(productsConst);
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     return products;

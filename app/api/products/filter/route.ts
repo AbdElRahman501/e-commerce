@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
   const keywordFilter = searchParams.get("keywordFilter") || "";
   const minPrice = Number(searchParams.get("minPrice")) || 0;
   const maxPrice = Number(searchParams.get("maxPrice")) || 100000;
+  const limit = Number(searchParams.get("limit")) || 10;
   const genderFilter = searchParams.get("genderFilter") || "all";
   const colorsString: string = searchParams.get("colorFilter") || "";
   const colorFilter = colorsString ? colorsString.split(",") : [];
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
   const sizeFilter = sizesString ? sizesString.split(",") : [];
 
   try {
-    const products = await fetchFilteredProducts({
+    const data = await fetchFilteredProducts({
       query,
       priceSorting,
       selectedCategories,
@@ -29,8 +30,10 @@ export async function GET(req: NextRequest) {
       genderFilter,
       colorFilter,
       sizeFilter,
+      limit,
     });
-    return NextResponse.json({ products });
+    const { products, count } = data;
+    return NextResponse.json({ products, count });
   } catch (error) {
     return NextResponse.json({
       status: 500,

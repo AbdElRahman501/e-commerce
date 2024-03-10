@@ -138,8 +138,8 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
 
 function matchKeys(
   keys: string[],
-  obj: Record<string, string>,
-): Record<string, string> {
+  obj: Record<string, string[]>,
+): Record<string, string[]> {
   Object.keys(obj).forEach((key) => {
     if (!keys.includes(key)) {
       delete obj[key];
@@ -147,7 +147,7 @@ function matchKeys(
   });
   keys.forEach((key) => {
     if (!(key in obj)) {
-      obj[key] = "";
+      obj[key] = [""];
     }
   });
   return obj;

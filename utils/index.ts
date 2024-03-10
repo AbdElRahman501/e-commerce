@@ -176,12 +176,16 @@ export const getFilteredProducts = ({
   query = "",
   setProducts,
   setLoading,
+  limit,
+  setCount,
 }: {
   sorting?: string;
   filter?: FilterType;
   query?: string;
+  limit?: number;
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setCount?: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const ascendingPrice =
     sorting === "Price: Low to High"
@@ -190,8 +194,12 @@ export const getFilteredProducts = ({
         ? -1
         : 0;
 
+  const colors = filter.colorFilter
+    ? filter.colorFilter.map((item) => item.slice(1))
+    : [];
+
   fetch(
-    `/api/products/filter?query=${query}&priceSorting=${ascendingPrice}&selectedCategories=${filter.selectedCategories}&genderFilter=${filter.genderFilter}&minPrice=${filter.minPrice}&maxPrice=${filter.maxPrice}&keywordFilter=${filter.keywordFilter}&sizeFilter=${filter.sizeFilter}&colorFilter=${filter.colorFilter.map((item) => item.slice(1))}&originFilter=${filter.originFilter}`,
+    `/api/products/filter?query=${query}&priceSorting=${ascendingPrice}&selectedCategories=${filter.selectedCategories}&genderFilter=${filter.genderFilter}&minPrice=${filter.minPrice}&maxPrice=${filter.maxPrice}&keywordFilter=${filter.keywordFilter}&sizeFilter=${filter.sizeFilter}&colorFilter=${colors}&originFilter=${filter.originFilter}&limit=${limit}`,
     {
       method: "GET",
       headers: {
@@ -202,7 +210,8 @@ export const getFilteredProducts = ({
     .then((res) => res.json())
     .then((data) => {
       if (!data) return setLoading(false);
-      if (data.products) setProducts(data.products);
+      if (data) setProducts(data.products);
+      setCount && setCount(data.count);
       setLoading(false);
     });
 };
