@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { ProductDetailsComponent, ProductsRow } from "@/components";
 import { ProductDetailPageProps } from "@/types";

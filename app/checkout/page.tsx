@@ -117,7 +117,7 @@ const CheckOutPage = () => {
             <CustomInput
               key={index}
               {...input}
-              value={data[input.name as keyof PersonalInfo]}
+              value={data[input.name as keyof PersonalInfo] || ""}
               onChange={(e) =>
                 setData((prev: any) => ({
                   ...prev,

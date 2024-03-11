@@ -43,66 +43,64 @@ const MenuBurgerButton = () => {
         className="fixed top-[58px] z-20 flex h-[calc(100dvh-50px)]  w-screen items-center justify-center bg-black bg-opacity-50 bg-clip-padding px-4 py-10 shadow-lg ring-1 ring-white/5 duration-300 ease-in-out "
       >
         <ul className="flex w-full flex-col gap-1 text-center">
-          <li className=" group w-full overflow-hidden border-b-2  border-gray-400 p-4 text-2xl  font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
-            <Link
-              onClick={openMenu}
-              href="/"
-              className="duration-200 group-hover:scale-110"
-            >
+          <Link
+            onClick={openMenu}
+            href="/"
+            className="duration-200 group-hover:scale-110"
+          >
+            <li className=" group w-full overflow-hidden border-b-2  border-gray-400 p-4 text-2xl  font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
               Home
-            </Link>
-          </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
-            <Link
-              onClick={openMenu}
-              href="/about"
-              className="duration-200 group-hover:scale-110"
-            >
+            </li>
+          </Link>
+          <Link
+            onClick={openMenu}
+            href="/about"
+            className="duration-200 group-hover:scale-110"
+          >
+            <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
               About
-            </Link>
-          </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
-            <Link
-              onClick={openMenu}
-              href="/shop"
-              className="duration-200 group-hover:scale-110"
-            >
+            </li>
+          </Link>
+          <Link
+            onClick={openMenu}
+            href="/shop"
+            className="duration-200 group-hover:scale-110"
+          >
+            <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
               Shop
-            </Link>
-          </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
-            <Link
-              onClick={openMenu}
-              href="/shop"
-              className="duration-200 group-hover:scale-110"
-            >
+            </li>
+          </Link>
+          <Link
+            onClick={openMenu}
+            href="/shop"
+            className="duration-200 group-hover:scale-110"
+          >
+            <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
               categories
-            </Link>
-          </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
-            <Link
-              onClick={openMenu}
-              href="/cart"
-              className="duration-200 group-hover:scale-110"
-            >
+            </li>
+          </Link>
+          <Link
+            onClick={openMenu}
+            href="/cart"
+            className="duration-200 group-hover:scale-110"
+          >
+            <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
               Cart
-            </Link>
-          </li>
-          <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
-            <Link
-              onClick={openMenu}
-              href="/favorites"
-              className="duration-200 group-hover:scale-110"
-            >
+            </li>
+          </Link>
+          <Link
+            onClick={openMenu}
+            href="/favorites"
+            className="duration-200 group-hover:scale-110"
+          >
+            <li className=" group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
               Favorites
-            </Link>
-          </li>
-          <li className="group w-full overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
-            <ThemeSwitcher
-              className="inline-flex items-center gap-1 duration-200 group-hover:scale-110"
-              additionalFunction={openMenu}
-            />
-          </li>
+            </li>
+          </Link>
+          <ThemeSwitcher
+            className="group inline-flex w-full items-center justify-center gap-1 overflow-hidden border-b-2 border-gray-400 p-4 text-2xl font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300"
+            additionalFunction={openMenu}
+          />
         </ul>
       </div>
     </div>
