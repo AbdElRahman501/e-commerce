@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 const CartPricing = ({ cart }: { cart: CartProduct[] }) => {
+  if (!cart.length || !cart[0]?.id) return null;
   const subTotal = cart.reduce(
     (acc, item) => acc + item.price * item.amount,
     0,
