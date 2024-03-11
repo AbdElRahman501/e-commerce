@@ -128,7 +128,7 @@ export async function getAllProperties(): Promise<{
 export async function insertProducts(): Promise<ProductType[]> {
   try {
     await connectToDatabase();
-    // await Product.deleteMany({});
+    // await Product.collection.drop();
     const data = await Product.insertMany(productsConst);
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     return products;

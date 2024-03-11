@@ -18,7 +18,7 @@ export function StoreContextProvider({
 }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorite, setFavorite] = useState<string[]>([]);
-  const newVersion = "1.0.0.3";
+  const newVersion = "1.0.0.4";
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {

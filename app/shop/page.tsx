@@ -46,7 +46,7 @@ const ShopPage = () => {
     };
   }, [isOpen]);
 
-  return loading ? (
+  return loading && products.length === 0 ? (
     <LoadingLogo />
   ) : (
     <main>
@@ -86,7 +86,10 @@ const ShopPage = () => {
               onClick={() => setLimit(limit + 12)}
               className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
             >
-              <p className="duration-500 group-hover:scale-110"> Load More </p>
+              <p className="duration-500 group-hover:scale-110">
+                {" "}
+                {loading ? "Loading..." : "Load More"}{" "}
+              </p>
             </button>
           )}
         </div>

@@ -39,6 +39,7 @@ export interface Product {
   gender: "male" | "female";
   quantity: number;
   likes: number;
+  views: number;
 }
 
 export interface Review {

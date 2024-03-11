@@ -10,7 +10,7 @@ export async function GET(req: Request, context: any) {
   }
   const id = context.params.id;
   try {
-    const product = await Product.findById(id);
+    const product = await Product.findByIdAndUpdate(id, { $inc: { views: 1 } });
     return NextResponse.json({ product });
   } catch (error: any) {
     return NextResponse.json({

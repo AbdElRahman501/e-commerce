@@ -49,7 +49,7 @@ const ProductTable = () => {
           sizes: item.sizes.join(", "),
           image: item.images[item.colors[0]][0],
         }))}
-        header={["image", "name", "colors", "sizes", "price"]}
+        header={["views", "image", "name", "colors", "sizes", "price"]}
         ActionComponent={ProductsAction}
       />
       <div>

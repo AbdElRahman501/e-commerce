@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema(
     quantity: { type: Number, required: true },
     likes: { type: Number, required: true },
     gender: { type: String, required: true, default: "all" },
+    views: { type: Number, default: 0 },
   },
   {
     timestamps: true,

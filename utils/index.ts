@@ -185,6 +185,7 @@ export const getFilteredProducts = ({
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setCount?: React.Dispatch<React.SetStateAction<number>>;
 }) => {
+  setLoading(true);
   const ascendingPrice =
     sorting === "Price: Low to High"
       ? 1
