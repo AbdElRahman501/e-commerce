@@ -35,14 +35,18 @@ const CustomInput = ({
             required={required}
             value={value || ""}
             onChange={onChange}
-            className="h-14 w-full rounded-2xl  border border-gray-400 bg-transparent p-2 px-4  pe-10 text-base outline-none focus:border-orange-500 focus:ring-blue-500   dark:text-white dark:placeholder-gray-400  dark:focus:ring-gray-200"
+            className={` ${value ? "" : "text-gray-400 dark:text-gray-400"} h-14 w-full rounded-2xl border border-gray-400 bg-transparent p-2 px-4  pe-10 text-base outline-none focus:border-orange-500 focus:ring-blue-500   dark:text-white dark:placeholder-gray-400  dark:focus:ring-gray-200`}
           >
             <option value="" disabled>
               {placeholder}
             </option>
             {options &&
               options.map((option) => (
-                <option key={option} value={option} className="dark:text-black">
+                <option
+                  key={option}
+                  value={option}
+                  className="text-black dark:text-black"
+                >
                   {option}
                 </option>
               ))}

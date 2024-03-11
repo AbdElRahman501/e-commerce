@@ -147,7 +147,7 @@ const ProductDetailsComponent = ({
           <h1 className="text-lg font-bold text-primary_color dark:text-white">
             Amount
           </h1>
-          <AmountButton amount={amount} setAmount={setAmount} />
+          <AmountButton amount={amount} setAmount={setAmount} width="w-10" />
         </div>
         <div className="mt-3 flex max-w-md items-center justify-between gap-3">
           <button

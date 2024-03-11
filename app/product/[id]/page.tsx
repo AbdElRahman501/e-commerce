@@ -8,8 +8,8 @@ const ProductDetailPage = ({
   searchParams,
 }: ProductDetailPageProps) => {
   const id = params.id;
-  const { c, hex } = searchParams;
-  const color = hex ? `#${hex}` : c;
+  const { c } = searchParams;
+  const color = c ? c.replace("HASH:", "#") : "";
 
   return (
     <section>
