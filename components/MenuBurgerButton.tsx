@@ -3,9 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ThemeSwitcher } from ".";
+import { signIn, signOut, useSession } from "next-auth/react";
+import useLongPress from "./useLongPress";
 
 const MenuBurgerButton = () => {
   const [menu, setMenu] = useState(false);
+  const { data: session } = useSession();
 
   const openMenu = () => {
     if (menu) {
@@ -26,9 +29,23 @@ const MenuBurgerButton = () => {
     };
   }, [menu]);
 
+  const onLongPress = () => {
+    if (session) {
+      signOut();
+    } else {
+      signIn();
+    }
+  };
+
+  const defaultOptions = {
+    shouldPreventDefault: true,
+    delay: 500,
+  };
+  const longPressEvent = useLongPress(onLongPress, openMenu, defaultOptions);
+
   return (
     <div className="mr-auto flex-1 md:hidden">
-      <button type="button" onClick={openMenu}>
+      <button type="button" {...longPressEvent}>
         <Image
           className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
           src={menu ? "/icons/close.svg" : "/icons/menu-burger.svg"}
@@ -52,6 +69,17 @@ const MenuBurgerButton = () => {
               Home
             </li>
           </Link>
+          {session?.user?.name === "Admin" && (
+            <Link
+              onClick={openMenu}
+              href="/dashboard"
+              className="duration-200 group-hover:scale-110"
+            >
+              <li className=" group w-full overflow-hidden border-b-2  border-gray-400 p-4 text-2xl  font-black uppercase text-white duration-200 hover:bg-primary_color hover:text-gray-300 ">
+                dashboard
+              </li>
+            </Link>
+          )}
           <Link
             onClick={openMenu}
             href="/about"

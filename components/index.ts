@@ -28,8 +28,12 @@ import Sorting from "./Sorting";
 import TotalCard from "./TotalCard";
 import CustomTable from "./CustomTable";
 import { ProductSkeleton, CartSkeleton, LoadingLogo } from "./LoadingSkeleton";
+import ProductTable from "./ProductTable";
+import OrdersTable from "./OrdersTable";
 
 export {
+  OrdersTable,
+  ProductTable,
   LoadingLogo,
   ProductSkeleton,
   CartSkeleton,
