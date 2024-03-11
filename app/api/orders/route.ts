@@ -1,4 +1,5 @@
 import { createOrder, fetchOrders } from "@/lib";
+import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -22,6 +23,11 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  const isFetch = req.headers.get("Sec-Fetch-Mode") === "cors";
+
+  if (!isFetch) {
+    return notFound();
+  }
   try {
     const orders = await fetchOrders();
     return NextResponse.json({ orders });

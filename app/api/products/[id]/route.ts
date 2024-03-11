@@ -1,7 +1,13 @@
 import { Product } from "@/lib";
+import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request, context: any) {
+  const isFetch = req.headers.get("Sec-Fetch-Mode") === "cors";
+
+  if (!isFetch) {
+    return notFound();
+  }
   const id = context.params.id;
   try {
     const product = await Product.findById(id);

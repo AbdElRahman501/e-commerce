@@ -1,7 +1,14 @@
 import { fetchFilteredProducts } from "@/lib";
+import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const isFetch = req.headers.get("Sec-Fetch-Mode") === "cors";
+
+  if (!isFetch) {
+    return notFound();
+  }
+
   const { searchParams } = new URL(req.url);
   const query = searchParams.get("query") || "";
   const priceSorting = Number(searchParams.get("priceSorting")) || 0;
