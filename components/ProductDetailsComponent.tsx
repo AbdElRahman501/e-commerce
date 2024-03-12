@@ -7,13 +7,15 @@ import Image from "next/image";
 import ProductImages from "./ProductImages";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getAllImages, getProduct } from "@/utils";
+import { getAllImages } from "@/utils";
 
 const ProductDetailsComponent = ({
   color,
+  product,
   productId,
 }: {
   color?: string;
+  product: Product;
   productId: string;
 }) => {
   const { cart, setCart, favorite, setFavorite } =
@@ -21,16 +23,8 @@ const ProductDetailsComponent = ({
   const [selectedColor, setSelectedColor] = React.useState<string>(color || "");
   const [selectedSize, setSelectedSize] = React.useState<string>("");
   const [amount, setAmount] = React.useState<number>(1);
-  const [product, setProduct] = React.useState<Product>({} as Product);
-  const [loading, setLoading] = React.useState<boolean>(true);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    if (!product?.id) {
-      getProduct(setProduct, setLoading, productId);
-    }
-  }, [product]);
 
   useEffect(() => {
     setAudio(new Audio("/sounds/short-success.mp3"));
@@ -73,13 +67,7 @@ const ProductDetailsComponent = ({
     });
   }
 
-  return loading ? (
-    <LoadingLogo />
-  ) : !product.id ? (
-    <div className="flex h-screen items-center justify-center">
-      <div> Product not found </div>
-    </div>
-  ) : (
+  return (
     <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={images}
@@ -91,13 +79,13 @@ const ProductDetailsComponent = ({
             href={"/shop"}
             className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
           >
-            Category
+            Shop
           </Link>
           {product.categories.split(",").map((item, index) => (
             <div key={index} className="inline-block">
               <span className="mx-1 text-base">&#8250;</span>
               <Link
-                href={"#"}
+                href={`/shop?category=${item.trim()}`}
                 className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
               >
                 {item}

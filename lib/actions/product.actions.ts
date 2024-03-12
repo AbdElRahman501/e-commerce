@@ -1,7 +1,7 @@
 import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
 import { Product } from "@/lib";
-import { Product as ProductType } from "@/types";
+import { CategoryCount, Product as ProductType } from "@/types";
 import { products as productsConst } from "@/constants";
 
 export async function fetchFilteredProducts({
@@ -15,6 +15,7 @@ export async function fetchFilteredProducts({
   colorFilter = [],
   sizeFilter = [],
   limit = 10,
+  section,
 }: {
   query?: string;
   priceSorting: any;
@@ -26,6 +27,7 @@ export async function fetchFilteredProducts({
   colorFilter?: string[];
   sizeFilter?: string[];
   limit?: number;
+  section?: string;
 }): Promise<{ products: ProductType[]; count: number }> {
   const textSearchCondition = query
     ? {
@@ -39,6 +41,8 @@ export async function fetchFilteredProducts({
     : {};
 
   const colorsFilter = colorFilter.map((color) => color.replace("HASH:", "#"));
+  const keyWordsArray = keywordFilter?.split(",");
+
   const categoryFilterCondition =
     selectedCategories?.length > 0
       ? {
@@ -50,11 +54,17 @@ export async function fetchFilteredProducts({
         }
       : {};
 
-  const keywordFilterCondition = keywordFilter
-    ? {
-        keywords: { $regex: `\\b${keywordFilter}\\b`, $options: "i" },
-      }
-    : {};
+  const keywordFilterCondition =
+    keyWordsArray?.length > 0
+      ? {
+          keywords: {
+            $in: keyWordsArray.map(
+              (keyWord: string) =>
+                new RegExp(`\\b${keyWord?.trim() || ""}\\b`, "i"),
+            ),
+          },
+        }
+      : {};
 
   const priceFilterCondition = {
     price: { $gte: minPrice || 0, $lte: maxPrice || 100000 },
@@ -91,7 +101,7 @@ export async function fetchFilteredProducts({
       ? await Product.find(finalQuery)
           .sort({ price: priceSorting })
           .limit(limit)
-      : await Product.find(finalQuery).limit(limit);
+      : await fetchDataBySection({ section, finalQuery, limit });
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     return { products, count };
   } catch (error) {
@@ -109,6 +119,27 @@ export async function fetchProducts(): Promise<ProductType[]> {
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
+  }
+}
+
+async function fetchDataBySection({
+  section,
+  limit,
+  finalQuery,
+}: {
+  section?: string;
+  limit: number;
+  finalQuery: any;
+}) {
+  switch (section) {
+    case "Trending":
+      return await Product.find(finalQuery).sort({ views: -1 }).limit(limit);
+    case "New Arrivals":
+      return await Product.find(finalQuery).limit(limit);
+    case "Best Sellers":
+      return await Product.find(finalQuery).limit(limit);
+    default:
+      return await Product.find(finalQuery).limit(limit);
   }
 }
 export async function getAllProperties(): Promise<{

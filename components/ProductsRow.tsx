@@ -5,16 +5,25 @@ import React from "react";
 import { getFilteredProducts } from "@/utils";
 import { filterInitialData } from "@/constants";
 
-const ProductsRow = ({ title, url }: { url: string; title: string }) => {
+const ProductsRow = ({
+  customFilter,
+  title,
+  url,
+}: {
+  customFilter?: FilterType;
+  url: string;
+  title: string;
+}) => {
   const [loading, setLoading] = React.useState(true);
   const [products, setProducts] = React.useState<Product[]>([]);
   const sorting = "";
-  const filter = filterInitialData;
+  const filter = customFilter || filterInitialData;
   const query = "";
   const limit = 4;
 
   React.useEffect(() => {
     getFilteredProducts({
+      section: title,
       sorting,
       filter,
       limit,

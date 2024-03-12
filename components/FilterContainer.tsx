@@ -2,8 +2,8 @@
 import { filterData, filterInitialData } from "@/constants";
 import React, { useEffect } from "react";
 import { Sorting } from ".";
-import { FilterType } from "@/types";
-import { getAllCategories, getProperties } from "@/utils";
+import { CategoryCount, FilterType } from "@/types";
+import { getProperties } from "@/utils";
 
 const Gender = ({
   setFilter,
@@ -83,17 +83,12 @@ const Origin = ({
 const Categories = ({
   setFilter,
   filter,
+  categories,
 }: {
+  categories: CategoryCount[];
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }) => {
-  const [categories, setCategories] = React.useState<
-    { name: string; count: number }[]
-  >([]);
-
-  useEffect(() => {
-    getAllCategories(setCategories);
-  }, []);
   return (
     <div className="flex flex-col gap-3">
       <h1>Categories</h1>
@@ -211,6 +206,8 @@ const Price = ({
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }) => {
+  const [min, setMin] = React.useState(0);
+  const [max, setMax] = React.useState(1000);
   return (
     <div className="flex flex-col gap-3">
       <h1>Prices</h1>
@@ -218,8 +215,9 @@ const Price = ({
         <input
           type="number"
           placeholder="Min"
-          value={filter.minPrice}
-          onChange={(e) =>
+          value={min}
+          onChange={(e) => setMin(parseInt(e.target.value))}
+          onBlur={(e) =>
             setFilter((pv) => ({
               ...pv,
               minPrice: parseInt(e.target.value),
@@ -231,8 +229,9 @@ const Price = ({
         <input
           type="number"
           placeholder="max"
-          value={filter.maxPrice}
-          onChange={(e) =>
+          value={max}
+          onChange={(e) => setMax(parseInt(e.target.value))}
+          onBlur={(e) =>
             setFilter((pv) => ({
               ...pv,
               maxPrice: parseInt(e.target.value),
@@ -250,7 +249,9 @@ const FilterContainer = ({
   isOpen,
   setSorting,
   sorting,
+  categories,
 }: {
+  categories: CategoryCount[];
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
   isOpen: boolean;
@@ -259,14 +260,13 @@ const FilterContainer = ({
 }) => {
   const [allColors, setColors] = React.useState<string[]>([]);
   const [allSizes, setSizes] = React.useState<string[]>([]);
-
   useEffect(() => {
     getProperties({ setColors, setSizes });
-  });
+  }, []);
   return (
     <div
       style={{ bottom: isOpen ? "0" : "-100vh" }}
-      className=" scroll-bar-hidden fixed  left-0  z-20 flex h-fit max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-slate-100 px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
+      className="scroll-bar-hidden fixed  left-0  z-20 flex h-fit max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-slate-100 px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
     >
       <Sorting
         classNames="  min-h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white flex md:hidden"
@@ -275,7 +275,11 @@ const FilterContainer = ({
       />
       <Gender filter={filter} setFilter={setFilter} />
       <Origin filter={filter} setFilter={setFilter} />
-      <Categories filter={filter} setFilter={setFilter} />
+      <Categories
+        categories={categories}
+        filter={filter}
+        setFilter={setFilter}
+      />
       <Size allSizes={allSizes} filter={filter} setFilter={setFilter} />
       <Colors allColors={allColors} filter={filter} setFilter={setFilter} />
       <Price filter={filter} setFilter={setFilter} />

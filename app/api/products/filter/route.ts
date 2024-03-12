@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
   const colorFilter = colorsString ? colorsString.split(",") : [];
   const sizesString: string = searchParams.get("sizeFilter") || "";
   const sizeFilter = sizesString ? sizesString.split(",") : [];
+  const section = searchParams.get("section") || "";
 
   try {
     const data = await fetchFilteredProducts({
@@ -38,6 +39,7 @@ export async function GET(req: NextRequest) {
       colorFilter,
       sizeFilter,
       limit,
+      section,
     });
     const { products, count } = data;
     return NextResponse.json({ products, count });

@@ -9,11 +9,16 @@ import {
   Sorting,
 } from "@/components";
 import { filterInitialData } from "@/constants";
-import { Product, FilterType } from "@/types";
-import { getFilteredProducts } from "@/utils";
+import { Product, FilterType, CategoryCount } from "@/types";
+import { getAllCategories, getFilteredProducts } from "@/utils";
 import React, { useEffect, useState } from "react";
 
-const ShopPage = () => {
+const ShopPage = ({
+  searchParams,
+}: {
+  searchParams: { section: string; category: string };
+}) => {
+  const { section, category } = searchParams;
   const [products, setProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [query, setQuery] = useState<string>("");
@@ -22,9 +27,28 @@ const ShopPage = () => {
   const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>(filterInitialData);
+  const [categories, setCategories] = React.useState<CategoryCount[]>([]);
+
+  useEffect(() => {
+    getAllCategories(setCategories);
+  }, []);
+
+  useEffect(() => {
+    if (
+      categories
+        .map((x) => x.name.trim().toLowerCase())
+        .includes(category.trim().toLowerCase())
+    ) {
+      setFilter({
+        ...filter,
+        selectedCategories: [...filter.selectedCategories, category],
+      });
+    }
+  }, [categories]);
 
   useEffect(() => {
     getFilteredProducts({
+      section,
       sorting,
       filter,
       query,
@@ -69,6 +93,7 @@ const ShopPage = () => {
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
         <FilterContainer
+          categories={categories}
           filter={filter}
           setFilter={setFilter}
           isOpen={isOpen}

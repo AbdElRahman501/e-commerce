@@ -176,7 +176,9 @@ export const getFilteredProducts = ({
   setLoading,
   limit,
   setCount,
+  section = "",
 }: {
+  section?: string;
   sorting?: string;
   filter?: FilterType;
   query?: string;
@@ -185,7 +187,7 @@ export const getFilteredProducts = ({
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setCount?: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  setLoading(true);
+  // setLoading(true);
   const ascendingPrice =
     sorting === "Price: Low to High"
       ? 1
@@ -198,7 +200,7 @@ export const getFilteredProducts = ({
     : [];
 
   fetch(
-    `/api/products/filter?query=${query}&priceSorting=${ascendingPrice}&selectedCategories=${filter.selectedCategories}&genderFilter=${filter.genderFilter}&minPrice=${filter.minPrice}&maxPrice=${filter.maxPrice}&keywordFilter=${filter.keywordFilter}&sizeFilter=${filter.sizeFilter}&colorFilter=${colors}&originFilter=${filter.originFilter}&limit=${limit}`,
+    `/api/products/filter?query=${query}&priceSorting=${ascendingPrice}&selectedCategories=${filter.selectedCategories}&genderFilter=${filter.genderFilter}&minPrice=${filter.minPrice}&maxPrice=${filter.maxPrice}&keywordFilter=${filter.keywordFilter}&sizeFilter=${filter.sizeFilter}&colorFilter=${colors}&originFilter=${filter.originFilter}&limit=${limit}&section=${section}`,
     {
       method: "GET",
       headers: {
