@@ -4,8 +4,6 @@ import { Order } from "@/lib";
 import nodemailer from "nodemailer";
 import path from "path";
 import fs from "fs";
-import { headers } from "next/headers";
-import { NextRequest } from "next/server";
 import { formatOrderItems } from "@/utils";
 
 export async function createOrder(
@@ -13,19 +11,15 @@ export async function createOrder(
   cartProducts: CartProduct[],
 ) {
   try {
-    const headersList = headers();
-    const referer = headersList.get("referer");
-    let origin: string = "";
-
-    if (referer) {
-      const request = new NextRequest(referer);
-      origin = request.nextUrl.origin;
-    }
     connectToDatabase();
     const orderNew = new Order(order);
     const data = await orderNew.save();
     const createdOrder: OrderType = JSON.parse(JSON.stringify(data));
-    sendEmail(createdOrder, cartProducts, origin);
+    sendEmail(
+      createdOrder,
+      cartProducts,
+      process.env.NEXT_PUBLIC_VERCEL_URL || "",
+    );
     return createdOrder;
   } catch (error) {
     console.error("Error creating order:", error);
