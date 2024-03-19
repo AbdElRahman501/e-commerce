@@ -23,10 +23,7 @@ const PreviewProduct = ({
     <div
       className={`flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20 ${className}`}
     >
-      <ProductImages
-        images={images}
-        selectedImage={product.images[selectedColor]?.[0]}
-      />
+      <ProductImages images={images} title={product.title} />
       <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
           <div className="inline-block duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600">
