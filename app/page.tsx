@@ -7,8 +7,6 @@ import {
 } from "@/components";
 import { Suspense } from "react";
 
-export const runtime = "edge";
-
 export const metadata = {
   description:
     "Explore a curated collection of high-quality printed t-shirts featuring unique and creative designs for every occasion.",

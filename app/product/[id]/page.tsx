@@ -9,9 +9,9 @@ import { getAllImages } from "@/utils";
 export async function generateMetadata({
   params,
 }: {
-  params: { handle: string };
+  params: { id: string };
 }): Promise<Metadata> {
-  const product = await getAsyncProduct(params.handle);
+  const product = await getAsyncProduct(params.id);
 
   if (!product) return notFound();
   const images = getAllImages(product.images);

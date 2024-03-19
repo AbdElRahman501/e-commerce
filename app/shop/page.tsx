@@ -1,8 +1,6 @@
 import { LoadMore, ProductCard } from "@/components";
 import { getAsyncProducts } from "@/lib/utils";
 
-export const runtime = "edge";
-
 export const metadata = {
   title: "Shop",
   description: "Search for products in the store.",
