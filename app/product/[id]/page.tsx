@@ -1,17 +1,17 @@
 import React, { Suspense } from "react";
 import { Footer, ProductDetailsComponent, ProductsRow } from "@/components";
 import { ProductDetailPageProps } from "@/types";
-import { getAsyncProduct } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getAllImages } from "@/utils";
+import { fetchProduct } from "@/lib";
 
 export async function generateMetadata({
   params,
 }: {
   params: { id: string };
 }): Promise<Metadata> {
-  const product = await getAsyncProduct(params.id);
+  const product = await fetchProduct(params.id);
 
   if (!product) return notFound();
   const images = getAllImages(product.images);
@@ -48,7 +48,7 @@ export default async function ProductDetailPage({
 }: ProductDetailPageProps) {
   const id = params.id;
 
-  const product = await getAsyncProduct(id);
+  const product = await fetchProduct(id);
 
   if (!product?.id) {
     return notFound();
