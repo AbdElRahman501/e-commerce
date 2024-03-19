@@ -19,15 +19,17 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
     });
   }
   return (
-    <div className="Product flex-col gap-4">
-      <Link href={`/product/${id}?c=${selectedColor.replace("#", "HASH:")}`}>
+    <div className="Product animate-fadeIn flex-col gap-4">
+      <Link
+        className="relative block"
+        href={`/product/${id}?color=${selectedColor.replace("#", "HASH:")}`}
+      >
         <div className="aspect-card relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-100 to-slate-200">
           <Image
             src={images[selectedColor || colors[0]][0]}
             alt="jacket"
             fill
-            objectFit="cover"
-            sizes="100%"
+            style={{ objectFit: "cover" }}
             className="duration-300 hover:scale-110"
           />
         </div>

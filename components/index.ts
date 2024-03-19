@@ -30,8 +30,10 @@ import CustomTable from "./CustomTable";
 import { ProductSkeleton, CartSkeleton, LoadingLogo } from "./LoadingSkeleton";
 import ProductTable from "./ProductTable";
 import OrdersTable from "./OrdersTable";
+import LoadMore from "./LoadMore";
 
 export {
+  LoadMore,
   OrdersTable,
   ProductTable,
   LoadingLogo,

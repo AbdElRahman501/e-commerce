@@ -1,61 +1,94 @@
-"use client";
-import React from "react";
-import {
-  LoadingLogo,
-  ProductDetailsComponent,
-  ProductsRow,
-} from "@/components";
-import { Product, ProductDetailPageProps } from "@/types";
-import { getProduct } from "@/utils";
-import { filterInitialData } from "@/constants";
+import React, { Suspense } from "react";
+import { Footer, ProductDetailsComponent, ProductsRow } from "@/components";
+import { ProductDetailPageProps } from "@/types";
+import { getAsyncProduct } from "@/lib/utils";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import { getAllImages } from "@/utils";
 
-const ProductDetailPage = ({
+export async function generateMetadata({
   params,
-  searchParams,
-}: ProductDetailPageProps) => {
+}: {
+  params: { handle: string };
+}): Promise<Metadata> {
+  const product = await getAsyncProduct(params.handle);
+
+  if (!product) return notFound();
+  const images = getAllImages(product.images);
+  const url = images[0] || "";
+
+  return {
+    title: product.title,
+    description: product.description,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+      },
+    },
+    openGraph: url
+      ? {
+          images: [
+            {
+              url,
+              width: 1200,
+              height: 630,
+              alt: product.title,
+            },
+          ],
+        }
+      : null,
+  };
+}
+
+export default async function ProductDetailPage({
+  params,
+}: ProductDetailPageProps) {
   const id = params.id;
-  const { c } = searchParams;
-  const color = c ? c.replace("HASH:", "#") : "";
 
-  const [product, setProduct] = React.useState<Product>({} as Product);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const product = await getAsyncProduct(id);
 
-  React.useEffect(() => {
-    if (!product?.id) {
-      getProduct(setProduct, setLoading, id);
-    }
-  }, [product]);
+  if (!product?.id) {
+    return notFound();
+  }
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description,
+    image: product.images[0],
+    offers: {
+      "@type": "AggregateOffer",
+      availability: "https://schema.org/InStock",
+      priceCurrency: "EGP",
+      highPrice: product.price,
+      lowPrice: product.price * 0.9,
+    },
+  };
 
   return (
-    <section>
-      {loading ? (
-        <LoadingLogo />
-      ) : !product?.id ? (
-        <div className="flex h-screen items-center justify-center">
-          <div> Product not found </div>
-        </div>
-      ) : (
-        <ProductDetailsComponent
-          product={product}
-          color={color}
-          productId={id}
-        />
-      )}
-      {product?.id && (
-        <ProductsRow
-          customFilter={{
-            ...filterInitialData,
-            selectedCategories: product?.categories
-              ? product?.categories.split(",")
-              : [],
-            colorFilter: product?.colors || [],
-            keywordFilter: product?.keywords,
-          }}
-          title="You may also like"
-          url="/shop"
-        />
-      )}
-    </section>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd),
+        }}
+      />
+
+      <Suspense>
+        <ProductDetailsComponent product={product} />
+      </Suspense>
+
+      <Suspense>
+        <ProductsRow title="You may also like" url="/shop" />
+      </Suspense>
+
+      <Suspense>
+        <Footer />
+      </Suspense>
+    </>
   );
-};
-export default ProductDetailPage;
+}

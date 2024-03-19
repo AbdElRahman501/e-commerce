@@ -1,17 +1,20 @@
 "use client";
+import { createUrl } from "@/utils";
 import Image from "next/image";
-import React, { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const Sorting = ({
-  sorting,
-  setSorting,
-  classNames = "",
-}: {
-  classNames?: string;
-  sorting: string;
-  setSorting: React.Dispatch<React.SetStateAction<string>>;
-}) => {
+const Sorting = ({ classNames = "" }: { classNames?: string }) => {
   const options = ["Price: Low to High", "Price: High to Low"];
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  function changHandler(e: React.ChangeEvent<HTMLSelectElement>) {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("sort", e.target.value);
+    const optionUrl = createUrl(pathname, newSearchParams);
+    router.push(optionUrl);
+  }
+
   return (
     <div className={classNames}>
       {" "}
@@ -25,10 +28,9 @@ const Sorting = ({
       <select
         name="sort"
         id="sort"
-        value={sorting}
-        onChange={(e) => setSorting(e.target.value)}
+        value={searchParams?.get("sort") || ""}
+        onChange={changHandler}
         className="h-full w-full appearance-none rounded-2xl bg-transparent text-base outline-none "
-        // className=" h-full w-full rounded-2xl bg-transparent text-base outline-none focus:border-orange-500 focus:ring-blue-500   dark:text-white dark:placeholder-gray-400  dark:focus:ring-gray-200"
       >
         <option value="" disabled>
           {" "}

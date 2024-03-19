@@ -53,9 +53,6 @@ export interface ProductDetailPageProps {
   params: {
     id: string;
   };
-  searchParams: {
-    c?: string;
-  };
 }
 
 export interface CartProduct extends Product {
@@ -112,16 +109,22 @@ export interface Order {
 }
 
 export interface FilterType {
-  selectedCategories: string[];
-  originFilter: string[];
-  colorFilter: string[];
-  keywordFilter: string;
-  sizeFilter: string[];
-  minPrice: number;
-  maxPrice: number;
-  genderFilter: "male" | "female" | "all";
+  selectedCategories?: string[];
+  originFilter?: string[];
+  colorFilter?: string[];
+  keywordFilter?: string;
+  sizeFilter?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  genderFilter?: "male" | "female" | "all";
 }
 
+export interface FilterProps extends FilterType {
+  query?: string;
+  priceSorting?: number;
+  limit?: number;
+  section?: string;
+}
 export interface CategoryCount {
   name: string;
   count: number;

@@ -47,6 +47,11 @@ export const CartSkeleton = ({ array }: { array: CartItem[] }) => {
     </div>
   );
 };
+export const FilterSkeleton = () => {
+  return (
+    <div className="scroll-bar-hidden h-{75vh}  fixed bottom-[-100vh] left-0  z-20  flex max-h-[calc(100dvh-9.5rem)] w-full animate-pulse flex-col gap-7 overflow-y-auto bg-gray-300 px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"></div>
+  );
+};
 export const LoadingLogo = () => {
   return (
     <div className=" flex min-h-screen w-full items-center justify-center ">

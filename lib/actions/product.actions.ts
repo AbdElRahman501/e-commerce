@@ -1,7 +1,7 @@
 import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
 import { Product } from "@/lib";
-import { CategoryCount, Product as ProductType } from "@/types";
+import { CategoryCount, FilterProps, Product as ProductType } from "@/types";
 import { products as productsConst } from "@/constants";
 
 export async function fetchFilteredProducts({
@@ -16,19 +16,7 @@ export async function fetchFilteredProducts({
   sizeFilter = [],
   limit = 10,
   section,
-}: {
-  query?: string;
-  priceSorting: any;
-  selectedCategories?: string[];
-  keywordFilter?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  genderFilter?: string;
-  colorFilter?: string[];
-  sizeFilter?: string[];
-  limit?: number;
-  section?: string;
-}): Promise<{ products: ProductType[]; count: number }> {
+}: FilterProps): Promise<{ products: ProductType[]; count: number }> {
   const textSearchCondition = query
     ? {
         $or: [
@@ -41,7 +29,7 @@ export async function fetchFilteredProducts({
     : {};
 
   const colorsFilter = colorFilter.map((color) => color.replace("HASH:", "#"));
-  const keyWordsArray = keywordFilter?.split(",");
+  const keyWordsArray = keywordFilter && keywordFilter?.split(",");
 
   const categoryFilterCondition =
     selectedCategories?.length > 0
@@ -55,7 +43,7 @@ export async function fetchFilteredProducts({
       : {};
 
   const keywordFilterCondition =
-    keyWordsArray?.length > 0
+    keyWordsArray && keyWordsArray?.length > 0
       ? {
           keywords: {
             $in: keyWordsArray.map(
@@ -99,7 +87,7 @@ export async function fetchFilteredProducts({
     const count = await Product.countDocuments(finalQuery);
     const data = priceSorting
       ? await Product.find(finalQuery)
-          .sort({ price: priceSorting })
+          .sort({ price: 1 === priceSorting ? 1 : -1 })
           .limit(limit)
       : await fetchDataBySection({ section, finalQuery, limit });
     const products: ProductType[] = JSON.parse(JSON.stringify(data));

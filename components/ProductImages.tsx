@@ -1,34 +1,28 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface YourComponentProps {
   images: string[];
-  selectedImage?: string;
+  title: string;
 }
 
-const ProductImages: React.FC<YourComponentProps> = ({
-  images: imagesList,
-  selectedImage,
-}) => {
-  const [images, setImages] = useState(imagesList);
+const ProductImages: React.FC<YourComponentProps> = ({ images, title }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const searchParams = useSearchParams();
+  const imageSearchParam = searchParams.get("image");
+  const imageIndex = imageSearchParam ? parseInt(imageSearchParam) : 0;
+
   useEffect(() => {
-    if (!selectedImage) {
+    if (!imageIndex) {
       return;
     }
-    const selectedImageIndex = images.findIndex(
-      (image) => image === selectedImage,
-    );
-    if (window.innerWidth > 640) {
-      setImages(rearrangeArray(images, selectedImageIndex));
-    } else {
-      setCurrentIndex(selectedImageIndex);
-      scrollToIndex(selectedImageIndex);
-    }
-  }, [selectedImage]);
+    setCurrentIndex(imageIndex);
+    scrollToIndex(imageIndex);
+  }, [imageIndex]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,21 +94,22 @@ const ProductImages: React.FC<YourComponentProps> = ({
         className="scroll-bar-hidden  images-container relative h-full w-full snap-x snap-mandatory overflow-scroll max-sm:!flex sm:grid sm:gap-2 sm:overflow-hidden"
         ref={containerRef}
       >
-        {images.map((item, index) => (
+        {rearrangeArray(images, currentIndex).map((item, index) => (
           <button
-            onClick={() =>
-              window.innerWidth > 640 &&
-              setImages(rearrangeArray(images, index))
-            }
+            onClick={() => {
+              if (window.innerWidth < 640) {
+                setCurrentIndex(index);
+                scrollToIndex(index);
+              }
+            }}
             key={index}
             className={`area-${index + 1}  aspect-card relative min-w-[100vw] snap-center overflow-hidden bg-gradient-to-r from-slate-100 to-slate-200 sm:min-w-full sm:rounded-3xl`}
           >
             <Image
               src={item}
-              alt="jacket"
+              alt={title}
               fill
-              objectFit="cover"
-              sizes="100%"
+              style={{ objectFit: "cover" }}
               className="duration-300 hover:scale-110"
             />
           </button>
