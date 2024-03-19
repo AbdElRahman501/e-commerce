@@ -19,6 +19,7 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
     if (!data?.id) {
       getProduct(setData, setProductLoading, productId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -50,7 +51,7 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
       <div className=" flex w-full flex-col gap-10 md:flex-row ">
         <form onSubmit={handleSubmit} className="flex w-full flex-col gap-2 ">
           {Object.keys(data.images || {}).map((key) => (
-            <div className="flex w-full items-end gap-2">
+            <div key={key} className="flex w-full items-end gap-2">
               <div className="flex min-w-[25%] max-w-[25%] flex-col gap-2">
                 <p>key</p>
                 <div className="flex h-14 w-full items-center justify-center overflow-hidden rounded-2xl border border-gray-400  text-center text-base   dark:text-white  ">

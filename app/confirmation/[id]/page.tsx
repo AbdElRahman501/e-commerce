@@ -18,12 +18,14 @@ const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
     if (orderId && !order.id) {
       getOrder(orderId, setOrder, setCartProducts, setLoading);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
 
   useEffect(() => {
     if (order) {
       setCart([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order]);
 
   const copyToClipboard = (id: string) => {

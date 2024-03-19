@@ -48,12 +48,14 @@ export function StoreContextProvider({
     if (mounted) {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart]);
 
   useEffect(() => {
     if (mounted) {
       localStorage.setItem("favorite", JSON.stringify(favorite));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [favorite]);
 
   return (

@@ -37,9 +37,10 @@ const ProductImages: React.FC<YourComponentProps> = ({ images, title }) => {
     if (containerRef.current) {
       containerRef.current.addEventListener("scroll", handleScroll);
     }
+    const currentRef = containerRef.current;
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeEventListener("scroll", handleScroll);
+      if (currentRef) {
+        currentRef.removeEventListener("scroll", handleScroll);
       }
     };
   }, []);

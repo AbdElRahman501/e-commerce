@@ -30,7 +30,7 @@ export const CartSkeleton = ({ array }: { array: CartItem[] }) => {
   return (
     <div className=" flex w-full flex-col gap-5 md:max-w-lg ">
       {array.map((_, index) => (
-        <div className="relative flex w-full gap-5 border-b pb-2 ">
+        <div key={index} className="relative flex w-full gap-5 border-b pb-2 ">
           <div className="aspect-card h-28 animate-pulse rounded-2xl bg-gray-300"></div>
           <div className="flex flex-1 flex-col justify-between">
             <div className="h-8 w-[40%] animate-pulse rounded-md bg-gray-300"></div>
