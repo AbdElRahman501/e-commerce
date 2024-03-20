@@ -1,5 +1,5 @@
 import { LoadMore, ProductCard } from "@/components";
-import { fetchFilteredProducts } from "@/lib";
+import { getAsyncProducts } from "@/lib/utils";
 
 export const metadata = {
   title: "Shop",
@@ -15,7 +15,7 @@ export default async function SearchPage({
   };
   const limit = l ? parseInt(l) : 12;
 
-  const { products, count } = await fetchFilteredProducts({
+  const { products, count } = await getAsyncProducts({
     query: searchValue,
     priceSorting: 0,
     selectedCategories: [],
