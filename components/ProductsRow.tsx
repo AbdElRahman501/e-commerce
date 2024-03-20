@@ -1,7 +1,7 @@
 import { ProductCard, SectionTitle } from ".";
 import React from "react";
 import { FilterType } from "@/types";
-import { getAsyncProducts } from "@/lib/utils";
+import { fetchFilteredProducts } from "@/lib";
 
 async function ProductsRow({
   customFilter,
@@ -12,7 +12,7 @@ async function ProductsRow({
   url: string;
   title: string;
 }) {
-  const { products } = await getAsyncProducts({
+  const { products } = await fetchFilteredProducts({
     section: title,
     limit: 4,
   });
