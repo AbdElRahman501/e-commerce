@@ -1,4 +1,5 @@
-import { CartComponent, ProductsRow } from "@/components";
+import { CartComponent } from "@/components";
+import ProductsRow from "@/components/ProductsRow";
 import { Suspense } from "react";
 
 const page = () => {

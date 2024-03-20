@@ -1,10 +1,5 @@
-import {
-  FAQSection,
-  Footer,
-  Hero,
-  ProductsRow,
-  Testimonials,
-} from "@/components";
+import { FAQSection, Footer, Hero, Testimonials } from "@/components";
+import ProductsRow from "@/components/ProductsRow";
 import { Suspense } from "react";
 
 export const metadata = {
@@ -15,7 +10,7 @@ export const metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <Hero />

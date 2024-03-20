@@ -1,10 +1,11 @@
 import React, { Suspense } from "react";
-import { Footer, ProductDetailsComponent, ProductsRow } from "@/components";
+import { Footer, ProductDetailsComponent } from "@/components";
 import { ProductDetailPageProps } from "@/types";
 import { getAsyncProduct } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getAllImages } from "@/utils";
+import ProductsRow from "@/components/ProductsRow";
 
 export async function generateMetadata({
   params,

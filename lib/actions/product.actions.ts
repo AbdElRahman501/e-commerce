@@ -1,7 +1,7 @@
 import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
 import { Product } from "@/lib";
-import { CategoryCount, FilterProps, Product as ProductType } from "@/types";
+import { FilterProps, Product as ProductType } from "@/types";
 import { products as productsConst } from "@/constants";
 
 export async function fetchFilteredProducts({

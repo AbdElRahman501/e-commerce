@@ -1,3 +1,4 @@
+"use server";
 import { CartProduct, Order as OrderType } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import { Order } from "@/lib";
@@ -5,21 +6,27 @@ import nodemailer from "nodemailer";
 import path from "path";
 import fs from "fs";
 import { formatOrderItems } from "@/utils";
+import { headers } from "next/headers";
+import { NextRequest } from "next/server";
 
 export async function createOrder(
   order: OrderType,
   cartProducts: CartProduct[],
 ) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
+    const headersList = headers();
+    const referer = headersList.get("referer");
+    let origin: string = "";
+
+    if (referer) {
+      const request = new NextRequest(referer);
+      origin = request.nextUrl.origin;
+    }
     const orderNew = new Order(order);
     const data = await orderNew.save();
     const createdOrder: OrderType = JSON.parse(JSON.stringify(data));
-    sendEmail(
-      createdOrder,
-      cartProducts,
-      process.env.NEXT_PUBLIC_VERCEL_URL || "",
-    );
+    sendEmail(createdOrder, cartProducts, origin);
     return createdOrder;
   } catch (error) {
     console.error("Error creating order:", error);

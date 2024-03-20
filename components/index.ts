@@ -2,7 +2,6 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import NavBar from "./NavBar";
 import Hero from "./Hero";
 import ArrowButton from "./ArrowButton";
-import ProductsRow from "./ProductsRow";
 import MenuBurgerButton from "./MenuBurgerButton";
 import Footer from "./Footer";
 import ProductCard from "./ProductCard";
@@ -66,7 +65,6 @@ export {
   Footer,
   Hero,
   ArrowButton,
-  ProductsRow,
   MenuBurgerButton,
   Testimonials,
 };
