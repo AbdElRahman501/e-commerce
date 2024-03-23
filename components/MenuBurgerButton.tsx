@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ThemeSwitcher } from ".";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import useLongPress from "./useLongPress";
 
 const MenuBurgerButton = () => {
@@ -28,6 +28,20 @@ const MenuBurgerButton = () => {
       document.body.classList.remove("scroll-Lock");
     };
   }, [menu]);
+
+  useEffect(() => {
+    async function handleSession() {
+      // Ensure we have the latest session data
+      const currentSession = await getSession();
+      if (currentSession?.expires) {
+        const expiryDate = new Date(currentSession.expires);
+        if (expiryDate <= new Date()) {
+          await signOut({ redirect: false, callbackUrl: "/" });
+        }
+      }
+    }
+    handleSession();
+  }, []);
 
   const onLongPress = () => {
     if (session) {

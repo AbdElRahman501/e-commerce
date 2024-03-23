@@ -19,7 +19,7 @@ export async function generateMetadata({
   const url = images[0] || "";
 
   return {
-    title: product.title,
+    title: product.title + " (" + product.price + " EGP)",
     description: product.description,
     robots: {
       index: true,

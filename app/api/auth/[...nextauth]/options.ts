@@ -37,7 +37,10 @@ export const options: AuthOptions = {
   ],
   callbacks: {
     async session({ session, token, user }) {
-      session.expires = new Date(Date.now() + 3600 * 1000).toISOString();
+      if (!session.expires) {
+        const exp = new Date(Date.now() + 3600 * 1000).toISOString(); // Set expiry to 1 hour
+        session.expires = exp;
+      }
       return session;
     },
   },

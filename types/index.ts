@@ -40,6 +40,7 @@ export interface Product {
   quantity: number;
   likes: number;
   views?: number;
+  updatedAt: string;
 }
 
 export interface Review {
