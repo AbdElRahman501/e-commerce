@@ -21,20 +21,3 @@ export async function POST(req: Request) {
     });
   }
 }
-
-export async function GET(req: Request) {
-  const isFetch = req.headers.get("Sec-Fetch-Mode") === "cors";
-
-  if (!isFetch) {
-    return notFound();
-  }
-  try {
-    const orders = await fetchOrders();
-    return NextResponse.json({ orders });
-  } catch (error) {
-    return NextResponse.json({
-      status: 500,
-      body: { error: "Failed to fetch profile data" },
-    });
-  }
-}

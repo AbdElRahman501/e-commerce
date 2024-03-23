@@ -10,78 +10,6 @@ import {
 import formatOrderItems from "./formatOrderItems";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
-export const getAllCategories = (
-  setCategories: React.Dispatch<React.SetStateAction<CategoryCount[]>>,
-) => {
-  fetch(`/api/products/categories`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data) return [];
-      if (!data?.categoriesWithProductCount) return [];
-      setCategories(data.categoriesWithProductCount);
-    });
-};
-export const getProducts = (
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-) => {
-  fetch(`/api/products`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data) return;
-      if (!data.products) return;
-      setProducts(data.products);
-      setLoading(false);
-    });
-};
-export const getOrders = (
-  setOrders: React.Dispatch<React.SetStateAction<Order[]>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-) => {
-  fetch(`/api/orders`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data) return;
-      if (!data.orders) return;
-      setOrders(data.orders);
-      setLoading(false);
-    });
-};
-
-export const getProduct = (
-  setProduct: React.Dispatch<React.SetStateAction<Product>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  productId: string,
-) => {
-  fetch(`/api/products/${productId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data?.product) return setLoading(false);
-      setProduct(data.product);
-      setLoading(false);
-    });
-};
-
 export const getCartProducts = (
   cart: CartItem[],
   setCartProducts: React.Dispatch<React.SetStateAction<CartProduct[]>>,
@@ -159,27 +87,6 @@ export const createOrder = (
     .then((data) => {
       if (!data?.orderId) return;
       afterOrder(data.orderId);
-    });
-};
-
-export const getOrder = (
-  orderId: string,
-  setOrder: React.Dispatch<React.SetStateAction<Order>>,
-  setCartProducts: React.Dispatch<React.SetStateAction<CartProduct[]>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-) => {
-  fetch(`/api/orders/${orderId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data) return setLoading(false);
-      if (!data.order) return setLoading(false);
-      setOrder(data.order);
-      getCartProducts(data.order.products, setCartProducts, setLoading);
     });
 };
 

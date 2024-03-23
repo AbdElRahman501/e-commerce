@@ -1,19 +1,19 @@
 import { ProductCard, SectionTitle } from ".";
 import React from "react";
-import { FilterType } from "@/types";
 import { fetchFilteredProducts } from "@/lib";
 
 async function ProductsRow({
-  customFilter,
+  keyWords,
   title,
   url,
 }: {
-  customFilter?: FilterType;
+  keyWords?: string;
   url: string;
   title: string;
 }) {
   const { products } = await fetchFilteredProducts({
-    section: title,
+    keywordFilter: keyWords || "",
+    sort: title,
     limit: 4,
   });
   return (

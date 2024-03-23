@@ -1,12 +1,20 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { Sorting } from ".";
 import { CategoryCount } from "@/types";
-import { createUrl, getAllCategories, getProperties } from "@/utils";
+import { createUrl } from "@/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FilterSkeleton } from "./LoadingSkeleton";
 
-const FilterContainer = () => {
+const FilterContainer = ({
+  allColors,
+  allSizes,
+  categories,
+}: {
+  allColors: string[];
+  allSizes: string[];
+  categories: CategoryCount[];
+}) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -25,15 +33,6 @@ const FilterContainer = () => {
   const minPrice = minPriceParam ? parseInt(minPriceParam) : 0;
   const maxPriceParam = searchParams?.get("maxP") || "";
   const maxPrice = maxPriceParam ? parseInt(maxPriceParam) : 1000;
-
-  const [allColors, setColors] = React.useState<string[]>([]);
-  const [allSizes, setSizes] = React.useState<string[]>([]);
-  const [categories, setCategories] = React.useState<CategoryCount[]>([]);
-
-  useEffect(() => {
-    getProperties({ setColors, setSizes });
-    getAllCategories(setCategories);
-  }, []);
 
   if (!allColors?.length || !allSizes?.length || !categories?.length)
     return <FilterSkeleton />;
@@ -143,7 +142,7 @@ const FilterContainer = () => {
         <h1>Colors</h1>
         <div className="flex flex-wrap gap-3">
           {allColors.map((item, index) => {
-            const selected = colorFilter.includes(index.toString());
+            const selected = colorFilter.includes(item);
             return (
               <button
                 key={index}
@@ -151,12 +150,8 @@ const FilterContainer = () => {
                   addParam(
                     "clf",
                     selected
-                      ? colorFilter
-                          .filter(
-                            (colorIndex) => colorIndex !== index.toString(),
-                          )
-                          .join(",")
-                      : [...colorFilter, index].join(","),
+                      ? colorFilter.filter((color) => color !== item).join(",")
+                      : [...colorFilter, item].join(","),
                   )
                 }
                 className={`${selected ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} h-8 w-8 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}

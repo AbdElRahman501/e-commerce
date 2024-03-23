@@ -10,24 +10,42 @@ export default async function SearchPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { q: searchValue, l } = searchParams as {
+  const {
+    q: searchValue,
+    l,
+    sort,
+    gf,
+    ctf,
+    szf,
+    clf,
+    minP,
+    maxP,
+  } = searchParams as {
     [key: string]: string;
   };
+  const genderParams = gf ? parseInt(gf) : null;
+  const gender =
+    genderParams === null ? "all" : genderParams === 1 ? "male" : "female";
   const limit = l ? parseInt(l) : 12;
+  const colorFilter = clf ? clf.split(",") : [];
+  const sizeFilter = szf ? szf.split(",") : [];
+  const categoryFilter = ctf ? ctf.split(",") : [];
+
+  const minPrice = minP ? parseInt(minP) : 0;
+  const maxPrice = maxP ? parseInt(maxP) : 1000;
 
   const { products, count } = await fetchFilteredProducts({
     query: searchValue,
-    priceSorting: 0,
-    selectedCategories: [],
+    sort: sort || "",
+    selectedCategories: categoryFilter,
     keywordFilter: "",
-    minPrice: 0,
+    minPrice: minPrice,
     originFilter: [],
-    maxPrice: 0,
-    genderFilter: "all",
-    colorFilter: [],
-    sizeFilter: [],
+    maxPrice: maxPrice,
+    genderFilter: gender,
+    colorFilter: colorFilter,
+    sizeFilter: sizeFilter,
     limit,
-    section: "",
   });
   const resultsText = products.length > 1 ? "results" : "result";
   return (

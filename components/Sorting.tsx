@@ -4,7 +4,14 @@ import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const Sorting = ({ classNames = "" }: { classNames?: string }) => {
-  const options = ["Price: Low to High", "Price: High to Low"];
+  const options = [
+    "Default",
+    "Trending",
+    "New Arrivals",
+    "Best Sellers",
+    "Price: Low to High",
+    "Price: High to Low",
+  ];
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -32,10 +39,6 @@ const Sorting = ({ classNames = "" }: { classNames?: string }) => {
         onChange={changHandler}
         className="h-full w-full appearance-none rounded-2xl bg-transparent text-base outline-none "
       >
-        <option value="" disabled>
-          {" "}
-          sort{" "}
-        </option>
         {options &&
           options.map((option, i) => (
             <option key={i} value={option} className="dark:text-black">

@@ -15,9 +15,9 @@ export default async function Home() {
     <>
       <Hero />
       <Suspense>
-        <ProductsRow title="Trending" url="/shop?section=Trending" />
-        <ProductsRow title="New Arrivals" url="/shop?section=New Arrivals" />
-        <ProductsRow title="Best Sellers" url="/shop?section=Best Sellers" />
+        <ProductsRow title="Trending" url="/shop?sort=Trending" />
+        <ProductsRow title="New Arrivals" url="/shop?sort=New Arrivals" />
+        <ProductsRow title="Best Sellers" url="/shop?sort=Best Sellers" />
         <Testimonials />
         <FAQSection />
         <Suspense>

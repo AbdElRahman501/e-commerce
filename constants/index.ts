@@ -170,36 +170,6 @@ const faqSection = [
       "For any questions or concerns, you can reach our customer support team through the 'Contact Us' page on our website or by emailing support@example.com. We aim to respond to inquiries promptly.",
   },
 ];
-const filterData: FilterData = {
-  origin: ["Sale", "New", "A hit Sale"],
-  categories: [
-    { name: "Anime", count: 32 },
-    { name: "Quotes", count: 24 },
-    { name: "Nature", count: 26 },
-    { name: "Wildlife", count: 5 },
-    { name: "Painted", count: 11 },
-    { name: "Vintage", count: 2 },
-    { name: "Retro", count: 37 },
-    { name: "Graphic", count: 20 },
-    { name: "Pets", count: 10 },
-    { name: "Music", count: 13 },
-    { name: "Sports", count: 9 },
-    { name: "Gaming", count: 9 },
-  ],
-  sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
-  colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
-};
-
-const filterInitialData: FilterType = {
-  selectedCategories: [],
-  originFilter: [],
-  colorFilter: [],
-  keywordFilter: "",
-  sizeFilter: [],
-  minPrice: 0,
-  maxPrice: 100000,
-  genderFilter: "all",
-};
 const dashboardCards: DashboardCardProps[] = [
   {
     image: "/icons/order.svg",
@@ -258,11 +228,9 @@ const dashboardCards: DashboardCardProps[] = [
 ];
 export {
   dashboardCards,
-  filterInitialData,
   products,
   categories,
   faqSection,
-  filterData,
   formInputs,
   footerList,
   productInputs,

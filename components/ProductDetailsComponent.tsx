@@ -25,6 +25,10 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
   const images = product?.id ? getAllImages(product.images) : [];
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
+  const [selectedColor, setSelectedColor] = useState<string>(color);
+  const [selectedSize, setSelectedSize] = useState<string>(size);
+  const [amountValue, setAmountValue] = useState<number>(amount);
+
   useEffect(() => {
     setAudio(new Audio("/sounds/short-success.mp3"));
   }, []);
@@ -65,6 +69,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
   }
 
   function selectColor(color: string) {
+    setSelectedColor(color);
     const image = product.images[color]?.[0] || "";
     const imagesIndex = images.indexOf(image);
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -75,6 +80,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
   }
 
   function selectSize(size: string) {
+    setSelectedSize(size);
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("size", size);
     const optionUrl = createUrl(pathname, newSearchParams);
@@ -82,6 +88,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
   }
 
   function setAmount(amount: number) {
+    setAmountValue(amount);
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("amount", amount.toString());
     const optionUrl = createUrl(pathname, newSearchParams);
@@ -123,7 +130,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
               <button
                 key={index}
                 onClick={() => selectSize(item)}
-                className={`${item === size ? "scale-110 !bg-primary_color !text-white dark:!bg-white dark:!text-primary_color" : ""} flex h-10 w-14 items-center justify-center rounded-xl border border-primary_bg py-1 text-lg text-primary_color duration-200 hover:scale-110 hover:bg-gray-300 dark:border-white dark:text-white`}
+                className={`${item === selectedSize ? "scale-110 !bg-primary_color !text-white dark:!bg-white dark:!text-primary_color" : ""} flex h-10 w-14 items-center justify-center rounded-xl border border-primary_bg py-1 text-lg text-primary_color duration-200 hover:scale-110 hover:bg-gray-300 dark:border-white dark:text-white`}
               >
                 <span>{item}</span>
               </button>
@@ -141,7 +148,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
                   selectColor(item);
                 }}
                 key={index}
-                className={`${item === color ? "scale-110  border-blue-900  dark:border-blue-400" : "border-transparent"} rounded-full border-2  p-1 duration-200 hover:scale-110`}
+                className={`${item === selectedColor ? "scale-110  border-blue-900  dark:border-blue-400" : "border-transparent"} rounded-full border-2  p-1 duration-200 hover:scale-110`}
               >
                 <span
                   style={{ backgroundColor: item }}
@@ -155,13 +162,17 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
           <h1 className="text-lg font-bold text-primary_color dark:text-white">
             Amount
           </h1>
-          <AmountButton amount={amount} setAmount={setAmount} width="w-10" />
+          <AmountButton
+            amount={amountValue}
+            setAmount={setAmount}
+            width="w-10"
+          />
         </div>
         <div className="mt-3 flex max-w-md items-center justify-between gap-3">
           <button
             type="button"
             onClick={addToCart}
-            disabled={!color || !size || !amount}
+            disabled={!selectedColor || !selectedSize || !amountValue}
             className=" flex h-12 w-full items-center gap-3 rounded-full bg-primary_color p-1 text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
           >
             <div className="flex aspect-square h-10 w-10 items-center justify-center rounded-full bg-white ">

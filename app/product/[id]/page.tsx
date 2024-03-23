@@ -84,7 +84,11 @@ export default async function ProductDetailPage({
       </Suspense>
 
       <Suspense>
-        <ProductsRow title="You may also like" url="/shop" />
+        <ProductsRow
+          title="You may also like"
+          keyWords={product.keywords}
+          url="/shop"
+        />
       </Suspense>
 
       <Suspense>

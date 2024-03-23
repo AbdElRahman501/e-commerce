@@ -4,7 +4,7 @@ import { CartProduct, Order } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useContext, useEffect } from "react";
-import { getOrder } from "@/utils";
+// import { getOrder } from "@/utils";
 
 const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
   const orderId = params.id;
@@ -14,12 +14,12 @@ const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
   const [loading, setLoading] = React.useState(true);
   const [copied, setCopied] = React.useState(false);
 
-  useEffect(() => {
-    if (orderId && !order.id) {
-      getOrder(orderId, setOrder, setCartProducts, setLoading);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderId]);
+  // useEffect(() => {
+  //   if (orderId && !order.id) {
+  //     getOrder(orderId, setOrder, setCartProducts, setLoading);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [orderId]);
 
   useEffect(() => {
     if (order) {

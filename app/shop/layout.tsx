@@ -1,10 +1,5 @@
-import {
-  CallToAction,
-  FilterButton,
-  FilterContainer,
-  SearchField,
-  Sorting,
-} from "@/components";
+import { CallToAction, FilterButton, SearchField, Sorting } from "@/components";
+import FilterSection from "@/components/FilterSection";
 import { Suspense } from "react";
 
 export default function SearchLayout({
@@ -24,7 +19,9 @@ export default function SearchLayout({
         <Sorting classNames=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex" />
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
-        <FilterContainer />
+        <Suspense>
+          <FilterSection />
+        </Suspense>
         <div className="rounded-4xl flex min-h-[60vh] flex-1 flex-col gap-4  ">
           {children}
         </div>

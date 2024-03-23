@@ -1,12 +1,11 @@
 import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
 import { Product } from "@/lib";
-import { FilterProps, Product as ProductType } from "@/types";
+import { CategoryCount, FilterProps, Product as ProductType } from "@/types";
 import { products as productsConst } from "@/constants";
 
 export async function fetchFilteredProducts({
   query = "",
-  priceSorting = 0,
   selectedCategories = [],
   keywordFilter = "",
   minPrice = 0,
@@ -15,7 +14,7 @@ export async function fetchFilteredProducts({
   colorFilter = [],
   sizeFilter = [],
   limit = 10,
-  section,
+  sort,
 }: FilterProps): Promise<{ products: ProductType[]; count: number }> {
   const textSearchCondition = query
     ? {
@@ -85,11 +84,7 @@ export async function fetchFilteredProducts({
   try {
     await connectToDatabase();
     const count = await Product.countDocuments(finalQuery);
-    const data = priceSorting
-      ? await Product.find(finalQuery)
-          .sort({ price: 1 === priceSorting ? 1 : -1 })
-          .limit(limit)
-      : await fetchDataBySection({ section, finalQuery, limit });
+    const data = await fetchDataBySection({ sort, finalQuery, limit });
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     return { products, count };
   } catch (error) {
@@ -111,21 +106,26 @@ export async function fetchProducts(): Promise<ProductType[]> {
 }
 
 async function fetchDataBySection({
-  section,
+  sort,
   limit,
   finalQuery,
 }: {
-  section?: string;
+  sort?: string;
   limit: number;
   finalQuery: any;
 }) {
-  switch (section) {
+  ["Price: Low to High", "Price: High to Low"];
+  switch (sort) {
     case "Trending":
       return await Product.find(finalQuery).sort({ views: -1 }).limit(limit);
     case "New Arrivals":
       return await Product.find(finalQuery).limit(limit);
     case "Best Sellers":
       return await Product.find(finalQuery).limit(limit);
+    case "Price: Low to High":
+      return await Product.find(finalQuery).sort({ price: 1 }).limit(limit);
+    case "Price: High to Low":
+      return await Product.find(finalQuery).sort({ price: -1 }).limit(limit);
     default:
       return await Product.find(finalQuery).limit(limit);
   }
@@ -184,7 +184,9 @@ export async function fetchProductsById(ids: string[]): Promise<ProductType[]> {
   }
 }
 
-export const getCategoriesWithProductCount = async () => {
+export const getCategoriesWithProductCount = async (): Promise<
+  CategoryCount[]
+> => {
   try {
     await connectToDatabase();
     // Aggregate pipeline to group products by categories and count the number of products in each category

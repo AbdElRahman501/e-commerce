@@ -4,7 +4,6 @@ import { CustomInput, LoadingLogo } from "@/components";
 import { productInputs } from "@/constants";
 import { Product } from "@/types";
 import { useRouter } from "next/navigation";
-import { getProduct } from "@/utils";
 import PreviewProduct from "@/components/PreviewProduct";
 
 const EditProduct = ({ params }: { params: { id: string } }) => {
@@ -14,13 +13,6 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
   const productId = params.id;
   const [data, setData] = React.useState({} as Product);
   const router = useRouter();
-
-  useEffect(() => {
-    if (!data?.id) {
-      getProduct(setData, setProductLoading, productId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

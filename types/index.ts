@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react";
+import React from "react";
 
 export interface ArrowButtonProps {
   className?: string;
@@ -121,9 +121,8 @@ export interface FilterType {
 
 export interface FilterProps extends FilterType {
   query?: string;
-  priceSorting?: number;
   limit?: number;
-  section?: string;
+  sort?: string;
 }
 export interface CategoryCount {
   name: string;

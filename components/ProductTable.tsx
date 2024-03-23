@@ -1,6 +1,5 @@
 "use client";
 import { Product } from "@/types";
-import { getProducts } from "@/utils";
 import React from "react";
 import { SearchField, Sorting, CustomTable, LoadingLogo } from ".";
 import ProductsAction from "./ProductsAction";
@@ -10,9 +9,6 @@ const ProductTable = () => {
   const [filteredProducts, setFilteredProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
 
-  React.useEffect(() => {
-    getProducts(setProducts, setLoading);
-  }, []);
   return loading ? (
     <LoadingLogo />
   ) : (
