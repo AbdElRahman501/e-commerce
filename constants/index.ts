@@ -2,6 +2,7 @@ import {
   DashboardCardProps,
   FilterData,
   FilterType,
+  OfferType,
   Order,
   PersonalInfo,
 } from "@/types";
@@ -224,6 +225,25 @@ const dashboardCards: DashboardCardProps[] = [
     title: "Products",
     number: "100",
     url: "/products",
+  },
+];
+
+export const offers: OfferType[] = [
+  {
+    title: "Sale",
+    description: "10% off",
+    sale: 10,
+    category: "anime",
+    image: "/images/offer.jpg",
+    url: "/shop?ctf=anime",
+  },
+  {
+    title: "Sale",
+    description: "20% off",
+    sale: 20,
+    category: "SALE-20%",
+    image: "/images/offer.jpg",
+    url: "/shop?ctf=anime",
   },
 ];
 export {

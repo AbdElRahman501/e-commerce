@@ -15,6 +15,7 @@ import { createOrder, fetchOrders } from "./actions/order.actions";
 //models
 import Product from "./models/product.model";
 import Order from "./models/order.model";
+import Offer from "./models/offer.model";
 
 export {
   getAllProperties,
@@ -28,4 +29,5 @@ export {
   createOrder,
   Product,
   Order,
+  Offer,
 };

@@ -110,7 +110,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
             <div key={index} className="inline-block">
               <span className="mx-1 text-base">&#8250;</span>
               <Link
-                href={`/shop?category=${item.trim()}`}
+                href={`/shop?ctf=${item.trim()}`}
                 className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
               >
                 {item}

@@ -39,10 +39,20 @@ export interface Product {
   gender: "male" | "female";
   quantity: number;
   likes: number;
-  views?: number;
   updatedAt: string;
+  views?: number;
+  sales?: number;
+  minPrice: number;
 }
 
+export interface OfferType {
+  title: string;
+  description: string;
+  sale: number;
+  category: string;
+  image: string;
+  url: string;
+}
 export interface Review {
   id: string;
   username: string;

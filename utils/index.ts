@@ -3,6 +3,7 @@ import {
   CartProduct,
   CategoryCount,
   FilterType,
+  OfferType,
   Order,
   Product,
 } from "@/types";
@@ -146,4 +147,23 @@ export const removeProduct = (productId: string): any => {
       return { error: "cannot delete product" };
     });
 };
+
+export function getSalePrice(offers: OfferType[], product: Product) {
+  const { categories, price, minPrice, keywords } = product;
+  const matchingString =
+    categories.toLowerCase() + " " + keywords.toLowerCase();
+  let matchingSale = offers.find((sale) =>
+    matchingString.includes(sale.category.toLowerCase()),
+  );
+
+  if (matchingSale) {
+    let salePrice = Math.ceil(price - (price * matchingSale.sale) / 100);
+
+    if (salePrice > minPrice) {
+      return { salePrice, saleValue: matchingSale.sale };
+    }
+  }
+
+  return { salePrice: null, saleValue: null };
+}
 export { formatOrderItems };

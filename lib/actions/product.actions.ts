@@ -1,8 +1,14 @@
 import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
-import { Product } from "@/lib";
-import { CategoryCount, FilterProps, Product as ProductType } from "@/types";
+import { Offer, Product } from "@/lib";
+import {
+  CategoryCount,
+  FilterProps,
+  OfferType,
+  Product as ProductType,
+} from "@/types";
 import { products as productsConst } from "@/constants";
+import { getSalePrice } from "@/utils";
 
 export async function fetchFilteredProducts({
   query = "",
@@ -123,9 +129,33 @@ async function fetchDataBySection({
     case "Best Sellers":
       return await Product.find(finalQuery).limit(limit);
     case "Price: Low to High":
-      return await Product.find(finalQuery).sort({ price: 1 }).limit(limit);
+      const offers: OfferType[] = await Offer.find({});
+      const products = await Product.find(finalQuery)
+        .sort({ price: 1 })
+        .limit(limit);
+      const sortedProducts = products.sort((a: any, b: any) => {
+        const salePriceA = getSalePrice(offers, a).salePrice;
+        const salePriceB = getSalePrice(offers, b).salePrice;
+        const modifiedPriceA = salePriceA !== null ? salePriceA : a.price;
+        const modifiedPriceB = salePriceB !== null ? salePriceB : b.price;
+        return modifiedPriceA - modifiedPriceB;
+      });
+      return sortedProducts;
     case "Price: High to Low":
-      return await Product.find(finalQuery).sort({ price: -1 }).limit(limit);
+      const offersHighToLow: OfferType[] = await Offer.find({});
+      const productsHighToLow = await Product.find(finalQuery)
+        .sort({ price: -1 })
+        .limit(limit);
+      const sortedProductsHighToLow = productsHighToLow.sort(
+        (a: any, b: any) => {
+          const salePriceA = getSalePrice(offersHighToLow, a).salePrice;
+          const salePriceB = getSalePrice(offersHighToLow, b).salePrice;
+          const modifiedPriceA = salePriceA !== null ? salePriceA : a.price;
+          const modifiedPriceB = salePriceB !== null ? salePriceB : b.price;
+          return modifiedPriceB - modifiedPriceA;
+        },
+      );
+      return sortedProductsHighToLow;
     default:
       return await Product.find(finalQuery).limit(limit);
   }

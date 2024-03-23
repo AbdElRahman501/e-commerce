@@ -4,10 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { StoreContext } from "./StoreContext";
+import { offers } from "@/constants";
+import { getSalePrice } from "@/utils";
 
-const ProductCard = ({ images, colors, id, title, price }: Product) => {
+const ProductCard = ({
+  images,
+  colors,
+  id,
+  title,
+  price,
+  categories,
+  minPrice,
+  keywords,
+}: Product) => {
   const [selectedColor, setSelectedColor] = useState<string>("");
-
   const { favorite, setFavorite } = React.useContext(StoreContext);
   const isFav = favorite.includes(id);
 
@@ -18,8 +28,21 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
         : [...prev, id];
     });
   }
+  const { salePrice, saleValue } = getSalePrice(offers, {
+    categories,
+    price,
+    minPrice,
+    keywords,
+  } as Product);
   return (
-    <div className="Product animate-fadeIn flex-col gap-4">
+    <div className="Product animate-fadeIn relative flex-col gap-4">
+      {saleValue && (
+        <div className="bg-primary_colo absolute left-4 top-0 z-10  w-min overflow-hidden  text-wrap text-center text-white">
+          <p className="mb-3 h-full w-full bg-red-600 p-1">{saleValue} %</p>
+          <div className="absolute bottom-[2px] h-0 w-0 rotate-45 border-b-8 border-r-8 border-t-8 border-red-600"></div>
+          <div className="absolute bottom-[2px] right-0 h-0 w-0 -rotate-45 border-b-8 border-r-8 border-t-8 border-red-600"></div>
+        </div>
+      )}
       <Link
         className="relative block"
         href={`/product/${id}?color=${selectedColor.replace("#", "HASH:")}`}
@@ -60,7 +83,11 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
         </button>
       </div>
       <p className="w-full text-sm md:text-base ">{title}</p>
-      <p className="text-base  font-bold md:text-xl">{price} EGP</p>
+      {salePrice ? (
+        <p className="text-base font-bold md:text-xl">{salePrice} EGP</p>
+      ) : (
+        <p className="text-base  font-bold md:text-xl">{price} EGP</p>
+      )}
     </div>
   );
 };
