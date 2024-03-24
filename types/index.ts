@@ -58,6 +58,14 @@ export interface OfferType {
   image: string;
   url: string;
 }
+
+export interface PromoCodeType {
+  code: string;
+  discount: number;
+  limit: number;
+  active: boolean;
+  maxDiscount: number;
+}
 export interface Review {
   id: string;
   username: string;

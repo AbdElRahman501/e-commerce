@@ -8,7 +8,6 @@ import {
   ProductOnSaleType,
   Product as ProductType,
 } from "@/types";
-import { products as productsConst } from "@/constants";
 import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
 
 export async function fetchFilteredProducts({
@@ -170,24 +169,12 @@ export async function getAllProperties(): Promise<{
     throw new Error("Unable to fetch sizes");
   }
 }
-export async function insertProducts(): Promise<ProductType[]> {
-  try {
-    await connectToDatabase();
-    // await Product.collection.drop();
-    const data = await Product.insertMany(productsConst);
-    const products: ProductType[] = JSON.parse(JSON.stringify(data));
-    return products;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-}
 export async function fetchProduct(
   id: string,
 ): Promise<ProductOnSaleType | null> {
   try {
     await connectToDatabase();
-    const data = await Product.findById(id);
+    const data = await Product.findByIdAndUpdate(id, { $inc: { views: 1 } });
     const product: ProductType = JSON.parse(JSON.stringify(data));
     const offers: OfferType[] = await Offer.find({});
     const { salePrice, saleValue } = getSalePrice(offers, product);

@@ -233,7 +233,7 @@ const BagCard = ({
           )}
         </div>
       </div>
-      {!removable && (
+      {!readonly && (
         <button
           onClick={removeItem}
           type="button"

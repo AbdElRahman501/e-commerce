@@ -15,7 +15,7 @@ const ProductDetailsComponent = ({
   id,
   title,
   price,
-  images: productImages,
+  images,
   colors,
   sizes,
   categories,
@@ -24,7 +24,6 @@ const ProductDetailsComponent = ({
 }: ProductOnSaleType) => {
   const { cart, setCart, favorite, setFavorite } =
     React.useContext(StoreContext);
-  console.log("🚀 ~ cart:", cart);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -33,7 +32,6 @@ const ProductDetailsComponent = ({
   const size: string = searchParams.get("size") || "";
   const amountSearchParams = searchParams.get("amount");
   const amount = amountSearchParams ? parseInt(amountSearchParams) : 1;
-  const images = id ? getAllImages(productImages) : [];
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   const [selectedColor, setSelectedColor] = useState<string>(color);
@@ -81,11 +79,8 @@ const ProductDetailsComponent = ({
 
   function selectColor(color: string) {
     setSelectedColor(color);
-    const image = productImages[color]?.[0] || "";
-    const imagesIndex = images.indexOf(image);
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("color", color.toString().replace("#", "HASH:"));
-    newSearchParams.set("image", imagesIndex.toString());
     const optionUrl = createUrl(pathname, newSearchParams);
     return router.replace(optionUrl, { scroll: false });
   }
@@ -108,7 +103,11 @@ const ProductDetailsComponent = ({
 
   return (
     <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
-      <ProductImages images={images} title={title} />
+      <ProductImages
+        images={getAllImages(images)}
+        selectedImage={images[selectedColor]?.[0] || ""}
+        title={title}
+      />
       <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
           <Link

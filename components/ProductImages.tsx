@@ -1,28 +1,37 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 
 interface YourComponentProps {
   images: string[];
+  selectedImage?: string;
   title: string;
 }
 
-const ProductImages: React.FC<YourComponentProps> = ({ images, title }) => {
+const ProductImages: React.FC<YourComponentProps> = ({
+  images: imagesList,
+  selectedImage,
+  title,
+}) => {
+  const [images, setImages] = useState(imagesList);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const searchParams = useSearchParams();
-  const imageSearchParam = searchParams.get("image");
-  const imageIndex = imageSearchParam ? parseInt(imageSearchParam) : 0;
-
   useEffect(() => {
-    if (!imageIndex) {
+    if (!selectedImage) {
       return;
     }
-    setCurrentIndex(imageIndex);
-    scrollToIndex(imageIndex);
-  }, [imageIndex]);
+    const selectedImageIndex = images.findIndex(
+      (image) => image === selectedImage,
+    );
+    if (window.innerWidth > 640) {
+      setImages(rearrangeArray(images, selectedImageIndex));
+    } else {
+      setCurrentIndex(selectedImageIndex);
+      scrollToIndex(selectedImageIndex);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedImage]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,7 +88,7 @@ const ProductImages: React.FC<YourComponentProps> = ({ images, title }) => {
     <div className="relative h-full w-full min-w-[50vw] flex-1 gap-2  md:min-w-[40vw] lg:min-w-[30vw]">
       <button
         onClick={scrollToPrev}
-        className="absolute left-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden "
+        className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden `}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
           <Image
@@ -95,14 +104,12 @@ const ProductImages: React.FC<YourComponentProps> = ({ images, title }) => {
         className="scroll-bar-hidden  images-container relative h-full w-full snap-x snap-mandatory overflow-scroll max-sm:!flex sm:grid sm:gap-2 sm:overflow-hidden"
         ref={containerRef}
       >
-        {rearrangeArray(images, currentIndex).map((item, index) => (
+        {images.map((item, index) => (
           <button
-            onClick={() => {
-              if (window.innerWidth < 640) {
-                setCurrentIndex(index);
-                scrollToIndex(index);
-              }
-            }}
+            onClick={() =>
+              window.innerWidth > 640 &&
+              setImages(rearrangeArray(images, index))
+            }
             key={index}
             className={`area-${index + 1}  aspect-card relative min-w-[100vw] snap-center overflow-hidden bg-gradient-to-r from-slate-100 to-slate-200 sm:min-w-full sm:rounded-3xl`}
           >
@@ -110,7 +117,8 @@ const ProductImages: React.FC<YourComponentProps> = ({ images, title }) => {
               src={item}
               alt={title}
               fill
-              style={{ objectFit: "cover" }}
+              objectFit="cover"
+              sizes="100%"
               className="duration-300 hover:scale-110"
             />
           </button>
@@ -118,7 +126,7 @@ const ProductImages: React.FC<YourComponentProps> = ({ images, title }) => {
       </div>
       <button
         onClick={scrollToNext}
-        className="absolute right-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden"
+        className={`${currentIndex === images.length - 1 ? "hidden" : ""} absolute right-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden`}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
           <Image

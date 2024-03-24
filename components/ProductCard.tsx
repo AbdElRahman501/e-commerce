@@ -29,10 +29,22 @@ const ProductCard = ({
   return (
     <div className="Product animate-fadeIn relative flex-col gap-4">
       {saleValue && (
-        <div className="bg-primary_colo absolute left-4 top-0 z-10  w-min overflow-hidden  text-wrap text-center text-white">
+        <div className="bg-primary_colo absolute left-4 top-0 z-10  w-min text-wrap text-center text-white">
           <p className="mb-3 h-full w-full bg-red-600 p-1">{saleValue} %</p>
-          <div className="absolute bottom-[2px] h-0 w-0 rotate-45 border-b-8 border-r-8 border-t-8 border-red-600"></div>
-          <div className="absolute bottom-[2px] right-0 h-0 w-0 -rotate-45 border-b-8 border-r-8 border-t-8 border-red-600"></div>
+          <div
+            style={{
+              transform: "rotate(90deg)",
+              borderWidth: "20px 0 0 20px",
+            }}
+            className="triangle absolute -bottom-[7px]"
+          ></div>
+          <div
+            style={{
+              transform: "rotate(180deg)",
+              borderWidth: "20px 0 0 20px",
+            }}
+            className="triangle absolute -bottom-[7px] right-0"
+          ></div>
         </div>
       )}
       <Link

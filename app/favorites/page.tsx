@@ -1,6 +1,6 @@
 "use client";
 import { LoadingLogo, ProductCard, StoreContext } from "@/components";
-import { Product } from "@/types";
+import { ProductOnSaleType } from "@/types";
 import { getProductsByIds } from "@/utils";
 import Link from "next/link";
 import React, { useContext } from "react";
@@ -8,7 +8,7 @@ import React, { useContext } from "react";
 const FavoritePage = () => {
   const { favorite } = useContext(StoreContext);
   const [loading, setLoading] = React.useState(true);
-  const [products, setProducts] = React.useState<Product[]>([]);
+  const [products, setProducts] = React.useState<ProductOnSaleType[]>([]);
 
   React.useEffect(() => {
     getProductsByIds(favorite, setProducts, setLoading);
@@ -40,11 +40,9 @@ const FavoritePage = () => {
         Favorite Products
       </h1>
       <div className="grid grid-cols-2 gap-4  md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
-        {products
-          .filter((product) => favorite.includes(product.id))
-          .map((product, index) => (
-            <ProductCard key={index} {...product} />
-          ))}
+        {products.map((product) => (
+          <ProductCard key={product.id} {...product} />
+        ))}
       </div>
     </div>
   );

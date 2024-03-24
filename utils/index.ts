@@ -1,11 +1,10 @@
 import {
   CartItem,
   CartProduct,
-  CategoryCount,
-  FilterType,
   OfferType,
   Order,
   Product,
+  ProductOnSaleType,
 } from "@/types";
 
 import formatOrderItems from "./formatOrderItems";
@@ -53,7 +52,7 @@ export const getCartProducts = (
 };
 export const getProductsByIds = (
   ids: string[],
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
+  setProducts: React.Dispatch<React.SetStateAction<ProductOnSaleType[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   if (!ids?.length) return setLoading(false);
@@ -198,4 +197,36 @@ export const modifyProducts = (products: Product[], offers: OfferType[]) => {
   return modifiedProducts;
 };
 
+export const fetchOffers = async (
+  setOffers: React.Dispatch<React.SetStateAction<OfferType[]>>,
+) => {
+  fetch(`/api/offers`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data) return;
+      if (data.offers) setOffers && setOffers(data.offers);
+    });
+};
+
+export const fetchDiscount = async (
+  code: string,
+  done: (data: any) => void,
+) => {
+  fetch(`/api/offers/discount`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ code }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      done(data);
+    });
+};
 export { formatOrderItems };

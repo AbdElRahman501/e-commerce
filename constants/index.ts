@@ -1,12 +1,4 @@
-import {
-  DashboardCardProps,
-  FilterData,
-  FilterType,
-  OfferType,
-  Order,
-  PersonalInfo,
-} from "@/types";
-import products from "./products";
+import { DashboardCardProps, OfferType, PromoCodeType } from "@/types";
 import { formInputs, productInputs } from "./inputs";
 const footerList = [
   {
@@ -254,9 +246,14 @@ export const offers: OfferType[] = [
     url: "/shop",
   },
 ];
+
+export const promoCodeConstants: PromoCodeType[] = [
+  { code: "BEDO10", discount: 10, limit: 10, active: true, maxDiscount: 100 },
+  { code: "BEDO20", discount: 20, limit: 10, active: true, maxDiscount: 100 },
+  { code: "B20", discount: 20, limit: 100, active: true, maxDiscount: 100 },
+];
 export {
   dashboardCards,
-  products,
   categories,
   faqSection,
   formInputs,

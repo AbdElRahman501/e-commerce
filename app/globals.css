@@ -11,7 +11,19 @@
   :root {
     --background: #0d1117;
   }
+
+  html {
+    color-scheme: dark;
+  }
 }
+
+
+@supports (font: -apple-system-body) and (-webkit-appearance: none) {
+  img[loading='lazy'] {
+    clip-path: inset(0.6px);
+  }
+}
+
 
 @keyframes fadeIn {
 
@@ -124,4 +136,13 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.triangle {
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  /* border-width: 200px 0 0 200px; */
+  border-color: transparent transparent transparent rgb(220 38 38);
+  /* transform: rotate(0deg); */
 }

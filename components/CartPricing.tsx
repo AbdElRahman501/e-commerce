@@ -1,12 +1,21 @@
-import { CartProduct } from "@/types";
+"use client";
+import { CartProduct, OfferType, PromoCodeType } from "@/types";
+import { fetchDiscount, fetchOffers } from "@/utils";
+import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { offers } from "@/constants";
+import React, { useEffect } from "react";
 
 const CartPricing = ({ cart }: { cart: CartProduct[] }) => {
   const [discount, setDiscount] = React.useState(0);
   const [error, setError] = React.useState("");
   const [code, setCode] = React.useState("");
+  const [offers, setOffers] = React.useState<OfferType[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+
+  useEffect(() => {
+    fetchOffers(setOffers);
+  }, []);
 
   if (!cart.length || !cart[0]?.id) return null;
 
@@ -27,23 +36,31 @@ const CartPricing = ({ cart }: { cart: CartProduct[] }) => {
   const minValue = Number(freeShippingMinValue);
   const toFreeShipping = subTotal + 50 < minValue ? minValue - subTotal : 0;
 
+  function fetchHandler(data: any) {
+    setLoading(false);
+    if (!data) return;
+    if (data.error) setError && setError(data.error);
+    if (data.discount) {
+      const discountOffer: PromoCodeType = data.discount;
+      const discountPercentage = discountOffer.discount / 100 || 0;
+      const discountValue = Math.ceil(discountPercentage * subTotal);
+      if (subTotal - discountValue > minSubTotal) {
+        setDiscount(discountValue);
+        setSuccess(true);
+      } else {
+        setError("You can't use this coupon");
+      }
+      setError("");
+    }
+  }
+
   function handlePromoCode(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const val = e.target as HTMLFormElement;
     const code = val.promoCode as HTMLInputElement;
-    const discountOffer = offers.find((x) => x.category === code.value);
-    if (discountOffer) {
-      setCode(code.value);
-      const discountPercentage = discountOffer?.sale / 100 || 0;
-      const discountValue = Math.ceil(discountPercentage * subTotal);
-      if (subTotal - discountValue > minSubTotal) {
-        setDiscount(discountValue);
-      } else {
-        setError("You can't use this coupon");
-      }
-    } else {
-      setError("Invalid coupon code");
-    }
+    setCode(code.value);
+    setLoading(true);
+    fetchDiscount(code.value, fetchHandler);
   }
 
   return (
@@ -52,17 +69,39 @@ const CartPricing = ({ cart }: { cart: CartProduct[] }) => {
         <input
           type="text"
           name="promoCode"
+          onChange={() => setSuccess(false)}
           placeholder="Coupon code"
           className=" h-12 w-full rounded-2xl border border-gray-500 bg-transparent px-4  outline-none dark:placeholder:text-gray-300 "
         />
         <div>
           <button
             type="submit"
-            className="h-12 w-12  rounded-full bg-primary_color hover:bg-gray-900 "
+            disabled={loading || success}
+            className="enabled:group h-12  w-12 rounded-full bg-primary_color enabled:hover:bg-gray-900 "
           >
-            <span className="m-auto block -translate-y-[1px] translate-x-[1px] text-3xl  text-white hover:scale-110">
-              &#43;
-            </span>
+            {loading ? (
+              <div className="m-auto block group-hover:scale-110">
+                <div className="flex items-center justify-center gap-1 dark:invert">
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.3s]"></div>
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-white [animation-delay:-0.15s]"></div>
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-white"></div>
+                </div>
+              </div>
+            ) : success ? (
+              <div className="flex items-center justify-center">
+                <Image
+                  src={"/icons/check.svg"}
+                  alt="cart icon"
+                  width={24}
+                  height={24}
+                  className="w-auto duration-300 "
+                />
+              </div>
+            ) : (
+              <span className="m-auto block -translate-y-[1px] translate-x-[1px] text-3xl  text-white group-hover:scale-110">
+                &#43;
+              </span>
+            )}
           </button>
         </div>
       </form>
@@ -93,7 +132,7 @@ const CartPricing = ({ cart }: { cart: CartProduct[] }) => {
         <p className=" font-bold text-gray-600 dark:text-gray-300">Total</p>
         <p className="  font-medium ">{total.toFixed(2)} EGP</p>
       </div>
-      <Link href={`/checkout?code=${code}`}>
+      <Link href={`/checkout?code=${discount && code}`}>
         <button className="group mt-2 h-12 w-full rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900">
           <p className="duration-500 group-hover:scale-110">
             Proceed To Checkout
