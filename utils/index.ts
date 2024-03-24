@@ -98,6 +98,18 @@ export function getAllImages(images: Record<string, string[]>) {
   return allImages;
 }
 
+export function getTransformedImageUrl(
+  originalUrl: string | "",
+  width: number,
+  height: number,
+) {
+  if (!originalUrl) return "";
+  const parts = originalUrl.split("/upload/");
+  const transformation = `w_${width},h_${height},c_fill/`;
+  const transformedUrl = parts[0] + "/upload/" + transformation + parts[1];
+  return transformedUrl;
+}
+
 export const createUrl = (
   pathname: string,
   params: URLSearchParams | ReadonlyURLSearchParams,
