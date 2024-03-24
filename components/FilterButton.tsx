@@ -1,12 +1,21 @@
+"use client";
+import { createUrl } from "@/utils";
 import Image from "next/image";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const FilterButton = ({
-  setIsOpen,
-  isOpen,
-}: {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const FilterButton = () => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const isOpen = searchParams?.get("ft") === "true";
+
+  function setIsOpen(isOpen: boolean) {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("ft", isOpen.toString());
+    const optionUrl = createUrl(pathname, newSearchParams);
+    router.replace(optionUrl);
+  }
+
   const openFilter = () => {
     if (isOpen) {
       setIsOpen(false);

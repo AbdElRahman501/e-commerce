@@ -18,7 +18,7 @@ export function StoreContextProvider({
 }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorite, setFavorite] = useState<string[]>([]);
-  const newVersion = "1.0.0.3";
+  const newVersion = "1.0.0.5";
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -48,12 +48,14 @@ export function StoreContextProvider({
     if (mounted) {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart]);
 
   useEffect(() => {
     if (mounted) {
       localStorage.setItem("favorite", JSON.stringify(favorite));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [favorite]);
 
   return (

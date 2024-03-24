@@ -9,29 +9,63 @@ import {
 import { formInputs } from "@/constants";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CartProduct, PersonalInfo } from "@/types";
+import { CartProduct, PersonalInfo, PromoCodeType } from "@/types";
 import Link from "next/link";
-import { createOrder, getCartProducts } from "@/utils";
+import { createOrder, fetchDiscount, getCartProducts } from "@/utils";
 
-const CheckOutPage = () => {
+const CheckOutPage = ({ searchParams }: { searchParams: { code: string } }) => {
+  const router = useRouter();
   const { cart } = useContext(StoreContext);
   const [data, setData] = useState<PersonalInfo>({} as PersonalInfo);
   const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [cartLoading, setCartLoading] = React.useState(true);
 
-  useEffect(() => {
-    getCartProducts(cart, setCartProducts, setCartLoading);
-  }, [cart]);
+  const [discount, setDiscount] = React.useState(0);
+  const [discountPercentage, setDiscountPercentage] = React.useState(0);
+  const [total, setTotal] = React.useState(0);
+  const [shipping, setShipping] = React.useState(10);
 
-  const router = useRouter();
-  const subTotal = cartProducts.reduce(
-    (acc, item) => acc + item.price * item.amount,
+  const subTotal = cartProducts.reduce((acc, item) => {
+    const price = item.salePrice ? item.salePrice : item.price;
+    return acc + price * item.amount;
+  }, 0);
+  const minSubTotal = cartProducts.reduce(
+    (acc, item) => acc + item.minPrice * item.amount,
     0,
   );
-  const shipping = subTotal > 100 ? 0 : 10;
-  const discount = subTotal * 0.1;
-  const total = subTotal + shipping - discount;
+  function fetchHandler(data: any) {
+    if (!data) return;
+    if (data.discount) {
+      const discountOffer: PromoCodeType = data.discount;
+      const discountPercentage = discountOffer.discount / 100 || 0;
+      setDiscountPercentage(discountPercentage);
+    }
+  }
+
+  useEffect(() => {
+    if (cartProducts.length > 0) {
+      const discountValue = Math.ceil(discountPercentage * subTotal);
+      const discount =
+        subTotal - discountValue > minSubTotal ? discountValue : 0;
+      setDiscount(discount);
+      setTotal(subTotal + shipping - discount);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subTotal, shipping, discount, discountPercentage, cartProducts]);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      getCartProducts(cart, setCartProducts, setCartLoading);
+    }
+  }, [cart]);
+
+  useEffect(() => {
+    if (searchParams.code) {
+      fetchDiscount(searchParams.code, fetchHandler);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +151,7 @@ const CheckOutPage = () => {
             <CustomInput
               key={index}
               {...input}
-              value={data[input.name as keyof PersonalInfo]}
+              value={data[input.name as keyof PersonalInfo] || ""}
               onChange={(e) =>
                 setData((prev: any) => ({
                   ...prev,

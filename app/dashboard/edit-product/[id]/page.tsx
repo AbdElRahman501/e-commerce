@@ -4,7 +4,6 @@ import { CustomInput, LoadingLogo } from "@/components";
 import { productInputs } from "@/constants";
 import { Product } from "@/types";
 import { useRouter } from "next/navigation";
-import { getProduct } from "@/utils";
 import PreviewProduct from "@/components/PreviewProduct";
 
 const EditProduct = ({ params }: { params: { id: string } }) => {
@@ -14,12 +13,6 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
   const productId = params.id;
   const [data, setData] = React.useState({} as Product);
   const router = useRouter();
-
-  useEffect(() => {
-    if (!data?.id) {
-      getProduct(setData, setProductLoading, productId);
-    }
-  }, [data]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +43,7 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
       <div className=" flex w-full flex-col gap-10 md:flex-row ">
         <form onSubmit={handleSubmit} className="flex w-full flex-col gap-2 ">
           {Object.keys(data.images || {}).map((key) => (
-            <div className="flex w-full items-end gap-2">
+            <div key={key} className="flex w-full items-end gap-2">
               <div className="flex min-w-[25%] max-w-[25%] flex-col gap-2">
                 <p>key</p>
                 <div className="flex h-14 w-full items-center justify-center overflow-hidden rounded-2xl border border-gray-400  text-center text-base   dark:text-white  ">

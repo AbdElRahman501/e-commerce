@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react";
+import React from "react";
 
 export interface ArrowButtonProps {
   className?: string;
@@ -39,8 +39,33 @@ export interface Product {
   gender: "male" | "female";
   quantity: number;
   likes: number;
+  updatedAt: string;
+  views?: number;
+  sales?: number;
+  minPrice: number;
 }
 
+export interface ProductOnSaleType extends Product {
+  salePrice: number | null;
+  saleValue: number | null;
+}
+
+export interface OfferType {
+  title: string;
+  description: string;
+  sale: number;
+  category: string;
+  image: string;
+  url: string;
+}
+
+export interface PromoCodeType {
+  code: string;
+  discount: number;
+  limit: number;
+  active: boolean;
+  maxDiscount: number;
+}
 export interface Review {
   id: string;
   username: string;
@@ -52,13 +77,9 @@ export interface ProductDetailPageProps {
   params: {
     id: string;
   };
-  searchParams: {
-    c?: string;
-    hex?: string;
-  };
 }
 
-export interface CartProduct extends Product {
+export interface CartProduct extends ProductOnSaleType {
   amount: number;
   selectedColor: string;
   selectedSize: string;
@@ -112,16 +133,21 @@ export interface Order {
 }
 
 export interface FilterType {
-  selectedCategories: string[];
-  originFilter: string[];
-  colorFilter: string[];
-  keywordFilter: string;
-  sizeFilter: string[];
-  minPrice: number;
-  maxPrice: number;
-  genderFilter: "male" | "female" | "all";
+  selectedCategories?: string[];
+  originFilter?: string[];
+  colorFilter?: string[];
+  keywordFilter?: string;
+  sizeFilter?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  genderFilter?: "male" | "female" | "all";
 }
 
+export interface FilterProps extends FilterType {
+  query?: string;
+  limit?: number;
+  sort?: string;
+}
 export interface CategoryCount {
   name: string;
   count: number;

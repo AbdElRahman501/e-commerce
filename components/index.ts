@@ -2,7 +2,6 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import NavBar from "./NavBar";
 import Hero from "./Hero";
 import ArrowButton from "./ArrowButton";
-import ProductsRow from "./ProductsRow";
 import MenuBurgerButton from "./MenuBurgerButton";
 import Footer from "./Footer";
 import ProductCard from "./ProductCard";
@@ -28,8 +27,14 @@ import Sorting from "./Sorting";
 import TotalCard from "./TotalCard";
 import CustomTable from "./CustomTable";
 import { ProductSkeleton, CartSkeleton, LoadingLogo } from "./LoadingSkeleton";
+import ProductTable from "./ProductTable";
+import OrdersTable from "./OrdersTable";
+import LoadMore from "./LoadMore";
 
 export {
+  LoadMore,
+  OrdersTable,
+  ProductTable,
   LoadingLogo,
   ProductSkeleton,
   CartSkeleton,
@@ -60,7 +65,6 @@ export {
   Footer,
   Hero,
   ArrowButton,
-  ProductsRow,
   MenuBurgerButton,
   Testimonials,
 };

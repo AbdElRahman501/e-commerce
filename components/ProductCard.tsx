@@ -1,13 +1,20 @@
 "use client";
-import { Product } from "@/types";
+import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { StoreContext } from "./StoreContext";
 
-const ProductCard = ({ images, colors, id, title, price }: Product) => {
+const ProductCard = ({
+  images,
+  colors,
+  id,
+  title,
+  price,
+  salePrice,
+  saleValue,
+}: ProductOnSaleType) => {
   const [selectedColor, setSelectedColor] = useState<string>("");
-
   const { favorite, setFavorite } = React.useContext(StoreContext);
   const isFav = favorite.includes(id);
 
@@ -19,27 +26,37 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
     });
   }
 
-  function colorDefiner() {
-    const hexColorRegex = /^#?([0-9A-F]{3}){1,2}$/i;
-    const isHex =
-      typeof selectedColor === "string" && hexColorRegex.test(selectedColor);
-    return isHex ? `hex=${selectedColor.slice(1)}` : `c=${selectedColor}`;
-  }
-
   return (
-    <div className="Product flex-col gap-4">
+    <div className="Product animate-fadeIn relative flex-col gap-4">
+      {saleValue && (
+        <div className="bg-primary_colo absolute left-4 top-0 z-10  w-min text-wrap text-center text-white">
+          <p className="mb-3 h-full w-full bg-red-600 p-1">{saleValue} %</p>
+          <div
+            style={{
+              transform: "rotate(90deg)",
+              borderWidth: "20px 0 0 20px",
+            }}
+            className="triangle absolute -bottom-[7px]"
+          ></div>
+          <div
+            style={{
+              transform: "rotate(180deg)",
+              borderWidth: "20px 0 0 20px",
+            }}
+            className="triangle absolute -bottom-[7px] right-0"
+          ></div>
+        </div>
+      )}
       <Link
-        href={
-          selectedColor ? `/product/${id}?${colorDefiner()}` : `/product/${id}`
-        }
+        className="relative block"
+        href={`/product/${id}?color=${selectedColor.replace("#", "HASH:")}`}
       >
         <div className="aspect-card relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-100 to-slate-200">
           <Image
             src={images[selectedColor || colors[0]][0]}
             alt="jacket"
             fill
-            objectFit="cover"
-            sizes="100%"
+            style={{ objectFit: "cover" }}
             className="duration-300 hover:scale-110"
           />
         </div>
@@ -69,8 +86,15 @@ const ProductCard = ({ images, colors, id, title, price }: Product) => {
           />
         </button>
       </div>
-      <p className="w-full text-sm md:text-base ">{title}</p>
-      <p className="text-base  font-bold md:text-xl">{price} EGP</p>
+      <p className="w-full  ">{title}</p>
+      {salePrice ? (
+        <>
+          <p className="text-xs text-gray-500 line-through">{price} EGP</p>
+          <p className=" text-sm font-bold md:text-base ">{salePrice} EGP</p>
+        </>
+      ) : (
+        <p className="text-sm font-bold  md:text-base ">{price} EGP</p>
+      )}
     </div>
   );
 };

@@ -37,7 +37,7 @@ const page = () => {
         <section>
           <h2 className="mb-2 text-xl font-semibold">Mission</h2>
           <p>
-            GIVACO's mission is to provide customers with more than just a
+            GIVACO is mission is to provide customers with more than just a
             t-shirt. We aim to offer the best quality, unique designs, and an
             exceptional shopping experience.
           </p>
@@ -63,8 +63,9 @@ const page = () => {
         <section>
           <h2 className="mb-2 text-xl font-semibold">Financial Projections</h2>
           <p>
-            GIVACO's financial projections are based on market research, showing
-            a high demand and potential for growth in the t-shirt business.
+            GIVACO is financial projections are based on market research,
+            showing a high demand and potential for growth in the t-shirt
+            business.
           </p>
         </section>
 

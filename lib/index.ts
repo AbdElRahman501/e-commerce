@@ -5,7 +5,6 @@ import {
   fetchProductsById,
   getCategoriesWithProductCount,
   fetchFilteredProducts,
-  insertProducts,
   getAllProperties,
 } from "./actions/product.actions";
 
@@ -15,10 +14,10 @@ import { createOrder, fetchOrders } from "./actions/order.actions";
 //models
 import Product from "./models/product.model";
 import Order from "./models/order.model";
+import Offer from "./models/offer.model";
 
 export {
   getAllProperties,
-  insertProducts,
   fetchOrders,
   fetchFilteredProducts,
   fetchProducts,
@@ -28,4 +27,5 @@ export {
   createOrder,
   Product,
   Order,
+  Offer,
 };

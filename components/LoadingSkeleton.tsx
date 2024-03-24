@@ -30,7 +30,7 @@ export const CartSkeleton = ({ array }: { array: CartItem[] }) => {
   return (
     <div className=" flex w-full flex-col gap-5 md:max-w-lg ">
       {array.map((_, index) => (
-        <div className="relative flex w-full gap-5 border-b pb-2 ">
+        <div key={index} className="relative flex w-full gap-5 border-b pb-2 ">
           <div className="aspect-card h-28 animate-pulse rounded-2xl bg-gray-300"></div>
           <div className="flex flex-1 flex-col justify-between">
             <div className="h-8 w-[40%] animate-pulse rounded-md bg-gray-300"></div>
@@ -45,6 +45,11 @@ export const CartSkeleton = ({ array }: { array: CartItem[] }) => {
         </div>
       ))}
     </div>
+  );
+};
+export const FilterSkeleton = () => {
+  return (
+    <div className="scroll-bar-hidden h-{75vh}  fixed bottom-[-100vh] left-0  z-20  flex max-h-[calc(100dvh-9.5rem)] w-full animate-pulse flex-col gap-7 overflow-y-auto bg-gray-300 px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"></div>
   );
 };
 export const LoadingLogo = () => {

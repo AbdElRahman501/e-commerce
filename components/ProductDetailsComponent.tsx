@@ -1,47 +1,51 @@
 "use client";
+import { usePathname, useSearchParams } from "next/navigation";
+
 import React, { useEffect, useState } from "react";
 import { faqSection } from "@/constants";
-import { AmountButton, StoreContext, LoadingLogo } from "@/components";
-import { Product } from "@/types";
+import { AmountButton, StoreContext } from "@/components";
+import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
-import ProductImages from "./ProductImages";
+import { ProductImages } from ".";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getAllImages, getProduct } from "@/utils";
+import { createUrl, getAllImages } from "@/utils";
 
 const ProductDetailsComponent = ({
-  color,
-  productId,
-}: {
-  color?: string;
-  productId: string;
-}) => {
+  id,
+  title,
+  price,
+  images,
+  colors,
+  sizes,
+  categories,
+  name,
+  salePrice,
+}: ProductOnSaleType) => {
   const { cart, setCart, favorite, setFavorite } =
     React.useContext(StoreContext);
-  const [selectedColor, setSelectedColor] = React.useState<string>(color || "");
-  const [selectedSize, setSelectedSize] = React.useState<string>("");
-  const [amount, setAmount] = React.useState<number>(1);
-  const [product, setProduct] = React.useState<Product>({} as Product);
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
-  const router = useRouter();
 
-  useEffect(() => {
-    if (!product?.id) {
-      getProduct(setProduct, setLoading, productId);
-    }
-  }, [product]);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const color: string = searchParams.get("color")?.replace("HASH:", "#") || "";
+  const size: string = searchParams.get("size") || "";
+  const amountSearchParams = searchParams.get("amount");
+  const amount = amountSearchParams ? parseInt(amountSearchParams) : 1;
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  const [selectedColor, setSelectedColor] = useState<string>(color);
+  const [selectedSize, setSelectedSize] = useState<string>(size);
+  const [amountValue, setAmountValue] = useState<number>(amount);
 
   useEffect(() => {
     setAudio(new Audio("/sounds/short-success.mp3"));
   }, []);
 
-  const images = product?.id ? getAllImages(product.images) : [];
-
-  const isFav = favorite.includes(productId);
+  const isFav = favorite.includes(id);
   const isInCart = cart.some(
     (item) =>
-      item.productId === productId &&
+      item.productId === id &&
       item.selectedColor === selectedColor &&
       item.selectedSize === selectedSize,
   );
@@ -54,8 +58,8 @@ const ProductDetailsComponent = ({
         return [
           ...prev,
           {
-            productId: productId,
-            amount: amount,
+            productId: id,
+            amount: amountValue,
             selectedColor: selectedColor,
             selectedSize: selectedSize,
           },
@@ -67,23 +71,42 @@ const ProductDetailsComponent = ({
 
   function toggleFavorite() {
     setFavorite((prev) => {
-      return prev.includes(productId)
-        ? prev.filter((item) => item !== productId)
-        : [...prev, productId];
+      return prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id];
     });
   }
 
-  return loading ? (
-    <LoadingLogo />
-  ) : !product.id ? (
-    <div className="flex h-screen items-center justify-center">
-      <div> Product not found </div>
-    </div>
-  ) : (
+  function selectColor(color: string) {
+    setSelectedColor(color);
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("color", color.toString().replace("#", "HASH:"));
+    const optionUrl = createUrl(pathname, newSearchParams);
+    return router.replace(optionUrl, { scroll: false });
+  }
+
+  function selectSize(size: string) {
+    setSelectedSize(size);
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("size", size);
+    const optionUrl = createUrl(pathname, newSearchParams);
+    return router.replace(optionUrl, { scroll: false });
+  }
+
+  function setAmount(amount: number) {
+    setAmountValue(amount);
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("amount", amount.toString());
+    const optionUrl = createUrl(pathname, newSearchParams);
+    return router.replace(optionUrl, { scroll: false });
+  }
+
+  return (
     <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
-        images={images}
-        selectedImage={product.images[selectedColor]?.[0] || ""}
+        images={getAllImages(images)}
+        selectedImage={images[selectedColor]?.[0] || ""}
+        title={title}
       />
       <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
@@ -91,13 +114,13 @@ const ProductDetailsComponent = ({
             href={"/shop"}
             className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
           >
-            Category
+            Shop
           </Link>
-          {product.categories.split(",").map((item, index) => (
+          {categories.split(",").map((item, index) => (
             <div key={index} className="inline-block">
               <span className="mx-1 text-base">&#8250;</span>
               <Link
-                href={"#"}
+                href={`/shop?ctf=${item.trim()}`}
                 className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
               >
                 {item}
@@ -105,18 +128,25 @@ const ProductDetailsComponent = ({
             </div>
           ))}
         </div>
-        <h6 className="text-lg ">{product.title}</h6>
-        <p className="text-sm text-gray-400 ">{product.name}</p>
-        <h5 className="text-xl font-bold">{product.price} EGP</h5>
+        <h6 className="text-lg ">{title}</h6>
+        <p className="text-sm text-gray-400 ">{name}</p>
+        {salePrice ? (
+          <div className="flex flex-col">
+            <p className="text-xs text-gray-400 line-through ">{price} EGP</p>
+            <p className=" text-xl font-bold ">{salePrice} EGP</p>
+          </div>
+        ) : (
+          <p className="text-xl font-bold">{price} EGP</p>
+        )}
         <div className="flex flex-col gap-3">
           <h1 className="text-lg font-bold text-primary_color dark:text-white">
             Sizes
           </h1>
           <div className="flex flex-wrap gap-2">
-            {product.sizes.map((item, index) => (
+            {sizes.map((item, index) => (
               <button
                 key={index}
-                onClick={() => setSelectedSize(item)}
+                onClick={() => selectSize(item)}
                 className={`${item === selectedSize ? "scale-110 !bg-primary_color !text-white dark:!bg-white dark:!text-primary_color" : ""} flex h-10 w-14 items-center justify-center rounded-xl border border-primary_bg py-1 text-lg text-primary_color duration-200 hover:scale-110 hover:bg-gray-300 dark:border-white dark:text-white`}
               >
                 <span>{item}</span>
@@ -129,10 +159,12 @@ const ProductDetailsComponent = ({
             Colors
           </h1>
           <div className="flex flex-wrap gap-1">
-            {product.colors.map((item, index) => (
+            {colors.map((item, index) => (
               <button
+                onClick={() => {
+                  selectColor(item);
+                }}
                 key={index}
-                onClick={() => setSelectedColor(item)}
                 className={`${item === selectedColor ? "scale-110  border-blue-900  dark:border-blue-400" : "border-transparent"} rounded-full border-2  p-1 duration-200 hover:scale-110`}
               >
                 <span
@@ -147,13 +179,17 @@ const ProductDetailsComponent = ({
           <h1 className="text-lg font-bold text-primary_color dark:text-white">
             Amount
           </h1>
-          <AmountButton amount={amount} setAmount={setAmount} />
+          <AmountButton
+            amount={amountValue}
+            setAmount={setAmount}
+            width="w-10"
+          />
         </div>
         <div className="mt-3 flex max-w-md items-center justify-between gap-3">
           <button
             type="button"
             onClick={addToCart}
-            disabled={!selectedColor || !selectedSize || !amount}
+            disabled={!selectedColor || !selectedSize || !amountValue}
             className=" flex h-12 w-full items-center gap-3 rounded-full bg-primary_color p-1 text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
           >
             <div className="flex aspect-square h-10 w-10 items-center justify-center rounded-full bg-white ">

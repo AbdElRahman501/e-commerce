@@ -1,11 +1,4 @@
-import {
-  DashboardCardProps,
-  FilterData,
-  FilterType,
-  Order,
-  PersonalInfo,
-} from "@/types";
-import products from "./products";
+import { DashboardCardProps, OfferType, PromoCodeType } from "@/types";
 import { formInputs, productInputs } from "./inputs";
 const footerList = [
   {
@@ -58,6 +51,48 @@ const footerList = [
       //   url: "https://twitter.com/yourstore",
       // },
     ],
+  },
+];
+
+export type SortFilterItem = {
+  title: string;
+  slug: string | null;
+  sortKey: "RELEVANCE" | "BEST_SELLING" | "CREATED_AT" | "PRICE";
+  reverse: boolean;
+};
+
+export const defaultSort: SortFilterItem = {
+  title: "Relevance",
+  slug: null,
+  sortKey: "RELEVANCE",
+  reverse: false,
+};
+
+export const sorting: SortFilterItem[] = [
+  defaultSort,
+  {
+    title: "Trending",
+    slug: "trending-desc",
+    sortKey: "BEST_SELLING",
+    reverse: false,
+  }, // asc
+  {
+    title: "Latest arrivals",
+    slug: "latest-desc",
+    sortKey: "CREATED_AT",
+    reverse: true,
+  },
+  {
+    title: "Price: Low to high",
+    slug: "price-asc",
+    sortKey: "PRICE",
+    reverse: false,
+  }, // asc
+  {
+    title: "Price: High to low",
+    slug: "price-desc",
+    sortKey: "PRICE",
+    reverse: true,
   },
 ];
 
@@ -128,36 +163,6 @@ const faqSection = [
       "For any questions or concerns, you can reach our customer support team through the 'Contact Us' page on our website or by emailing support@example.com. We aim to respond to inquiries promptly.",
   },
 ];
-const filterData: FilterData = {
-  origin: ["Sale", "New", "A hit Sale"],
-  categories: [
-    { name: "Anime", count: 32 },
-    { name: "Quotes", count: 24 },
-    { name: "Nature", count: 26 },
-    { name: "Wildlife", count: 5 },
-    { name: "Painted", count: 11 },
-    { name: "Vintage", count: 2 },
-    { name: "Retro", count: 37 },
-    { name: "Graphic", count: 20 },
-    { name: "Pets", count: 10 },
-    { name: "Music", count: 13 },
-    { name: "Sports", count: 9 },
-    { name: "Gaming", count: 9 },
-  ],
-  sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
-  colors: ["#12355b", "#420039", "#d72638", "#ffffff", "#ff570a"],
-};
-
-const filterInitialData: FilterType = {
-  selectedCategories: [],
-  originFilter: [],
-  colorFilter: [],
-  keywordFilter: "",
-  sizeFilter: [],
-  minPrice: 0,
-  maxPrice: 100000,
-  genderFilter: "all",
-};
 const dashboardCards: DashboardCardProps[] = [
   {
     image: "/icons/order.svg",
@@ -214,13 +219,43 @@ const dashboardCards: DashboardCardProps[] = [
     url: "/products",
   },
 ];
+
+export const offers: OfferType[] = [
+  {
+    title: "Sale",
+    description: "10% off",
+    sale: 10,
+    category: "anime",
+    image: "/images/offer.jpg",
+    url: "/shop?ctf=anime",
+  },
+  {
+    title: "free shipping",
+    description: "800",
+    sale: 0,
+    category: "free shipping",
+    image: "/images/offer.jpg",
+    url: "/shop",
+  },
+  {
+    title: "sale",
+    description: "sale 20%",
+    sale: 20,
+    category: "SALE20%",
+    image: "/images/offer.jpg",
+    url: "/shop",
+  },
+];
+
+export const promoCodeConstants: PromoCodeType[] = [
+  { code: "BEDO10", discount: 10, limit: 10, active: true, maxDiscount: 100 },
+  { code: "BEDO20", discount: 20, limit: 10, active: true, maxDiscount: 100 },
+  { code: "B20", discount: 20, limit: 100, active: true, maxDiscount: 100 },
+];
 export {
   dashboardCards,
-  filterInitialData,
-  products,
   categories,
   faqSection,
-  filterData,
   formInputs,
   footerList,
   productInputs,

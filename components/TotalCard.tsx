@@ -19,8 +19,8 @@ const TotalCard = ({
         src={image}
         width={45}
         height={45}
-        objectFit="contain"
         alt={`${title} icon`}
+        className="object-contain"
       />
       <div>
         <h1 className="text-base font-bold">{title}</h1>

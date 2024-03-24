@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React, { useContext, useEffect } from "react";
 import BagCard from "./BagCard";
-import { CartPricing, CartSkeleton, LoadingLogo, StoreContext } from ".";
+import { CartPricing, LoadingLogo, StoreContext } from ".";
 import { CartProduct } from "@/types";
 import { getCartProducts } from "@/utils";
 
@@ -30,7 +30,7 @@ const CartComponent = () => {
       </div>
     );
   }
-  return loading ? (
+  return loading || cartProducts.length === 0 ? (
     <LoadingLogo />
   ) : (
     <div className="p-5 lg:px-20">
@@ -40,9 +40,10 @@ const CartComponent = () => {
       <div className="flex w-full flex-col justify-center gap-5 md:flex-row">
         {
           <div className=" flex w-full flex-col gap-5 md:max-w-lg ">
-            {cartProducts.map((item, index) => (
-              <BagCard {...item} key={index} />
-            ))}
+            {cartProducts?.map(
+              (product) =>
+                product.id && <BagCard {...product} key={product.id} />,
+            )}
           </div>
         }
         <CartPricing cart={cartProducts} />

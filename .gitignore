@@ -38,3 +38,4 @@ next-env.d.ts
 .prettierrc.json
 package-lock.json
 app/api/products/seed/route.ts
+Archive/hi.ts

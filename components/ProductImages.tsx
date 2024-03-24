@@ -5,11 +5,13 @@ import React, { useEffect, useRef, useState } from "react";
 interface YourComponentProps {
   images: string[];
   selectedImage?: string;
+  title: string;
 }
 
 const ProductImages: React.FC<YourComponentProps> = ({
   images: imagesList,
   selectedImage,
+  title,
 }) => {
   const [images, setImages] = useState(imagesList);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -28,6 +30,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
       setCurrentIndex(selectedImageIndex);
       scrollToIndex(selectedImageIndex);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedImage]);
 
   useEffect(() => {
@@ -43,9 +46,10 @@ const ProductImages: React.FC<YourComponentProps> = ({
     if (containerRef.current) {
       containerRef.current.addEventListener("scroll", handleScroll);
     }
+    const currentRef = containerRef.current;
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeEventListener("scroll", handleScroll);
+      if (currentRef) {
+        currentRef.removeEventListener("scroll", handleScroll);
       }
     };
   }, []);
@@ -84,7 +88,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
     <div className="relative h-full w-full min-w-[50vw] flex-1 gap-2  md:min-w-[40vw] lg:min-w-[30vw]">
       <button
         onClick={scrollToPrev}
-        className="absolute left-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden "
+        className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden `}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
           <Image
@@ -111,7 +115,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
           >
             <Image
               src={item}
-              alt="jacket"
+              alt={title}
               fill
               objectFit="cover"
               sizes="100%"
@@ -122,7 +126,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
       </div>
       <button
         onClick={scrollToNext}
-        className="absolute right-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden"
+        className={`${currentIndex === images.length - 1 ? "hidden" : ""} absolute right-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden`}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
           <Image

@@ -1,11 +1,17 @@
-import { CartComponent, ProductsRow } from "@/components";
+import { CartComponent } from "@/components";
+import ProductsRow from "@/components/ProductsRow";
+import { Suspense } from "react";
 
 const page = () => {
   return (
-    <section>
-      <CartComponent />
-      <ProductsRow title="You may also like" url="/shop" />
-    </section>
+    <>
+      <Suspense>
+        <CartComponent />
+        <Suspense>
+          <ProductsRow title="You may also like" url="/shop" />
+        </Suspense>
+      </Suspense>
+    </>
   );
 };
 
