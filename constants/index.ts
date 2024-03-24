@@ -238,12 +238,20 @@ export const offers: OfferType[] = [
     url: "/shop?ctf=anime",
   },
   {
-    title: "Sale",
-    description: "20% off",
-    sale: 20,
-    category: "SALE-20%",
+    title: "free shipping",
+    description: "800",
+    sale: 0,
+    category: "free shipping",
     image: "/images/offer.jpg",
-    url: "/shop?ctf=anime",
+    url: "/shop",
+  },
+  {
+    title: "sale",
+    description: "sale 20%",
+    sale: 20,
+    category: "SALE20%",
+    image: "/images/offer.jpg",
+    url: "/shop",
   },
 ];
 export {

@@ -45,6 +45,11 @@ export interface Product {
   minPrice: number;
 }
 
+export interface ProductOnSaleType extends Product {
+  salePrice: number | null;
+  saleValue: number | null;
+}
+
 export interface OfferType {
   title: string;
   description: string;
@@ -66,7 +71,7 @@ export interface ProductDetailPageProps {
   };
 }
 
-export interface CartProduct extends Product {
+export interface CartProduct extends ProductOnSaleType {
   amount: number;
   selectedColor: string;
   selectedSize: string;

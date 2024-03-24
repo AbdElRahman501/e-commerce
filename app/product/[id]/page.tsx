@@ -80,7 +80,7 @@ export default async function ProductDetailPage({
       />
 
       <Suspense>
-        <ProductDetailsComponent product={product} />
+        <ProductDetailsComponent {...product} />
       </Suspense>
 
       <Suspense>

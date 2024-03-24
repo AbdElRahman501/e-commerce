@@ -1,11 +1,9 @@
 "use client";
-import { Product } from "@/types";
+import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { StoreContext } from "./StoreContext";
-import { offers } from "@/constants";
-import { getSalePrice } from "@/utils";
 
 const ProductCard = ({
   images,
@@ -13,10 +11,9 @@ const ProductCard = ({
   id,
   title,
   price,
-  categories,
-  minPrice,
-  keywords,
-}: Product) => {
+  salePrice,
+  saleValue,
+}: ProductOnSaleType) => {
   const [selectedColor, setSelectedColor] = useState<string>("");
   const { favorite, setFavorite } = React.useContext(StoreContext);
   const isFav = favorite.includes(id);
@@ -28,12 +25,7 @@ const ProductCard = ({
         : [...prev, id];
     });
   }
-  const { salePrice, saleValue } = getSalePrice(offers, {
-    categories,
-    price,
-    minPrice,
-    keywords,
-  } as Product);
+
   return (
     <div className="Product animate-fadeIn relative flex-col gap-4">
       {saleValue && (
@@ -82,11 +74,14 @@ const ProductCard = ({
           />
         </button>
       </div>
-      <p className="w-full text-sm md:text-base ">{title}</p>
+      <p className="w-full  ">{title}</p>
       {salePrice ? (
-        <p className="text-base font-bold md:text-xl">{salePrice} EGP</p>
+        <>
+          <p className="text-xs text-gray-500 line-through">{price} EGP</p>
+          <p className=" text-sm font-bold md:text-base ">{salePrice} EGP</p>
+        </>
       ) : (
-        <p className="text-base  font-bold md:text-xl">{price} EGP</p>
+        <p className="text-sm font-bold  md:text-base ">{price} EGP</p>
       )}
     </div>
   );

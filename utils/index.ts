@@ -139,7 +139,6 @@ export const removeProduct = (productId: string): any => {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log("🚀 ~ .then ~ data:", data);
       if (!data) return { error: "cannot delete product" };
       if (data.status === 200) {
         return { success: true };
@@ -166,4 +165,37 @@ export function getSalePrice(offers: OfferType[], product: Product) {
 
   return { salePrice: null, saleValue: null };
 }
+
+export const sorProductPriceOffer = ({
+  offers,
+  products,
+  ascending = true,
+}: {
+  offers: OfferType[];
+  products: Product[];
+  ascending?: boolean;
+}) => {
+  const sorter = products.sort((a: any, b: any) => {
+    const salePriceA = getSalePrice(offers, a).salePrice;
+    const salePriceB = getSalePrice(offers, b).salePrice;
+    const modifiedPriceA = salePriceA !== null ? salePriceA : a.price;
+    const modifiedPriceB = salePriceB !== null ? salePriceB : b.price;
+    if (ascending) {
+      return modifiedPriceA - modifiedPriceB;
+    } else {
+      return modifiedPriceB - modifiedPriceA;
+    }
+  });
+
+  return sorter;
+};
+
+export const modifyProducts = (products: Product[], offers: OfferType[]) => {
+  const modifiedProducts = products.map((product) => {
+    const { salePrice, saleValue } = getSalePrice(offers, product);
+    return { ...product, salePrice, saleValue };
+  });
+  return modifiedProducts;
+};
+
 export { formatOrderItems };

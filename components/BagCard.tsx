@@ -22,6 +22,7 @@ const BagCard = ({
   removable,
   colors,
   sizes,
+  salePrice,
 }: Props) => {
   const { cart, setCart } = React.useContext(StoreContext);
   const sameProductColors = cart
@@ -123,7 +124,14 @@ const BagCard = ({
         <h2 className="font-regular w-3/4 text-sm text-primary_color dark:text-gray-300 md:text-base  ">
           {title}
         </h2>
-        <h2 className="text-base font-bold md:text-lg">{price} EGP</h2>
+        {salePrice ? (
+          <div className="flex flex-col ">
+            <p className="text-xs text-gray-500 line-through">{price} EGP</p>
+            <p className=" text-sm font-bold md:text-base ">{salePrice} EGP</p>
+          </div>
+        ) : (
+          <p className="text-sm font-bold  md:text-base ">{price} EGP</p>
+        )}
         <div className="flex  gap-2">
           {readonly ? (
             <div

@@ -6,14 +6,14 @@ import {
   LoadingLogo,
   StoreContext,
 } from "@/components";
-import { formInputs } from "@/constants";
+import { formInputs, offers } from "@/constants";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CartProduct, PersonalInfo } from "@/types";
 import Link from "next/link";
 import { createOrder, getCartProducts } from "@/utils";
 
-const CheckOutPage = () => {
+const CheckOutPage = ({ searchParams }: { searchParams: { code: string } }) => {
   const { cart } = useContext(StoreContext);
   const [data, setData] = useState<PersonalInfo>({} as PersonalInfo);
   const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
@@ -25,12 +25,21 @@ const CheckOutPage = () => {
   }, [cart]);
 
   const router = useRouter();
-  const subTotal = cartProducts.reduce(
-    (acc, item) => acc + item.price * item.amount,
+  const subTotal = cartProducts.reduce((acc, item) => {
+    const price = item.salePrice ? item.salePrice : item.price;
+    return acc + price * item.amount;
+  }, 0);
+  const minSubTotal = cartProducts.reduce(
+    (acc, item) => acc + item.minPrice * item.amount,
     0,
   );
+
   const shipping = subTotal > 100 ? 0 : 10;
-  const discount = subTotal * 0.1;
+  const discountOffer = offers.find((x) => x.category === searchParams.code);
+  const discountPercentage = discountOffer ? discountOffer?.sale / 100 || 0 : 0;
+  const discountValue = Math.ceil(discountPercentage * subTotal);
+  const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
+
   const total = subTotal + shipping - discount;
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -22,8 +22,8 @@ async function ProductsRow({
         <SectionTitle title={title} url={url} />
         <div className="scroll-bar-hidden overflow-x-scroll md:overflow-hidden ">
           <div className="grid-container grid w-full gap-4 md:grid-cols-4 lg:gap-8 ">
-            {products.map((product, index) => (
-              <ProductCard key={index} {...product} />
+            {products.map((product) => (
+              <ProductCard key={product.id} {...product} />
             ))}
           </div>
         </div>

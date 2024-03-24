@@ -1,5 +1,4 @@
-import { fetchProducts, fetchProductsById } from "@/lib";
-import { notFound } from "next/navigation";
+import { fetchProductsById } from "@/lib";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

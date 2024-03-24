@@ -5,10 +5,11 @@ import {
   CategoryCount,
   FilterProps,
   OfferType,
+  ProductOnSaleType,
   Product as ProductType,
 } from "@/types";
 import { products as productsConst } from "@/constants";
-import { getSalePrice } from "@/utils";
+import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
 
 export async function fetchFilteredProducts({
   query = "",
@@ -21,7 +22,7 @@ export async function fetchFilteredProducts({
   sizeFilter = [],
   limit = 10,
   sort,
-}: FilterProps): Promise<{ products: ProductType[]; count: number }> {
+}: FilterProps): Promise<{ products: ProductOnSaleType[]; count: number }> {
   const textSearchCondition = query
     ? {
         $or: [
@@ -90,9 +91,14 @@ export async function fetchFilteredProducts({
   try {
     await connectToDatabase();
     const count = await Product.countDocuments(finalQuery);
-    const data = await fetchDataBySection({ sort, finalQuery, limit });
+    const offers: OfferType[] = await Offer.find({});
+    const data = await fetchDataBySection({ sort, finalQuery, limit, offers });
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
-    return { products, count };
+    const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+      products,
+      offers,
+    );
+    return { products: modifiedProducts, count };
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -115,10 +121,12 @@ async function fetchDataBySection({
   sort,
   limit,
   finalQuery,
+  offers,
 }: {
   sort?: string;
   limit: number;
   finalQuery: any;
+  offers: OfferType[];
 }) {
   ["Price: Low to High", "Price: High to Low"];
   switch (sort) {
@@ -129,33 +137,21 @@ async function fetchDataBySection({
     case "Best Sellers":
       return await Product.find(finalQuery).limit(limit);
     case "Price: Low to High":
-      const offers: OfferType[] = await Offer.find({});
-      const products = await Product.find(finalQuery)
-        .sort({ price: 1 })
-        .limit(limit);
-      const sortedProducts = products.sort((a: any, b: any) => {
-        const salePriceA = getSalePrice(offers, a).salePrice;
-        const salePriceB = getSalePrice(offers, b).salePrice;
-        const modifiedPriceA = salePriceA !== null ? salePriceA : a.price;
-        const modifiedPriceB = salePriceB !== null ? salePriceB : b.price;
-        return modifiedPriceA - modifiedPriceB;
+      return sorProductPriceOffer({
+        products: await Product.find(finalQuery)
+          .sort({ price: 1 })
+          .limit(limit),
+        offers,
+        ascending: true,
       });
-      return sortedProducts;
     case "Price: High to Low":
-      const offersHighToLow: OfferType[] = await Offer.find({});
-      const productsHighToLow = await Product.find(finalQuery)
-        .sort({ price: -1 })
-        .limit(limit);
-      const sortedProductsHighToLow = productsHighToLow.sort(
-        (a: any, b: any) => {
-          const salePriceA = getSalePrice(offersHighToLow, a).salePrice;
-          const salePriceB = getSalePrice(offersHighToLow, b).salePrice;
-          const modifiedPriceA = salePriceA !== null ? salePriceA : a.price;
-          const modifiedPriceB = salePriceB !== null ? salePriceB : b.price;
-          return modifiedPriceB - modifiedPriceA;
-        },
-      );
-      return sortedProductsHighToLow;
+      return sorProductPriceOffer({
+        products: await Product.find(finalQuery)
+          .sort({ price: -1 })
+          .limit(limit),
+        offers,
+        ascending: false,
+      });
     default:
       return await Product.find(finalQuery).limit(limit);
   }
@@ -186,18 +182,24 @@ export async function insertProducts(): Promise<ProductType[]> {
     throw error;
   }
 }
-export async function fetchProduct(id: string): Promise<ProductType | null> {
+export async function fetchProduct(
+  id: string,
+): Promise<ProductOnSaleType | null> {
   try {
     await connectToDatabase();
     const data = await Product.findById(id);
     const product: ProductType = JSON.parse(JSON.stringify(data));
-    return product;
+    const offers: OfferType[] = await Offer.find({});
+    const { salePrice, saleValue } = getSalePrice(offers, product);
+    return { ...product, salePrice, saleValue };
   } catch (error) {
     console.error("Error fetching product detail:", error);
     return null;
   }
 }
-export async function fetchProductsById(ids: string[]): Promise<ProductType[]> {
+export async function fetchProductsById(
+  ids: string[],
+): Promise<ProductOnSaleType[]> {
   const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
   try {
     await connectToDatabase();
@@ -206,8 +208,13 @@ export async function fetchProductsById(ids: string[]): Promise<ProductType[]> {
         $in: objectIdArray,
       },
     });
+    const offers: OfferType[] = await Offer.find({});
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
-    return products;
+    const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+      products,
+      offers,
+    );
+    return modifiedProducts;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;

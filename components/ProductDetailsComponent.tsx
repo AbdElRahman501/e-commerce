@@ -4,16 +4,27 @@ import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { faqSection } from "@/constants";
 import { AmountButton, StoreContext } from "@/components";
-import { Product } from "@/types";
+import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import { ProductImages } from ".";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUrl, getAllImages } from "@/utils";
 
-const ProductDetailsComponent = ({ product }: { product: Product }) => {
+const ProductDetailsComponent = ({
+  id,
+  title,
+  price,
+  images: productImages,
+  colors,
+  sizes,
+  categories,
+  name,
+  salePrice,
+}: ProductOnSaleType) => {
   const { cart, setCart, favorite, setFavorite } =
     React.useContext(StoreContext);
+  console.log("🚀 ~ cart:", cart);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -22,7 +33,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
   const size: string = searchParams.get("size") || "";
   const amountSearchParams = searchParams.get("amount");
   const amount = amountSearchParams ? parseInt(amountSearchParams) : 1;
-  const images = product?.id ? getAllImages(product.images) : [];
+  const images = id ? getAllImages(productImages) : [];
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   const [selectedColor, setSelectedColor] = useState<string>(color);
@@ -33,12 +44,12 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
     setAudio(new Audio("/sounds/short-success.mp3"));
   }, []);
 
-  const isFav = favorite.includes(product.id);
+  const isFav = favorite.includes(id);
   const isInCart = cart.some(
     (item) =>
-      item.productId === product.id &&
-      item.selectedColor === color &&
-      item.selectedSize === size,
+      item.productId === id &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize,
   );
 
   function addToCart() {
@@ -49,10 +60,10 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
         return [
           ...prev,
           {
-            productId: product.id,
-            amount: amount,
-            selectedColor: color,
-            selectedSize: size,
+            productId: id,
+            amount: amountValue,
+            selectedColor: selectedColor,
+            selectedSize: selectedSize,
           },
         ];
       });
@@ -62,15 +73,15 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
 
   function toggleFavorite() {
     setFavorite((prev) => {
-      return prev.includes(product.id)
-        ? prev.filter((item) => item !== product.id)
-        : [...prev, product.id];
+      return prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id];
     });
   }
 
   function selectColor(color: string) {
     setSelectedColor(color);
-    const image = product.images[color]?.[0] || "";
+    const image = productImages[color]?.[0] || "";
     const imagesIndex = images.indexOf(image);
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("color", color.toString().replace("#", "HASH:"));
@@ -97,7 +108,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
-      <ProductImages images={images} title={product.title} />
+      <ProductImages images={images} title={title} />
       <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
           <Link
@@ -106,7 +117,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
           >
             Shop
           </Link>
-          {product.categories.split(",").map((item, index) => (
+          {categories.split(",").map((item, index) => (
             <div key={index} className="inline-block">
               <span className="mx-1 text-base">&#8250;</span>
               <Link
@@ -118,15 +129,22 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
             </div>
           ))}
         </div>
-        <h6 className="text-lg ">{product.title}</h6>
-        <p className="text-sm text-gray-400 ">{product.name}</p>
-        <h5 className="text-xl font-bold">{product.price} EGP</h5>
+        <h6 className="text-lg ">{title}</h6>
+        <p className="text-sm text-gray-400 ">{name}</p>
+        {salePrice ? (
+          <div className="flex flex-col">
+            <p className="text-xs text-gray-400 line-through ">{price} EGP</p>
+            <p className=" text-xl font-bold ">{salePrice} EGP</p>
+          </div>
+        ) : (
+          <p className="text-xl font-bold">{price} EGP</p>
+        )}
         <div className="flex flex-col gap-3">
           <h1 className="text-lg font-bold text-primary_color dark:text-white">
             Sizes
           </h1>
           <div className="flex flex-wrap gap-2">
-            {product.sizes.map((item, index) => (
+            {sizes.map((item, index) => (
               <button
                 key={index}
                 onClick={() => selectSize(item)}
@@ -142,7 +160,7 @@ const ProductDetailsComponent = ({ product }: { product: Product }) => {
             Colors
           </h1>
           <div className="flex flex-wrap gap-1">
-            {product.colors.map((item, index) => (
+            {colors.map((item, index) => (
               <button
                 onClick={() => {
                   selectColor(item);

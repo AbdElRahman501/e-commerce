@@ -41,7 +41,8 @@ const CartComponent = () => {
         {
           <div className=" flex w-full flex-col gap-5 md:max-w-lg ">
             {cartProducts?.map(
-              (item, index) => item.id && <BagCard {...item} key={index} />,
+              (product) =>
+                product.id && <BagCard {...product} key={product.id} />,
             )}
           </div>
         }
