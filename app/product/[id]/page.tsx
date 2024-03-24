@@ -3,7 +3,7 @@ import { Footer, ProductDetailsComponent } from "@/components";
 import { ProductDetailPageProps } from "@/types";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getAllImages } from "@/utils";
+import { getAllImages, getTransformedImageUrl } from "@/utils";
 import ProductsRow from "@/components/ProductsRow";
 import { fetchProduct } from "@/lib";
 
@@ -16,7 +16,7 @@ export async function generateMetadata({
 
   if (!product) return notFound();
   const images = getAllImages(product.images);
-  const url = images[0] || "";
+  const url = getTransformedImageUrl(images[0] || "", 200, 300);
 
   return {
     title:
@@ -35,8 +35,9 @@ export async function generateMetadata({
           images: [
             {
               url,
-              width: 1200,
-              height: 630,
+              type: "image/png",
+              width: 200,
+              height: 300,
               alt: product.title,
             },
           ],
