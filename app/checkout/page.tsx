@@ -3,6 +3,7 @@ import { BagCard, CustomInput } from "@/components";
 import Message from "@/components/Message";
 import { formInputs } from "@/constants";
 import { fetchProductsById } from "@/lib";
+import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
 import { CartItem } from "@/types";
 import { reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
@@ -18,12 +19,20 @@ const CheckOutPage = async ({
   const products = await fetchProductsById(cart.map((item) => item.productId));
   const cartProducts = reformatCartItems(cart, products);
 
+  const promoCode = await fetchPromoCode(coupon);
+  const discountPercentage = promoCode.discount / 100 || 0;
+
   const subTotal = cartProducts.reduce(
     (acc, item) => acc + (item.salePrice || item.price) * item.amount,
     0,
   );
+  const minSubTotal = cartProducts.reduce(
+    (acc, item) => acc + item.minPrice * item.amount,
+    0,
+  );
   const shipping = subTotal > 100 ? 0 : 10;
-  const discount = subTotal * 0.1;
+  const discountValue = Math.ceil(discountPercentage * subTotal);
+  const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
   const total = subTotal + shipping - discount;
 
   return cart.length === 0 ? (
