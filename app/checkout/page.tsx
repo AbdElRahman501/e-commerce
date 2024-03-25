@@ -37,55 +37,69 @@ const CheckOutPage = async ({
 
   return cart.length === 0 ? (
     <div className="p-5 lg:px-20">
-      <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
+      <h2 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h2>
       <Message message="Your cart is empty" />
     </div>
   ) : (
     <div className="p-5 lg:px-20">
-      <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
-      <form
-        action=""
-        // onSubmit={handleSubmit}
-        className=" flex w-full flex-col gap-10 md:flex-row "
-      >
-        <div className="flex w-full flex-col gap-2 ">
-          <div className="flex w-full  gap-2">
+      <form className=" flex w-full flex-col gap-10 md:flex-row ">
+        <div className="gap- flex w-full flex-col">
+          <h2 className="pb-5 text-xl font-semibold md:text-2xl">Contact</h2>
+          <CustomInput
+            label="Email Address"
+            type="email"
+            placeholder="Email address (optional)"
+            name="email"
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
+          />
+          <CustomInput
+            label="Phone Number"
+            type="text"
+            placeholder="Phone number"
+            name="phoneNumber"
+            required={true}
+            pattern="(010|011|012|015)[0-9]{8}"
+          />
+          <CustomInput
+            label="Accept to receive offers and news"
+            type="checkbox"
+            placeholder="Accept to receive offers and news"
+            name="acceptOffers"
+          />
+          <h2 className="pb-5 text-xl font-semibold md:text-2xl">
+            Shipping address
+          </h2>
+          <div className="flex w-full gap-2">
             <CustomInput
               label="First Name"
               type="text"
-              placeholder="Enter your first name"
+              placeholder="First name"
               name="firstName"
               required={true}
               minLength={2}
               maxLength={30}
-              defaultValue="John"
             />
             <CustomInput
               label="Last Name"
               type="text"
-              placeholder="Enter your Last name"
+              placeholder="Last name"
               name="lastName"
               required={true}
               minLength={2}
               maxLength={30}
-              defaultValue="Doe"
             />
           </div>
           {formInputs.map((input, index) => (
-            <CustomInput
-              key={index}
-              {...input}
-              defaultValue={input.placeholder}
-            />
+            <CustomInput key={index} {...input} />
           ))}
         </div>
         <div className="flex w-full flex-col gap-5 ">
-          <h1 className="pb-5 text-xl font-semibold md:text-3xl">Your Order</h1>
+          <h2 className="pb-5 text-xl font-semibold md:text-2xl">Your Order</h2>
           {cartProducts.map((item, index) => (
             <BagCard readonly {...item} key={index} />
           ))}
 
-          <div className="flex flex-col gap-2 border-b border-gray-500 pb-2">
+          <div className="flex flex-col gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
             <div className="flex justify-between">
               <p className=" font-bold text-gray-600 dark:text-gray-300">
                 Subtotal

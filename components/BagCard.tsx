@@ -22,7 +22,7 @@ const BagCard = ({
   salePrice,
 }: Props) => {
   return (
-    <div className="relative flex w-full gap-5 border-b pb-2 ">
+    <div className="relative flex w-full gap-5 border-b border-gray-200 pb-2 dark:border-gray-700 ">
       <Link
         href={`/product/${id}`}
         style={{ pointerEvents: readonly ? "none" : "auto" }}
