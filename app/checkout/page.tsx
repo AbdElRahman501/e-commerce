@@ -1,115 +1,42 @@
-"use client";
-import {
-  BagCard,
-  CartSkeleton,
-  CustomInput,
-  LoadingLogo,
-  StoreContext,
-} from "@/components";
+"use sever";
+import { BagCard, CustomInput } from "@/components";
+import Message from "@/components/Message";
 import { formInputs } from "@/constants";
-import React, { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { CartProduct, PersonalInfo, PromoCodeType } from "@/types";
-import Link from "next/link";
-import { createOrder, fetchDiscount, getCartProducts } from "@/utils";
+import { fetchProductsById } from "@/lib";
+import { CartItem } from "@/types";
+import { reformatCartItems } from "@/utils";
+import { cookies } from "next/headers";
 
-const CheckOutPage = ({ searchParams }: { searchParams: { code: string } }) => {
-  const router = useRouter();
-  const { cart } = useContext(StoreContext);
-  const [data, setData] = useState<PersonalInfo>({} as PersonalInfo);
-  const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
-  const [loading, setLoading] = React.useState(false);
-  const [cartLoading, setCartLoading] = React.useState(true);
+const CheckOutPage = async ({
+  searchParams,
+}: {
+  searchParams: { coupon: string };
+}) => {
+  const coupon = searchParams.coupon || "";
+  const cartData = cookies().get("cart")?.value;
+  const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
+  const products = await fetchProductsById(cart.map((item) => item.productId));
+  const cartProducts = reformatCartItems(cart, products);
 
-  const [discount, setDiscount] = React.useState(0);
-  const [discountPercentage, setDiscountPercentage] = React.useState(0);
-  const [total, setTotal] = React.useState(0);
-  const [shipping, setShipping] = React.useState(10);
-
-  const subTotal = cartProducts.reduce((acc, item) => {
-    const price = item.salePrice ? item.salePrice : item.price;
-    return acc + price * item.amount;
-  }, 0);
-  const minSubTotal = cartProducts.reduce(
-    (acc, item) => acc + item.minPrice * item.amount,
+  const subTotal = cartProducts.reduce(
+    (acc, item) => acc + (item.salePrice || item.price) * item.amount,
     0,
   );
-  function fetchHandler(data: any) {
-    if (!data) return;
-    if (data.discount) {
-      const discountOffer: PromoCodeType = data.discount;
-      const discountPercentage = discountOffer.discount / 100 || 0;
-      setDiscountPercentage(discountPercentage);
-    }
-  }
+  const shipping = subTotal > 100 ? 0 : 10;
+  const discount = subTotal * 0.1;
+  const total = subTotal + shipping - discount;
 
-  useEffect(() => {
-    if (cartProducts.length > 0) {
-      const discountValue = Math.ceil(discountPercentage * subTotal);
-      const discount =
-        subTotal - discountValue > minSubTotal ? discountValue : 0;
-      setDiscount(discount);
-      setTotal(subTotal + shipping - discount);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subTotal, shipping, discount, discountPercentage, cartProducts]);
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      getCartProducts(cart, setCartProducts, setCartLoading);
-    }
-  }, [cart]);
-
-  useEffect(() => {
-    if (searchParams.code) {
-      fetchDiscount(searchParams.code, fetchHandler);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const order = {
-      products: cart,
-      personalInfo: data,
-      id: Date.now().toString(),
-      subTotal: subTotal,
-      shipping: shipping,
-      discount: discount,
-      total: total,
-    };
-    setLoading(true);
-    createOrder(order, cartProducts, (orderId) => {
-      router.push(`/confirmation/${orderId}`);
-    });
-  };
-
-  if (cart.length === 0 && !cartLoading) {
-    return (
-      <div className="p-5 lg:px-20">
-        <h1 className="pb-5 text-xl md:text-3xl">Check Out</h1>
-
-        <div className="rounded-md bg-gray-200 p-5 text-center dark:bg-gray-700  lg:px-20">
-          {" "}
-          <h3 className="text-xl font-bold">
-            Your cart is empty, you cannot checkout{" "}
-          </h3>
-          <Link href="/shop" className=" underline hover:no-underline ">
-            Add some products
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  return cartLoading ? (
-    <LoadingLogo />
+  return cart.length === 0 ? (
+    <div className="p-5 lg:px-20">
+      <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
+      <Message message="Your cart is empty" />
+    </div>
   ) : (
     <div className="p-5 lg:px-20">
       <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
       <form
         action=""
-        onSubmit={handleSubmit}
+        // onSubmit={handleSubmit}
         className=" flex w-full flex-col gap-10 md:flex-row "
       >
         <div className="flex w-full flex-col gap-2 ">
@@ -122,13 +49,7 @@ const CheckOutPage = ({ searchParams }: { searchParams: { code: string } }) => {
               required={true}
               minLength={2}
               maxLength={30}
-              value={data.firstName}
-              onChange={(e) =>
-                setData((prev: any) => ({
-                  ...prev,
-                  firstName: e.target.value,
-                }))
-              }
+              defaultValue="John"
             />
             <CustomInput
               label="Last Name"
@@ -138,38 +59,22 @@ const CheckOutPage = ({ searchParams }: { searchParams: { code: string } }) => {
               required={true}
               minLength={2}
               maxLength={30}
-              value={data.lastName}
-              onChange={(e) =>
-                setData((prev: any) => ({
-                  ...prev,
-                  lastName: e.target.value,
-                }))
-              }
+              defaultValue="Doe"
             />
           </div>
           {formInputs.map((input, index) => (
             <CustomInput
               key={index}
               {...input}
-              value={data[input.name as keyof PersonalInfo] || ""}
-              onChange={(e) =>
-                setData((prev: any) => ({
-                  ...prev,
-                  [input.name]: e.target.value,
-                }))
-              }
+              defaultValue={input.placeholder}
             />
           ))}
         </div>
         <div className="flex w-full flex-col gap-5 ">
           <h1 className="pb-5 text-xl font-semibold md:text-3xl">Your Order</h1>
-          {cartLoading ? (
-            <CartSkeleton array={cart} />
-          ) : (
-            cartProducts.map((item, index) => (
-              <BagCard readonly {...item} key={index} />
-            ))
-          )}
+          {cartProducts.map((item, index) => (
+            <BagCard readonly {...item} key={index} />
+          ))}
 
           <div className="flex flex-col gap-2 border-b border-gray-500 pb-2">
             <div className="flex justify-between">
@@ -203,7 +108,7 @@ const CheckOutPage = ({ searchParams }: { searchParams: { code: string } }) => {
             className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
           >
             <p className="duration-500 group-hover:scale-110">
-              {loading ? "Loading..." : `Place Order ${total.toFixed(0)} EGP`}
+              Place Order {total.toFixed(0)} EGP
             </p>
           </button>
         </div>

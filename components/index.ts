@@ -20,7 +20,6 @@ import AmountButton from "./AmountButton";
 import BagCard from "./BagCard";
 import { StoreContextProvider, StoreContext } from "./StoreContext";
 import CartButton from "./CartButton";
-import CartComponent from "./CartComponent";
 import CartPricing from "./CartPricing";
 import CustomInput from "./CustomInput";
 import Sorting from "./Sorting";
@@ -43,7 +42,6 @@ export {
   Sorting,
   CustomInput,
   CartPricing,
-  CartComponent,
   CartButton,
   StoreContextProvider,
   StoreContext,

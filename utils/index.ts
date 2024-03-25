@@ -241,4 +241,41 @@ export const fetchDiscount = async (
       done(data);
     });
 };
+
+export const checkIsInCart = (cart: CartItem[], cartItem: CartItem) => {
+  if (!cart?.length || !cartItem) return false;
+  const { productId, selectedColor, selectedSize } = cartItem;
+  const isInCart = cart.some(
+    (item) =>
+      item.productId === productId &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize,
+  );
+
+  return isInCart;
+};
+
+export const reformatCartItems = (
+  cart: CartItem[],
+  products: ProductOnSaleType[],
+) => {
+  if (!cart?.length || !products?.length) return [];
+  const cartProducts = [];
+  for (let i = 0; i < cart.length; i++) {
+    const cartItem = cart[i];
+    const product = products.find(
+      (product: ProductOnSaleType) => product.id === cartItem.productId,
+    );
+    if (product) {
+      cartProducts.push({
+        ...product,
+        amount: cartItem.amount,
+        selectedColor: cartItem.selectedColor,
+        selectedSize: cartItem.selectedSize,
+      });
+    }
+  }
+
+  return cartProducts;
+};
 export { formatOrderItems };

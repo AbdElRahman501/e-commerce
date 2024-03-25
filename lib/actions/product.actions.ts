@@ -187,8 +187,8 @@ export async function fetchProduct(
 export async function fetchProductsById(
   ids: string[],
 ): Promise<ProductOnSaleType[]> {
-  const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
   try {
+    const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
     await connectToDatabase();
     const data = await Product.find({
       _id: {

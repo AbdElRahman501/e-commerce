@@ -4,13 +4,17 @@ import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { faqSection } from "@/constants";
 import { AmountButton, StoreContext } from "@/components";
-import { ProductOnSaleType } from "@/types";
+import { CartItem, ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import { ProductImages } from ".";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUrl, getAllImages } from "@/utils";
+import AddToCart from "./cart/AddToCart";
 
+interface ProductDetailsComponent extends ProductOnSaleType {
+  cart: CartItem[];
+}
 const ProductDetailsComponent = ({
   id,
   title,
@@ -21,9 +25,9 @@ const ProductDetailsComponent = ({
   categories,
   name,
   salePrice,
-}: ProductOnSaleType) => {
-  const { cart, setCart, favorite, setFavorite } =
-    React.useContext(StoreContext);
+  cart,
+}: ProductDetailsComponent) => {
+  const { favorite, setFavorite } = React.useContext(StoreContext);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -32,42 +36,12 @@ const ProductDetailsComponent = ({
   const size: string = searchParams.get("size") || "";
   const amountSearchParams = searchParams.get("amount");
   const amount = amountSearchParams ? parseInt(amountSearchParams) : 1;
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   const [selectedColor, setSelectedColor] = useState<string>(color);
   const [selectedSize, setSelectedSize] = useState<string>(size);
   const [amountValue, setAmountValue] = useState<number>(amount);
 
-  useEffect(() => {
-    setAudio(new Audio("/sounds/short-success.mp3"));
-  }, []);
-
   const isFav = favorite.includes(id);
-  const isInCart = cart.some(
-    (item) =>
-      item.productId === id &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize,
-  );
-
-  function addToCart() {
-    if (isInCart) {
-      router.push("/cart");
-    } else {
-      setCart((prev) => {
-        return [
-          ...prev,
-          {
-            productId: id,
-            amount: amountValue,
-            selectedColor: selectedColor,
-            selectedSize: selectedSize,
-          },
-        ];
-      });
-      audio?.play();
-    }
-  }
 
   function toggleFavorite() {
     setFavorite((prev) => {
@@ -186,25 +160,15 @@ const ProductDetailsComponent = ({
           />
         </div>
         <div className="mt-3 flex max-w-md items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={addToCart}
-            disabled={!selectedColor || !selectedSize || !amountValue}
-            className=" flex h-12 w-full items-center gap-3 rounded-full bg-primary_color p-1 text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
-          >
-            <div className="flex aspect-square h-10 w-10 items-center justify-center rounded-full bg-white ">
-              <Image
-                src={isInCart ? "/icons/check.svg" : "/icons/cart.svg"}
-                alt="cart icon"
-                width={24}
-                height={24}
-                className="w-auto duration-300 "
-              />
-            </div>
-            <p className="w-full text-center text-lg duration-500">
-              {isInCart ? "In my cart" : "Add to cart"}
-            </p>
-          </button>
+          <AddToCart
+            cart={cart}
+            cartItem={{
+              amount: amountValue,
+              productId: id,
+              selectedColor,
+              selectedSize,
+            }}
+          />
           <button
             type="button"
             onClick={toggleFavorite}

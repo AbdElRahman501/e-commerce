@@ -2,13 +2,14 @@ import { FormInput, PersonalInfo } from "@/types";
 import React from "react";
 
 type CustomInputProps = FormInput & {
-  onChange: (
+  onChange?: (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
       | React.ChangeEvent<HTMLTextAreaElement>,
   ) => void;
-  value: any;
+  value?: any;
+  defaultValue?: string;
 };
 
 const CustomInput = ({
@@ -23,6 +24,7 @@ const CustomInput = ({
   pattern,
   onChange,
   value,
+  defaultValue,
 }: CustomInputProps) => {
   switch (type) {
     case "select":
@@ -32,6 +34,7 @@ const CustomInput = ({
           <select
             name={name}
             id={name}
+            defaultValue={defaultValue}
             required={required}
             value={value || ""}
             onChange={onChange}
@@ -60,6 +63,7 @@ const CustomInput = ({
           <textarea
             name={name}
             id={name}
+            defaultValue={defaultValue}
             placeholder={placeholder}
             required={required}
             value={value || ""}
@@ -103,6 +107,7 @@ const CustomInput = ({
             pattern={pattern}
             type={type}
             name={name}
+            defaultValue={defaultValue}
             id={name}
             value={value}
             onChange={onChange}

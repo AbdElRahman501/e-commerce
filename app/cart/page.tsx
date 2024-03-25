@@ -1,18 +1,52 @@
-import { CartComponent } from "@/components";
-import ProductsRow from "@/components/ProductsRow";
+import { CartItem } from "@/types";
+import { reformatCartItems } from "@/utils";
+import { cookies } from "next/headers";
+import { fetchProductsById } from "@/lib";
+import { BagCard, CartPricing } from "@/components";
+import Message from "@/components/Message";
 import { Suspense } from "react";
+import ProductsRow from "@/components/ProductsRow";
 
-const page = () => {
+export default async function CartComponent({
+  searchParams,
+}: {
+  searchParams: { coupon?: string };
+}) {
+  const coupon = searchParams.coupon || "";
+  const cartData = cookies().get("cart")?.value;
+  const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
+  const products = await fetchProductsById(cart.map((item) => item.productId));
+  const cartProducts = reformatCartItems(cart, products);
+
   return (
     <>
+      <div className="p-5 lg:px-20">
+        <h1 className="pb-5 text-xl md:text-3xl">
+          Shopping Bag ({cart.length}){" "}
+        </h1>
+        {cart.length === 0 ? (
+          <Message message="Your cart is empty" />
+        ) : (
+          <div className="flex w-full flex-col justify-center gap-5 md:flex-row">
+            {
+              <div className=" flex w-full flex-col gap-5 md:max-w-lg ">
+                {cartProducts?.map(
+                  (product) =>
+                    product.id && <BagCard {...product} key={product.id} />,
+                )}
+              </div>
+            }
+            <CartPricing cart={cartProducts} coupon={coupon} />
+          </div>
+        )}
+      </div>
       <Suspense>
-        <CartComponent />
-        <Suspense>
-          <ProductsRow title="You may also like" url="/shop" />
-        </Suspense>
+        <ProductsRow
+          title="You may also like"
+          url="/shop"
+          keyWords={cartProducts.map((product) => product.keywords).join(" , ")}
+        />
       </Suspense>
     </>
   );
-};
-
-export default page;
+}
