@@ -15,11 +15,17 @@ export function getTransformedImageUrl(
   width: number,
   height: number,
 ) {
-  if (!originalUrl) return "";
-  const parts = originalUrl.split("/upload/");
-  const transformation = `w_${width},h_${height},c_fit/`;
-  const transformedUrl = parts[0] + "/upload/" + transformation + parts[1];
-  return transformedUrl;
+  if (
+    originalUrl.includes("cloudinary.com") &&
+    originalUrl.includes("/upload/")
+  ) {
+    const parts = originalUrl.split("/upload/");
+    const transformation = `w_${width},h_${height},c_fit/`;
+    const transformedUrl = parts[0] + "/upload/" + transformation + parts[1];
+    return transformedUrl;
+  } else {
+    return originalUrl;
+  }
 }
 
 export const createUrl = (
