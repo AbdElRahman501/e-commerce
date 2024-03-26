@@ -60,7 +60,6 @@ export async function createOrder(formData: FormData) {
     redirectPath = "/confirmation/" + createdOrder.id;
   } catch (error) {
     console.error("Error creating order:", error);
-    return null;
   }
 
   redirect(redirectPath);

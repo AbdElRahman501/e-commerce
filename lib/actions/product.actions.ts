@@ -9,100 +9,114 @@ import {
   Product as ProductType,
 } from "@/types";
 import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
+import { cache } from "react";
 
-export async function fetchFilteredProducts({
-  query = "",
-  selectedCategories = [],
-  keywordFilter = "",
-  minPrice = 0,
-  maxPrice = 100000,
-  genderFilter = "all",
-  colorFilter = [],
-  sizeFilter = [],
-  limit = 10,
-  sort,
-}: FilterProps): Promise<{ products: ProductOnSaleType[]; count: number }> {
-  const textSearchCondition = query
-    ? {
-        $or: [
-          { name: { $regex: `\\b${query}`, $options: "i" } },
-          { title: { $regex: `\\b${query}`, $options: "i" } },
-          { keywords: { $regex: `\\b${query}`, $options: "i" } },
-          { categories: { $regex: `\\b${query}`, $options: "i" } },
-        ],
-      }
-    : {};
-
-  const colorsFilter = colorFilter.map((color) => color.replace("HASH:", "#"));
-  const keyWordsArray = keywordFilter && keywordFilter?.split(",");
-
-  const categoryFilterCondition =
-    selectedCategories?.length > 0
+export const fetchFilteredProducts = cache(
+  async ({
+    query = "",
+    selectedCategories = [],
+    keywordFilter = "",
+    minPrice = 0,
+    maxPrice = 100000,
+    genderFilter = "all",
+    colorFilter = [],
+    sizeFilter = [],
+    limit = 10,
+    sort,
+  }: FilterProps): Promise<{
+    products: ProductOnSaleType[];
+    count: number;
+  }> => {
+    const textSearchCondition = query
       ? {
-          categories: {
-            $in: selectedCategories.map(
-              (category: string) => new RegExp(`\\b${category || ""}\\b`, "i"),
-            ),
-          },
+          $or: [
+            { name: { $regex: `\\b${query}`, $options: "i" } },
+            { title: { $regex: `\\b${query}`, $options: "i" } },
+            { keywords: { $regex: `\\b${query}`, $options: "i" } },
+            { categories: { $regex: `\\b${query}`, $options: "i" } },
+          ],
         }
       : {};
 
-  const keywordFilterCondition =
-    keyWordsArray && keyWordsArray?.length > 0
-      ? {
-          keywords: {
-            $in: keyWordsArray.map(
-              (keyWord: string) =>
-                new RegExp(`\\b${keyWord?.trim() || ""}\\b`, "i"),
-            ),
-          },
-        }
-      : {};
-
-  const priceFilterCondition = {
-    price: { $gte: minPrice || 0, $lte: maxPrice || 100000 },
-  };
-
-  const sizeFilterCondition =
-    sizeFilter?.length > 0 ? { sizes: { $in: sizeFilter } } : {};
-
-  const colorFilterCondition =
-    colorsFilter?.length > 0 ? { colors: { $in: colorsFilter } } : {};
-
-  const genderFilterCondition = genderFilter
-    ? genderFilter !== "all"
-      ? { gender: genderFilter }
-      : { $or: [{ gender: "male" }, { gender: "female" }] }
-    : {};
-
-  const finalQuery: any = {
-    $and: [
-      textSearchCondition,
-      categoryFilterCondition,
-      keywordFilterCondition,
-      priceFilterCondition,
-      sizeFilterCondition,
-      colorFilterCondition,
-      genderFilterCondition,
-    ],
-  };
-
-  try {
-    await connectToDatabase();
-    const count = await Product.countDocuments(finalQuery);
-    const offers: OfferType[] = await Offer.find({});
-    const data = await fetchDataBySection({ sort, finalQuery, limit, offers });
-    const products: ProductType[] = JSON.parse(JSON.stringify(data));
-    const modifiedProducts: ProductOnSaleType[] = modifyProducts(
-      products,
-      offers,
+    const colorsFilter = colorFilter.map((color) =>
+      color.replace("HASH:", "#"),
     );
-    return { products: modifiedProducts, count };
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-}
+    const keyWordsArray = keywordFilter && keywordFilter?.split(",");
+
+    const categoryFilterCondition =
+      selectedCategories?.length > 0
+        ? {
+            categories: {
+              $in: selectedCategories.map(
+                (category: string) =>
+                  new RegExp(`\\b${category || ""}\\b`, "i"),
+              ),
+            },
+          }
+        : {};
+
+    const keywordFilterCondition =
+      keyWordsArray && keyWordsArray?.length > 0
+        ? {
+            keywords: {
+              $in: keyWordsArray.map(
+                (keyWord: string) =>
+                  new RegExp(`\\b${keyWord?.trim() || ""}\\b`, "i"),
+              ),
+            },
+          }
+        : {};
+
+    const priceFilterCondition = {
+      price: { $gte: minPrice || 0, $lte: maxPrice || 100000 },
+    };
+
+    const sizeFilterCondition =
+      sizeFilter?.length > 0 ? { sizes: { $in: sizeFilter } } : {};
+
+    const colorFilterCondition =
+      colorsFilter?.length > 0 ? { colors: { $in: colorsFilter } } : {};
+
+    const genderFilterCondition = genderFilter
+      ? genderFilter !== "all"
+        ? { gender: genderFilter }
+        : { $or: [{ gender: "male" }, { gender: "female" }] }
+      : {};
+
+    const finalQuery: any = {
+      $and: [
+        textSearchCondition,
+        categoryFilterCondition,
+        keywordFilterCondition,
+        priceFilterCondition,
+        sizeFilterCondition,
+        colorFilterCondition,
+        genderFilterCondition,
+      ],
+    };
+
+    try {
+      await connectToDatabase();
+      const count = await Product.countDocuments(finalQuery);
+      const offers: OfferType[] = await Offer.find({});
+      const data = await fetchDataBySection({
+        sort,
+        finalQuery,
+        limit,
+        offers,
+      });
+      const products: ProductType[] = JSON.parse(JSON.stringify(data));
+      const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+        products,
+        offers,
+      );
+      return { products: modifiedProducts, count };
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+);
 export async function fetchProducts(): Promise<ProductType[]> {
   try {
     await connectToDatabase();
