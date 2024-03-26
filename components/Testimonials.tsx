@@ -16,7 +16,6 @@ const Testimonials = () => {
             <TestimonialCard />
             <TestimonialCard />
             <TestimonialCard />
-            <TestimonialCard />
           </div>
         </div>
       </div>
