@@ -100,10 +100,10 @@ export interface StoreContextType {
 }
 
 export interface FormInput {
-  label: string;
+  label?: string;
   options?: string[];
   type: string;
-  placeholder: string;
+  placeholder?: string;
   name: string;
   required?: boolean;
   minLength?: number;
@@ -114,11 +114,12 @@ export interface PersonalInfo {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  email: string;
+  messageAccept?: boolean;
+  email?: string;
   streetAddress: string;
   state: string;
-  comment: string;
-  promoCode: string;
+  comment?: string;
+  promoCode?: string;
   paymentMethod: string;
 }
 

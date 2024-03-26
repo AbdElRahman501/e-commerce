@@ -1,62 +1,34 @@
-"use client";
-import { BagCard, LoadingLogo, StoreContext } from "@/components";
-import { CartProduct, Order } from "@/types";
-import Image from "next/image";
+import { BagCard } from "@/components";
+import { fetchProductsById } from "@/lib";
+import { fetchOrder } from "@/lib/actions/order.actions";
+import { CartProduct } from "@/types";
+import { reformatCartItems } from "@/utils";
+import { cookies } from "next/headers";
 import Link from "next/link";
-import React, { useContext, useEffect } from "react";
-// import { getOrder } from "@/utils";
+import { notFound } from "next/navigation";
 
-const OrderConfirmationPage = ({ params }: { params: { id: string } }) => {
+const OrderConfirmationPage = async ({
+  params,
+}: {
+  params: { id: string };
+}) => {
   const orderId = params.id;
-  const { setCart } = useContext(StoreContext);
-  const [order, setOrder] = React.useState<Order>({} as Order);
-  const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [copied, setCopied] = React.useState(false);
+  const order = await fetchOrder(orderId);
+  if (!order) return notFound();
 
-  // useEffect(() => {
-  //   if (orderId && !order.id) {
-  //     getOrder(orderId, setOrder, setCartProducts, setLoading);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [orderId]);
+  const products = await fetchProductsById(
+    order.products.map((item) => item.productId),
+  );
+  const cartProducts = reformatCartItems(order.products, products);
 
-  useEffect(() => {
-    if (order) {
-      setCart([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order]);
-
-  const copyToClipboard = (id: string) => {
-    navigator.clipboard.writeText(id);
-    setCopied(true);
-  };
-  return loading ? (
-    <LoadingLogo />
-  ) : (
+  return (
     <div className="flex w-full flex-col items-center gap-5 p-5 lg:px-20">
       <h1 className="max-w-md pb-5 text-center text-xl font-medium text-primary_color dark:text-white md:text-3xl">
         Thank You{" "}
         <span className="font-bold"> {order.personalInfo?.firstName}</span>,{" "}
         <br /> Your order has been received
       </h1>
-      <button
-        onClick={() => copyToClipboard(order.id)}
-        type="button"
-        className="group flex w-full justify-center text-center text-xl font-medium text-gray-600 duration-200 hover:text-black dark:text-gray-300 dark:hover:text-white"
-      >
-        <div className="relative h-6 w-6">
-          <Image
-            src={copied ? "/icons/check.svg" : "/icons/copy.svg"}
-            alt="copy"
-            fill
-            sizes="100%"
-            className={`${copied ? "" : "dark:invert"} opacity-60 duration-300 group-hover:scale-110 `}
-          />
-        </div>
-        <span>Order #{order.id}</span>
-      </button>
+      <p>Order #{order.id}</p>
       <div className="flex w-full flex-col-reverse items-center justify-evenly rounded-md bg-gray-200 p-5 dark:bg-gray-700 sm:flex-row  lg:p-10">
         {order.personalInfo && (
           <div className=" flex flex-col gap-2 text-center sm:text-left">

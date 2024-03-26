@@ -1,8 +1,8 @@
-"use sever";
 import { BagCard, CustomInput } from "@/components";
+import SubmitButton from "@/components/checkOut/SubmitButton";
 import Message from "@/components/Message";
 import { formInputs } from "@/constants";
-import { fetchProductsById } from "@/lib";
+import { createOrder, fetchProductsById } from "@/lib";
 import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
 import { CartItem } from "@/types";
 import { reformatCartItems } from "@/utils";
@@ -42,7 +42,10 @@ const CheckOutPage = async ({
     </div>
   ) : (
     <div className="p-5 lg:px-20">
-      <form className=" flex w-full flex-col gap-10 md:flex-row ">
+      <form
+        action={createOrder}
+        className=" flex w-full flex-col gap-10 md:flex-row "
+      >
         <div className="gap- flex w-full flex-col">
           <h2 className="pb-5 text-xl font-semibold md:text-2xl">Contact</h2>
           <CustomInput
@@ -63,8 +66,9 @@ const CheckOutPage = async ({
           <CustomInput
             label="Accept to receive offers and news"
             type="checkbox"
+            required={false}
             placeholder="Accept to receive offers and news"
-            name="acceptOffers"
+            name="messageAccept"
           />
           <h2 className="pb-5 text-xl font-semibold md:text-2xl">
             Shipping address
@@ -92,6 +96,13 @@ const CheckOutPage = async ({
           {formInputs.map((input, index) => (
             <CustomInput key={index} {...input} />
           ))}
+          <div className="hidden">
+            <CustomInput type="text" value={coupon} name="promoCode" />
+            <CustomInput type="number" value={total} name="total" />
+            <CustomInput type="number" value={subTotal} name="subTotal" />
+            <CustomInput type="number" value={shipping} name="shipping" />
+            <CustomInput type="number" value={discount} name="discount" />
+          </div>
         </div>
         <div className="flex w-full flex-col gap-5 ">
           <h2 className="pb-5 text-xl font-semibold md:text-2xl">Your Order</h2>
@@ -126,14 +137,7 @@ const CheckOutPage = async ({
             <p className="  font-medium ">{total.toFixed(2)} EGP</p>
           </div>
 
-          <button
-            type="submit"
-            className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
-          >
-            <p className="duration-500 group-hover:scale-110">
-              Place Order {total.toFixed(0)} EGP
-            </p>
-          </button>
+          <SubmitButton title={`Place Order ${total.toFixed(0)} EGP`} />
         </div>
       </form>
     </div>

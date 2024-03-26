@@ -5,7 +5,7 @@ import { CartItem } from "@/types";
 import Image from "next/image";
 import LoadingDots from "../loading-dots";
 
-export const SubmitButton = () => {
+const SubmitButton = () => {
   const { pending } = useFormStatus();
   return (
     <button type="submit" aria-label="add cart item" aria-disabled={pending}>

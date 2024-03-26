@@ -1,11 +1,9 @@
 "use client";
 import { CartItem } from "@/types";
-import React, { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { addItem } from "../actions/cart.actions";
 import Image from "next/image";
 import { checkIsInCart } from "@/utils";
-import { useRouter } from "next/navigation";
 import LoadingDots from "../loading-dots";
 
 export function SubmitButton({
@@ -53,19 +51,9 @@ const AddToCart = ({
   cart: CartItem[];
   cartItem: CartItem;
 }) => {
-  const router = useRouter();
   const { selectedColor, selectedSize, amount } = cartItem;
   const [message, formAction] = useFormState(addItem, null);
   const actionWithVariant = formAction.bind(null, cartItem);
-
-  useEffect(() => {
-    if (message === "added to cart") {
-      const audio = new Audio("/sounds/short-success.mp3");
-      audio?.play();
-    } else if (message === "already in cart") {
-      router.push("/cart");
-    }
-  }, [message, router]);
 
   return (
     <form action={actionWithVariant} className="w-full">
