@@ -46,7 +46,7 @@ const NavBar = () => {
           href="/favorites"
         >
           <Image
-            className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
+            className="duration-300 hover:scale-110 dark:invert-0 md:invert"
             src={"/icons/heart.svg"}
             alt="heart"
             width={30}

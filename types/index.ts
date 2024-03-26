@@ -59,6 +59,19 @@ export interface OfferType {
   url: string;
 }
 
+export interface GovernorateType {
+  id: string;
+  governorate_name_en: string;
+  shipping_price: number;
+}
+
+export interface CityType {
+  id: string;
+  governorate_id: string;
+  city_name_en: string;
+  shipping_price: number;
+}
+
 export interface PromoCodeType {
   code: string;
   discount: number;
@@ -92,18 +105,11 @@ export interface CartItem {
   selectedSize: string;
 }
 
-export interface StoreContextType {
-  cart: CartItem[];
-  setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  favorite: string[];
-  setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
-}
-
 export interface FormInput {
-  label: string;
+  label?: string;
   options?: string[];
   type: string;
-  placeholder: string;
+  placeholder?: string;
   name: string;
   required?: boolean;
   minLength?: number;
@@ -114,11 +120,13 @@ export interface PersonalInfo {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  email: string;
+  messageAccept?: boolean;
+  email?: string;
   streetAddress: string;
   state: string;
-  comment: string;
-  promoCode: string;
+  city: string;
+  comment?: string;
+  promoCode?: string;
   paymentMethod: string;
 }
 
@@ -126,6 +134,7 @@ export interface Order {
   products: CartItem[];
   personalInfo: PersonalInfo;
   id: string;
+  _id?: string;
   total: number;
   subTotal: number;
   shipping: number;

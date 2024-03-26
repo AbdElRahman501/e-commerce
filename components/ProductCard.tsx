@@ -1,9 +1,12 @@
-"use client";
+"use server";
 import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
-import { StoreContext } from "./StoreContext";
+import AddToFav from "./favorite/AddToFav";
+
+interface ProductCardProps extends ProductOnSaleType {
+  fav: string[];
+}
 
 const ProductCard = ({
   images,
@@ -13,23 +16,13 @@ const ProductCard = ({
   price,
   salePrice,
   saleValue,
-}: ProductOnSaleType) => {
-  const [selectedColor, setSelectedColor] = useState<string>("");
-  const { favorite, setFavorite } = React.useContext(StoreContext);
-  const isFav = favorite.includes(id);
-
-  function toggleFavorite() {
-    setFavorite((prev) => {
-      return prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id];
-    });
-  }
-
+  fav = [],
+}: ProductCardProps) => {
+  const inFav = !!fav.find((item) => item === id);
   return (
     <div className="Product animate-fadeIn relative flex-col gap-4">
       {saleValue && (
-        <div className="bg-primary_colo absolute left-4 top-0 z-10  w-min text-wrap text-center text-white">
+        <div className="bg-primary_colo absolute left-4 top-0 z-10  w-min text-wrap text-center text-xs text-white md:text-sm">
           <p className="mb-3 h-full w-full bg-red-600 p-1">{saleValue} %</p>
           <div
             style={{
@@ -47,13 +40,10 @@ const ProductCard = ({
           ></div>
         </div>
       )}
-      <Link
-        className="relative block"
-        href={`/product/${id}?color=${selectedColor.replace("#", "HASH:")}`}
-      >
+      <Link className="relative block" href={`/product/${id}`}>
         <div className="aspect-card relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-100 to-slate-200">
           <Image
-            src={images[selectedColor || colors[0]][0]}
+            src={images[colors[0]][0]}
             alt="jacket"
             fill
             style={{ objectFit: "cover" }}
@@ -64,27 +54,18 @@ const ProductCard = ({
       <div className="flex items-center justify-between p-1">
         <div className="flex w-4/5 items-center gap-1 ">
           {colors.map((item, index) => (
-            <button
+            <div
               key={index}
-              onClick={() => setSelectedColor(item)}
-              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} max-w-4 flex-1 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}
+              className={` "scale-110  dark:outline-blue-400"  : "border-transparent"} max-w-4 flex-1 rounded-full p-[1px] outline outline-2 outline-offset-1 outline-blue-900 duration-200 hover:scale-110`}
             >
               <span
                 style={{ backgroundColor: item }}
                 className="block aspect-square w-full rounded-full border"
               ></span>
-            </button>
+            </div>
           ))}
         </div>
-        <button className="relative h-6 w-6" onClick={toggleFavorite}>
-          <Image
-            src={isFav ? "/icons/heart-fill.svg" : "/icons/heart.svg"}
-            alt="heart icon"
-            fill
-            sizes="100%"
-            className={` ${isFav ? "" : "dark:invert"} duration-200 hover:scale-110 `}
-          />
-        </button>
+        <AddToFav id={id} inFav={inFav} />
       </div>
       <p className="w-full  ">{title}</p>
       {salePrice ? (

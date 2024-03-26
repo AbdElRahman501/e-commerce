@@ -1,11 +1,13 @@
-"use client";
+"use server";
+import { CartItem } from "@/types";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useContext } from "react";
-import { StoreContext } from "./StoreContext";
+import React from "react";
 
 const CartButton = () => {
-  const { cart } = useContext(StoreContext);
+  const cartData = cookies().get("cart")?.value;
+  const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   return (
     <Link href="/cart" className="relative">
       <Image

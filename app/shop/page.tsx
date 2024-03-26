@@ -1,5 +1,6 @@
 import { LoadMore, ProductCard } from "@/components";
 import { fetchFilteredProducts } from "@/lib";
+import { cookies } from "next/headers";
 
 export const metadata = {
   title: "Shop",
@@ -10,6 +11,9 @@ export default async function SearchPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
+  const favData = cookies().get("favorite")?.value;
+  const fav: string[] = favData ? JSON.parse(favData) : [];
+
   const {
     q: searchValue,
     l,
@@ -61,7 +65,7 @@ export default async function SearchPage({
 
       <div className=" grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
         {products.map((product) => (
-          <ProductCard key={product.id} {...product} />
+          <ProductCard key={product.id} fav={fav} {...product} />
         ))}
       </div>
       {count > limit && <LoadMore />}

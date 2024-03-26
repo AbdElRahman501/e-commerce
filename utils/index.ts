@@ -1,94 +1,6 @@
-import {
-  CartItem,
-  CartProduct,
-  OfferType,
-  Order,
-  Product,
-  ProductOnSaleType,
-} from "@/types";
-
+import { CartItem, OfferType, Product, ProductOnSaleType } from "@/types";
 import formatOrderItems from "./formatOrderItems";
 import { ReadonlyURLSearchParams } from "next/navigation";
-
-export const getCartProducts = (
-  cart: CartItem[],
-  setCartProducts: React.Dispatch<React.SetStateAction<CartProduct[]>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-) => {
-  if (!cart?.length) return setLoading(false);
-  try {
-    fetch("/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ids: cart.map((item) => item.productId) }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data) return setLoading(false);
-        if (data.products)
-          setCartProducts(
-            cart.map((cartItem: CartItem) => {
-              const product = data.products.find(
-                (product: CartProduct) => product.id === cartItem.productId,
-              );
-              if (product) {
-                return {
-                  ...product,
-                  amount: cartItem.amount,
-                  selectedColor: cartItem.selectedColor,
-                  selectedSize: cartItem.selectedSize,
-                };
-              }
-            }),
-          );
-        setLoading(false);
-      });
-  } catch (error) {
-    setLoading(false);
-    console.log(error);
-  }
-};
-export const getProductsByIds = (
-  ids: string[],
-  setProducts: React.Dispatch<React.SetStateAction<ProductOnSaleType[]>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-) => {
-  if (!ids?.length) return setLoading(false);
-  fetch("/api/products", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ ids }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data) return setLoading(false);
-      if (data.products) setProducts(data.products);
-      setLoading(false);
-    });
-};
-
-export const createOrder = (
-  order: Order,
-  cartProducts: CartProduct[],
-  afterOrder: (orderId: string) => void,
-) => {
-  fetch("/api/orders", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ order, products: cartProducts }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data?.orderId) return;
-      afterOrder(data.orderId);
-    });
-};
 
 export function getAllImages(images: Record<string, string[]>) {
   let allImages: string[] = [];
@@ -99,17 +11,16 @@ export function getAllImages(images: Record<string, string[]>) {
 }
 
 export function getTransformedImageUrl(
-  originalUrl: string,
+  originalUrl: string | "",
   width: number,
   height: number,
 ) {
-  if (!originalUrl) return "";
   if (
     originalUrl.includes("cloudinary.com") &&
     originalUrl.includes("/upload/")
   ) {
     const parts = originalUrl.split("/upload/");
-    const transformation = `w_${width},h_${height},c_fill/`;
+    const transformation = `w_${width},h_${height},c_fit/`;
     const transformedUrl = parts[0] + "/upload/" + transformation + parts[1];
     return transformedUrl;
   } else {
@@ -125,44 +36,6 @@ export const createUrl = (
   const queryString = `${paramsString.length ? "?" : ""}${paramsString}`;
 
   return `${pathname}${queryString}`;
-};
-
-export const getProperties = ({
-  setSizes,
-  setColors,
-}: {
-  setSizes?: React.Dispatch<React.SetStateAction<string[]>>;
-  setColors?: React.Dispatch<React.SetStateAction<string[]>>;
-}) => {
-  fetch(`/api/products/sizes`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data) return;
-      if (data.allSizes) setSizes && setSizes(data.allSizes);
-      if (data.allColors) setColors && setColors(data.allColors);
-    });
-};
-
-export const removeProduct = (productId: string): any => {
-  fetch(`/api/products/${productId}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data) return { error: "cannot delete product" };
-      if (data.status === 200) {
-        return { success: true };
-      }
-      return { error: "cannot delete product" };
-    });
 };
 
 export function getSalePrice(offers: OfferType[], product: Product) {
@@ -216,36 +89,49 @@ export const modifyProducts = (products: Product[], offers: OfferType[]) => {
   return modifiedProducts;
 };
 
-export const fetchOffers = async (
-  setOffers: React.Dispatch<React.SetStateAction<OfferType[]>>,
-) => {
-  fetch(`/api/offers`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!data) return;
-      if (data.offers) setOffers && setOffers(data.offers);
-    });
+export const checkIsInCart = (cart: CartItem[], cartItem: CartItem) => {
+  if (!cart?.length || !cartItem) return false;
+  const { productId, selectedColor, selectedSize } = cartItem;
+  const isInCart = cart.some(
+    (item) =>
+      item.productId === productId &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize,
+  );
+
+  return isInCart;
 };
 
-export const fetchDiscount = async (
-  code: string,
-  done: (data: any) => void,
+export const reformatCartItems = (
+  cart: CartItem[],
+  products: ProductOnSaleType[],
 ) => {
-  fetch(`/api/offers/discount`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ code }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      done(data);
-    });
+  if (!cart?.length || !products?.length) return [];
+  const cartProducts = [];
+  for (let i = 0; i < cart.length; i++) {
+    const cartItem = cart[i];
+    const product = products.find(
+      (product: ProductOnSaleType) => product.id === cartItem.productId,
+    );
+    if (product) {
+      cartProducts.push({
+        ...product,
+        amount: cartItem.amount,
+        selectedColor: cartItem.selectedColor,
+        selectedSize: cartItem.selectedSize,
+      });
+    }
+  }
+
+  return cartProducts;
 };
+
+export function generateCode(prefix: string, length: number): string {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = prefix;
+  for (let i = 0; i < length; i++) {
+    code += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return code;
+}
 export { formatOrderItems };

@@ -1,6 +1,8 @@
+"use server";
 import { ProductCard, SectionTitle } from ".";
 import React from "react";
 import { fetchFilteredProducts } from "@/lib";
+import { cookies } from "next/headers";
 
 async function ProductsRow({
   keyWords,
@@ -11,6 +13,8 @@ async function ProductsRow({
   url: string;
   title: string;
 }) {
+  const favData = cookies().get("favorite")?.value;
+  const fav: string[] = favData ? JSON.parse(favData) : [];
   const { products } = await fetchFilteredProducts({
     keywordFilter: keyWords || "",
     sort: title,
@@ -23,7 +27,7 @@ async function ProductsRow({
         <div className="scroll-bar-hidden overflow-x-scroll md:overflow-hidden ">
           <div className="grid-container grid w-full gap-4 md:grid-cols-4 lg:gap-8 ">
             {products.map((product) => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard fav={fav} key={product.id} {...product} />
             ))}
           </div>
         </div>

@@ -1,11 +1,12 @@
 import React, { Suspense } from "react";
 import { Footer, ProductDetailsComponent } from "@/components";
-import { ProductDetailPageProps } from "@/types";
+import { CartItem, ProductDetailPageProps } from "@/types";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getAllImages, getTransformedImageUrl } from "@/utils";
 import ProductsRow from "@/components/ProductsRow";
 import { fetchProduct } from "@/lib";
+import { cookies } from "next/headers";
 
 export async function generateMetadata({
   params,
@@ -51,6 +52,13 @@ export default async function ProductDetailPage({
 }: ProductDetailPageProps) {
   const id = params.id;
 
+  const cartData = cookies().get("cart")?.value;
+  const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
+
+  const favData = cookies().get("favorite")?.value;
+  const fav: string[] = favData ? JSON.parse(favData) : [];
+  const isFav = !!fav.find((item) => item === id);
+
   const product = await fetchProduct(id);
 
   if (!product?.id) {
@@ -82,7 +90,7 @@ export default async function ProductDetailPage({
       />
 
       <Suspense>
-        <ProductDetailsComponent {...product} />
+        <ProductDetailsComponent {...product} isFav={isFav} cart={cart} />
       </Suspense>
 
       <Suspense>

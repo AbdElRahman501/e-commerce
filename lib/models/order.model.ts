@@ -18,6 +18,8 @@ const personalInfoSchema = new mongoose.Schema({
   email: { type: String, required: true },
   streetAddress: { type: String, required: true },
   state: { type: String, required: true },
+  messageAccept: { type: Boolean },
+  city: { type: String, required: true },
   comment: { type: String },
   promoCode: { type: String },
   paymentMethod: { type: String, required: true },
@@ -25,6 +27,7 @@ const personalInfoSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema(
   {
+    _id: { type: String, required: true, unique: true },
     products: { type: [productSchema], required: true },
     personalInfo: { type: personalInfoSchema, required: true },
     subTotal: { type: Number, required: true },

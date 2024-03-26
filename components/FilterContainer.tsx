@@ -38,7 +38,7 @@ const FilterContainer = ({
     return <FilterSkeleton />;
   function addParam(key: string, value: string) {
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set(key, value.toString());
+    newSearchParams.set(key, value.toString().toLocaleLowerCase().trim());
     const optionUrl = createUrl(pathname, newSearchParams);
     router.replace(optionUrl, { scroll: false });
   }

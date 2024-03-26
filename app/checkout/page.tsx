@@ -1,177 +1,130 @@
-"use client";
-import {
-  BagCard,
-  CartSkeleton,
-  CustomInput,
-  LoadingLogo,
-  StoreContext,
-} from "@/components";
+import { BagCard, CustomInput } from "@/components";
+import ShippingAddress from "@/components/checkOut/ShippingAddress";
+import SubmitButton from "@/components/checkOut/SubmitButton";
+import Message from "@/components/Message";
 import { formInputs } from "@/constants";
-import React, { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { CartProduct, PersonalInfo, PromoCodeType } from "@/types";
-import Link from "next/link";
-import { createOrder, fetchDiscount, getCartProducts } from "@/utils";
+import { createOrder, fetchProductsById } from "@/lib";
+import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
+import { fetchShipping } from "@/lib/actions/shipping.actions";
+import { CartItem } from "@/types";
+import { reformatCartItems } from "@/utils";
+import { cookies } from "next/headers";
 
-const CheckOutPage = ({ searchParams }: { searchParams: { code: string } }) => {
-  const router = useRouter();
-  const { cart } = useContext(StoreContext);
-  const [data, setData] = useState<PersonalInfo>({} as PersonalInfo);
-  const [cartProducts, setCartProducts] = React.useState<CartProduct[]>([]);
-  const [loading, setLoading] = React.useState(false);
-  const [cartLoading, setCartLoading] = React.useState(true);
+const CheckOutPage = async ({
+  searchParams,
+}: {
+  searchParams: { coupon: string; state: string; city: string };
+}) => {
+  const coupon = searchParams.coupon || "";
+  const statId = searchParams.state || "";
+  const cityId = searchParams.city || "";
 
-  const [discount, setDiscount] = React.useState(0);
-  const [discountPercentage, setDiscountPercentage] = React.useState(0);
-  const [total, setTotal] = React.useState(0);
-  const [shipping, setShipping] = React.useState(10);
+  const cartData = cookies().get("cart")?.value;
+  const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
+  const products = await fetchProductsById(cart.map((item) => item.productId));
+  const cartProducts = reformatCartItems(cart, products);
+  const promoCode = await fetchPromoCode(coupon);
+  const { governorate, cities } = await fetchShipping();
 
-  const subTotal = cartProducts.reduce((acc, item) => {
-    const price = item.salePrice ? item.salePrice : item.price;
-    return acc + price * item.amount;
-  }, 0);
+  const discountPercentage = promoCode.discount / 100 || 0;
+  const subTotal = cartProducts.reduce(
+    (acc, item) => acc + (item.salePrice || item.price) * item.amount,
+    0,
+  );
   const minSubTotal = cartProducts.reduce(
     (acc, item) => acc + item.minPrice * item.amount,
     0,
   );
-  function fetchHandler(data: any) {
-    if (!data) return;
-    if (data.discount) {
-      const discountOffer: PromoCodeType = data.discount;
-      const discountPercentage = discountOffer.discount / 100 || 0;
-      setDiscountPercentage(discountPercentage);
-    }
-  }
+  const stateShipping = governorate.find(
+    (item) => item.id === statId,
+  )?.shipping_price;
+  const cityShipping = cities.find(
+    (item) => item.id === cityId,
+  )?.shipping_price;
 
-  useEffect(() => {
-    if (cartProducts.length > 0) {
-      const discountValue = Math.ceil(discountPercentage * subTotal);
-      const discount =
-        subTotal - discountValue > minSubTotal ? discountValue : 0;
-      setDiscount(discount);
-      setTotal(subTotal + shipping - discount);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subTotal, shipping, discount, discountPercentage, cartProducts]);
+  const shipping = stateShipping || cityShipping || 0;
+  const discountValue = Math.ceil(discountPercentage * subTotal);
+  const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
+  const total = subTotal + shipping - discount;
 
-  useEffect(() => {
-    if (cart.length > 0) {
-      getCartProducts(cart, setCartProducts, setCartLoading);
-    }
-  }, [cart]);
-
-  useEffect(() => {
-    if (searchParams.code) {
-      fetchDiscount(searchParams.code, fetchHandler);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const order = {
-      products: cart,
-      personalInfo: data,
-      id: Date.now().toString(),
-      subTotal: subTotal,
-      shipping: shipping,
-      discount: discount,
-      total: total,
-    };
-    setLoading(true);
-    createOrder(order, cartProducts, (orderId) => {
-      router.push(`/confirmation/${orderId}`);
-    });
-  };
-
-  if (cart.length === 0 && !cartLoading) {
-    return (
-      <div className="p-5 lg:px-20">
-        <h1 className="pb-5 text-xl md:text-3xl">Check Out</h1>
-
-        <div className="rounded-md bg-gray-200 p-5 text-center dark:bg-gray-700  lg:px-20">
-          {" "}
-          <h3 className="text-xl font-bold">
-            Your cart is empty, you cannot checkout{" "}
-          </h3>
-          <Link href="/shop" className=" underline hover:no-underline ">
-            Add some products
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  return cartLoading ? (
-    <LoadingLogo />
-  ) : (
+  return cart.length === 0 ? (
     <div className="p-5 lg:px-20">
-      <h1 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h1>
+      <h2 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h2>
+      <Message message="Your cart is empty" />
+    </div>
+  ) : (
+    <div className="p-5 pb-20 lg:px-20">
       <form
-        action=""
-        onSubmit={handleSubmit}
+        action={createOrder}
         className=" flex w-full flex-col gap-10 md:flex-row "
       >
-        <div className="flex w-full flex-col gap-2 ">
-          <div className="flex w-full  gap-2">
+        <div className="gap- flex w-full flex-col">
+          <h2 className="pb-5 text-xl font-semibold md:text-2xl">Contact</h2>
+          <CustomInput
+            label="Email Address"
+            type="email"
+            required={true}
+            placeholder="Email address"
+            name="email"
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
+          />
+          <CustomInput
+            label="Phone Number"
+            type="text"
+            placeholder="Phone number"
+            name="phoneNumber"
+            required={true}
+            pattern="(010|011|012|015)[0-9]{8}"
+          />
+          <CustomInput
+            label="Accept to receive offers and news"
+            type="checkbox"
+            required={false}
+            placeholder="Accept to receive offers and news"
+            name="messageAccept"
+          />
+          <h2 className="pb-5 text-xl font-semibold md:text-2xl">
+            Shipping address
+          </h2>
+          <div className="flex w-full gap-2">
             <CustomInput
               label="First Name"
               type="text"
-              placeholder="Enter your first name"
+              placeholder="First name"
               name="firstName"
               required={true}
               minLength={2}
               maxLength={30}
-              value={data.firstName}
-              onChange={(e) =>
-                setData((prev: any) => ({
-                  ...prev,
-                  firstName: e.target.value,
-                }))
-              }
             />
             <CustomInput
               label="Last Name"
               type="text"
-              placeholder="Enter your Last name"
+              placeholder="Last name"
               name="lastName"
               required={true}
               minLength={2}
               maxLength={30}
-              value={data.lastName}
-              onChange={(e) =>
-                setData((prev: any) => ({
-                  ...prev,
-                  lastName: e.target.value,
-                }))
-              }
             />
           </div>
+          <ShippingAddress governorate={governorate} cities={cities} />
           {formInputs.map((input, index) => (
-            <CustomInput
-              key={index}
-              {...input}
-              value={data[input.name as keyof PersonalInfo] || ""}
-              onChange={(e) =>
-                setData((prev: any) => ({
-                  ...prev,
-                  [input.name]: e.target.value,
-                }))
-              }
-            />
+            <CustomInput key={index} {...input} />
           ))}
+          <div className="hidden">
+            <CustomInput type="text" value={coupon} name="promoCode" />
+            <CustomInput type="number" value={total} name="total" />
+            <CustomInput type="number" value={subTotal} name="subTotal" />
+            <CustomInput type="number" value={shipping} name="shipping" />
+            <CustomInput type="number" value={discount} name="discount" />
+          </div>
         </div>
         <div className="flex w-full flex-col gap-5 ">
-          <h1 className="pb-5 text-xl font-semibold md:text-3xl">Your Order</h1>
-          {cartLoading ? (
-            <CartSkeleton array={cart} />
-          ) : (
-            cartProducts.map((item, index) => (
-              <BagCard readonly {...item} key={index} />
-            ))
-          )}
+          <h2 className="pb-5 text-xl font-semibold md:text-2xl">Your Order</h2>
+          {cartProducts.map((item, index) => (
+            <BagCard readonly {...item} key={index} />
+          ))}
 
-          <div className="flex flex-col gap-2 border-b border-gray-500 pb-2">
+          <div className="flex flex-col gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
             <div className="flex justify-between">
               <p className=" font-bold text-gray-600 dark:text-gray-300">
                 Subtotal
@@ -198,14 +151,7 @@ const CheckOutPage = ({ searchParams }: { searchParams: { code: string } }) => {
             <p className="  font-medium ">{total.toFixed(2)} EGP</p>
           </div>
 
-          <button
-            type="submit"
-            className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
-          >
-            <p className="duration-500 group-hover:scale-110">
-              {loading ? "Loading..." : `Place Order ${total.toFixed(0)} EGP`}
-            </p>
-          </button>
+          <SubmitButton title={`Place Order ${total.toFixed(0)} EGP`} />
         </div>
       </form>
     </div>
