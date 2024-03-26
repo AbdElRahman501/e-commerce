@@ -117,7 +117,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
               src={item}
               alt={title}
               fill
-              objectFit="cover"
+              style={{ objectFit: "cover" }}
               sizes="100%"
               className="duration-300 hover:scale-110"
             />

@@ -217,7 +217,9 @@ export const getCategoriesWithProductCount = async (): Promise<
     const aggregationPipeline = [
       {
         $project: {
-          categories: { $split: ["$categories", ", "] }, // Split the categories by comma and space
+          categories: {
+            $split: [{ $trim: { input: "$categories", chars: " " } }, ", "],
+          }, // Split the trimmed categories by comma and space
         },
       },
       {
@@ -225,7 +227,7 @@ export const getCategoriesWithProductCount = async (): Promise<
       },
       {
         $group: {
-          _id: "$categories",
+          _id: { $toLower: { $trim: { input: "$categories", chars: " " } } }, // Convert trimmed category name to lowercase for case insensitivity
           count: { $sum: 1 },
         },
       },

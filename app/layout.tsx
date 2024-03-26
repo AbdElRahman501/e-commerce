@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/theme-provider";
-import { NavBar, StoreContextProvider } from "@/components";
+import { NavBar } from "@/components";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { Suspense } from "react";
 
@@ -42,10 +42,8 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <NextAuthProvider>
-              <StoreContextProvider>
-                <NavBar />
-                <main>{children}</main>
-              </StoreContextProvider>
+              <NavBar />
+              <main>{children}</main>
             </NextAuthProvider>
           </ThemeProvider>
         </Suspense>

@@ -55,6 +55,10 @@ export default async function ProductDetailPage({
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
 
+  const favData = cookies().get("favorite")?.value;
+  const fav: string[] = favData ? JSON.parse(favData) : [];
+  const isFav = !!fav.find((item) => item === id);
+
   const product = await fetchProduct(id);
 
   if (!product?.id) {
@@ -86,7 +90,7 @@ export default async function ProductDetailPage({
       />
 
       <Suspense>
-        <ProductDetailsComponent {...product} cart={cart} />
+        <ProductDetailsComponent {...product} isFav={isFav} cart={cart} />
       </Suspense>
 
       <Suspense>

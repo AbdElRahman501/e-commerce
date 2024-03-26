@@ -3,7 +3,10 @@ import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import AddToFav from "./favorite/AddToFav";
-import { cookies } from "next/headers";
+
+interface ProductCardProps extends ProductOnSaleType {
+  fav: string[];
+}
 
 const ProductCard = ({
   images,
@@ -13,15 +16,13 @@ const ProductCard = ({
   price,
   salePrice,
   saleValue,
-}: ProductOnSaleType) => {
-  const favData = cookies().get("favorite")?.value;
-  const fav: string[] = favData ? JSON.parse(favData) : [];
+  fav = [],
+}: ProductCardProps) => {
   const inFav = !!fav.find((item) => item === id);
-
   return (
     <div className="Product animate-fadeIn relative flex-col gap-4">
       {saleValue && (
-        <div className="bg-primary_colo absolute left-4 top-0 z-10  w-min text-wrap text-center text-white">
+        <div className="bg-primary_colo absolute left-4 top-0 z-10  w-min text-wrap text-center text-xs text-white md:text-sm">
           <p className="mb-3 h-full w-full bg-red-600 p-1">{saleValue} %</p>
           <div
             style={{

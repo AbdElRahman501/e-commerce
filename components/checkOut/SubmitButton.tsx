@@ -14,7 +14,7 @@ export default function SubmitButton({ title }: { title: string }) {
     >
       {pending ? (
         <p className="duration-500 group-hover:scale-110">
-          <LoadingDots />
+          <LoadingDots className=" h-2 w-2 " />
         </p>
       ) : (
         <p className="duration-500 group-hover:scale-110">{title}</p>

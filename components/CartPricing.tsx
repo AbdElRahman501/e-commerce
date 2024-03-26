@@ -45,7 +45,7 @@ const CartPricing = async ({
   return (
     <div className="flex h-fit w-full flex-col gap-2 rounded-3xl border border-gray-500 p-5 md:max-w-lg ">
       <Coupon coupon={coupon} />
-      <p className="text-red-500">{errorMessage}</p>
+      <p className="text-sm text-red-500">{errorMessage}</p>
       <div className="flex flex-col gap-2 border-b border-gray-500 pb-2">
         <div className="flex justify-between">
           <p className=" font-bold text-gray-600 dark:text-gray-300">

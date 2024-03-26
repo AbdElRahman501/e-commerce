@@ -18,7 +18,6 @@ import ProductDetailsComponent from "./ProductDetailsComponent";
 import ProductImages from "./ProductImages";
 import AmountButton from "./AmountButton";
 import BagCard from "./BagCard";
-import { StoreContextProvider, StoreContext } from "./StoreContext";
 import CartButton from "./CartButton";
 import CartPricing from "./CartPricing";
 import CustomInput from "./CustomInput";
@@ -43,8 +42,6 @@ export {
   CustomInput,
   CartPricing,
   CartButton,
-  StoreContextProvider,
-  StoreContext,
   BagCard,
   AmountButton,
   ProductImages,

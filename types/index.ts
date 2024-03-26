@@ -92,13 +92,6 @@ export interface CartItem {
   selectedSize: string;
 }
 
-export interface StoreContextType {
-  cart: CartItem[];
-  setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  favorite: string[];
-  setFavorite: React.Dispatch<React.SetStateAction<string[]>>;
-}
-
 export interface FormInput {
   label?: string;
   options?: string[];

@@ -1,19 +1,19 @@
 "use client";
 import { usePathname, useSearchParams } from "next/navigation";
-
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { faqSection } from "@/constants";
-import { AmountButton, StoreContext } from "@/components";
+import { AmountButton } from "@/components";
 import { CartItem, ProductOnSaleType } from "@/types";
-import Image from "next/image";
 import { ProductImages } from ".";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUrl, getAllImages } from "@/utils";
 import AddToCart from "./cart/AddToCart";
+import AddToFav from "./favorite/AddToFav";
 
 interface ProductDetailsComponent extends ProductOnSaleType {
   cart: CartItem[];
+  isFav: boolean;
 }
 const ProductDetailsComponent = ({
   id,
@@ -26,13 +26,14 @@ const ProductDetailsComponent = ({
   name,
   salePrice,
   cart,
+  isFav,
 }: ProductDetailsComponent) => {
-  const { favorite, setFavorite } = React.useContext(StoreContext);
-
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const color: string = searchParams.get("color")?.replace("HASH:", "#") || "";
+  const color: string =
+    searchParams.get("color")?.replace("HASH:", "#") ||
+    (colors.length === 1 ? colors[0] : "");
   const size: string = searchParams.get("size") || "";
   const amountSearchParams = searchParams.get("amount");
   const amount = amountSearchParams ? parseInt(amountSearchParams) : 1;
@@ -40,16 +41,6 @@ const ProductDetailsComponent = ({
   const [selectedColor, setSelectedColor] = useState<string>(color);
   const [selectedSize, setSelectedSize] = useState<string>(size);
   const [amountValue, setAmountValue] = useState<number>(amount);
-
-  const isFav = favorite.includes(id);
-
-  function toggleFavorite() {
-    setFavorite((prev) => {
-      return prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id];
-    });
-  }
 
   function selectColor(color: string) {
     setSelectedColor(color);
@@ -169,21 +160,9 @@ const ProductDetailsComponent = ({
               selectedSize,
             }}
           />
-          <button
-            type="button"
-            onClick={toggleFavorite}
-            className=" flex aspect-square h-12 w-12 items-center justify-center rounded-full border  border-primary_bg bg-white py-1 text-lg dark:border-white "
-          >
-            <div className="relative h-6 w-6">
-              <Image
-                src={isFav ? "/icons/heart-fill.svg" : "/icons/heart.svg"}
-                alt="heart icon"
-                fill
-                sizes="100%"
-                className="duration-200 hover:scale-125"
-              />
-            </div>
-          </button>
+          <div className=" flex aspect-square h-12 w-12 items-center justify-center rounded-full border border-primary_bg bg-white py-1 text-lg dark:border-white ">
+            <AddToFav id={id} inFav={isFav} className="invert" />
+          </div>
         </div>
         <div className="mt-10">
           {faqSection.map((item, index) => (

@@ -31,14 +31,14 @@ const CustomInput = ({
   switch (type) {
     case "select":
       return (
-        <div className="relative flex w-full flex-col">
+        <div className="relative mb-4 flex w-full flex-col">
           <select
             name={name}
             id={name}
             required={required}
             defaultValue={value || ""}
             onChange={onChange}
-            className={`${invalidClass} peer h-14 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0  focus:border-orange-500 focus:pt-3 focus:ring-blue-500  motion-reduce:transition-none dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-200 `}
+            className=" peer h-14 w-full cursor-pointer appearance-none rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0  focus:border-orange-500 focus:pt-3 focus:ring-blue-500  motion-reduce:transition-none dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-200 "
           >
             <option value="" disabled className="text-gray-400">
               {placeholder}
@@ -54,17 +54,21 @@ const CustomInput = ({
                 </option>
               ))}
           </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 transition-all duration-200 peer-hover:text-gray-200">
+            <svg
+              className="h-6 w-6 fill-current"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
           <label
             className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 pointer-events-none absolute left-0 top-2 flex h-full w-full select-none !overflow-visible truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
             htmlFor={name}
           >
             {name}
           </label>
-          <p
-            className={`${invalidClass && "peer-invalid:visible"} invisible text-sm text-pink-600 `}
-          >
-            add {name} value
-          </p>
         </div>
       );
     case "textarea":
@@ -77,7 +81,7 @@ const CustomInput = ({
             placeholder=""
             required={required}
             onChange={onChange}
-            className={`${invalidClass} peer h-20 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-5 text-base outline-none placeholder-shown:pt-0  focus:border-orange-500 focus:pt-5 focus:ring-blue-500  motion-reduce:transition-none dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-200 `}
+            className=" peer h-20 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-5 text-base outline-none placeholder-shown:pt-0  focus:border-orange-500 focus:pt-5 focus:ring-blue-500  motion-reduce:transition-none dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-200 "
           />
           <label
             className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 pointer-events-none absolute left-0 top-2 flex h-full w-full select-none !overflow-visible truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
@@ -85,10 +89,8 @@ const CustomInput = ({
           >
             {placeholder}
           </label>
-          <p
-            className={`${invalidClass && "peer-invalid:visible"} invisible text-sm text-pink-600 `}
-          >
-            add {name} value
+          <p className="invisible text-sm text-pink-600 peer-invalid:visible">
+            add valid {name} value
           </p>
         </div>
       );
@@ -101,7 +103,7 @@ const CustomInput = ({
               options.map((option, index) => (
                 <label
                   key={index}
-                  className={`${invalidClass} peer flex h-14 w-full cursor-pointer items-center justify-between rounded-lg border-[1px] border-gray-400 bg-transparent px-4 text-base outline-none has-[:checked]:border-orange-500 dark:border-gray-700 dark:text-white has-[:checked]:dark:border-orange-500 `}
+                  className=" peer flex h-14 w-full cursor-pointer items-center justify-between rounded-lg border-[1px] border-gray-400 bg-transparent px-4 text-base outline-none has-[:checked]:border-orange-500 dark:border-gray-700 dark:text-white has-[:checked]:dark:border-orange-500"
                 >
                   {option}
                   <input
@@ -122,7 +124,7 @@ const CustomInput = ({
       return (
         <label
           htmlFor={name}
-          className="flex w-full cursor-pointer items-center gap-2 pb-2"
+          className="flex w-full cursor-pointer items-center gap-2 pb-4"
         >
           <input
             required={required}
@@ -153,7 +155,7 @@ const CustomInput = ({
             onChange={onChange}
             readOnly={value && !onChange}
             placeholder=""
-            className={`${invalidClass} peer h-14 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0  focus:border-orange-500 focus:pt-3 focus:ring-blue-500  motion-reduce:transition-none dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-200 `}
+            className="peer h-14 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base  outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 placeholder-shown:invalid:border-gray-400 placeholder-shown:invalid:text-black focus:border-orange-500 focus:pt-3 motion-reduce:transition-none dark:border-gray-700 dark:text-white  dark:placeholder-gray-400 dark:invalid:border-pink-500 dark:invalid:text-pink-600 placeholder-shown:dark:invalid:border-gray-700 placeholder-shown:dark:invalid:text-white focus:dark:border-orange-500 focus:dark:text-white dark:focus:ring-gray-200 "
           />
 
           <label
@@ -162,10 +164,8 @@ const CustomInput = ({
           >
             {placeholder}
           </label>
-          <p
-            className={`${invalidClass && "peer-invalid:visible"} invisible text-sm text-pink-600 `}
-          >
-            add {name} value
+          <p className="invisible text-sm text-pink-600 peer-invalid:visible peer-placeholder-shown:peer-invalid:invisible peer-focus:invisible ">
+            add valid {name} value
           </p>
         </div>
       );
