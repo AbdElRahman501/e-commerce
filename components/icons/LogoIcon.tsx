@@ -1,9 +1,7 @@
-export default function LogoIcon() {
+export default function LogoIcon({ className }: { className?: string }) {
   return (
     <svg
-      width="637"
-      height="127"
-      viewBox="0 0 637 127"
+      className={className + " fill-current"}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

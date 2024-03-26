@@ -10,6 +10,7 @@ type CustomInputProps = FormInput & {
   ) => void;
   value?: any;
   defaultValue?: string;
+  disabled?: boolean;
 };
 
 const CustomInput = ({
@@ -25,9 +26,8 @@ const CustomInput = ({
   onChange,
   value,
   defaultValue,
+  disabled = false,
 }: CustomInputProps) => {
-  const invalidClass = "";
-  // "invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 dark:invalid:border-pink-500";
   switch (type) {
     case "select":
       return (
@@ -37,8 +37,10 @@ const CustomInput = ({
             id={name}
             required={required}
             defaultValue={value || ""}
+            value={value || ""}
             onChange={onChange}
-            className=" peer h-14 w-full cursor-pointer appearance-none rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0  focus:border-orange-500 focus:pt-3 focus:ring-blue-500  motion-reduce:transition-none dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-200 "
+            disabled={disabled}
+            className=" peer h-14 w-full appearance-none rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 focus:border-orange-500 focus:pt-3 focus:ring-blue-500 focus:invalid:border-pink-500  focus:invalid:ring-pink-500 enabled:cursor-pointer motion-reduce:transition-none  dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:invalid:border-pink-500 dark:focus:ring-gray-200 "
           >
             <option value="" disabled className="text-gray-400">
               {placeholder}
@@ -54,7 +56,7 @@ const CustomInput = ({
                 </option>
               ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 transition-all duration-200 peer-hover:text-gray-200">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 transition-all duration-200 peer-enabled:peer-hover:text-gray-200">
             <svg
               className="h-6 w-6 fill-current"
               xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +116,7 @@ const CustomInput = ({
                     defaultChecked={index === 0}
                     className="peer hidden"
                   />
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full text-white outline outline-[1px]  outline-gray-200 peer-checked:bg-orange-500 peer-checked:outline-orange-500 peer-checked:after:font-bold peer-checked:after:content-['✓']  "></div>
+                  <div className="flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-white outline outline-[1px]  outline-gray-200 peer-checked:bg-orange-500 peer-checked:outline-orange-500 peer-checked:after:font-bold peer-checked:after:content-['✓']  "></div>
                 </label>
               ))}
           </div>
@@ -135,7 +137,7 @@ const CustomInput = ({
             onChange={onChange}
             className="peer hidden"
           ></input>
-          <div className="flex h-6 w-6 items-center justify-center rounded-full text-white outline outline-[1px] outline-gray-400  peer-checked:bg-orange-500 peer-checked:outline-orange-500 peer-checked:after:font-bold peer-checked:after:content-['✓']  "></div>
+          <div className="flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-white outline outline-[1px] outline-gray-400  peer-checked:bg-orange-500 peer-checked:outline-orange-500 peer-checked:after:font-bold peer-checked:after:content-['✓']  "></div>
           {label}
         </label>
       );
@@ -155,7 +157,7 @@ const CustomInput = ({
             onChange={onChange}
             readOnly={value && !onChange}
             placeholder=""
-            className="peer h-14 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base  outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 placeholder-shown:invalid:border-gray-400 placeholder-shown:invalid:text-black focus:border-orange-500 focus:pt-3 motion-reduce:transition-none dark:border-gray-700 dark:text-white  dark:placeholder-gray-400 dark:invalid:border-pink-500 dark:invalid:text-pink-600 placeholder-shown:dark:invalid:border-gray-700 placeholder-shown:dark:invalid:text-white focus:dark:border-orange-500 focus:dark:text-white dark:focus:ring-gray-200 "
+            className="peer h-14 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base  outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 placeholder-shown:invalid:border-gray-400 placeholder-shown:invalid:text-black focus:border-orange-500 focus:pt-3 focus:text-black motion-reduce:transition-none dark:border-gray-700  dark:text-white dark:placeholder-gray-400 dark:invalid:border-pink-500 dark:invalid:text-pink-600 placeholder-shown:dark:invalid:border-gray-700 placeholder-shown:dark:invalid:text-white focus:dark:border-orange-500 focus:dark:text-white dark:focus:ring-gray-200 "
           />
 
           <label

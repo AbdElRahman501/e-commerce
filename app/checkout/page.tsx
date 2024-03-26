@@ -1,9 +1,11 @@
 import { BagCard, CustomInput } from "@/components";
+import ShippingAddress from "@/components/checkOut/ShippingAddress";
 import SubmitButton from "@/components/checkOut/SubmitButton";
 import Message from "@/components/Message";
 import { formInputs } from "@/constants";
 import { createOrder, fetchProductsById } from "@/lib";
 import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
+import { fetchShipping } from "@/lib/actions/shipping.actions";
 import { CartItem } from "@/types";
 import { reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
@@ -11,17 +13,20 @@ import { cookies } from "next/headers";
 const CheckOutPage = async ({
   searchParams,
 }: {
-  searchParams: { coupon: string };
+  searchParams: { coupon: string; state: string; city: string };
 }) => {
   const coupon = searchParams.coupon || "";
+  const statId = searchParams.state || "";
+  const cityId = searchParams.city || "";
+
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   const products = await fetchProductsById(cart.map((item) => item.productId));
   const cartProducts = reformatCartItems(cart, products);
-
   const promoCode = await fetchPromoCode(coupon);
-  const discountPercentage = promoCode.discount / 100 || 0;
+  const { governorate, cities } = await fetchShipping();
 
+  const discountPercentage = promoCode.discount / 100 || 0;
   const subTotal = cartProducts.reduce(
     (acc, item) => acc + (item.salePrice || item.price) * item.amount,
     0,
@@ -30,7 +35,14 @@ const CheckOutPage = async ({
     (acc, item) => acc + item.minPrice * item.amount,
     0,
   );
-  const shipping = subTotal > 100 ? 0 : 10;
+  const stateShipping = governorate.find(
+    (item) => item.id === statId,
+  )?.shipping_price;
+  const cityShipping = cities.find(
+    (item) => item.id === cityId,
+  )?.shipping_price;
+
+  const shipping = stateShipping || cityShipping || 0;
   const discountValue = Math.ceil(discountPercentage * subTotal);
   const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
   const total = subTotal + shipping - discount;
@@ -41,7 +53,7 @@ const CheckOutPage = async ({
       <Message message="Your cart is empty" />
     </div>
   ) : (
-    <div className="p-5 lg:px-20">
+    <div className="p-5 pb-20 lg:px-20">
       <form
         action={createOrder}
         className=" flex w-full flex-col gap-10 md:flex-row "
@@ -51,7 +63,8 @@ const CheckOutPage = async ({
           <CustomInput
             label="Email Address"
             type="email"
-            placeholder="Email address (optional)"
+            required={true}
+            placeholder="Email address"
             name="email"
             pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
           />
@@ -93,6 +106,7 @@ const CheckOutPage = async ({
               maxLength={30}
             />
           </div>
+          <ShippingAddress governorate={governorate} cities={cities} />
           {formInputs.map((input, index) => (
             <CustomInput key={index} {...input} />
           ))}

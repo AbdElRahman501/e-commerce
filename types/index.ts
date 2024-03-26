@@ -59,6 +59,19 @@ export interface OfferType {
   url: string;
 }
 
+export interface GovernorateType {
+  id: string;
+  governorate_name_en: string;
+  shipping_price: number;
+}
+
+export interface CityType {
+  id: string;
+  governorate_id: string;
+  city_name_en: string;
+  shipping_price: number;
+}
+
 export interface PromoCodeType {
   code: string;
   discount: number;
@@ -111,6 +124,7 @@ export interface PersonalInfo {
   email?: string;
   streetAddress: string;
   state: string;
+  city: string;
   comment?: string;
   promoCode?: string;
   paymentMethod: string;
@@ -120,6 +134,7 @@ export interface Order {
   products: CartItem[];
   personalInfo: PersonalInfo;
   id: string;
+  _id?: string;
   total: number;
   subTotal: number;
   shipping: number;

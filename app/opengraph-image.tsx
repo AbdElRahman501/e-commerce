@@ -1,4 +1,4 @@
-import LogoIcon from "@/components/LogoIcon";
+import LogoIcon from "@/components/icons/LogoIcon";
 import { ImageResponse } from "next/og";
 
 // Route segment config

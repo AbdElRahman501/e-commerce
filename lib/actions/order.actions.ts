@@ -5,9 +5,8 @@ import { fetchProductsById, Order } from "@/lib";
 import nodemailer from "nodemailer";
 import path from "path";
 import fs from "fs";
-import { formatOrderItems, reformatCartItems } from "@/utils";
+import { formatOrderItems, generateCode, reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createOrder(formData: FormData) {
@@ -23,6 +22,7 @@ export async function createOrder(formData: FormData) {
     const firstName = formData.get("firstName")!.toString();
     const lastName = formData.get("lastName")!.toString();
     const state = formData.get("state")!.toString();
+    const city = formData.get("city")!.toString();
     const streetAddress = formData.get("streetAddress")!.toString();
     const comment = formData.get("comment")?.toString() || "";
     const promoCode = formData.get("promoCode")?.toString() || "";
@@ -32,7 +32,19 @@ export async function createOrder(formData: FormData) {
     const shipping = Number(formData.get("shipping")!);
     const discount = Number(formData.get("discount")!);
 
+    let orderId;
+    let uniqueIdFound = false;
+
+    while (!uniqueIdFound) {
+      orderId = generateCode("EG-", 6);
+      const existingOrder = await Order.findById(orderId);
+      if (!existingOrder) {
+        uniqueIdFound = true;
+      }
+    }
+
     const order = {
+      _id: orderId,
       products: cart,
       personalInfo: {
         firstName,
@@ -40,6 +52,7 @@ export async function createOrder(formData: FormData) {
         email,
         phoneNumber,
         state,
+        city,
         streetAddress,
         comment,
         paymentMethod,
@@ -56,7 +69,6 @@ export async function createOrder(formData: FormData) {
     const createdOrder: OrderType = JSON.parse(JSON.stringify(data));
     sendEmail(createdOrder, cart);
     cookies().delete("cart");
-    revalidatePath("/checkout");
     redirectPath = "/confirmation/" + createdOrder.id;
   } catch (error) {
     console.error("Error creating order:", error);

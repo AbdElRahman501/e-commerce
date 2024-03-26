@@ -9,14 +9,14 @@ const formInputs: FormInput[] = [
   //   required: true,
   //   pattern: "(010|011|012|015)[0-9]{8}",
   // },
-  {
-    label: "State",
-    type: "select",
-    options: ["Alabama", "Alaska", "Arizona", "Arkansas"],
-    placeholder: "Choose your state",
-    name: "state",
-    required: true,
-  },
+  // {
+  //   label: "State",
+  //   type: "select",
+  //   options: ["Alabama", "Alaska", "Arizona", "Arkansas"],
+  //   placeholder: "Choose your state",
+  //   name: "state",
+  //   required: true,
+  // },
   {
     label: "Street Address",
     type: "text",

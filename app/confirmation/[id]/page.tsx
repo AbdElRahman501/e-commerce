@@ -1,9 +1,9 @@
 import { BagCard } from "@/components";
+import OrderId from "@/components/confirmation/OrderId";
 import { fetchProductsById } from "@/lib";
 import { fetchOrder } from "@/lib/actions/order.actions";
 import { CartProduct } from "@/types";
 import { reformatCartItems } from "@/utils";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -28,7 +28,7 @@ const OrderConfirmationPage = async ({
         <span className="font-bold"> {order.personalInfo?.firstName}</span>,{" "}
         <br /> Your order has been received
       </h1>
-      <p>Order #{order.id}</p>
+      <OrderId id={order.id} />
       <div className="flex w-full flex-col-reverse items-center justify-evenly rounded-md bg-gray-200 p-5 dark:bg-gray-700 sm:flex-row  lg:p-10">
         {order.personalInfo && (
           <div className=" flex flex-col gap-2 text-center sm:text-left">
@@ -39,7 +39,11 @@ const OrderConfirmationPage = async ({
               {order.personalInfo.email}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-300 sm:text-base">
-              {order.personalInfo.state}-{order.personalInfo.streetAddress}
+              {order.personalInfo.state +
+                " - " +
+                order.personalInfo.city +
+                " - " +
+                order.personalInfo.streetAddress}
             </p>
           </div>
         )}
@@ -47,7 +51,9 @@ const OrderConfirmationPage = async ({
           <h2 className="text-2xl font-bold sm:text-3xl">
             {order.total.toFixed(2)} EGP{" "}
           </h2>
-          <h3 className="text-base sm:text-lg">Cash on delivery </h3>
+          <h3 className="text-base sm:text-lg">
+            {order.personalInfo.paymentMethod}
+          </h3>
         </div>
       </div>
       <div className="flex h-fit w-full flex-col gap-2 rounded-3xl border border-gray-500 p-5 md:max-w-lg ">
