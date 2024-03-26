@@ -1,4 +1,5 @@
-import { FAQSection, Testimonials } from "@/components";
+import { FAQSection, Footer, Testimonials } from "@/components";
+import { Suspense } from "react";
 
 const page = () => {
   return (
@@ -72,6 +73,9 @@ const page = () => {
         {/* Add more sections as needed based on your specific content */}
       </div>
       <FAQSection />
+      <Suspense>
+        <Footer />
+      </Suspense>
     </section>
   );
 };

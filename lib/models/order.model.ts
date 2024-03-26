@@ -37,6 +37,7 @@ const orderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    _id: false,
     toJSON: {
       virtuals: true, // Include virtual properties if any
       transform: function (doc, ret) {

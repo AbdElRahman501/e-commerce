@@ -2,6 +2,7 @@
 import { createUrl } from "@/utils";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 const FilterButton = () => {
   const pathname = usePathname();
@@ -26,6 +27,17 @@ const FilterButton = () => {
       setIsOpen(true);
     }
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isOpen]);
 
   return (
     <div>

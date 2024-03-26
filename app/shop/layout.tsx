@@ -1,4 +1,10 @@
-import { CallToAction, FilterButton, SearchField, Sorting } from "@/components";
+import {
+  CallToAction,
+  FilterButton,
+  Footer,
+  SearchField,
+  Sorting,
+} from "@/components";
 import FilterSection from "@/components/FilterSection";
 import { Suspense } from "react";
 
@@ -26,6 +32,9 @@ export default function SearchLayout({
           {children}
         </div>
       </div>
+      <Suspense>
+        <Footer />
+      </Suspense>
     </Suspense>
   );
 }
