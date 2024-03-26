@@ -121,7 +121,7 @@ export const sendEmail = async (
     const filePath = path.join(process.cwd(), "public", "confirmation.html");
     const htmlContent = fs.readFileSync(filePath, "utf8");
     const replacedHtml = htmlContent
-      .replace(/{{HOST_URL}}/g, `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`)
+      .replace(/{{HOST_URL}}/g, `${process.env.NEXT_PUBLIC_VERCEL_URL}`)
       .replace(/{{FIRST_NAME}}/g, order.personalInfo.firstName)
       .replace(/{{LAST_NAME}}/g, order.personalInfo.lastName)
       .replace(/{{EMAIL}}/g, order.personalInfo?.email || "")
