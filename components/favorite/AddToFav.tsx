@@ -1,8 +1,8 @@
 "use client";
 import { useFormState, useFormStatus } from "react-dom";
 import Image from "next/image";
-import LoadingDots from "../loading-dots";
 import { toggleFav } from "../actions/fav.actions";
+import React from "react";
 
 function SubmitButton({
   isFav,
@@ -12,25 +12,23 @@ function SubmitButton({
   className?: string;
 }) {
   const { pending } = useFormStatus();
+  const [inFav, setInFav] = React.useState(isFav);
 
   return (
     <button
       type="submit"
+      onClick={() => setInFav(!inFav)}
       aria-label="add cart item"
-      aria-disabled={pending}
+      disabled={pending}
       className="relative h-6 w-6"
     >
-      {pending ? (
-        <LoadingDots className={className || "invert dark:invert-0"} />
-      ) : (
-        <Image
-          src={isFav ? "/icons/heart-fill.svg" : "/icons/heart.svg"}
-          alt="heart icon"
-          fill
-          sizes="100%"
-          className={` ${isFav ? "" : className || "invert dark:invert-0"} duration-200 hover:scale-110 `}
-        />
-      )}
+      <Image
+        src={inFav ? "/icons/heart-fill.svg" : "/icons/heart.svg"}
+        alt="heart icon"
+        fill
+        sizes="100%"
+        className={` ${inFav ? "" : className || "invert dark:invert-0"} duration-200 hover:scale-110 `}
+      />
     </button>
   );
 }
