@@ -10,9 +10,7 @@ export default async function FavoritePage() {
 
   return (
     <div className="min-h-[88vh] p-5 lg:px-20">
-      <h1 className="pb-5 text-xl font-semibold md:text-3xl">
-        Favorite Products
-      </h1>
+      <h1 className="pb-5 text-center text-3xl font-extrabold">Favorites</h1>
       {products.length === 0 ? (
         <Message message="Your favorite is empty" />
       ) : (

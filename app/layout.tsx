@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/theme-provider";
 import { NavBar } from "@/components";
 import { NextAuthProvider } from "@/NextAuthProvider";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-slate-50 duration-200 dark:bg-[#0d1117]`}
+        className={`${inter.className} bg-white duration-200 dark:bg-[#0d1117]`}
       >
         <Suspense>
           <ThemeProvider

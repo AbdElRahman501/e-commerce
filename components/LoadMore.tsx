@@ -4,14 +4,10 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 
-const LoadMore = () => {
+const LoadMore = ({ newLimit }: { newLimit: number }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const LimitSearchParams = searchParams.get("l");
-  const limit = LimitSearchParams ? parseInt(LimitSearchParams) : 12;
-
   function updateLimit() {
-    const newLimit = limit + 12;
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("l", newLimit.toString());
     const optionUrl = createUrl(pathname, newSearchParams);

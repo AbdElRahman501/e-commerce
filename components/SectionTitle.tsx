@@ -1,19 +1,24 @@
 import { SectionTitleProps } from "@/types";
 import Link from "next/link";
+import DropDown_icon from "./icons/DropDown_icon";
 
-const SectionTitle = ({ title, url, className, theme }: SectionTitleProps) => {
+const SectionTitle = ({ title, url, theme, className }: SectionTitleProps) => {
   return (
-    <div className={`title flex items-center justify-between ${className}`}>
-      <h1 className="text-xl md:text-3xl font-bold ">{title}</h1>
+    <div
+      className={`title flex items-center justify-between text-black  dark:text-white ${className}`}
+    >
+      <h1 className="text-2xl font-bold uppercase md:text-4xl ">{title}</h1>
       <Link
         href={url}
-        className={`group flex items-center justify-between gap-2 rounded-full border ${theme === "dark" ? "border-white" : "border-black"} p-1 ps-3 text-base dark:border-white`}
+        className={
+          "group flex items-center justify-between  gap-2 rounded-full text-sm md:text-base"
+        }
       >
-        <h1 className="group-hover:underline">See All</h1>
+        <p className="uppercase group-hover:underline">See All</p>
         <div
-          className={`m-[5px] flex  h-[24px] w-[24px] items-center  justify-center rounded-full bg-primary_color ${theme === "dark" ? "!bg-white !text-black" : "dark:bg-white dark:text-black"} text-white  duration-300 hover:bg-gray-400  group-hover:scale-110 `}
+          className={`${theme === "dark" ? "text-black dark:bg-white" : "dark:bg-primary_color dark:group-hover:bg-gray-200 dark:group-hover:text-black"} flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 duration-300 group-hover:bg-black group-hover:text-white `}
         >
-          <p className="-rotate-45">{`->`}</p>
+          <DropDown_icon className="h-4 w-4 -rotate-[135deg] fill-current " />
         </div>
       </Link>
     </div>

@@ -9,7 +9,7 @@ export const fetchShipping = cache(
     cities: CityType[];
   }> => {
     try {
-      connectToDatabase();
+      await connectToDatabase();
       const governorateData = await Governorate.find({});
       const citiesData = await City.find({});
       const governorate: GovernorateType[] = JSON.parse(

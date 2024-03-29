@@ -52,7 +52,7 @@ const CustomTable = ({
               <th
                 key={index}
                 className={
-                  index === header.length - 1
+                  "text-left " + (index === header.length - 1)
                     ? ActionComponent
                       ? "pr-8"
                       : ""

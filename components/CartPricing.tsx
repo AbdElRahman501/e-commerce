@@ -43,37 +43,51 @@ const CartPricing = async ({
         : "You can't apply this coupon";
 
   return (
-    <div className="flex h-fit w-full flex-col gap-2 rounded-3xl border border-gray-500 p-5 md:max-w-lg ">
+    <div className="flex h-fit w-full flex-col gap-2 rounded-3xl border border-gray-300 p-5 dark:border-gray-700 md:max-w-lg ">
       <Coupon coupon={coupon} />
-      <p className="text-sm text-red-500">{errorMessage}</p>
-      <div className="flex flex-col gap-2 border-b border-gray-500 pb-2">
-        <div className="flex justify-between">
-          <p className=" font-bold text-gray-600 dark:text-gray-300">
-            Subtotal
-          </p>
-          <p className="  font-medium ">{subTotal.toFixed(2)} EGP</p>
-        </div>
-        <div className="flex justify-between">
-          <p className=" font-bold text-gray-600 dark:text-gray-300">
-            Discounts
-          </p>
-          <p className="  font-medium text-green-600 ">
-            -{discount.toFixed(2)} EGP
+      <p className="text-sm text-pink-500">{errorMessage}</p>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+          <p>Subtotal</p>
+          <p>
+            {subTotal.toLocaleString("en-US", {
+              style: "currency",
+              currency: "EGP",
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </p>
         </div>
-        <div className="flex justify-between">
-          <p className=" font-bold text-gray-600 dark:text-gray-300">
-            Shipping
-          </p>
-          <p className="  font-medium ">Calculated during Checkout</p>
-        </div>
+        {discount > 0 && (
+          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+            <p>Promo Code Discount</p>
+            <p>
+              {discount.toLocaleString("en-US", {
+                style: "currency",
+                currency: "EGP",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
+          </div>
+        )}
       </div>
-      <div className="flex justify-between">
-        <p className=" font-bold text-gray-600 dark:text-gray-300">Total</p>
-        <p className="  font-medium ">{total.toFixed(2)} EGP</p>
+      <div className="flex justify-between text-lg font-bold md:text-xl">
+        <p>Total</p>
+        <p>
+          {total.toLocaleString("en-US", {
+            style: "currency",
+            currency: "EGP",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </p>
       </div>
-      <Link href={`/checkout?coupon=${coupon}`}>
-        <div className="group mt-2 flex h-12 w-full items-center justify-center rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900">
+      <p className="text-xs text-gray-500 dark:text-gray-300 md:text-base">
+        Taxes and shipping calculated at checkout
+      </p>
+      <Link href={discount > 0 ? `/checkout?coupon=${coupon}` : "/checkout"}>
+        <div className="group mt-2 flex h-14 w-full items-center justify-center rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900">
           <p className="duration-500 group-hover:scale-110">
             Proceed To Checkout
           </p>

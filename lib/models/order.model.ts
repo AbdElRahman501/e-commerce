@@ -15,7 +15,7 @@ const personalInfoSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   phoneNumber: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String },
   streetAddress: { type: String, required: true },
   state: { type: String, required: true },
   messageAccept: { type: Boolean },
@@ -27,7 +27,7 @@ const personalInfoSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema(
   {
-    _id: { type: String, required: true, unique: true },
+    id: { type: String, required: true, unique: true },
     products: { type: [productSchema], required: true },
     personalInfo: { type: personalInfoSchema, required: true },
     subTotal: { type: Number, required: true },
@@ -37,15 +37,6 @@ const orderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    _id: false,
-    toJSON: {
-      virtuals: true, // Include virtual properties if any
-      transform: function (doc, ret) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v; // Optionally remove the __v field if it exists
-      },
-    },
   },
 );
 

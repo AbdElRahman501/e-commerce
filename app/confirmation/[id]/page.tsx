@@ -36,7 +36,7 @@ const OrderConfirmationPage = async ({
               {order.personalInfo.firstName + " " + order.personalInfo.lastName}
             </h2>
             <h3 className="text-base text-blue-800 dark:text-gray-200 sm:text-lg">
-              {order.personalInfo.email}
+              {order.personalInfo.email || order.personalInfo.phoneNumber}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-300 sm:text-base">
               {order.personalInfo.state +
@@ -49,7 +49,12 @@ const OrderConfirmationPage = async ({
         )}
         <div className=" text-center text-primary_color dark:text-white">
           <h2 className="text-2xl font-bold sm:text-3xl">
-            {order.total.toFixed(2)} EGP{" "}
+            {order.total.toLocaleString("en-US", {
+              style: "currency",
+              currency: "EGP",
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </h2>
           <h3 className="text-base sm:text-lg">
             {order.personalInfo.paymentMethod}
@@ -64,31 +69,53 @@ const OrderConfirmationPage = async ({
               ))
             : "Your cart is empty"}
         </div>
-        <div className="flex flex-col gap-2 border-b border-gray-500 pb-2">
-          <div className="flex justify-between">
-            <p className=" font-bold text-gray-600 dark:text-gray-300">
-              Subtotal
-            </p>
-            <p className="  font-medium ">{order.subTotal.toFixed(2)} EGP</p>
-          </div>
-          <div className="flex justify-between">
-            <p className=" font-bold text-gray-600 dark:text-gray-300">
-              Discounts
-            </p>
-            <p className="  font-medium text-green-600 ">
-              -{order.discount.toFixed(2)} EGP
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+            <p>Subtotal</p>
+            <p>
+              {order.subTotal.toLocaleString("en-US", {
+                style: "currency",
+                currency: "EGP",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </p>
           </div>
-          <div className="flex justify-between">
-            <p className=" font-bold text-gray-600 dark:text-gray-300">
-              Shipping
+          {order.discount > 0 && (
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+              <p>Discounts</p>
+              <p>
+                {order.discount.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "EGP",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+            </div>
+          )}
+          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+            <p>Shipping</p>
+            <p>
+              {order.shipping.toLocaleString("en-US", {
+                style: "currency",
+                currency: "EGP",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </p>
-            <p className="  font-medium ">{order.shipping.toFixed(2)} EGP</p>
           </div>
         </div>
-        <div className="flex justify-between">
-          <p className=" font-bold text-gray-600 dark:text-gray-300">Total</p>
-          <p className="  font-medium ">{order.total.toFixed(2)} EGP</p>
+        <div className="flex justify-between text-lg font-bold md:text-xl">
+          <p>Total</p>
+          <p>
+            {order.total.toLocaleString("en-US", {
+              style: "currency",
+              currency: "EGP",
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </p>
         </div>
       </div>
       <Link

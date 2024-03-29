@@ -1,41 +1,24 @@
-"use client";
-import { Product } from "@/types";
-import React from "react";
-import { SearchField, Sorting, CustomTable, LoadingLogo } from ".";
-import ProductsAction from "./ProductsAction";
+"use server";
+import { SectionTitle } from ".";
+import CustomTable from "./CustomTable";
+import { fetchFilteredProducts } from "@/lib";
 
-const ProductTable = () => {
-  const [products, setProducts] = React.useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = React.useState<Product[]>([]);
-  const [loading, setLoading] = React.useState(true);
+export default async function ProductTable() {
+  const { products } = await fetchFilteredProducts({
+    limit: 5,
+    sort: "Trending",
+  });
 
-  return loading ? (
-    <LoadingLogo />
-  ) : (
-    <div>
-      <div className="flex items-center justify-center gap-3 px-5 md:gap-5 lg:px-20">
-        <h1 className=" mr-auto hidden text-3xl font-bold md:block">
-          Products
-        </h1>
-        <div className="my-3 w-full">
-          <SearchField />
-        </div>
-        <Sorting classNames=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex" />
-      </div>
+  return (
+    <div className="flex flex-col gap-2">
+      <SectionTitle title={"Products"} url={"/dashboard/products"} />
       <CustomTable
-        data={filteredProducts.map((item) => ({
+        data={products.map((item) => ({
           ...item,
-          sizes: item.sizes.join(", "),
           image: item.images[item.colors[0]][0],
         }))}
-        header={["views", "image", "name", "colors", "sizes", "price"]}
-        ActionComponent={ProductsAction}
+        header={["views", "sales", "image", "price"]}
       />
-      <div>
-        <button> addProduct </button>
-      </div>
     </div>
   );
-};
-
-export default ProductTable;
+}

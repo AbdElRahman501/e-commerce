@@ -1,23 +1,23 @@
-"use client";
 import React from "react";
-import { CustomTable, LoadingLogo } from ".";
-import { Order } from "@/types";
+import CustomTable from "./CustomTable";
+import SectionTitle from "./SectionTitle";
+import { fetchOrders } from "@/lib/actions/order.actions";
 
-const OrdersTable = () => {
-  const [orders, setOrders] = React.useState<Order[]>([]);
-  const [loading, setLoading] = React.useState(true);
+const OrdersTable = async () => {
+  const orders = await fetchOrders({ limit: 5 });
 
-  return loading ? (
-    <LoadingLogo />
-  ) : (
-    <CustomTable
-      data={orders.map((item) => ({
-        ...item,
-        id: "#" + item.id.slice(0, 5),
-        ...item.personalInfo,
-      }))}
-      header={["id", "firstName", "state", "total"]}
-    />
+  return (
+    <div className="flex flex-col gap-2">
+      <SectionTitle title={"Orders"} url={"/dashboard/orders"} />
+      <CustomTable
+        data={orders.map((item) => ({
+          ...item,
+          id: "#" + item.id.slice(0, 5),
+          ...item.personalInfo,
+        }))}
+        header={["id", "firstName", "state", "total"]}
+      />
+    </div>
   );
 };
 

@@ -9,9 +9,9 @@ const SubmitButton = () => {
   const { pending } = useFormStatus();
   return (
     <button type="submit" aria-label="add cart item" aria-disabled={pending}>
-      <div className="relative h-5 w-5">
+      <div className="relative h-5 w-5 text-3xl ">
         {pending ? (
-          <LoadingDots className="invert dark:invert-0" />
+          <LoadingDots />
         ) : (
           <Image
             src="/icons/remove.svg"
@@ -29,7 +29,7 @@ const RemoveButton = ({ cartItem }: { cartItem: CartItem }) => {
   const [message, formAction] = useFormState(removeItem, null);
   const removeFormAction = formAction.bind(null, cartItem);
   return (
-    <form action={removeFormAction} className="absolute right-0 top-0">
+    <form action={removeFormAction} className="flex items-center">
       <SubmitButton />
     </form>
   );

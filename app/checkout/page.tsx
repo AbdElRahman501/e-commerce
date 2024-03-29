@@ -58,13 +58,12 @@ const CheckOutPage = async ({
         action={createOrder}
         className=" flex w-full flex-col gap-10 md:flex-row "
       >
-        <div className="gap- flex w-full flex-col">
-          <h2 className="pb-5 text-xl font-semibold md:text-2xl">Contact</h2>
+        <div className="gap- flex w-full flex-col gap-3">
+          <h2 className="text-xl font-semibold md:text-2xl">Contact</h2>
           <CustomInput
             label="Email Address"
             type="email"
-            required={true}
-            placeholder="Email address"
+            placeholder="Email address (optional)"
             name="email"
             pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
           />
@@ -83,7 +82,7 @@ const CheckOutPage = async ({
             placeholder="Accept to receive offers and news"
             name="messageAccept"
           />
-          <h2 className="pb-5 text-xl font-semibold md:text-2xl">
+          <h2 className="text-xl font-semibold md:text-2xl">
             Shipping address
           </h2>
           <div className="flex w-full gap-2">
@@ -111,44 +110,81 @@ const CheckOutPage = async ({
             <CustomInput key={index} {...input} />
           ))}
           <div className="hidden">
-            <CustomInput type="text" value={coupon} name="promoCode" />
-            <CustomInput type="number" value={total} name="total" />
-            <CustomInput type="number" value={subTotal} name="subTotal" />
-            <CustomInput type="number" value={shipping} name="shipping" />
-            <CustomInput type="number" value={discount} name="discount" />
+            <CustomInput type="text" value={coupon} name="promoCode" readOnly />
+            <CustomInput type="number" value={total} name="total" readOnly />
+            <CustomInput
+              type="number"
+              value={subTotal}
+              name="subTotal"
+              readOnly
+            />
+            <CustomInput
+              type="number"
+              value={shipping}
+              name="shipping"
+              readOnly
+            />
+            <CustomInput
+              type="number"
+              value={discount}
+              name="discount"
+              readOnly
+            />
           </div>
         </div>
         <div className="flex w-full flex-col gap-5 ">
-          <h2 className="pb-5 text-xl font-semibold md:text-2xl">Your Order</h2>
+          <h2 className=" text-xl font-semibold md:text-2xl">Your Order</h2>
           {cartProducts.map((item, index) => (
             <BagCard readonly {...item} key={index} />
           ))}
 
-          <div className="flex flex-col gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
-            <div className="flex justify-between">
-              <p className=" font-bold text-gray-600 dark:text-gray-300">
-                Subtotal
-              </p>
-              <p className="  font-medium ">{subTotal.toFixed(2)} EGP</p>
-            </div>
-            <div className="flex justify-between">
-              <p className=" font-bold text-gray-600 dark:text-gray-300">
-                Discounts
-              </p>
-              <p className="  font-medium text-green-600 ">
-                -{discount.toFixed(2)} EGP
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+              <p>Subtotal</p>
+              <p>
+                {subTotal.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "EGP",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </p>
             </div>
-            <div className="flex justify-between">
-              <p className=" font-bold text-gray-600 dark:text-gray-300">
-                Shipping
+            {discount > 0 && (
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+                <p>Discounts</p>
+                <p>
+                  {discount.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "EGP",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+              </div>
+            )}
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+              <p>Shipping</p>
+              <p>
+                {shipping.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "EGP",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </p>
-              <p className="  font-medium ">{shipping.toFixed(2)} EGP</p>
             </div>
           </div>
-          <div className="flex justify-between">
-            <p className=" font-bold text-gray-600 dark:text-gray-300">Total</p>
-            <p className="  font-medium ">{total.toFixed(2)} EGP</p>
+          <div className="flex justify-between text-lg font-bold md:text-xl">
+            <p>Total</p>
+            <p>
+              {total.toLocaleString("en-US", {
+                style: "currency",
+                currency: "EGP",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
           </div>
 
           <SubmitButton title={`Place Order ${total.toFixed(0)} EGP`} />

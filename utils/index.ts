@@ -134,4 +134,12 @@ export function generateCode(prefix: string, length: number): string {
   }
   return code;
 }
+export function formatDate(timestamp: string): string {
+  const dt = new Date(timestamp);
+  const year = dt.getFullYear().toString().slice(-2);
+  const month = ("0" + (dt.getMonth() + 1)).slice(-2);
+  const day = ("0" + dt.getDate()).slice(-2);
+
+  return `${year}/${month}/${day}`;
+}
 export { formatOrderItems };

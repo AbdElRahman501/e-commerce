@@ -1,5 +1,6 @@
-import { FormInput, PersonalInfo } from "@/types";
+import { FormInput } from "@/types";
 import React from "react";
+import DropDown_icon from "./icons/DropDown_icon";
 
 type CustomInputProps = FormInput & {
   onChange?: (
@@ -11,6 +12,8 @@ type CustomInputProps = FormInput & {
   value?: any;
   defaultValue?: string;
   disabled?: boolean;
+  readOnly?: boolean;
+  hidden?: boolean;
 };
 
 const CustomInput = ({
@@ -27,16 +30,17 @@ const CustomInput = ({
   value,
   defaultValue,
   disabled = false,
+  readOnly = false,
+  hidden,
 }: CustomInputProps) => {
   switch (type) {
     case "select":
       return (
-        <div className="relative mb-4 flex w-full flex-col">
+        <div className="relative flex w-full flex-col">
           <select
             name={name}
             id={name}
             required={required}
-            defaultValue={value || ""}
             value={value || ""}
             onChange={onChange}
             disabled={disabled}
@@ -57,16 +61,10 @@ const CustomInput = ({
               ))}
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 transition-all duration-200 peer-enabled:peer-hover:text-gray-200">
-            <svg
-              className="h-6 w-6 fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
+            <DropDown_icon className="h-6 w-6 fill-current" />
           </div>
           <label
-            className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 pointer-events-none absolute left-0 top-2 flex h-full w-full select-none !overflow-visible truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
+            className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 !overflow-block pointer-events-none absolute left-0 top-2 flex h-full w-full select-none truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
             htmlFor={name}
           >
             {name}
@@ -80,18 +78,20 @@ const CustomInput = ({
             name={name}
             id={name}
             defaultValue={defaultValue}
+            value={value}
             placeholder=""
             required={required}
+            readOnly={readOnly || (value && !onChange ? true : false)}
             onChange={onChange}
             className=" peer h-20 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-5 text-base outline-none placeholder-shown:pt-0  focus:border-orange-500 focus:pt-5 focus:ring-blue-500  motion-reduce:transition-none dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-gray-200 "
           />
           <label
-            className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 pointer-events-none absolute left-0 top-2 flex h-full w-full select-none !overflow-visible truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
+            className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 !overflow-block pointer-events-none absolute left-0 top-2 flex h-full w-full select-none truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
             htmlFor={name}
           >
             {placeholder}
           </label>
-          <p className="invisible text-sm text-pink-600 peer-invalid:visible">
+          <p className="hidden text-sm text-pink-600 peer-invalid:block">
             add valid {name} value
           </p>
         </div>
@@ -100,7 +100,7 @@ const CustomInput = ({
       return (
         <fieldset>
           <div className=" flex flex-col gap-2 ">
-            <h2 className="pb-5 text-xl font-semibold md:text-2xl">{label}</h2>
+            <h2 className=" text-xl font-semibold md:text-2xl">{label}</h2>
             {options &&
               options.map((option, index) => (
                 <label
@@ -113,6 +113,7 @@ const CustomInput = ({
                     name={name}
                     id={option}
                     value={option}
+                    readOnly={readOnly || (value && !onChange ? true : false)}
                     defaultChecked={index === 0}
                     className="peer hidden"
                   />
@@ -135,6 +136,7 @@ const CustomInput = ({
             id={name}
             value={label}
             onChange={onChange}
+            readOnly={readOnly || (value && !onChange ? true : false)}
             className="peer hidden"
           ></input>
           <div className="flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-white outline outline-[1px] outline-gray-400  peer-checked:bg-orange-500 peer-checked:outline-orange-500 peer-checked:after:font-bold peer-checked:after:content-['✓']  "></div>
@@ -155,18 +157,19 @@ const CustomInput = ({
             id={name}
             value={value}
             onChange={onChange}
-            readOnly={value && !onChange}
+            readOnly={readOnly || (value && !onChange ? true : false)}
             placeholder=""
+            hidden={hidden ? true : false}
             className="peer h-14 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base  outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 placeholder-shown:invalid:border-gray-400 placeholder-shown:invalid:text-black focus:border-orange-500 focus:pt-3 focus:text-black motion-reduce:transition-none dark:border-gray-700  dark:text-white dark:placeholder-gray-400 dark:invalid:border-pink-500 dark:invalid:text-pink-600 placeholder-shown:dark:invalid:border-gray-700 placeholder-shown:dark:invalid:text-white focus:dark:border-orange-500 focus:dark:text-white dark:focus:ring-gray-200 "
           />
 
           <label
-            className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 pointer-events-none absolute left-0 top-2 flex h-full w-full select-none !overflow-visible truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
+            className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 !overflow-block pointer-events-none absolute left-0 top-2 flex h-full w-full select-none truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
             htmlFor={name}
           >
             {placeholder}
           </label>
-          <p className="invisible text-sm text-pink-600 peer-invalid:visible peer-placeholder-shown:peer-invalid:invisible peer-focus:invisible ">
+          <p className="hidden text-sm text-pink-600 peer-invalid:block peer-placeholder-shown:peer-invalid:hidden peer-focus:hidden ">
             add valid {name} value
           </p>
         </div>
