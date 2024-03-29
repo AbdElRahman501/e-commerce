@@ -1,5 +1,5 @@
 "use server";
-import { CartItem, Order as OrderType } from "@/types";
+import { CartItem, FilterProps, Order as OrderType } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import { fetchProductsById, Order } from "@/lib";
 import nodemailer from "nodemailer";
@@ -8,6 +8,7 @@ import fs from "fs";
 import { formatOrderItems, generateCode, reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { soldProducts } from "./product.actions";
 
 export async function createOrder(formData: FormData) {
   let redirectPath = "";
@@ -32,19 +33,19 @@ export async function createOrder(formData: FormData) {
     const shipping = Number(formData.get("shipping")!);
     const discount = Number(formData.get("discount")!);
 
-    let orderId;
+    let orderId: string = "";
     let uniqueIdFound = false;
 
     while (!uniqueIdFound) {
       orderId = generateCode("EG-", 6);
-      const existingOrder = await Order.findById(orderId);
+      const existingOrder = await Order.findOne({ id: orderId });
       if (!existingOrder) {
         uniqueIdFound = true;
       }
     }
 
     const order = {
-      _id: orderId,
+      id: orderId,
       products: cart,
       personalInfo: {
         firstName,
@@ -67,7 +68,8 @@ export async function createOrder(formData: FormData) {
     const orderNew = new Order(order);
     const data = await orderNew.save();
     const createdOrder: OrderType = JSON.parse(JSON.stringify(data));
-    sendEmail(createdOrder, cart);
+    soldProducts(cart.map((item) => item.productId));
+    if (email) sendEmail(createdOrder, cart);
     cookies().delete("cart");
     redirectPath = "/confirmation/" + createdOrder.id;
   } catch (error) {
@@ -77,22 +79,67 @@ export async function createOrder(formData: FormData) {
   redirect(redirectPath);
 }
 
-export async function fetchOrders(): Promise<OrderType[]> {
+export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
+  const query = filter?.query || "";
+  const limit = filter?.limit || 99999;
+  const trimmedQuery = query.trim().toLowerCase();
+
+  const textSearchCondition = query
+    ? {
+        $or: [
+          { _id: { $regex: `\\b${trimmedQuery}`, $options: "i" } },
+          {
+            "personalInfo.firstName": {
+              $regex: `\\b${trimmedQuery}`,
+              $options: "i",
+            },
+          },
+          {
+            "personalInfo.lastName": {
+              $regex: `\\b${trimmedQuery}`,
+              $options: "i",
+            },
+          },
+          {
+            "personalInfo.phoneNumber": {
+              $regex: `\\b${trimmedQuery}`,
+              $options: "i",
+            },
+          },
+          {
+            "personalInfo.state": {
+              $regex: `\\b${trimmedQuery}`,
+              $options: "i",
+            },
+          },
+          {
+            "personalInfo.city": {
+              $regex: `\\b${trimmedQuery}`,
+              $options: "i",
+            },
+          },
+        ],
+      }
+    : {};
+
+  const finalQuery: any = {
+    $and: [textSearchCondition],
+  };
   try {
     await connectToDatabase();
-    // const data = await Product.find({}).select("title price colors images");
-    const data = await Order.find({});
-    const products: OrderType[] = JSON.parse(JSON.stringify(data));
-    return products;
+    const data = await Order.find(textSearchCondition).limit(limit);
+    const orders: OrderType[] = JSON.parse(JSON.stringify(data));
+    return orders;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching orders:", error);
     throw error;
   }
 }
+
 export async function fetchOrder(id: string): Promise<OrderType | null> {
   try {
     await connectToDatabase();
-    const data = await Order.findByIdAndUpdate(id);
+    const data = await Order.findOne({ id: id });
     const order: OrderType = JSON.parse(JSON.stringify(data));
     return order;
   } catch (error) {

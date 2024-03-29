@@ -32,17 +32,17 @@ const Coupon = ({ coupon }: { coupon: string }) => {
         placeholder="Coupon code"
         name="coupon"
         defaultValue={coupon}
-        className=" h-12 w-full rounded-2xl border border-gray-500 bg-transparent px-4  outline-none dark:placeholder:text-gray-300 "
+        className=" h-12 w-full rounded-2xl border border-gray-300 bg-transparent px-4 outline-none  dark:border-gray-700 dark:placeholder:text-gray-300 "
       />
       <div>
         <button
           type="submit"
-          className="h-12 w-12  rounded-full bg-primary_color hover:bg-gray-900 "
+          className="h-12 w-12  rounded-full border-gray-200 bg-primary_color text-3xl text-white hover:bg-white hover:text-black "
         >
           {loading ? (
             <LoadingDots />
           ) : (
-            <span className="m-auto block -translate-y-[1px] translate-x-[1px] text-3xl  text-white hover:scale-110">
+            <span className="m-auto block -translate-y-[1px] translate-x-[1px] ">
               &#43;
             </span>
           )}

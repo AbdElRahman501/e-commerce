@@ -22,63 +22,78 @@ const BagCard = ({
   salePrice,
 }: Props) => {
   return (
-    <div className="relative flex w-full gap-5 border-b border-gray-200 pb-2 dark:border-gray-700 ">
-      <Link
-        href={`/product/${id}`}
-        style={{ pointerEvents: readonly ? "none" : "auto" }}
-        className="aspect-card relative h-28 overflow-hidden rounded-2xl border md:h-32"
-      >
-        <Image
-          src={images[selectedColor][0]}
-          alt="jacket"
-          fill
-          style={{ objectFit: "cover" }}
-          sizes="100%"
-          className="duration-300 hover:scale-110"
-        />
-      </Link>
-      <div className="flex flex-1 flex-col justify-between">
-        <h2 className="font-regular w-3/4 text-sm text-primary_color dark:text-gray-300 md:text-base  ">
-          {title}
-        </h2>
-        {salePrice ? (
-          <div className="flex flex-col ">
-            <p className="text-xs text-gray-500 line-through">{price} EGP</p>
-            <p className=" text-sm font-bold md:text-base ">{salePrice} EGP</p>
+    <div className=" flex w-full border-b border-gray-200 pb-2 dark:border-gray-700 ">
+      <div className=" flex w-full gap-5 ">
+        <Link
+          href={`/product/${id}`}
+          style={{ pointerEvents: readonly ? "none" : "auto" }}
+          className="relative"
+        >
+          <div className="aspect-card relative h-28 overflow-hidden rounded-md md:h-32">
+            <Image
+              src={images[selectedColor][0]}
+              alt="jacket"
+              fill
+              style={{ objectFit: "cover" }}
+              sizes="100%"
+              className="duration-300 hover:scale-110"
+            />
           </div>
-        ) : (
-          <p className="text-sm font-bold  md:text-base ">{price} EGP</p>
-        )}
-        <div className="flex  gap-2">
-          <div
-            className={`w-8 scale-110 rounded-full p-1 outline outline-2 outline-offset-1 outline-blue-900 duration-200 hover:scale-110 dark:outline-blue-400`}
-          >
-            <span
-              style={{ backgroundColor: selectedColor }}
-              className="block aspect-square w-full rounded-full border"
-            ></span>
+          <p className="absolute -right-2 -top-2 z-10 h-6 w-6 rounded-full bg-black p-1 text-center text-xs text-white dark:bg-white dark:text-black ">
+            {amount}
+          </p>
+        </Link>
+        <div className="flex flex-1 flex-col justify-between text-gray-600 dark:text-gray-300 xl:flex-row">
+          <div className="flex flex-1 flex-col justify-start gap-2 xl:justify-center">
+            <Link
+              href={`/product/${id}`}
+              className="font-regular w-3/4 text-sm font-semibold text-black hover:underline dark:text-white xl:text-base  "
+            >
+              {title}
+            </Link>
+            {salePrice ? (
+              <p className=" text-sm  xl:text-base ">
+                {(salePrice * amount).toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "EGP",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+            ) : (
+              <p className="text-sm  xl:text-base ">
+                {(price * amount).toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "EGP",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+            )}
+            <div className="flex items-center gap-1 text-xs xl:text-sm">
+              <p className="text-center"> {selectedColor}</p>
+              <p className="text-center"> / {selectedSize}</p>
+            </div>
           </div>
+          {!readonly && (
+            <div className="flex flex-1 items-center">
+              <div
+                className={` flex h-8 max-w-max items-center justify-between gap-1 overflow-hidden rounded-xl text-xs outline outline-1 outline-gray-200 dark:outline-gray-700 xl:h-12`}
+              >
+                <EditItemQuantityButton
+                  item={{ productId: id, amount, selectedColor, selectedSize }}
+                  type="minus"
+                />
 
-          <div className="relative flex h-8 items-center justify-between rounded-xl outline outline-1 ">
-            <p className="w-12 text-center">{selectedSize}</p>
-          </div>
-          <div className="flex h-8 max-w-max items-center justify-between gap-1 overflow-hidden rounded-xl outline outline-1">
-            {!readonly && (
-              <EditItemQuantityButton
-                item={{ productId: id, amount, selectedColor, selectedSize }}
-                type="minus"
-              />
-            )}
-            <p className="w-8 bg-transparent px-2 text-center outline-none">
-              {amount}
-            </p>
-            {!readonly && (
-              <EditItemQuantityButton
-                item={{ productId: id, amount, selectedColor, selectedSize }}
-                type="plus"
-              />
-            )}
-          </div>
+                <p className="w-1/3 p-2 text-center ">{amount}</p>
+
+                <EditItemQuantityButton
+                  item={{ productId: id, amount, selectedColor, selectedSize }}
+                  type="plus"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {!readonly && (

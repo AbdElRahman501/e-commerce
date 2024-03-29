@@ -93,26 +93,48 @@ const ProductDetailsComponent = ({
             </div>
           ))}
         </div>
-        <h6 className="text-lg ">{title}</h6>
+        <h6 className="text-lg font-bold ">{title}</h6>
         <p className="text-sm text-gray-400 ">{name}</p>
         {salePrice ? (
-          <div className="flex flex-col">
-            <p className="text-xs text-gray-400 line-through ">{price} EGP</p>
-            <p className=" text-xl font-bold ">{salePrice} EGP</p>
+          <div className="flex items-center">
+            <p className=" md:text-base ">
+              {salePrice.toLocaleString("en-US", {
+                style: "currency",
+                currency: "EGP",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
+            <sup className="text-xs text-gray-500 line-through">
+              {price.toLocaleString("en-US", {
+                style: "currency",
+                currency: "EGP",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </sup>
           </div>
         ) : (
-          <p className="text-xl font-bold">{price} EGP</p>
+          <p className=" font-bold  md:text-base ">
+            {price.toLocaleString("en-US", {
+              style: "currency",
+              currency: "EGP",
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </p>
         )}
-        <div className="flex flex-col gap-3">
-          <h1 className="text-lg font-bold text-primary_color dark:text-white">
-            Sizes
-          </h1>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm dark:text-white">
+            <span className="text-gray-500">Size:</span>{" "}
+            <strong>{selectedSize}</strong>
+          </p>
           <div className="flex flex-wrap gap-2">
             {sizes.map((item, index) => (
               <button
                 key={index}
                 onClick={() => selectSize(item)}
-                className={`${item === selectedSize ? "scale-110 !bg-primary_color !text-white dark:!bg-white dark:!text-primary_color" : ""} flex h-10 w-14 items-center justify-center rounded-xl border border-primary_bg py-1 text-lg text-primary_color duration-200 hover:scale-110 hover:bg-gray-300 dark:border-white dark:text-white`}
+                className={`${item === selectedSize ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 text-sm outline duration-200 hover:scale-105 hover:outline-black dark:hover:outline-white`}
               >
                 <span>{item}</span>
               </button>
@@ -120,9 +142,10 @@ const ProductDetailsComponent = ({
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <h1 className="text-lg font-bold text-primary_color dark:text-white">
-            Colors
-          </h1>
+          <p className="text-sm dark:text-white">
+            <span className="text-gray-500">Color:</span>{" "}
+            <strong>{selectedColor}</strong>
+          </p>
           <div className="flex flex-wrap gap-1">
             {colors.map((item, index) => (
               <button
@@ -130,24 +153,24 @@ const ProductDetailsComponent = ({
                   selectColor(item);
                 }}
                 key={index}
-                className={`${item === selectedColor ? "scale-110  border-blue-900  dark:border-blue-400" : "border-transparent"} rounded-full border-2  p-1 duration-200 hover:scale-110`}
+                className={`${item === selectedColor ? "outline-2 outline-black dark:outline-white " : "outline-1 outline-transparent"} rounded-full outline  outline-offset-2   duration-200 hover:scale-110`}
               >
                 <span
                   style={{ backgroundColor: item }}
-                  className="block h-10 w-10 rounded-full border border-gray-300"
+                  className="block h-7 w-7 rounded-full border border-gray-300"
                 ></span>
               </button>
             ))}
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <h1 className="text-lg font-bold text-primary_color dark:text-white">
-            Amount
-          </h1>
+          <p className="text-sm dark:text-white">
+            <span className="text-gray-500">Amount:</span>{" "}
+          </p>
           <AmountButton
+            className="h-10"
             amount={amountValue}
             setAmount={setAmount}
-            width="w-10"
           />
         </div>
         <div className="mt-3 flex max-w-md items-center justify-between gap-3">
@@ -160,7 +183,7 @@ const ProductDetailsComponent = ({
               selectedSize,
             }}
           />
-          <div className=" flex aspect-square h-12 w-12 items-center justify-center rounded-full border border-primary_bg bg-white py-1 text-lg dark:border-white ">
+          <div className=" flex aspect-square h-14 w-14 items-center justify-center rounded-full border border-primary_bg bg-white py-1 text-lg dark:border-white ">
             <AddToFav id={id} inFav={isFav} className="invert" />
           </div>
         </div>

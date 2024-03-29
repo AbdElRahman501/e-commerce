@@ -1,19 +1,18 @@
 import React from "react";
+import DropDown_icon from "./icons/DropDown_icon";
 
 const AmountButton = ({
   amount,
   className,
-  width,
   setAmount,
 }: {
-  width?: string;
   className?: string;
   amount: number;
   setAmount: (number: number) => void;
 }) => {
   return (
     <div
-      className={`flex h-11 max-w-max justify-between gap-1 overflow-hidden rounded-2xl outline outline-1 ${className}`}
+      className={` flex  max-w-max items-center justify-between gap-1 overflow-hidden rounded-2xl outline outline-1 ${className}`}
     >
       <button
         onClick={() => {
@@ -21,29 +20,19 @@ const AmountButton = ({
         }}
         disabled={!(amount > 1)}
         type="button"
-        className={`${width} flex-1 text-2xl enabled:hover:bg-primary_color enabled:hover:text-white disabled:opacity-25 `}
+        className=" h-full w-1/3 text-2xl enabled:hover:bg-primary_color enabled:hover:text-white disabled:opacity-25"
       >
-        <span>&#8722;</span>
+        <DropDown_icon className=" m-auto mx-2 w-5" />
       </button>
-      <input
-        type="number"
-        name="amount"
-        id="amount"
-        min={1}
-        step={1}
-        onChange={(e) => setAmount(Number(e.target.value))}
-        onBlur={() => setAmount(Number(amount) < 1 ? 1 : Number(amount))}
-        value={amount}
-        className={`${width} bg-transparent text-center outline-none`}
-      />
+      <p className="w-1/3 p-2 text-center ">{amount}</p>
       <button
         onClick={() => {
           setAmount(amount + 1);
         }}
         type="button"
-        className={`${width} flex-1 text-2xl hover:bg-primary_color hover:text-white`}
+        className="h-full w-1/3 text-2xl enabled:hover:bg-primary_color enabled:hover:text-white disabled:opacity-25"
       >
-        <span>&#43;</span>
+        <DropDown_icon className=" m-auto mx-2 w-5 rotate-180" />
       </button>
     </div>
   );

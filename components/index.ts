@@ -22,22 +22,14 @@ import CartButton from "./CartButton";
 import CartPricing from "./CartPricing";
 import CustomInput from "./CustomInput";
 import Sorting from "./Sorting";
-import TotalCard from "./TotalCard";
-import CustomTable from "./CustomTable";
 import { ProductSkeleton, CartSkeleton, LoadingLogo } from "./LoadingSkeleton";
-import ProductTable from "./ProductTable";
-import OrdersTable from "./OrdersTable";
 import LoadMore from "./LoadMore";
 
 export {
   LoadMore,
-  OrdersTable,
-  ProductTable,
   LoadingLogo,
   ProductSkeleton,
   CartSkeleton,
-  CustomTable,
-  TotalCard,
   Sorting,
   CustomInput,
   CartPricing,

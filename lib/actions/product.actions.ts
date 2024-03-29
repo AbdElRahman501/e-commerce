@@ -72,8 +72,16 @@ export const fetchFilteredProducts = cache(
     };
 
     const sizeFilterCondition =
-      sizeFilter?.length > 0 ? { sizes: { $in: sizeFilter } } : {};
-
+      sizeFilter?.length > 0
+        ? {
+            sizes: {
+              $in: sizeFilter.map(
+                (size: string) =>
+                  new RegExp(`\\b${size.trim().toLowerCase()}\\b`, "i"),
+              ),
+            },
+          }
+        : {};
     const colorFilterCondition =
       colorsFilter?.length > 0 ? { colors: { $in: colorsFilter } } : {};
 
@@ -222,6 +230,20 @@ export async function fetchProductsById(
   }
 }
 
+export async function soldProducts(ids: string[]): Promise<void> {
+  try {
+    const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
+    await connectToDatabase();
+    const data = await Product.updateMany(
+      { _id: { $in: objectIdArray } },
+      { $inc: { sales: 1 } },
+    );
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+
 export const getCategoriesWithProductCount = async (): Promise<
   CategoryCount[]
 > => {
@@ -262,3 +284,40 @@ export const getCategoriesWithProductCount = async (): Promise<
     throw error;
   }
 };
+
+export async function deleteProduct(id: string) {
+  try {
+    await connectToDatabase();
+    const data = await Product.findByIdAndDelete(id);
+    return "Product deleted successfully";
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+}
+
+// export async function updateProduct(formData: FormData) {
+
+//   const title = formData.get("title")?.toString() || "";
+//   const keywords = formData.get("keywords")?.toString() || "";
+//   const categories = formData.get("categories")?.toString() || "";
+//   const description = formData.get("description")?.toString() || "";
+//   const price = formData.get("price")?.toString() || "";
+//   const minPrice = formData.get("minPrice")?.toString() || "";
+//   const sizes = formData.get("sizes")?.toString() || "";
+
+//   try {
+
+//     await connectToDatabase();
+
+//     const { id, ...rest } = newProduct;
+//     const data = await Product.findByIdAndUpdate(id, rest, {
+//       new: true,
+//     });
+//     const productUpdated: ProductType = JSON.parse(JSON.stringify(data));
+//     return productUpdated;
+//   } catch (error) {
+//     console.error("Error updating product:", error);
+//     throw error;
+//   }
+// }

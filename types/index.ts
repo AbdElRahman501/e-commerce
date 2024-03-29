@@ -134,11 +134,11 @@ export interface Order {
   products: CartItem[];
   personalInfo: PersonalInfo;
   id: string;
-  _id?: string;
   total: number;
   subTotal: number;
   shipping: number;
   discount: number;
+  createdAt: string;
 }
 
 export interface FilterType {

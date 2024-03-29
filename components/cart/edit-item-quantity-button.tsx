@@ -4,6 +4,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import LoadingDots from "../loading-dots";
 import { updateItem } from "../actions/cart.actions";
 import { CartItem } from "@/types";
+import DropDown_icon from "../icons/DropDown_icon";
 
 function SubmitButton({
   type,
@@ -25,14 +26,16 @@ function SubmitButton({
       }
       disabled={disabled}
       aria-disabled={pending}
-      className="w-6 flex-1 text-2xl enabled:hover:bg-primary_color enabled:hover:text-white disabled:opacity-25"
+      className=" h-full w-full enabled:hover:bg-primary_color enabled:hover:text-white disabled:opacity-25"
     >
       {pending ? (
-        <LoadingDots className="invert dark:invert-0" />
+        <div className=" m-auto mx-2 w-5 text-2xl">
+          <LoadingDots />
+        </div>
       ) : type === "plus" ? (
-        <span>&#43;</span>
+        <DropDown_icon className=" m-auto mx-2 w-5 rotate-180" />
       ) : (
-        <span>&#8722;</span>
+        <DropDown_icon className=" m-auto mx-2 w-5" />
       )}
     </button>
   );
@@ -56,14 +59,11 @@ export function EditItemQuantityButton({
   });
 
   return (
-    <form action={actionWithVariant}>
+    <form action={actionWithVariant} className="h-full w-1/3">
       <SubmitButton
         type={type}
         disabled={type === "minus" && item.amount === 1}
       />
-      <p aria-live="polite" className="sr-only" role="status">
-        {message}
-      </p>
     </form>
   );
 }

@@ -10,11 +10,11 @@ export default function SubmitButton({ title }: { title: string }) {
       type="submit"
       aria-label="checkout"
       disabled={pending}
-      className="group mt-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
+      className="group mt-2 h-14 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
     >
       {pending ? (
-        <p className="duration-500 group-hover:scale-110">
-          <LoadingDots className=" h-2 w-2 " />
+        <p className="text-4xl duration-500 group-hover:scale-110">
+          <LoadingDots />
         </p>
       ) : (
         <p className="duration-500 group-hover:scale-110">{title}</p>

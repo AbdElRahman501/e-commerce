@@ -1,13 +1,14 @@
 "use client";
 import { createUrl } from "@/utils";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 
 const SearchField = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
 
   const scrollToDiv = () => {
     const offset = 64 + 12;
@@ -29,7 +30,7 @@ const SearchField = () => {
       newParams.delete("q");
     }
 
-    router.push(createUrl("/shop", newParams));
+    router.push(createUrl(pathname, newParams));
   }
   return (
     <div ref={divRef} className="relative w-full max-w-xl flex-grow-0">

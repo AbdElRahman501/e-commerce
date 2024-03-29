@@ -63,12 +63,12 @@ export default async function SearchPage({
         </p>
       ) : null}
 
-      <div className=" grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
+      <div className=" grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
         {products.map((product) => (
           <ProductCard key={product.id} fav={fav} {...product} />
         ))}
       </div>
-      {count > limit && <LoadMore />}
+      {count > limit && <LoadMore newLimit={limit + 12} />}
     </>
   );
 }

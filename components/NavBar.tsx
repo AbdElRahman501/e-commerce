@@ -10,8 +10,8 @@ const NavBar = () => {
         <Image
           src="/logo.svg"
           alt="logo"
-          width={150}
-          height={100}
+          width={120}
+          height={50}
           className="h-8 invert-0 dark:invert-0 md:invert"
         />
       </Link>
