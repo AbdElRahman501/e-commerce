@@ -182,6 +182,7 @@ export async function getAllProperties(): Promise<{
   colors: string[];
 }> {
   try {
+    await connectToDatabase();
     // Using distinct to get unique sizes
     const sizes = await Product.distinct("sizes").exec();
     const colors = await Product.distinct("colors").exec();
