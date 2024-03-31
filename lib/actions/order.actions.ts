@@ -87,7 +87,7 @@ export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
   const textSearchCondition = query
     ? {
         $or: [
-          { _id: { $regex: `\\b${trimmedQuery}`, $options: "i" } },
+          { id: { $regex: `\\b${trimmedQuery}`, $options: "i" } },
           {
             "personalInfo.firstName": {
               $regex: `\\b${trimmedQuery}`,
@@ -122,9 +122,6 @@ export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
       }
     : {};
 
-  const finalQuery: any = {
-    $and: [textSearchCondition],
-  };
   try {
     await connectToDatabase();
     const data = await Order.find(textSearchCondition).limit(limit);

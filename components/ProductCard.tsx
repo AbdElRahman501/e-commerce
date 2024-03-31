@@ -30,7 +30,7 @@ const ProductCard = ({
   return (
     <div className="Product animate-fadeIn relative flex-col gap-4">
       {saleValue && (
-        <div className="absolute right-2 top-2 z-10 text-center text-xs uppercase text-white md:text-sm">
+        <div className="absolute right-2 top-2 z-10 text-center text-[10px] uppercase text-white md:text-xs">
           <p className="mb-3 h-full w-full  rounded-3xl bg-gray-950 p-1 px-4">
             Sale
           </p>

@@ -87,7 +87,7 @@ export const fetchFilteredProducts = cache(
 
     const genderFilterCondition = genderFilter
       ? genderFilter !== "all"
-        ? { gender: genderFilter }
+        ? { $or: [{ gender: genderFilter }, { gender: "all" }] }
         : { $or: [{ gender: "male" }, { gender: "female" }] }
       : {};
 
@@ -297,28 +297,17 @@ export async function deleteProduct(id: string) {
   }
 }
 
-// export async function updateProduct(formData: FormData) {
-
-//   const title = formData.get("title")?.toString() || "";
-//   const keywords = formData.get("keywords")?.toString() || "";
-//   const categories = formData.get("categories")?.toString() || "";
-//   const description = formData.get("description")?.toString() || "";
-//   const price = formData.get("price")?.toString() || "";
-//   const minPrice = formData.get("minPrice")?.toString() || "";
-//   const sizes = formData.get("sizes")?.toString() || "";
-
-//   try {
-
-//     await connectToDatabase();
-
-//     const { id, ...rest } = newProduct;
-//     const data = await Product.findByIdAndUpdate(id, rest, {
-//       new: true,
-//     });
-//     const productUpdated: ProductType = JSON.parse(JSON.stringify(data));
-//     return productUpdated;
-//   } catch (error) {
-//     console.error("Error updating product:", error);
-//     throw error;
-//   }
-// }
+export async function updateProductById(newProduct: ProductType) {
+  try {
+    await connectToDatabase();
+    const { id, ...rest } = newProduct;
+    const data = await Product.findByIdAndUpdate(id, rest, {
+      new: true,
+    });
+    const productUpdated: ProductType = JSON.parse(JSON.stringify(data));
+    return productUpdated;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+}

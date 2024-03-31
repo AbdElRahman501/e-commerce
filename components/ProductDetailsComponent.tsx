@@ -7,13 +7,14 @@ import { CartItem, ProductOnSaleType } from "@/types";
 import { ProductImages } from ".";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createUrl, getAllImages } from "@/utils";
+import { createUrl, formatPrice, getAllImages } from "@/utils";
 import AddToCart from "./cart/AddToCart";
 import AddToFav from "./favorite/AddToFav";
 
 interface ProductDetailsComponent extends ProductOnSaleType {
   cart: CartItem[];
   isFav: boolean;
+  preview?: boolean;
 }
 const ProductDetailsComponent = ({
   id,
@@ -27,13 +28,17 @@ const ProductDetailsComponent = ({
   salePrice,
   cart,
   isFav,
+  preview,
 }: ProductDetailsComponent) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const color: string =
-    searchParams.get("color")?.replace("HASH:", "#") ||
-    (colors.length === 1 ? colors[0] : "");
+  const paramColor = searchParams.get("color")?.replace("HASH:", "#") || "";
+  const color: string = colors.find((c) => c === paramColor)
+    ? paramColor
+    : colors.length === 1
+      ? colors[0]
+      : "";
   const size: string = searchParams.get("size") || "";
   const amountSearchParams = searchParams.get("amount");
   const amount = amountSearchParams ? parseInt(amountSearchParams) : 1;
@@ -97,31 +102,14 @@ const ProductDetailsComponent = ({
         <p className="text-sm text-gray-400 ">{name}</p>
         {salePrice ? (
           <div className="flex items-center">
-            <p className=" md:text-base ">
-              {salePrice.toLocaleString("en-US", {
-                style: "currency",
-                currency: "EGP",
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </p>
+            <p className=" md:text-base ">{formatPrice(salePrice, "EGP")}</p>
             <sup className="text-xs text-gray-500 line-through">
-              {price.toLocaleString("en-US", {
-                style: "currency",
-                currency: "EGP",
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {formatPrice(price, "EGP")}
             </sup>
           </div>
         ) : (
           <p className=" font-bold  md:text-base ">
-            {price.toLocaleString("en-US", {
-              style: "currency",
-              currency: "EGP",
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatPrice(price, "EGP")}
           </p>
         )}
         <div className="flex flex-col gap-2">
@@ -173,7 +161,9 @@ const ProductDetailsComponent = ({
             setAmount={setAmount}
           />
         </div>
-        <div className="mt-3 flex max-w-md items-center justify-between gap-3">
+        <div
+          className={` ${preview ? "hidden" : ""} mt-3 flex max-w-md items-center justify-between gap-3`}
+        >
           <AddToCart
             cart={cart}
             cartItem={{

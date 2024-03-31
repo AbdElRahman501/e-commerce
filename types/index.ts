@@ -36,7 +36,7 @@ export interface Product {
   colors: string[];
   description: string;
   name: string;
-  gender: "male" | "female";
+  gender: "male" | "female" | "all";
   quantity: number;
   likes: number;
   updatedAt: string;

@@ -20,7 +20,6 @@ function SubmitButton() {
 export default function RemoveProduct({ id }: { id: string }) {
   const [message, formAction] = useFormState(removeProduct, null);
   const actionWithVariant = formAction.bind(null, id);
-  console.log("🚀 ~ RemoveProduct ~ message:", message);
 
   return (
     <form

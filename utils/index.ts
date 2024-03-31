@@ -142,4 +142,13 @@ export function formatDate(timestamp: string): string {
 
   return `${year}/${month}/${day}`;
 }
+
+export function formatPrice(price: number, currency: string) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price);
+}
 export { formatOrderItems };

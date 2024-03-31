@@ -218,6 +218,12 @@ const dashboardCards: DashboardCardProps[] = [
     number: "100",
     url: "/products",
   },
+  {
+    image: "/icons/products.svg",
+    title: "shipping",
+    number: "100",
+    url: "/shipping",
+  },
 ];
 
 export const offers: OfferType[] = [

@@ -10,7 +10,7 @@ type CustomInputProps = FormInput & {
       | React.ChangeEvent<HTMLTextAreaElement>,
   ) => void;
   value?: any;
-  defaultValue?: string;
+  defaultValue?: any;
   disabled?: boolean;
   readOnly?: boolean;
   hidden?: boolean;
@@ -41,7 +41,8 @@ const CustomInput = ({
             name={name}
             id={name}
             required={required}
-            value={value || ""}
+            defaultValue={value ? undefined : defaultValue}
+            value={defaultValue ? undefined : value || ""}
             onChange={onChange}
             disabled={disabled}
             className=" peer h-14 w-full appearance-none rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 focus:border-orange-500 focus:pt-3 focus:ring-blue-500 focus:invalid:border-pink-500  focus:invalid:ring-pink-500 enabled:cursor-pointer motion-reduce:transition-none  dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:invalid:border-pink-500 dark:focus:ring-gray-200 "
