@@ -88,7 +88,7 @@ export const fetchFilteredProducts = cache(
     const genderFilterCondition = genderFilter
       ? genderFilter !== "all"
         ? { $or: [{ gender: genderFilter }, { gender: "all" }] }
-        : { $or: [{ gender: "male" }, { gender: "female" }] }
+        : { $or: [{ gender: "male" }, { gender: "female" }, { gender: "all" }] }
       : {};
 
     const finalQuery: any = {

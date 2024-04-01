@@ -42,6 +42,7 @@ const ProductCard = ({
             src={firstImage}
             alt="jacket"
             fill
+            sizes="100%"
             style={{ objectFit: "cover" }}
             className={`duration-700 ${secondImage ? "group-hover:hidden" : "hover:scale-105"} `}
           />
@@ -50,6 +51,7 @@ const ProductCard = ({
               src={secondImage}
               alt="jacket"
               fill
+              sizes="100%"
               style={{ objectFit: "cover" }}
               className="animate-fadeIn hidden  opacity-0 transition-all delay-75 duration-700 group-hover:block group-hover:opacity-100"
             />
