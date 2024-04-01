@@ -38,6 +38,9 @@ const CustomTable = ({
             ))}
           </div>
         );
+      case "status":
+        const status: { name: string; color: string } = item[header];
+        return <div style={{ color: status.color }}>{status.name}</div>;
       default:
         return item[header];
     }

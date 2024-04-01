@@ -151,4 +151,24 @@ export function formatPrice(price: number, currency: string) {
     maximumFractionDigits: 2,
   }).format(price);
 }
+
+export function checkDateStatus(
+  startDate?: string,
+  endDate?: string,
+): { name: string; color: string } {
+  if (!startDate || !endDate) {
+    return { name: "active", color: "green" };
+  }
+  const currentDate: Date = new Date();
+  const startDateObj: Date = new Date(startDate);
+  const endDateObj: Date = new Date(endDate);
+
+  if (startDateObj > currentDate) {
+    return { name: "pending", color: "yellow" };
+  } else if (startDateObj <= currentDate && currentDate <= endDateObj) {
+    return { name: "active", color: "green" };
+  } else {
+    return { name: "passed", color: "red" };
+  }
+}
 export { formatOrderItems };

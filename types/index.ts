@@ -80,6 +80,7 @@ export interface PromoCodeType {
   maxDiscount: number;
 }
 export interface StoryType {
+  _id: string;
   image: string;
   start?: string;
   end?: string;
