@@ -175,3 +175,12 @@ export interface DashboardCardProps {
   description?: string;
   url: string;
 }
+
+export interface ReviewType {
+  _id: string;
+  name: string;
+  title: string;
+  description: string;
+  rating: number;
+  images: string[];
+}

@@ -209,7 +209,7 @@ const dashboardCards: DashboardCardProps[] = [
     image: "/icons/review.svg",
     title: "Reviews",
     number: "3.8",
-    url: "#",
+    url: "/reviews",
     description: "-0.1",
   },
   {

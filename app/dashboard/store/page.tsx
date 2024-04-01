@@ -1,6 +1,7 @@
 import { CustomInput, SearchField } from "@/components";
 import CustomTable from "@/components/CustomTable";
 import Modal from "@/components/Modal";
+import { fetchOffers } from "@/lib/actions/offer.actions";
 
 import {
   addNewStory,
@@ -23,6 +24,7 @@ export default async function OrdersPage({
   };
 
   const stories = await fetchAllStories();
+  const offers = await fetchOffers();
 
   let story;
   if (stroyId) {
@@ -177,6 +179,26 @@ export default async function OrdersPage({
                 status: checkDateStatus(item.start, item.end),
               }))}
               header={["image", "start", "end", "status", "url"]}
+              ActionComponent={(item) => (
+                <div className="flex gap-2">
+                  <Link
+                    href={"/dashboard/store?stroyId=" + item._id}
+                    className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
+                  >
+                    edit
+                  </Link>
+                  <Link
+                    href={"/dashboard/store?removeStroyId=" + item._id}
+                    className=" text-red-500 hover:underline dark:hover:underline "
+                  >
+                    remove
+                  </Link>
+                </div>
+              )}
+            />
+            <CustomTable
+              data={offers}
+              header={["image", "title", "sale", "category"]}
               ActionComponent={(item) => (
                 <div className="flex gap-2">
                   <Link

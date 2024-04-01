@@ -1,7 +1,7 @@
 "use server";
-import { StoryType } from "@/types";
+import { ReviewType, StoryType } from "@/types";
 import { connectToDatabase } from "../mongoose";
-import { Story } from "../models/store.model";
+import { Review, Story } from "../models/store.model";
 import { redirect } from "next/navigation";
 import { checkDateStatus } from "@/utils";
 
@@ -42,7 +42,6 @@ export const updateStory = async (formData: FormData) => {
     end: formData.get("end")?.toString() || "",
     url: formData.get("url")?.toString() || "",
   };
-  console.log("🚀 ~ updateStory ~ data:", data);
   try {
     await connectToDatabase();
     await Story.findByIdAndUpdate(data.id, data);
@@ -81,4 +80,72 @@ export const removeStory = async (formData: FormData) => {
     throw error;
   }
   redirect("/dashboard/store");
+};
+
+//// REVIEW ACTIONS
+
+export const fetchReviews = async ({ limit = 4 }: { limit?: number }) => {
+  try {
+    await connectToDatabase();
+    const data = await Review.find({}).limit(limit);
+    const reviews: ReviewType[] = JSON.parse(JSON.stringify(data));
+    return reviews;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+};
+
+export const addNewReview = async (formData: FormData) => {
+  const imagesString = formData.get("images")?.toString();
+  const images = imagesString ? imagesString.split(",") : [];
+  const data = {
+    name: formData.get("name")?.toString() || "",
+    title: formData.get("title")?.toString() || "",
+    description: formData.get("description")?.toString() || "",
+    rating: Number(formData.get("rating")) || 0,
+    images: images,
+  };
+  try {
+    await connectToDatabase();
+    await Review.create(data);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/reviews");
+};
+
+export const removeReview = async (formData: FormData) => {
+  const id = formData.get("id")?.toString() || "";
+  if (!id) return;
+  try {
+    await connectToDatabase();
+    await Review.findByIdAndDelete(id);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/reviews");
+};
+
+export const updateReview = async (formData: FormData) => {
+  const imagesString = formData.get("images")?.toString();
+  const images = imagesString ? imagesString.split(",") : [];
+  const data = {
+    id: formData.get("id")?.toString() || "",
+    name: formData.get("name")?.toString() || "",
+    title: formData.get("title")?.toString() || "",
+    description: formData.get("description")?.toString() || "",
+    rating: Number(formData.get("rating")) || 0,
+    images: images,
+  };
+  try {
+    await connectToDatabase();
+    await Review.findByIdAndUpdate(data.id, data);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/reviews");
 };
