@@ -1,8 +1,11 @@
+"use server";
 import Image from "next/image";
 import { ArrowButton } from ".";
 import Stories from "./Stories";
+import { fetchStories } from "@/lib/actions/store.actions";
 
-const Hero = () => {
+const Hero = async () => {
+  const stories = await fetchStories();
   return (
     <section>
       {/* h-[calc(100vh-4rem)] */}
@@ -53,7 +56,7 @@ const Hero = () => {
               />
             </div>
             <div className="relative col-span-3 flex w-full flex-col gap-3 sm:flex-col-reverse">
-              <Stories />
+              <Stories stories={stories} />
               <div className="rounded-4xl relative flex h-16 w-full items-center justify-between overflow-hidden bg-primary_color">
                 <h1 className=" px-5 text-white dark:text-white">Shop now</h1>
                 <div className="aspect-square h-full p-1">

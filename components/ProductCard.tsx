@@ -23,10 +23,6 @@ const ProductCard = ({
   const [selectedColor, setSelectedColor] = React.useState<string>(colors[0]);
   const inFav = !!fav.find((item) => item === id);
 
-  const [firstImage, secondImage] =
-    images[selectedColor].length > 1
-      ? images[selectedColor]
-      : getAllImages(images);
   return (
     <div className="Product animate-fadeIn relative flex-col gap-4">
       {saleValue && (
@@ -37,25 +33,15 @@ const ProductCard = ({
         </div>
       )}
       <Link className="relative block" href={`/product/${id}`}>
-        <div className="aspect-card group relative overflow-hidden rounded-lg bg-gradient-to-r from-slate-100 to-slate-200">
+        <div className="aspect-card group relative overflow-hidden rounded-3xl ">
           <Image
-            src={firstImage}
+            src={images[selectedColor][0]}
             alt="jacket"
             fill
             sizes="100%"
             style={{ objectFit: "cover" }}
-            className={`duration-700 ${secondImage ? "group-hover:hidden" : "hover:scale-105"} `}
+            className={`bg-gradient-to-r from-[#8c8c88] to-[#979a96] duration-700 hover:scale-105 `}
           />
-          {secondImage && (
-            <Image
-              src={secondImage}
-              alt="jacket"
-              fill
-              sizes="100%"
-              style={{ objectFit: "cover" }}
-              className="animate-fadeIn hidden  opacity-0 transition-all delay-75 duration-700 group-hover:block group-hover:opacity-100"
-            />
-          )}
         </div>
       </Link>
       <div className="flex items-center justify-between p-1">

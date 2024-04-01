@@ -79,6 +79,12 @@ export interface PromoCodeType {
   active: boolean;
   maxDiscount: number;
 }
+export interface StoryType {
+  image: string;
+  start?: string;
+  end?: string;
+  url?: string;
+}
 export interface Review {
   id: string;
   username: string;

@@ -2,10 +2,9 @@
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import DropDown_icon from "./icons/DropDown_icon";
+import { StoryType } from "@/types";
 
-const images = ["/panorama.png", "/panorama.png", "/panorama.png"];
-
-const Stories = () => {
+const Stories = ({ stories = [] }: { stories: StoryType[] }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -31,7 +30,7 @@ const Stories = () => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(scrollToNext, 3000);
+    const interval = setInterval(scrollToNext, 5000);
     return () => {
       clearInterval(interval);
     };
@@ -39,8 +38,7 @@ const Stories = () => {
   }, [currentIndex]);
 
   const scrollToNext = () => {
-    const nextScrollIndex = (currentIndex + 1) % images.length;
-    setCurrentIndex(nextScrollIndex);
+    const nextScrollIndex = (currentIndex + 1) % stories.length;
     if (containerRef.current) {
       const nextScrollLeft = containerRef.current.offsetWidth * nextScrollIndex;
       containerRef.current.scrollTo({
@@ -55,19 +53,25 @@ const Stories = () => {
         left: -containerRef.current.offsetWidth,
         behavior: "smooth",
       });
-      setCurrentIndex(
-        (prevIndex) => (prevIndex - 1 + images.length) % images.length,
-      );
     }
   };
 
   return (
-    <div className="rounded-4xl relative aspect-[9/16] h-full w-full overflow-hidden ">
+    <div className="rounded-4xl group relative aspect-[9/16] h-full w-full overflow-hidden ">
+      <div className="absolute top-2 z-10 flex w-full justify-center gap-[2px]">
+        {stories.map((_, index) => (
+          <div key={index} className="w-full">
+            <div
+              className={` ${currentIndex === index ? "w-0 transition-[width] duration-[5s]" : "w-full"} h-[2px] ${index <= currentIndex ? "bg-white" : "bg-white/50"}  ease-linear`}
+            ></div>
+          </div>
+        ))}
+      </div>
       <button
         onClick={scrollToPrev}
-        className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl `}
+        className={`${currentIndex === 0 ? "hidden" : ""} absolute  left-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl `}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-black hover:text-white">
+        <div className="hidden h-6 w-6 items-center justify-center rounded-full bg-white text-black hover:bg-black hover:text-white group-hover:flex">
           <DropDown_icon className="rotate-90" />
         </div>
       </button>
@@ -75,13 +79,13 @@ const Stories = () => {
         ref={containerRef}
         className="scroll-bar-hidden flex aspect-[9/16] h-full snap-x snap-mandatory flex-row overflow-x-auto"
       >
-        {images.map((image, index) => (
+        {stories.map((story, index) => (
           <div
             key={index}
             className=" relative aspect-[9/16] h-full min-w-full snap-center "
           >
             <Image
-              src={image}
+              src={story.image}
               alt="shop image"
               fill
               style={{ objectFit: "cover" }}
@@ -91,22 +95,22 @@ const Stories = () => {
       </div>
       <button
         onClick={scrollToNext}
-        className={`${currentIndex === images.length - 1 ? "hidden" : ""} absolute right-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl`}
+        className={`${currentIndex === stories.length - 1 ? "hidden" : "hidden group-hover:flex"}  absolute right-1 top-0 z-20 h-full w-10 items-center justify-center text-3xl`}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
+        <div className="hidden h-6 w-6 items-center justify-center rounded-full bg-white text-black hover:bg-black hover:text-white  group-hover:flex">
           <DropDown_icon className="-rotate-90" />
         </div>
       </button>
-      <div className="absolute bottom-3 flex w-full justify-center text-white">
+      {/* <div className="absolute bottom-3 flex w-full justify-center text-white">
         <div className="flex space-x-1">
-          {images.map((_, index) => (
+          {stories.map((_, index) => (
             <div
               key={index}
               className={`h-2 w-2 rounded-full ${index === currentIndex ? "bg-white" : "bg-gray-500"}`}
             />
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
