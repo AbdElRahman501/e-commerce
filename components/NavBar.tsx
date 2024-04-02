@@ -12,7 +12,7 @@ const NavBar = () => {
           alt="logo"
           width={120}
           height={50}
-          className="h-8 invert-0 dark:invert-0 md:invert"
+          className="h-9 invert-0 dark:invert-0 md:invert"
         />
       </Link>
       <div className=" hidden max-w-md flex-1 justify-center md:flex">

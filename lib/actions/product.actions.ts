@@ -61,7 +61,7 @@ export const fetchFilteredProducts = cache(
             keywords: {
               $in: keyWordsArray.map(
                 (keyWord: string) =>
-                  new RegExp(`\\b${keyWord?.trim() || ""}\\b`, "i"),
+                  new RegExp(`\\b${keyWord?.trim() || ""}`, "i"),
               ),
             },
           }
