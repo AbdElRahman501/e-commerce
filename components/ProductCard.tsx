@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import AddToFav from "./favorite/AddToFav";
 import React from "react";
-import { getAllImages } from "@/utils";
 
 interface ProductCardProps extends ProductOnSaleType {
   fav: string[];
@@ -50,7 +49,7 @@ const ProductCard = ({
             <button
               key={index}
               onClick={() => setSelectedColor(item)}
-              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} max-w-4 flex-1 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}
+              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} max-w-5 flex-1 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}
             >
               <span
                 style={{ backgroundColor: item }}

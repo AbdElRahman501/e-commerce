@@ -22,14 +22,12 @@ import CartButton from "./CartButton";
 import CartPricing from "./CartPricing";
 import CustomInput from "./CustomInput";
 import Sorting from "./Sorting";
-import { ProductSkeleton, CartSkeleton, LoadingLogo } from "./LoadingSkeleton";
+import { LoadingLogo } from "./LoadingSkeleton";
 import LoadMore from "./LoadMore";
 
 export {
   LoadMore,
   LoadingLogo,
-  ProductSkeleton,
-  CartSkeleton,
   Sorting,
   CustomInput,
   CartPricing,

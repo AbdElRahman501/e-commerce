@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
+import FullSizeIcon from "./icons/FullSizeIcon";
+import Ex_icon from "./icons/Ex_icon";
 
 interface YourComponentProps {
   images: string[];
@@ -16,6 +18,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
   const [images, setImages] = useState(imagesList);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showFullImage, setShowFullImage] = useState(false);
 
   useEffect(() => {
     if (!selectedImage) {
@@ -84,7 +87,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
     <div className="relative h-full w-full min-w-[50vw] flex-1 gap-2  md:min-w-[40vw] lg:min-w-[30vw]">
       <button
         onClick={scrollToPrev}
-        className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden `}
+        className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl sm:hidden `}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
           <Image
@@ -96,12 +99,41 @@ const ProductImages: React.FC<YourComponentProps> = ({
           />
         </div>
       </button>
+      {showFullImage && (
+        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center">
+          <div
+            className="absolute left-0 top-0 h-full w-full bg-black opacity-75"
+            onClick={() => setShowFullImage(false)}
+          ></div>
+          <button
+            className="absolute top-6 z-50 m-4 aspect-square h-12 w-12 rounded-full bg-white   text-4xl text-black"
+            onClick={() => setShowFullImage(false)}
+          >
+            <Ex_icon className="h-full w-full" />
+          </button>
+          <Image
+            src={images[currentIndex]}
+            alt={title}
+            fill
+            sizes="200%"
+            className="z-40 h-5/6"
+            style={{ objectFit: "contain" }}
+          />
+        </div>
+      )}
+      <button
+        onClick={() => setShowFullImage(true)}
+        type="button"
+        className="absolute right-3 top-3 z-20 p-2"
+      >
+        <FullSizeIcon className="w-6 text-black" />
+      </button>
       <div
-        className="scroll-bar-hidden  images-container relative h-full w-full snap-x snap-mandatory overflow-scroll max-sm:!flex sm:grid sm:gap-2 sm:overflow-hidden"
+        className="scroll-bar-hidden images-container  relative h-full w-full snap-x snap-mandatory overflow-scroll max-sm:!flex sm:grid sm:gap-2 sm:overflow-hidden"
         ref={containerRef}
       >
         {images.map((item, index) => (
-          <button
+          <div
             onClick={() =>
               window.innerWidth > 640 &&
               setImages(rearrangeArray(images, index))
@@ -117,12 +149,12 @@ const ProductImages: React.FC<YourComponentProps> = ({
               sizes="100%"
               className="duration-300 hover:scale-110"
             />
-          </button>
+          </div>
         ))}
       </div>
       <button
         onClick={scrollToNext}
-        className={`${currentIndex === images.length - 1 ? "hidden" : ""} absolute right-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl sm:hidden`}
+        className={`${currentIndex === images.length - 1 ? "hidden" : ""} absolute right-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl sm:hidden`}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
           <Image
