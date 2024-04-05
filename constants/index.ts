@@ -1,4 +1,9 @@
-import { DashboardCardProps, OfferType, PromoCodeType } from "@/types";
+import {
+  CollectionType,
+  DashboardCardProps,
+  OfferType,
+  PromoCodeType,
+} from "@/types";
 import { formInputs, productInputs } from "./inputs";
 const footerList = [
   {
@@ -6,15 +11,15 @@ const footerList = [
     links: [
       {
         name: "Our Story",
-        url: "/about",
+        url: "/about/#our-story",
       },
       {
         name: "Mission and Values",
-        url: "/about",
+        url: "/about/#mission-and-values",
       },
       {
         name: "Team",
-        url: "/about",
+        url: "/about/#team",
       },
     ],
   },
@@ -27,11 +32,11 @@ const footerList = [
       },
       {
         name: "New Arrivals",
-        url: "/shop",
+        url: "/shop?sort=New Arrivals",
       },
       {
         name: "Sale",
-        url: "/shop",
+        url: "/shop?kw=sale",
       },
     ],
   },
@@ -40,16 +45,12 @@ const footerList = [
     links: [
       {
         name: "Instagram",
-        url: "https://www.instagram.com/givaco.eg",
+        url: "https://www.instagram.com/eh.egyy/",
       },
       {
         name: "Facebook",
         url: "https://www.facebook.com/profile.php?id=100084787940589",
       },
-      // {
-      //   name: "Twitter",
-      //   url: "https://twitter.com/yourstore",
-      // },
     ],
   },
 ];
@@ -264,6 +265,80 @@ export const promoCodeConstants: PromoCodeType[] = [
   { code: "BEDO10", discount: 10, limit: 10, active: true, maxDiscount: 100 },
   { code: "BEDO20", discount: 20, limit: 10, active: true, maxDiscount: 100 },
   { code: "B20", discount: 20, limit: 100, active: true, maxDiscount: 100 },
+];
+
+export const navbarLinks = [
+  {
+    title: "Home",
+    url: "/",
+  },
+  {
+    title: "Shop",
+    url: "/shop",
+  },
+  {
+    title: "About",
+    url: "/about",
+  },
+  {
+    title: "collection",
+    url: "/collection",
+  },
+  {
+    title: "cart",
+    url: "/cart",
+  },
+  {
+    title: "favorites",
+    url: "/favorites",
+  },
+];
+export const collections: CollectionType[] = [
+  {
+    name: "New collection",
+    image: "/new-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Women collection",
+    image: "/women-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Men collection",
+    image: "/men-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "New collection",
+    image: "/new-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Women collection",
+    image: "/women-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Men collection",
+    image: "/men-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "New collection",
+    image: "/new-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Women collection",
+    image: "/women-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Men collection",
+    image: "/men-collection.png",
+    url: "/shop",
+  },
 ];
 export {
   dashboardCards,

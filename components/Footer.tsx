@@ -1,8 +1,7 @@
-import Image from "next/image";
-import ArrowButton from "./ArrowButton";
 import GoUpButton from "./GoUpButton";
 import { categories, footerList } from "@/constants";
 import Link from "next/link";
+import LogoIcon from "./icons/LogoIcon";
 
 const Footer = () => {
   return (
@@ -41,17 +40,11 @@ const Footer = () => {
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-5 px-5 py-2 md:flex-row">
-          <Image
-            src="/logo.svg"
-            alt="logo"
-            width={450}
-            height={100}
-            className="w-auto max-w-[80%]"
-          />
+          <LogoIcon className="w-40 max-w-[80%] fill-white" />
           <div className="flex flex-col items-center gap-2">
             <GoUpButton />
             <p className="text-base font-medium text-gray-500">
-              @2024 GIVACO All Rights reserved
+              @2024 eh! All Rights reserved
             </p>
           </div>
         </div>

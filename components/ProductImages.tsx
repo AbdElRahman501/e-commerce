@@ -68,7 +68,6 @@ const ProductImages: React.FC<YourComponentProps> = ({
         left: containerRef.current.offsetWidth,
         behavior: "smooth",
       });
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }
   };
 
@@ -78,9 +77,6 @@ const ProductImages: React.FC<YourComponentProps> = ({
         left: -containerRef.current.offsetWidth,
         behavior: "smooth",
       });
-      setCurrentIndex(
-        (prevIndex) => (prevIndex - 1 + images.length) % images.length,
-      );
     }
   };
 

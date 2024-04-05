@@ -1,19 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CartButton, MenuBurgerButton, ThemeSwitcher } from ".";
+import LogoIcon from "./icons/LogoIcon";
 
 const NavBar = () => {
   return (
     <nav className="sticky top-0 z-30 flex max-h-16 justify-center bg-primary_color px-5 py-3 dark:bg-primary_color md:bg-white md:px-20 ">
       <MenuBurgerButton />
       <Link href="/" className=" md:flex-1">
-        <Image
-          src="/logo.svg"
-          alt="logo"
-          width={120}
-          height={50}
-          className="h-9 invert-0 dark:invert-0 md:invert"
-        />
+        <LogoIcon className="h-8 w-8 fill-white md:h-10 md:w-10 md:fill-black md:dark:fill-white" />
       </Link>
       <div className=" hidden max-w-md flex-1 justify-center md:flex">
         <Link

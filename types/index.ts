@@ -59,6 +59,12 @@ export interface OfferType {
   url: string;
 }
 
+export interface CollectionType {
+  name: string;
+  image: string;
+  url: string;
+}
+
 export interface GovernorateType {
   id: string;
   governorate_name_en: string;

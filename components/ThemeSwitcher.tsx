@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import Image from "next/image";
 import { ThemeSwitcherProps } from "@/types";
+import Circum_icon from "./icons/Circum_icon";
+import SunIcon from "./icons/SunIcon";
 
 const ThemeSwitcher = ({
   className,
@@ -28,14 +29,12 @@ const ThemeSwitcher = ({
         additionalFunction && additionalFunction();
       }}
     >
-      <Image
-        className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
-        src={theme === "dark" ? "/icons/sun.svg" : "/icons/circum.svg"}
-        alt="moon"
-        width={30}
-        height={30}
-      />{" "}
       {!onlyIcon && <p>{theme === "dark" ? "Light mode" : "Dark mode"}</p>}
+      {theme === "dark" ? (
+        <Circum_icon className="h-5 w-5" />
+      ) : (
+        <SunIcon className="h-5 w-5" />
+      )}
     </button>
   );
 };

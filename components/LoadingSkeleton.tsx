@@ -1,7 +1,7 @@
 // components/LoadingSkeleton.tsx
 import { CartItem } from "@/types";
-import Image from "next/image";
 import React from "react";
+import LogoIcon from "./icons/LogoIcon";
 
 export const ProductSkeleton: React.FC = () => {
   return (
@@ -55,13 +55,7 @@ export const FilterSkeleton = () => {
 export const LoadingLogo = () => {
   return (
     <div className=" flex min-h-screen w-full items-center justify-center ">
-      <Image
-        src="/logo.svg"
-        alt="logo"
-        width={150}
-        height={100}
-        className="h-8 animate-pulse invert dark:invert-0 md:invert"
-      />
+      <LogoIcon className="h-16 w-16 animate-pulse md:h-20 md:w-20" />
     </div>
   );
 };
