@@ -1,21 +1,30 @@
 "use server";
-import { ReviewType, StoryType } from "@/types";
+import { NavbarType, ReviewType, StoryType } from "@/types";
 import { connectToDatabase } from "../mongoose";
-import { Review, Story } from "../models/store.model";
+import { NavBarLink, Review, Story } from "../models/store.model";
 import { redirect } from "next/navigation";
 import { checkDateStatus } from "@/utils";
 
 export async function fetchStories(): Promise<StoryType[]> {
   try {
     await connectToDatabase();
-    const currentDate = new Date();
-
     const data = await Story.find({});
     const stories: StoryType[] = JSON.parse(JSON.stringify(data));
     const filteredStories: StoryType[] = stories.filter(
       (story) => checkDateStatus(story.start, story.end).name === "active",
     );
     return filteredStories;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+export async function fetchNavbarLinks(): Promise<NavbarType[]> {
+  try {
+    await connectToDatabase();
+    const data = await NavBarLink.find({});
+    const navbarLinks: NavbarType[] = JSON.parse(JSON.stringify(data));
+    return navbarLinks;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;

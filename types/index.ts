@@ -182,6 +182,11 @@ export interface DashboardCardProps {
   url: string;
 }
 
+export interface NavbarType {
+  title: string;
+  main?: boolean;
+  url: string;
+}
 export interface ReviewType {
   _id: string;
   name: string;

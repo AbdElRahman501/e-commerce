@@ -1,51 +1,40 @@
-import Image from "next/image";
 import Link from "next/link";
 import { CartButton, MenuBurgerButton, ThemeSwitcher } from ".";
 import LogoIcon from "./icons/LogoIcon";
+import HeartIcon from "./icons/HeartIcon";
+import { fetchNavbarLinks } from "@/lib/actions/store.actions";
 
-const NavBar = () => {
+const NavBar = async () => {
+  const navbarLinks = await fetchNavbarLinks();
+  const mainNav = navbarLinks.filter((link) => link.main);
   return (
     <nav className="sticky top-0 z-30 flex max-h-16 justify-center bg-primary_color px-5 py-3 dark:bg-primary_color md:bg-white md:px-20 ">
-      <MenuBurgerButton />
+      <MenuBurgerButton navbarLinks={navbarLinks} />
       <Link href="/" className=" md:flex-1">
-        <LogoIcon className="h-8 w-8 fill-white md:h-10 md:w-10 md:fill-black md:dark:fill-white" />
+        <LogoIcon className="w-16 fill-white md:fill-black md:dark:fill-white" />
       </Link>
-      <div className=" hidden max-w-md flex-1 justify-center md:flex">
-        <Link
-          className="mr-auto uppercase text-black  hover:text-gray-300 dark:text-white"
-          href="/"
-        >
-          Home
-        </Link>
-        <Link
-          className="uppercase text-black hover:text-gray-300 dark:text-white"
-          href="/about"
-        >
-          About
-        </Link>
-        <Link
-          className="ml-auto uppercase text-black hover:text-gray-300 dark:text-white"
-          href="/shop"
-        >
-          Shop
-        </Link>
+      <div className=" hidden max-w-md flex-1 items-center justify-center md:flex">
+        {mainNav.map((link, index) => (
+          <Link
+            key={index}
+            className="mr-auto font-semibold uppercase text-black  duration-200 hover:scale-110 dark:text-white"
+            href={link.url}
+          >
+            {link.title}
+          </Link>
+        ))}
       </div>
       <div className="flex flex-1 items-center justify-end gap-2 md:gap-8 ">
         <ThemeSwitcher
-          className="hidden text-black hover:text-gray-300 dark:text-white md:flex"
+          className="hidden text-black duration-200 hover:scale-110 dark:text-white md:flex"
           onlyIcon
         />
         <CartButton />
-        <Link
-          className="uppercase text-black hover:text-gray-300 dark:text-white"
-          href="/favorites"
-        >
-          <Image
-            className="duration-300 hover:scale-110 dark:invert-0 md:invert"
-            src={"/icons/heart.svg"}
-            alt="heart"
-            width={30}
-            height={30}
+        <Link href="/favorites">
+          <HeartIcon
+            fillRule="evenodd"
+            clipRule="evenodd"
+            className="h-8 w-8 fill-white duration-200 hover:scale-110 md:fill-black md:dark:fill-white "
           />
         </Link>
       </div>

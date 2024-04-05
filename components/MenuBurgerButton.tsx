@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { ThemeSwitcher } from ".";
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import useLongPress from "./useLongPress";
-import { navbarLinks } from "@/constants";
+import { NavbarType } from "@/types";
 
-const MenuBurgerButton = () => {
+const MenuBurgerButton = ({ navbarLinks }: { navbarLinks: NavbarType[] }) => {
   const [menu, setMenu] = useState(false);
   const { data: session } = useSession();
 

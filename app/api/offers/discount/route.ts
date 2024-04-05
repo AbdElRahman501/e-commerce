@@ -1,4 +1,3 @@
-import { promoCodeConstants } from "@/constants";
 import PromoCode from "@/lib/models/promoCode.model";
 import { NextResponse } from "next/server";
 
@@ -27,7 +26,6 @@ export async function POST(req: Request) {
 // export async function GET(req: Request) {
 //   try {
 //     await PromoCode.deleteMany({});
-//     const discounts = await PromoCode.insertMany(promoCodeConstants);
 //     console.log("🚀 ~ GET ~ discounts:", discounts);
 //     return NextResponse.json({ discounts });
 //   } catch (error) {

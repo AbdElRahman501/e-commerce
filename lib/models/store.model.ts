@@ -20,3 +20,12 @@ const reviewSchema = new mongoose.Schema({
 
 export const Review =
   mongoose.models.Review || mongoose.model("Review", reviewSchema);
+
+const navbarSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  url: { type: String, required: true },
+  main: { type: Boolean, default: false },
+});
+
+export const NavBarLink =
+  mongoose.models.NavBarLink || mongoose.model("NavBarLink", navbarSchema);

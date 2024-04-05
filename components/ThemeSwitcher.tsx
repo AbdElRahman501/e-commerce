@@ -31,9 +31,9 @@ const ThemeSwitcher = ({
     >
       {!onlyIcon && <p>{theme === "dark" ? "Light mode" : "Dark mode"}</p>}
       {theme === "dark" ? (
-        <Circum_icon className="h-5 w-5" />
+        <Circum_icon className="h-8 w-8" />
       ) : (
-        <SunIcon className="h-5 w-5" />
+        <SunIcon className="h-8 w-8" />
       )}
     </button>
   );

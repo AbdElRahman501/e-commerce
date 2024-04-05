@@ -1,9 +1,4 @@
-import {
-  CollectionType,
-  DashboardCardProps,
-  OfferType,
-  PromoCodeType,
-} from "@/types";
+import { CollectionType, DashboardCardProps } from "@/types";
 import { formInputs, productInputs } from "./inputs";
 const footerList = [
   {
@@ -234,65 +229,6 @@ const dashboardCards: DashboardCardProps[] = [
   },
 ];
 
-export const offers: OfferType[] = [
-  {
-    title: "Sale",
-    description: "10% off",
-    sale: 10,
-    category: "anime",
-    image: "/images/offer.jpg",
-    url: "/shop?ctf=anime",
-  },
-  {
-    title: "free shipping",
-    description: "800",
-    sale: 0,
-    category: "free shipping",
-    image: "/images/offer.jpg",
-    url: "/shop",
-  },
-  {
-    title: "sale",
-    description: "sale 20%",
-    sale: 20,
-    category: "SALE20%",
-    image: "/images/offer.jpg",
-    url: "/shop",
-  },
-];
-
-export const promoCodeConstants: PromoCodeType[] = [
-  { code: "BEDO10", discount: 10, limit: 10, active: true, maxDiscount: 100 },
-  { code: "BEDO20", discount: 20, limit: 10, active: true, maxDiscount: 100 },
-  { code: "B20", discount: 20, limit: 100, active: true, maxDiscount: 100 },
-];
-
-export const navbarLinks = [
-  {
-    title: "Home",
-    url: "/",
-  },
-  {
-    title: "Shop",
-    url: "/shop",
-  },
-  {
-    title: "About",
-    url: "/about",
-  },
-  {
-    title: "collection",
-    url: "/collection",
-  },
-  {
-    title: "cart",
-    url: "/cart",
-  },
-  {
-    title: "favorites",
-    url: "/favorites",
-  },
-];
 export const collections: CollectionType[] = [
   {
     name: "New collection",

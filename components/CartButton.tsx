@@ -10,7 +10,7 @@ const CartButton = () => {
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   return (
     <Link href="/cart" className="relative">
-      <ShoppingBag_icon className="w-7 text-white dark:text-white md:text-black" />
+      <ShoppingBag_icon className="h-8 w-8 text-white duration-200 hover:scale-110 dark:text-white md:text-black" />
       {cart.length > 0 ? (
         <span className="absolute right-0 top-0 block aspect-square h-4 w-4 rounded-full  bg-red-500 text-center text-xs text-white">
           {cart.length}
