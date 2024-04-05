@@ -36,7 +36,7 @@ export interface Product {
   colors: string[];
   description: string;
   name: string;
-  gender: "male" | "female";
+  gender: "male" | "female" | "all";
   quantity: number;
   likes: number;
   updatedAt: string;
@@ -55,6 +55,12 @@ export interface OfferType {
   description: string;
   sale: number;
   category: string;
+  image: string;
+  url: string;
+}
+
+export interface CollectionType {
+  name: string;
   image: string;
   url: string;
 }
@@ -78,6 +84,13 @@ export interface PromoCodeType {
   limit: number;
   active: boolean;
   maxDiscount: number;
+}
+export interface StoryType {
+  _id: string;
+  image: string;
+  start?: string;
+  end?: string;
+  url?: string;
 }
 export interface Review {
   id: string;
@@ -167,4 +180,18 @@ export interface DashboardCardProps {
   number: string;
   description?: string;
   url: string;
+}
+
+export interface NavbarType {
+  title: string;
+  main?: boolean;
+  url: string;
+}
+export interface ReviewType {
+  _id: string;
+  name: string;
+  title: string;
+  description: string;
+  rating: number;
+  images: string[];
 }

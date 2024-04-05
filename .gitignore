@@ -37,5 +37,5 @@ next-env.d.ts
 .vscode/settings.json
 .prettierrc.json
 package-lock.json
-app/api/products/seed/route.ts
+app/api/seed/route.ts
 Archive/hi.ts

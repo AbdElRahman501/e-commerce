@@ -78,8 +78,15 @@ const productInputs: FormInput[] = [
     required: true,
   },
   {
+    label: "Min Price",
+    type: "number",
+    placeholder: "Enter product min price",
+    name: "minPrice",
+    required: true,
+  },
+  {
     label: "Sizes",
-    type: "array",
+    type: "text",
     placeholder: "Enter available sizes",
     name: "sizes",
     required: true,

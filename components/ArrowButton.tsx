@@ -2,14 +2,15 @@
 import { ArrowButtonProps } from "@/types";
 import Link from "next/link";
 import React from "react";
+import DropDown_icon from "./icons/DropDown_icon";
 
 const ArrowButton = ({ className, href }: ArrowButtonProps) => {
   return (
     <Link
       href={href}
-      className={`m-[5px] flex h-[50px] w-[50px] items-center justify-center rounded-full  duration-300 hover:scale-110 hover:bg-gray-400 ${className}`}
+      className={` flex h-[50px] w-[50px] items-center justify-center rounded-full  duration-300 hover:scale-110  ${className}`}
     >
-      <p className="-rotate-45">{`->`}</p>
+      <DropDown_icon className=" w-6 -rotate-[135deg] " />
     </Link>
   );
 };

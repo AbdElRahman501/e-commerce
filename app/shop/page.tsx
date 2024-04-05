@@ -24,6 +24,8 @@ export default async function SearchPage({
     clf,
     minP,
     maxP,
+    kw,
+    collection,
   } = searchParams as {
     [key: string]: string;
   };
@@ -42,7 +44,7 @@ export default async function SearchPage({
     query: searchValue,
     sort: sort || "",
     selectedCategories: categoryFilter,
-    keywordFilter: "",
+    keywordFilter: kw,
     minPrice: minPrice,
     originFilter: [],
     maxPrice: maxPrice,

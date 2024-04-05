@@ -10,10 +10,12 @@ type CustomInputProps = FormInput & {
       | React.ChangeEvent<HTMLTextAreaElement>,
   ) => void;
   value?: any;
-  defaultValue?: string;
+  defaultValue?: any;
   disabled?: boolean;
   readOnly?: boolean;
   hidden?: boolean;
+  min?: number;
+  max?: number;
 };
 
 const CustomInput = ({
@@ -32,6 +34,8 @@ const CustomInput = ({
   disabled = false,
   readOnly = false,
   hidden,
+  min,
+  max,
 }: CustomInputProps) => {
   switch (type) {
     case "select":
@@ -41,7 +45,8 @@ const CustomInput = ({
             name={name}
             id={name}
             required={required}
-            value={value || ""}
+            defaultValue={value ? undefined : defaultValue}
+            value={defaultValue ? undefined : value || ""}
             onChange={onChange}
             disabled={disabled}
             className=" peer h-14 w-full appearance-none rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 focus:border-orange-500 focus:pt-3 focus:ring-blue-500 focus:invalid:border-pink-500  focus:invalid:ring-pink-500 enabled:cursor-pointer motion-reduce:transition-none  dark:border-gray-700 dark:text-white dark:placeholder-gray-400 dark:invalid:border-pink-500 dark:focus:ring-gray-200 "
@@ -159,6 +164,8 @@ const CustomInput = ({
             onChange={onChange}
             readOnly={readOnly || (value && !onChange ? true : false)}
             placeholder=""
+            min={min}
+            max={max}
             hidden={hidden ? true : false}
             className="peer h-14 w-full rounded-lg border-[1px] border-gray-400 bg-transparent px-4 pt-3 text-base  outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 placeholder-shown:invalid:border-gray-400 placeholder-shown:invalid:text-black focus:border-orange-500 focus:pt-3 focus:text-black motion-reduce:transition-none dark:border-gray-700  dark:text-white dark:placeholder-gray-400 dark:invalid:border-pink-500 dark:invalid:text-pink-600 placeholder-shown:dark:invalid:border-gray-700 placeholder-shown:dark:invalid:text-white focus:dark:border-orange-500 focus:dark:text-white dark:focus:ring-gray-200 "
           />

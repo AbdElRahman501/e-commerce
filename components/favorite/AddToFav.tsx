@@ -1,8 +1,8 @@
 "use client";
 import { useFormState, useFormStatus } from "react-dom";
-import Image from "next/image";
 import { toggleFav } from "../actions/fav.actions";
 import React from "react";
+import HeartIcon from "../icons/HeartIcon";
 
 function SubmitButton({
   isFav,
@@ -22,13 +22,17 @@ function SubmitButton({
       disabled={pending}
       className="relative h-6 w-6"
     >
-      <Image
-        src={inFav ? "/icons/heart-fill.svg" : "/icons/heart.svg"}
-        alt="heart icon"
-        fill
-        sizes="100%"
-        className={` ${inFav ? "" : className || "invert dark:invert-0"} duration-200 hover:scale-110 `}
-      />
+      {isFav ? (
+        <HeartIcon
+          fillRule="nonzero"
+          className="h-5 w-5 text-red-800  duration-200 hover:scale-110"
+        />
+      ) : (
+        <HeartIcon
+          fillRule="evenodd"
+          className="h-5 w-5  duration-200 hover:scale-110"
+        />
+      )}
     </button>
   );
 }

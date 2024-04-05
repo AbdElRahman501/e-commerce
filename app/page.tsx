@@ -13,12 +13,20 @@ export const metadata = {
 export default async function Home() {
   return (
     <>
-      <Hero />
       <Suspense>
-        <ProductsRow title="Trending" url="/shop?sort=Trending" />
-        <ProductsRow title="New Arrivals" url="/shop?sort=New Arrivals" />
-        <ProductsRow title="Best Sellers" url="/shop?sort=Best Sellers" />
-        <Testimonials />
+        <Hero />
+        <Suspense>
+          <ProductsRow title="Trending" url="/shop?sort=Trending" />
+        </Suspense>
+        <Suspense>
+          <ProductsRow title="New Arrivals" url="/shop?sort=New Arrivals" />
+        </Suspense>
+        <Suspense>
+          <ProductsRow title="Best Sellers" url="/shop?sort=Best Sellers" />
+        </Suspense>
+        <Suspense>
+          <Testimonials />
+        </Suspense>
         <FAQSection />
         <Suspense>
           <Footer />

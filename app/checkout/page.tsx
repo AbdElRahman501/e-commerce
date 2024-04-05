@@ -42,7 +42,7 @@ const CheckOutPage = async ({
     (item) => item.id === cityId,
   )?.shipping_price;
 
-  const shipping = stateShipping || cityShipping || 0;
+  const shipping = cityShipping || stateShipping || 0;
   const discountValue = Math.ceil(discountPercentage * subTotal);
   const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
   const total = subTotal + shipping - discount;

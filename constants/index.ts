@@ -1,4 +1,4 @@
-import { DashboardCardProps, OfferType, PromoCodeType } from "@/types";
+import { CollectionType, DashboardCardProps } from "@/types";
 import { formInputs, productInputs } from "./inputs";
 const footerList = [
   {
@@ -6,15 +6,15 @@ const footerList = [
     links: [
       {
         name: "Our Story",
-        url: "/about",
+        url: "/about/#our-story",
       },
       {
         name: "Mission and Values",
-        url: "/about",
+        url: "/about/#mission-and-values",
       },
       {
         name: "Team",
-        url: "/about",
+        url: "/about/#team",
       },
     ],
   },
@@ -27,11 +27,11 @@ const footerList = [
       },
       {
         name: "New Arrivals",
-        url: "/shop",
+        url: "/shop?sort=New Arrivals",
       },
       {
         name: "Sale",
-        url: "/shop",
+        url: "/shop?kw=sale",
       },
     ],
   },
@@ -40,16 +40,12 @@ const footerList = [
     links: [
       {
         name: "Instagram",
-        url: "https://www.instagram.com/givaco.eg",
+        url: "https://www.instagram.com/eh.egyy/",
       },
       {
         name: "Facebook",
         url: "https://www.facebook.com/profile.php?id=100084787940589",
       },
-      // {
-      //   name: "Twitter",
-      //   url: "https://twitter.com/yourstore",
-      // },
     ],
   },
 ];
@@ -209,7 +205,7 @@ const dashboardCards: DashboardCardProps[] = [
     image: "/icons/review.svg",
     title: "Reviews",
     number: "3.8",
-    url: "#",
+    url: "/reviews",
     description: "-0.1",
   },
   {
@@ -218,39 +214,67 @@ const dashboardCards: DashboardCardProps[] = [
     number: "100",
     url: "/products",
   },
-];
-
-export const offers: OfferType[] = [
   {
-    title: "Sale",
-    description: "10% off",
-    sale: 10,
-    category: "anime",
-    image: "/images/offer.jpg",
-    url: "/shop?ctf=anime",
+    image: "/icons/products.svg",
+    title: "shipping",
+    number: "100",
+    url: "/shipping",
   },
   {
-    title: "free shipping",
-    description: "800",
-    sale: 0,
-    category: "free shipping",
-    image: "/images/offer.jpg",
-    url: "/shop",
-  },
-  {
-    title: "sale",
-    description: "sale 20%",
-    sale: 20,
-    category: "SALE20%",
-    image: "/images/offer.jpg",
-    url: "/shop",
+    image: "/icons/visits.svg",
+    title: "Store",
+    number: "100",
+    url: "/store",
+    description: "+20",
   },
 ];
 
-export const promoCodeConstants: PromoCodeType[] = [
-  { code: "BEDO10", discount: 10, limit: 10, active: true, maxDiscount: 100 },
-  { code: "BEDO20", discount: 20, limit: 10, active: true, maxDiscount: 100 },
-  { code: "B20", discount: 20, limit: 100, active: true, maxDiscount: 100 },
+export const collections: CollectionType[] = [
+  {
+    name: "New collection",
+    image: "/new-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Women collection",
+    image: "/women-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Men collection",
+    image: "/men-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "New collection",
+    image: "/new-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Women collection",
+    image: "/women-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Men collection",
+    image: "/men-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "New collection",
+    image: "/new-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Women collection",
+    image: "/women-collection.png",
+    url: "/shop",
+  },
+  {
+    name: "Men collection",
+    image: "/men-collection.png",
+    url: "/shop",
+  },
 ];
 export {
   dashboardCards,

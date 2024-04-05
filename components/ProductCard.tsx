@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import AddToFav from "./favorite/AddToFav";
 import React from "react";
-import { getAllImages } from "@/utils";
 
 interface ProductCardProps extends ProductOnSaleType {
   fav: string[];
@@ -23,37 +22,25 @@ const ProductCard = ({
   const [selectedColor, setSelectedColor] = React.useState<string>(colors[0]);
   const inFav = !!fav.find((item) => item === id);
 
-  const [firstImage, secondImage] =
-    images[selectedColor].length > 1
-      ? images[selectedColor]
-      : getAllImages(images);
   return (
     <div className="Product animate-fadeIn relative flex-col gap-4">
       {saleValue && (
-        <div className="absolute right-2 top-2 z-10 text-center text-xs uppercase text-white md:text-sm">
+        <div className="absolute right-2 top-2 z-10 text-center text-[10px] uppercase text-white md:text-xs">
           <p className="mb-3 h-full w-full  rounded-3xl bg-gray-950 p-1 px-4">
             Sale
           </p>
         </div>
       )}
       <Link className="relative block" href={`/product/${id}`}>
-        <div className="aspect-card group relative overflow-hidden rounded-lg bg-gradient-to-r from-slate-100 to-slate-200">
+        <div className="aspect-card group relative overflow-hidden rounded-3xl ">
           <Image
-            src={firstImage}
+            src={images[selectedColor][0]}
             alt="jacket"
             fill
+            sizes="100%"
             style={{ objectFit: "cover" }}
-            className={`duration-700 ${secondImage ? "group-hover:hidden" : "hover:scale-105"} `}
+            className={`bg-gradient-to-r from-[#8c8c88] to-[#979a96] duration-700 hover:scale-105 `}
           />
-          {secondImage && (
-            <Image
-              src={secondImage}
-              alt="jacket"
-              fill
-              style={{ objectFit: "cover" }}
-              className="animate-fadeIn hidden  opacity-0 transition-all delay-75 duration-700 group-hover:block group-hover:opacity-100"
-            />
-          )}
         </div>
       </Link>
       <div className="flex items-center justify-between p-1">
@@ -62,7 +49,7 @@ const ProductCard = ({
             <button
               key={index}
               onClick={() => setSelectedColor(item)}
-              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} max-w-4 flex-1 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}
+              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} max-w-5 flex-1 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}
             >
               <span
                 style={{ backgroundColor: item }}

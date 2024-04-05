@@ -78,7 +78,7 @@
 }
 
 .aspect-card {
-  aspect-ratio: 3/4;
+  aspect-ratio: 8/10;
 }
 
 .grid-container {
@@ -136,14 +136,4 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-.triangle {
-  width: 0px;
-  height: 0px;
-  border-style: solid;
-  /* border-width: 200px 0 0 200px; */
-  border-color: transparent transparent transparent var(--primary-color);
-  ;
-  /* transform: rotate(0deg); */
 }
