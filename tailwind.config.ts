@@ -18,6 +18,10 @@ const config: Config = {
         primary_bg: "var(--background)",
         primary_color: "var(--primary-color)",
       },
+
+      fontFamily: {
+        golos: ["var(--font-golos-ui)"],
+      },
     },
   },
   plugins: [],

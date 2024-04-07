@@ -34,6 +34,7 @@ const Hero = async () => {
                 src={firstCollection.image}
                 alt={firstCollection.name}
                 fill
+                sizes="100%"
                 style={{ objectFit: "cover" }}
               />
               <ArrowButton

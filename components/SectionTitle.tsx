@@ -7,7 +7,7 @@ const SectionTitle = ({ title, url, theme, className }: SectionTitleProps) => {
     <div
       className={`title flex items-center justify-between text-black  dark:text-white ${className}`}
     >
-      <h1 className="text-2xl font-bold uppercase md:text-4xl ">{title}</h1>
+      <h1 className="text-3xl font-bold uppercase md:text-4xl ">{title}</h1>
       <Link
         href={url}
         className={

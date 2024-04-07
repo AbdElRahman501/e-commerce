@@ -25,9 +25,14 @@ async function ProductsRow({
       <div className="rounded-4xl flex flex-col gap-4">
         <SectionTitle title={title} url={url} />
         <div className="scroll-bar-hidden overflow-x-scroll md:overflow-hidden ">
-          <div className="grid-container grid w-full gap-4 md:grid-cols-4 lg:gap-8 ">
+          <div className="flex w-full gap-4">
             {products.map((product) => (
-              <ProductCard fav={fav} key={product.id} {...product} />
+              <ProductCard
+                className="min-w-[306px]"
+                fav={fav}
+                key={product.id}
+                {...product}
+              />
             ))}
           </div>
         </div>

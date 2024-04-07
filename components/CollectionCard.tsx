@@ -18,7 +18,13 @@ const CollectionCard = ({
           : "rounded-4xl relative aspect-square h-full w-full overflow-hidden"
       }
     >
-      <Image src={image} alt={name} fill style={{ objectFit: "cover" }} />
+      <Image
+        src={image}
+        alt={name}
+        fill
+        sizes="100%"
+        style={{ objectFit: "cover" }}
+      />
 
       <ArrowButton
         href={url}
