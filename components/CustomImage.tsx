@@ -34,7 +34,8 @@ const CustomImage = ({ src, alt, ...props }: ImageProps) => {
           <Image
             src={src}
             alt={alt}
-            {...props}
+            fill
+            sizes="100vw"
             className="z-40 h-5/6"
             style={{ objectFit: "contain" }}
           />
@@ -47,7 +48,6 @@ const CustomImage = ({ src, alt, ...props }: ImageProps) => {
         className="cursor-pointer"
         onClick={() => setShowFullImage(true)}
       />
-      ;
     </>
   );
 };

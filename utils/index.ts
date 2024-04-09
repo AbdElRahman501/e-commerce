@@ -134,6 +134,23 @@ export function generateCode(prefix: string, length: number): string {
   }
   return code;
 }
+
+export function generateRandomCode(): string {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const sections = [
+    Array.from({ length: 4 }, () =>
+      characters.charAt(Math.floor(Math.random() * characters.length)),
+    ).join(""),
+    Array.from({ length: 4 }, () =>
+      characters.charAt(Math.floor(Math.random() * characters.length)),
+    ).join(""),
+    Array.from({ length: 2 }, () =>
+      characters.charAt(Math.floor(Math.random() * 26)),
+    ).join(""),
+  ];
+  return `WELCOME-${sections.join("-")}-15`;
+}
+
 export function formatDate(timestamp: string): string {
   const dt = new Date(timestamp);
   const year = dt.getFullYear().toString().slice(-2);

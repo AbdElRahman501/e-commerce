@@ -60,7 +60,7 @@ const MenuBurgerButton = ({ navbarLinks }: { navbarLinks: NavbarType[] }) => {
   const longPressEvent = useLongPress(onLongPress, openMenu, defaultOptions);
 
   return (
-    <div className="mr-auto flex-1 md:hidden">
+    <div className="flex flex-1 items-center justify-start md:hidden">
       <button type="button" {...longPressEvent}>
         <Image
           className="invert duration-300  hover:scale-110 dark:invert md:invert-0"

@@ -84,6 +84,11 @@ export interface PromoCodeType {
   limit: number;
   active: boolean;
   maxDiscount: number;
+  _id: string;
+}
+export interface SubscriberType {
+  email: string;
+  _id: string;
 }
 export interface StoryType {
   _id: string;

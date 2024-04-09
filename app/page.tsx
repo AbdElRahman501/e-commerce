@@ -1,5 +1,6 @@
 import { FAQSection, Footer, Hero, Testimonials } from "@/components";
 import ProductsRow from "@/components/ProductsRow";
+import SubscriptionSection from "@/components/SubscriptionSection";
 import { Suspense } from "react";
 
 export const metadata = {
@@ -10,7 +11,14 @@ export const metadata = {
   },
 };
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const { customer_posted } = searchParams as {
+    [key: string]: string;
+  };
   return (
     <>
       <Suspense>
@@ -28,6 +36,7 @@ export default async function Home() {
           <Testimonials />
         </Suspense>
         <FAQSection />
+        <SubscriptionSection customer_posted={customer_posted} />
         <Suspense>
           <Footer />
         </Suspense>

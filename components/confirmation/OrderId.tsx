@@ -16,7 +16,7 @@ const OrderId = ({ id }: { id: string }) => {
       className="group flex w-full justify-center text-center text-xl font-medium text-gray-600 duration-200 hover:text-black dark:text-gray-300 dark:hover:text-white"
     >
       <div className="relative h-6 w-6">
-        {copied ? <CheckMark /> : <Copy_icon />}
+        {copied ? <CheckMark className="fill-current" /> : <Copy_icon />}
       </div>
       <span>Order #{id}</span>
     </button>

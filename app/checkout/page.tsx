@@ -53,7 +53,7 @@ const CheckOutPage = async ({
       <Message message="Your cart is empty" />
     </div>
   ) : (
-    <div className="p-5 pb-20 lg:px-20">
+    <div className="p-5 lg:px-20">
       <form
         action={createOrder}
         className=" flex w-full flex-col gap-10 md:flex-row "

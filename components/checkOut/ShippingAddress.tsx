@@ -63,7 +63,9 @@ const ShippingAddress = ({
           label="city"
           type="select"
           disabled={!selectedState}
-          value={cities.find((item) => item.id == city)?.city_name_en || ""}
+          value={
+            cities.find((item) => item.id == selectedCity)?.city_name_en || ""
+          }
           options={cities
             .filter((city) => city.governorate_id == selectedState)
             .map((item) => item.city_name_en)}

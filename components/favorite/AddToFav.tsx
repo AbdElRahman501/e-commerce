@@ -52,7 +52,7 @@ export default function AddToFav({
   return (
     <form
       action={actionWithVariant}
-      className="flex items-center justify-center"
+      className="flex h-5 w-5 items-center justify-center"
     >
       <SubmitButton isFav={isFav || false} className={className} />
     </form>
