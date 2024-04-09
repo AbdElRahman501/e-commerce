@@ -28,7 +28,7 @@ async function ProductsRow({
           <div className="flex w-full gap-4">
             {products.map((product) => (
               <ProductCard
-                className="min-w-[306px]"
+                className="min-w-[306px] flex-1"
                 fav={fav}
                 key={product.id}
                 {...product}

@@ -51,7 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${golos.variable} font-golos bg-white duration-200 dark:bg-[#0d1117]`}
+        className={`${golos.variable} bg-white font-golos duration-200 dark:bg-[#0d1117]`}
       >
         <Suspense>
           <ThemeProvider

@@ -57,16 +57,7 @@ const Stories = ({ stories = [] }: { stories: StoryType[] }) => {
   };
 
   return (
-    <div className="rounded-4xl group relative aspect-[9/16] h-full w-full overflow-hidden ">
-      <div className="absolute top-2 z-10 flex w-full justify-center gap-[2px]">
-        {stories.map((_, index) => (
-          <div key={index} className="w-full">
-            <div
-              className={` ${currentIndex === index ? "w-0 transition-[width] duration-[5s]" : "w-full"} h-[2px] ${index <= currentIndex ? "bg-white" : "bg-white/50"}  ease-linear`}
-            ></div>
-          </div>
-        ))}
-      </div>
+    <div className="group relative aspect-[68/100] h-full w-full overflow-hidden sm:rounded-[35px] ">
       <button
         onClick={scrollToPrev}
         className={`${currentIndex === 0 ? "hidden" : ""} absolute  left-1 top-0 z-20 flex h-full w-10 items-center justify-center text-3xl `}
@@ -77,12 +68,12 @@ const Stories = ({ stories = [] }: { stories: StoryType[] }) => {
       </button>
       <div
         ref={containerRef}
-        className="scroll-bar-hidden flex aspect-[9/16] h-full snap-x snap-mandatory flex-row overflow-x-auto"
+        className="scroll-bar-hidden flex aspect-[68/100] h-full snap-x snap-mandatory flex-row overflow-x-auto"
       >
         {stories.map((story, index) => (
           <div
             key={index}
-            className=" relative aspect-[9/16] h-full min-w-full snap-center "
+            className=" relative aspect-[68/100] h-full min-w-full snap-center "
           >
             <Image
               src={story.image}
@@ -102,16 +93,15 @@ const Stories = ({ stories = [] }: { stories: StoryType[] }) => {
           <DropDown_icon className="-rotate-90" />
         </div>
       </button>
-      {/* <div className="absolute bottom-3 flex w-full justify-center text-white">
-        <div className="flex space-x-1">
-          {stories.map((_, index) => (
+      <div className="absolute bottom-2 z-10 flex w-full justify-center gap-[2px]">
+        {stories.map((_, index) => (
+          <div key={index} className="w-full">
             <div
-              key={index}
-              className={`h-2 w-2 rounded-full ${index === currentIndex ? "bg-white" : "bg-gray-500"}`}
-            />
-          ))}
-        </div>
-      </div> */}
+              className={` ${currentIndex === index ? "w-0 transition-[width] duration-[5s]" : "w-full"} h-[2px] ${index <= currentIndex ? "bg-white" : "bg-white/50"}  ease-linear`}
+            ></div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

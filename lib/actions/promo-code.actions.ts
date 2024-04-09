@@ -18,3 +18,17 @@ export async function fetchPromoCode(code: string): Promise<PromoCodeType> {
     throw error;
   }
 }
+
+export async function fetchPromoCodeById(id: string): Promise<PromoCodeType> {
+  if (!id) return {} as PromoCodeType;
+  try {
+    await connectToDatabase();
+    const data = await PromoCode.findById(id);
+    if (!data) return {} as PromoCodeType;
+    const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
+    return promoCode;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}

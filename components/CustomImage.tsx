@@ -47,7 +47,6 @@ const CustomImage = ({ src, alt, ...props }: ImageProps) => {
         className="cursor-pointer"
         onClick={() => setShowFullImage(true)}
       />
-      ;
     </>
   );
 };
