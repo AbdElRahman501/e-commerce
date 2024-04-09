@@ -1,11 +1,13 @@
-import { BagCard } from "@/components";
-import OrderId from "@/components/confirmation/OrderId";
 import { fetchProductsById } from "@/lib";
 import { fetchOrder } from "@/lib/actions/order.actions";
 import { CartProduct } from "@/types";
 import { reformatCartItems } from "@/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const OrderId = dynamic(() => import("@/components/confirmation/OrderId"));
+const BagCard = dynamic(() => import("@/components/BagCard"));
 
 const OrderConfirmationPage = async ({
   params,

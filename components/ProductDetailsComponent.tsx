@@ -2,14 +2,21 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { faqSection } from "@/constants";
-import { AmountButton } from "@/components";
+// import { AmountButton } from "@/components";
 import { CartItem, ProductOnSaleType } from "@/types";
-import { ProductImages } from ".";
+// import { ProductImages } from ".";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUrl, formatPrice, getAllImages } from "@/utils";
-import AddToCart from "./cart/AddToCart";
-import AddToFav from "./favorite/AddToFav";
+// import AddToCart from "./cart/AddToCart";
+// import AddToFav from "./favorite/AddToFav";
+
+import dynamic from "next/dynamic";
+
+const AddToCart = dynamic(() => import("./cart/AddToCart"), { ssr: false });
+const AddToFav = dynamic(() => import("./favorite/AddToFav"), { ssr: false });
+const AmountButton = dynamic(() => import("./AmountButton"), { ssr: false });
+const ProductImages = dynamic(() => import("./ProductImages"));
 
 interface ProductDetailsComponent extends ProductOnSaleType {
   cart: CartItem[];

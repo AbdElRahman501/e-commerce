@@ -1,7 +1,3 @@
-import { BagCard, CustomInput } from "@/components";
-import ShippingAddress from "@/components/checkOut/ShippingAddress";
-import SubmitButton from "@/components/checkOut/SubmitButton";
-import Message from "@/components/Message";
 import { formInputs } from "@/constants";
 import { createOrder, fetchProductsById } from "@/lib";
 import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
@@ -9,6 +5,17 @@ import { fetchShipping } from "@/lib/actions/shipping.actions";
 import { CartItem } from "@/types";
 import { reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
+import dynamic from "next/dynamic";
+
+const BagCard = dynamic(() => import("@/components/BagCard"));
+const ShippingAddress = dynamic(
+  () => import("@/components/checkOut/ShippingAddress"),
+);
+const SubmitButton = dynamic(
+  () => import("@/components/checkOut/SubmitButton"),
+);
+const Message = dynamic(() => import("@/components/Message"));
+const CustomInput = dynamic(() => import("@/components/CustomInput"));
 
 const CheckOutPage = async ({
   searchParams,

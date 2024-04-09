@@ -1,12 +1,12 @@
-import {
-  CallToAction,
-  FilterButton,
-  Footer,
-  SearchField,
-  Sorting,
-} from "@/components";
-import FilterSection from "@/components/FilterSection";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const CallToAction = dynamic(() => import("@/components/CallToAction"));
+const Footer = dynamic(() => import("@/components/Footer"));
+const FilterButton = dynamic(() => import("@/components/FilterButton"));
+const SearchField = dynamic(() => import("@/components/SearchField"));
+const Sorting = dynamic(() => import("@/components/Sorting"));
+const FilterSection = dynamic(() => import("@/components/FilterSection"));
 
 export default function SearchLayout({
   children,

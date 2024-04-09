@@ -1,12 +1,17 @@
 import React, { Suspense } from "react";
-import { Footer, ProductDetailsComponent } from "@/components";
 import { CartItem, ProductDetailPageProps } from "@/types";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getAllImages, getTransformedImageUrl } from "@/utils";
-import ProductsRow from "@/components/ProductsRow";
 import { fetchProduct } from "@/lib";
 import { cookies } from "next/headers";
+import dynamic from "next/dynamic";
+
+const ProductDetailsComponent = dynamic(
+  () => import("@/components/ProductDetailsComponent"),
+);
+const Footer = dynamic(() => import("@/components/Footer"));
+const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
 
 export async function generateMetadata({
   params,

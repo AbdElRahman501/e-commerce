@@ -1,8 +1,10 @@
-import { ProductCard } from "@/components";
-import Message from "@/components/Message";
 import { fetchProductsById } from "@/lib";
 import { cookies } from "next/headers";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
+const ProductCard = dynamic(() => import("@/components/ProductCard"));
+const Message = dynamic(() => import("@/components/Message"));
 export default async function FavoritePage() {
   const favoriteData = cookies().get("favorite")?.value;
   const favorite: string[] = favoriteData ? JSON.parse(favoriteData) : [];
@@ -16,7 +18,9 @@ export default async function FavoritePage() {
       ) : (
         <div className="grid grid-cols-2 gap-4  md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
           {products.map((product) => (
-            <ProductCard key={product.id} {...product} fav={favorite} />
+            <Suspense key={product.id}>
+              <ProductCard {...product} fav={favorite} />
+            </Suspense>
           ))}
         </div>
       )}
