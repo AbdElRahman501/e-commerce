@@ -1,22 +1,65 @@
 "use client";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-import { faqSection } from "@/constants";
-// import { AmountButton } from "@/components";
 import { CartItem, ProductOnSaleType } from "@/types";
-// import { ProductImages } from ".";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUrl, formatPrice, getAllImages } from "@/utils";
-// import AddToCart from "./cart/AddToCart";
-// import AddToFav from "./favorite/AddToFav";
-
 import dynamic from "next/dynamic";
+import { toggleFav } from "./actions/fav.actions";
+import Image from "next/image";
 
 const AddToCart = dynamic(() => import("./cart/AddToCart"), { ssr: false });
-const AddToFav = dynamic(() => import("./favorite/AddToFav"), { ssr: false });
 const AmountButton = dynamic(() => import("./AmountButton"), { ssr: false });
 const ProductImages = dynamic(() => import("./ProductImages"));
+
+const CustomForm = dynamic(() => import("./CustomForm"));
+const SubmitButton = dynamic(() => import("./SubmitButton"));
+const HeartIcon = dynamic(() => import("./icons/HeartIcon"));
+const FAQCard = dynamic(() => import("./FAQCard"));
+
+const description: {
+  title: string;
+  content: {
+    title?: string;
+    list?: string[];
+    images?: string[];
+    description?: string;
+  }[];
+}[] = [
+  {
+    title: "customization",
+    content: [
+      {
+        title: "printing",
+        list: ["type: DTF Printing"],
+      },
+    ],
+  },
+  {
+    title: "size chart",
+    content: [
+      {
+        images: [
+          "https://printleteg.com/wp-content/uploads/2023/07/OVERSIZED-T-SHIRT-SIZE-CHART-PRINTLET-570x896.jpg",
+        ],
+      },
+    ],
+  },
+  {
+    title: "washing instructions",
+    content: [
+      {
+        list: [
+          "Wash inside out.",
+          "Wash with a temperature below 30 celsius.",
+          "Do not use fabric softeners.",
+          "Delicate cycle on your machine is preferred Iron inside out.",
+        ],
+      },
+    ],
+  },
+];
 
 interface ProductDetailsComponent extends ProductOnSaleType {
   cart: CartItem[];
@@ -79,7 +122,7 @@ const ProductDetailsComponent = ({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
+    <div className="max-w-8xl mx-auto flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={getAllImages(images)}
         selectedImage={images[selectedColor]?.[0] || ""}
@@ -180,25 +223,56 @@ const ProductDetailsComponent = ({
               selectedSize,
             }}
           />
-          <div className=" flex aspect-square h-14 w-14 items-center justify-center rounded-full border border-primary_bg bg-white py-1 text-lg dark:border-white ">
-            <AddToFav id={id} inFav={isFav} className="invert" />
-          </div>
+          <CustomForm
+            action={toggleFav}
+            data={id}
+            className="flex aspect-square h-14 w-14 items-center justify-center rounded-full border border-primary_bg bg-white py-1 text-lg text-black dark:border-white "
+          >
+            <SubmitButton type="submit">
+              {isFav ? (
+                <HeartIcon
+                  fillRule="nonzero"
+                  className="h-6 w-6 text-red-800  duration-200 hover:scale-110"
+                />
+              ) : (
+                <HeartIcon
+                  fillRule="evenodd"
+                  className="h-6 w-6  duration-200 hover:scale-110"
+                />
+              )}
+            </SubmitButton>
+          </CustomForm>
         </div>
-        <div className="mt-10">
-          {faqSection.map((item, index) => (
-            <div key={index} className="group">
-              <div className="flex items-center justify-between gap-3 border-b-2 border-gray-300 pb-3 ">
-                <h1 className="question text-base font-medium duration-300 group-hover:scale-105">
-                  {item.question}
-                </h1>
-                <h1 className="question text-2xl font-medium duration-300 group-hover:rotate-45 group-hover:scale-110  ">
-                  <span>&#43;</span>
-                </h1>
-              </div>
-              <div className="answer max-h-0 overflow-hidden text-sm font-medium text-gray-500 transition-all duration-1000  group-hover:max-h-96">
-                <p className="pb-3">{item.answer}</p>
-              </div>
-            </div>
+        <div className="mt-10 flex flex-col gap-4">
+          {description.map((item, index) => (
+            <FAQCard key={index} question={item.title}>
+              {item.content.map((content, i) => (
+                <div key={i}>
+                  <p className="mt-3">{content.title || ""}</p>
+                  <ul className="mt-3">
+                    {content.list?.map((listItem, listIndex) => (
+                      <li
+                        key={listIndex}
+                        className="list-inside list-disc py-1"
+                      >
+                        {listItem}
+                      </li>
+                    ))}
+                  </ul>
+                  <p>{content.description}</p>
+                  {content.images?.map((image, imageIndex) => (
+                    <Image
+                      key={imageIndex}
+                      src={image}
+                      alt="image"
+                      width={200}
+                      height={200}
+                      className="mt-3 w-full "
+                    />
+                  ))}
+                </div>
+              ))}
+            </FAQCard>
           ))}
         </div>
       </div>

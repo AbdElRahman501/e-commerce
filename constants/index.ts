@@ -245,36 +245,6 @@ export const collections: CollectionType[] = [
     image: "/men-collection.png",
     url: "/shop",
   },
-  {
-    name: "New collection",
-    image: "/new-collection.png",
-    url: "/shop",
-  },
-  {
-    name: "Women collection",
-    image: "/women-collection.png",
-    url: "/shop",
-  },
-  {
-    name: "Men collection",
-    image: "/men-collection.png",
-    url: "/shop",
-  },
-  {
-    name: "New collection",
-    image: "/new-collection.png",
-    url: "/shop",
-  },
-  {
-    name: "Women collection",
-    image: "/women-collection.png",
-    url: "/shop",
-  },
-  {
-    name: "Men collection",
-    image: "/men-collection.png",
-    url: "/shop",
-  },
 ];
 export {
   dashboardCards,

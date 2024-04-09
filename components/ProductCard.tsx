@@ -2,9 +2,15 @@
 import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-import AddToFav from "./favorite/AddToFav";
 import React from "react";
 import { formatPrice } from "@/utils";
+import { toggleFav } from "./actions/fav.actions";
+import dynamic from "next/dynamic";
+
+const CustomForm = dynamic(() => import("./CustomForm"));
+const SubmitButton = dynamic(() => import("./SubmitButton"));
+const HeartIcon = dynamic(() => import("./icons/HeartIcon"));
+const LoadingDots = dynamic(() => import("./loading-dots"));
 
 interface ProductCardProps extends ProductOnSaleType {
   fav: string[];
@@ -23,7 +29,7 @@ const ProductCard = ({
   className,
 }: ProductCardProps) => {
   const [selectedColor, setSelectedColor] = React.useState<string>(colors[0]);
-  const inFav = !!fav.find((item) => item === id);
+  const isFav = !!fav.find((item) => item === id);
 
   return (
     <div className={` animate-fadeIn relative  flex-col gap-4 ${className}`}>
@@ -48,25 +54,48 @@ const ProductCard = ({
           </div>
         </Link>
         <div className="absolute bottom-2 right-2 rounded-full bg-white p-2 text-black ">
-          <AddToFav id={id} inFav={inFav} />
+          <CustomForm action={toggleFav} data={id} className="h-5 w-5">
+            <SubmitButton
+              loadingItem={
+                <p className="text-center text-2xl">
+                  <LoadingDots />
+                </p>
+              }
+              type="submit"
+            >
+              {isFav ? (
+                <HeartIcon
+                  fillRule="nonzero"
+                  className="h-5 w-5 text-red-800  duration-200 hover:scale-110"
+                />
+              ) : (
+                <HeartIcon
+                  fillRule="evenodd"
+                  className="h-5 w-5  duration-200 hover:scale-110"
+                />
+              )}
+            </SubmitButton>
+          </CustomForm>
         </div>
       </div>
       <div className="flex flex-col gap-1 p-4 text-center">
         <p className="w-full  text-sm font-bold">{title}</p>
-        {salePrice ? (
-          <div className="relative flex items-center justify-center pt-2 text-[#1a1a1ab3] dark:text-gray-300">
-            <p className="absolute -left-10 -top-1 w-full text-xs line-through">
+        <div className="relative flex items-center justify-center pt-2">
+          {salePrice ? (
+            <>
+              <p className="absolute -left-10 -top-1 w-full text-xs text-[#1a1a1ab3] line-through dark:text-gray-300 md:text-base">
+                {formatPrice(price, "EGP")}
+              </p>
+              <p className=" text-sm text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
+                {formatPrice(salePrice, "EGP")}
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
               {formatPrice(price, "EGP")}
             </p>
-            <p className=" text-sm md:text-base ">
-              {formatPrice(salePrice, "EGP")}
-            </p>
-          </div>
-        ) : (
-          <p className="text-sm text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
-            {formatPrice(price, "EGP")}
-          </p>
-        )}
+          )}
+        </div>
 
         <div className="flex items-center justify-center gap-2">
           {colors.map((item, index) => (

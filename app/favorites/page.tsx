@@ -11,7 +11,7 @@ export default async function FavoritePage() {
   const products = await fetchProductsById(favorite);
 
   return (
-    <div className="min-h-[88vh] p-5 lg:px-20">
+    <div className="max-w-8xl mx-auto min-h-[88vh] p-5 lg:px-20">
       <h1 className="pb-5 text-center text-3xl font-extrabold">Favorites</h1>
       {products.length === 0 ? (
         <Message message="Your favorite is empty" />

@@ -4,7 +4,7 @@ import FAQCard from "./FAQCard";
 
 const FAQSection = () => {
   return (
-    <section className="p-5 lg:p-20">
+    <section className="max-w-8xl mx-auto p-5 lg:p-20">
       <div className="flex gap-20">
         <div className="flex flex-col gap-4 md:w-1/2">
           <h1 className="text-2xl font-bold uppercase md:text-4xl ">FAQ</h1>

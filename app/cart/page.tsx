@@ -23,7 +23,7 @@ export default async function CartComponent({
 
   return (
     <>
-      <div className="p-5 lg:px-20">
+      <div className="max-w-8xl mx-auto p-5 lg:px-20">
         <h1 className="pb-5 text-center text-3xl font-extrabold">Cart</h1>
         {cart.length === 0 ? (
           <Message message="Your cart is empty" />
