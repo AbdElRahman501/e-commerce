@@ -8,7 +8,7 @@ const NavBar = async () => {
   const navbarLinks = await fetchNavbarLinks();
   const mainNav = navbarLinks.filter((link) => link.main);
   return (
-    <nav className="sticky -top-[1px] z-30 flex max-h-16 justify-center bg-primary_color px-5 py-3 dark:bg-primary_color md:bg-white md:px-20 ">
+    <nav className="sticky -top-[1px] z-30 flex max-h-16 items-center justify-center bg-primary_color px-5 py-3 dark:bg-primary_color md:bg-white md:px-20 ">
       <MenuBurgerButton navbarLinks={navbarLinks} />
       <Link href="/" className=" md:flex-1">
         <LogoIcon className="w-16 fill-white md:fill-black md:dark:fill-white" />

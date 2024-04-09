@@ -49,7 +49,7 @@ const CustomInput = ({
             value={defaultValue ? undefined : value || ""}
             onChange={onChange}
             disabled={disabled}
-            className=" peer h-14 w-full appearance-none rounded-lg border-[1px] border-gray-300 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 focus:border-2 focus:border-black focus:pt-3 focus:ring-blue-500 focus:invalid:border-pink-500  focus:invalid:ring-pink-500 enabled:cursor-pointer motion-reduce:transition-none  dark:border-gray-700 dark:text-white dark:placeholder-gray-300 dark:invalid:border-pink-500 dark:focus:ring-gray-200 "
+            className=" peer h-14 w-full appearance-none rounded-lg border-[1px] border-gray-300 bg-transparent px-4 pt-3 text-base outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 focus:border-2 focus:border-black focus:pt-3 focus:ring-blue-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 placeholder-shown:invalid:focus:border-black enabled:cursor-pointer  motion-reduce:transition-none dark:border-gray-700 dark:text-white  dark:placeholder-gray-300 dark:invalid:border-pink-500 focus:dark:border-white dark:focus:ring-gray-200 placeholder-shown:invalid:focus:dark:border-white "
           >
             <option value="" disabled className="text-gray-300">
               {placeholder}
@@ -88,7 +88,7 @@ const CustomInput = ({
             required={required}
             readOnly={readOnly || (value && !onChange ? true : false)}
             onChange={onChange}
-            className=" peer h-20 w-full rounded-lg border-[1px] border-gray-300 bg-transparent px-4 pt-5 text-base outline-none placeholder-shown:pt-0  focus:border-2 focus:border-black focus:pt-5 focus:ring-blue-500  motion-reduce:transition-none dark:border-gray-700 dark:text-white dark:placeholder-gray-300 dark:focus:ring-gray-200 "
+            className=" peer h-20 w-full rounded-lg border-[1px] border-gray-300 bg-transparent px-4 pt-5 text-base outline-none placeholder-shown:pt-0 focus:border-2 focus:border-black focus:pt-5  focus:ring-blue-500 placeholder-shown:invalid:focus:border-black motion-reduce:transition-none dark:border-gray-700  dark:text-white dark:placeholder-gray-300 focus:dark:border-white dark:focus:ring-gray-200 placeholder-shown:invalid:focus:dark:border-white "
           />
           <label
             className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 !overflow-block pointer-events-none absolute left-0 top-2 flex h-full w-full select-none truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
@@ -110,7 +110,7 @@ const CustomInput = ({
               options.map((option, index) => (
                 <label
                   key={index}
-                  className=" peer flex h-14 w-full cursor-pointer items-center justify-between rounded-lg border-[1px] border-gray-300 bg-transparent px-4 text-base outline-none focus:border-2 focus:border-2 has-[:checked]:border-black dark:border-gray-700 dark:text-white has-[:checked]:dark:border-black"
+                  className=" peer flex h-14 w-full cursor-pointer items-center justify-between rounded-lg border-[1px] border-gray-300 bg-transparent px-4 text-base outline-none  focus:border-2 has-[:checked]:border-black dark:border-gray-700 dark:text-white has-[:checked]:dark:border-white"
                 >
                   {option}
                   <input
@@ -122,7 +122,7 @@ const CustomInput = ({
                     defaultChecked={index === 0}
                     className="peer hidden"
                   />
-                  <div className="flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-white outline outline-[1px]  outline-gray-200 focus:border-2 focus:border-2 peer-checked:bg-black peer-checked:outline-black peer-checked:after:font-bold peer-checked:after:content-['✓']  "></div>
+                  <div className="flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-white outline outline-[1px]  outline-gray-200 focus:border-2 peer-checked:bg-black peer-checked:outline-black peer-checked:after:font-bold peer-checked:after:content-['✓'] peer-checked:dark:bg-white peer-checked:dark:text-black "></div>
                 </label>
               ))}
           </div>
@@ -144,7 +144,7 @@ const CustomInput = ({
             readOnly={readOnly || (value && !onChange ? true : false)}
             className="peer hidden"
           ></input>
-          <div className="flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-white outline outline-[1px] outline-gray-300  focus:border-2 focus:border-2 peer-checked:bg-black peer-checked:outline-black peer-checked:after:font-bold peer-checked:after:content-['✓']  "></div>
+          <div className="flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-white outline outline-[1px] outline-gray-300  focus:border-2 peer-checked:bg-black peer-checked:outline-black peer-checked:after:font-bold peer-checked:after:content-['✓'] peer-checked:dark:bg-white peer-checked:dark:text-black  "></div>
           {label}
         </label>
       );
@@ -167,7 +167,7 @@ const CustomInput = ({
             min={min}
             max={max}
             hidden={hidden ? true : false}
-            className="peer h-14 w-full rounded-lg border-[1px] border-gray-300 bg-transparent px-4 pt-3 text-base  outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 placeholder-shown:invalid:border-gray-300 placeholder-shown:invalid:text-black focus:border-2 focus:border-2 focus:border-black focus:pt-3 focus:text-black motion-reduce:transition-none  dark:border-gray-700 dark:text-white dark:placeholder-gray-300 dark:invalid:border-pink-500 dark:invalid:text-pink-600 placeholder-shown:dark:invalid:border-gray-700 placeholder-shown:dark:invalid:text-white focus:dark:border-black focus:dark:text-white dark:focus:ring-gray-200 "
+            className="peer h-14 w-full rounded-lg border-[1px] border-gray-300 bg-transparent px-4 pt-3 text-base  outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 placeholder-shown:invalid:border-gray-300 placeholder-shown:invalid:text-black focus:border-2 focus:border-black focus:pt-3 focus:text-black placeholder-shown:invalid:focus:border-black motion-reduce:transition-none dark:border-gray-700  dark:text-white dark:placeholder-gray-300 dark:invalid:border-pink-500 dark:invalid:text-pink-600 placeholder-shown:dark:invalid:border-gray-700 placeholder-shown:dark:invalid:text-white  focus:dark:border-white focus:dark:text-white dark:focus:ring-gray-200 placeholder-shown:invalid:focus:dark:border-white "
           />
 
           <label
