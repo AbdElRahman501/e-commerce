@@ -9,18 +9,19 @@ export default function SubmitButton(
   },
 ) {
   const { pending } = useFormStatus();
+  const { loadingItem, children, ...rest } = props;
   return (
-    <button {...props}>
+    <button {...rest}>
       {pending ? (
-        props.loadingItem ? (
-          props.loadingItem
+        loadingItem ? (
+          loadingItem
         ) : (
           <p className="text-4xl">
             <LoadingDots />
           </p>
         )
       ) : (
-        props.children
+        children
       )}
     </button>
   );

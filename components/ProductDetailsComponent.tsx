@@ -122,7 +122,7 @@ const ProductDetailsComponent = ({
   }
 
   return (
-    <div className="max-w-8xl mx-auto flex flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
+    <div className="mx-auto flex max-w-8xl flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={getAllImages(images)}
         selectedImage={images[selectedColor]?.[0] || ""}
@@ -184,7 +184,7 @@ const ProductDetailsComponent = ({
             <span className="text-gray-500">Color:</span>{" "}
             <strong>{selectedColor}</strong>
           </p>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-2">
             {colors.map((item, index) => (
               <button
                 onClick={() => {
