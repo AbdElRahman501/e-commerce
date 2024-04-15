@@ -1,8 +1,9 @@
 import CollectionCard from "@/components/CollectionCard";
-import { collections } from "@/constants";
+import { fetchCollections } from "@/lib/actions/store.actions";
 import React from "react";
 
-const CollectionsPage = () => {
+const CollectionsPage = async () => {
+  const collections = await fetchCollections();
   return (
     <div className="min-h-[88vh] p-5 lg:px-20">
       <h1 className="pb-5 text-center text-3xl font-extrabold">Collections</h1>

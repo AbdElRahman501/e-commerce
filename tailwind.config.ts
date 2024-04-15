@@ -22,6 +22,12 @@ const config: Config = {
       fontFamily: {
         golos: ["var(--font-golos-ui)"],
       },
+      minWidth: {
+        "8xl": "1446px",
+      },
+      maxWidth: {
+        "8xl": "1446px",
+      },
     },
   },
   plugins: [],

@@ -1,7 +1,7 @@
 "use server";
-import { NavbarType, ReviewType, StoryType } from "@/types";
+import { CollectionType, NavbarType, ReviewType, StoryType } from "@/types";
 import { connectToDatabase } from "../mongoose";
-import { NavBarLink, Review, Story } from "../models/store.model";
+import { Collection, NavBarLink, Review, Story } from "../models/store.model";
 import { redirect } from "next/navigation";
 import { checkDateStatus } from "@/utils";
 
@@ -157,4 +157,64 @@ export const updateReview = async (formData: FormData) => {
     throw error;
   }
   redirect("/dashboard/reviews");
+};
+
+// Collections actions
+
+export const fetchCollections = async () => {
+  try {
+    await connectToDatabase();
+    const data = await Collection.find({});
+    const collections: CollectionType[] = JSON.parse(JSON.stringify(data));
+    return collections;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+};
+
+export const addNewCollection = async (formData: FormData) => {
+  const data = {
+    name: formData.get("name")?.toString() || "",
+    image: formData.get("image")?.toString() || "",
+    url: formData.get("url")?.toString() || "",
+  };
+  try {
+    await connectToDatabase();
+    await Collection.create(data);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/store/collections");
+};
+
+export const removeCollection = async (formData: FormData) => {
+  const id = formData.get("id")?.toString() || "";
+  if (!id) return;
+  try {
+    await connectToDatabase();
+    await Collection.findByIdAndDelete(id);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/store/collections");
+};
+
+export const updateCollection = async (formData: FormData) => {
+  const data = {
+    id: formData.get("id")?.toString() || "",
+    name: formData.get("name")?.toString() || "",
+    image: formData.get("image")?.toString() || "",
+    url: formData.get("url")?.toString() || "",
+  };
+  try {
+    await connectToDatabase();
+    await Collection.findByIdAndUpdate(data.id, data);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/store/collections");
 };

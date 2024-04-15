@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import CustomInput from "../CustomInput";
+import Image from "next/image";
+import ImageUpload from "../ImageUpload";
+import { CSS_COLORS } from "@/constants";
+import CustomSelect from "../CustomeSelect";
 
 const ImageEditor = ({
   images,
@@ -20,10 +24,10 @@ const ImageEditor = ({
     }));
   };
 
-  const handleAddImage = (color: string) => {
+  const handleAddImage = (color: string, img: string) => {
     setImages((prevState) => ({
       ...prevState,
-      [color]: [...prevState[color], ""],
+      [color]: [...prevState[color], img],
     }));
   };
 
@@ -34,13 +38,12 @@ const ImageEditor = ({
     }));
   };
 
-  const handleAddColor = () => {
+  const handleAddColor = (newColor: string) => {
     if (newColor && !images[newColor]) {
       setImages((prevState) => ({
         ...prevState,
-        [newColor]: [],
+        [newColor]: [""],
       }));
-      setNewColor("");
     }
   };
 
@@ -55,60 +58,71 @@ const ImageEditor = ({
   return (
     <>
       {Object.entries(images).map(([color, imgs], colorIndex) => (
-        <div key={colorIndex}>
-          <div className="mb-2 flex items-center">
-            <h2 className="mb-2 text-xl font-bold">{color}</h2>
+        <div className="flex gap-1" key={colorIndex}>
+          <div className="group relative flex flex-col items-center justify-center overflow-hidden rounded-lg border border-gray-300 px-2 text-center font-bold  dark:border-gray-700">
+            <h2>{color}</h2>
+            <span
+              style={{ backgroundColor: color }}
+              className="block h-7 w-7 rounded-full border border-gray-300"
+            ></span>
             <button
               type="button"
               onClick={() => handleRemoveColor(color)}
-              className="ml-2 rounded bg-red-500 px-2 py-1 text-white"
+              className="absolute -bottom-5 left-0 w-full text-sm  text-red-500 duration-200 group-hover:bottom-2"
             >
-              Remove Color
+              Remove
             </button>
           </div>
-          {imgs.map((img, index) => (
-            <div key={index} className="mb-1 flex">
-              <CustomInput
-                label="Image URL"
-                name="image"
-                type="text"
-                value={img}
-                onChange={(e) => handleInputChange(e, color, index)}
-              />
-              <button
-                type="button"
-                onClick={() => handleRemoveImage(color, index)}
-                className="rounded bg-red-500 px-2 py-1 text-white"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => handleAddImage(color)}
-            className="rounded bg-blue-500 px-2 py-1 text-white"
-          >
-            Add Image
-          </button>
+          <div className="flex w-full flex-col gap-2">
+            {imgs.map((img, index) => (
+              <div key={index} className="mb-1 flex gap-1">
+                <Image
+                  src={img}
+                  alt="jacket"
+                  height={50}
+                  width={50}
+                  className="h-14 w-14 rounded-md"
+                  style={{ objectFit: "cover" }}
+                />
+                <CustomInput
+                  label="Image URL"
+                  name="image"
+                  type="text"
+                  value={img}
+                  onChange={(e) => handleInputChange(e, color, index)}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(color, index)}
+                  className="h-14 rounded-lg border border-gray-300 px-2 dark:border-gray-700"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <ImageUpload
+              color={color}
+              handleAddImage={(img) => handleAddImage(color, img)}
+            />
+          </div>
         </div>
       ))}
-      <div className="flex">
-        <CustomInput
-          label="New Color"
-          name="color"
-          type="text"
+      <div className="flex gap-1">
+        <CustomSelect
+          options={CSS_COLORS}
           placeholder="New Color"
           value={newColor}
-          onChange={(e) => setNewColor(e.target.value)}
+          onChange={(e) => handleAddColor(e)}
         />
-        <button
-          type="button"
-          onClick={handleAddColor}
-          className="rounded bg-green-500 px-2 py-1 text-white"
-        >
-          Add Color
-        </button>
+        {/* <CustomInput
+          label="New Color"
+          name="color"
+          type="select"
+          options={CSS_COLORS}
+          placeholder="New Color"
+          value={newColor}
+          onChange={(e) => handleAddColor(e.target.value)}
+        /> */}
       </div>
     </>
   );

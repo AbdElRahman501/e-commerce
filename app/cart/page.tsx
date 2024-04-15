@@ -2,10 +2,13 @@ import { CartItem } from "@/types";
 import { reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
 import { fetchProductsById } from "@/lib";
-import { BagCard, CartPricing } from "@/components";
-import Message from "@/components/Message";
 import { Suspense } from "react";
-import ProductsRow from "@/components/ProductsRow";
+import dynamic from "next/dynamic";
+
+const BagCard = dynamic(() => import("@/components/BagCard"));
+const CartPricing = dynamic(() => import("@/components/CartPricing"));
+const Message = dynamic(() => import("@/components/Message"));
+const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
 
 export default async function CartComponent({
   searchParams,
@@ -20,7 +23,7 @@ export default async function CartComponent({
 
   return (
     <>
-      <div className="p-5 lg:px-20">
+      <div className="max-w-8xl mx-auto p-5 lg:px-20">
         <h1 className="pb-5 text-center text-3xl font-extrabold">Cart</h1>
         {cart.length === 0 ? (
           <Message message="Your cart is empty" />

@@ -4,7 +4,7 @@ import { Suspense } from "react";
 const page = () => {
   return (
     <section>
-      <div className="flex flex-col gap-4 px-5 py-5 lg:px-20 ">
+      <div className="max-w-8xl mx-auto flex flex-col gap-4 px-5 py-5 lg:px-20">
         <h1 className="text-3xl font-bold">About eh! store</h1>
 
         <section>

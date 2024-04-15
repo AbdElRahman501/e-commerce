@@ -1,7 +1,5 @@
-import { FAQSection, Footer, Hero, Testimonials } from "@/components";
-import ProductsRow from "@/components/ProductsRow";
-import SubscriptionSection from "@/components/SubscriptionSection";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 
 export const metadata = {
   description:
@@ -10,6 +8,15 @@ export const metadata = {
     type: "website",
   },
 };
+
+const FAQSection = dynamic(() => import("@/components/FAQSection"));
+const Footer = dynamic(() => import("@/components/Footer"));
+const Hero = dynamic(() => import("@/components/Hero"));
+const Testimonials = dynamic(() => import("@/components/Testimonials"));
+const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
+const SubscriptionSection = dynamic(
+  () => import("@/components/SubscriptionSection"),
+);
 
 export default async function Home({
   searchParams,

@@ -1,12 +1,12 @@
-import {
-  CallToAction,
-  FilterButton,
-  Footer,
-  SearchField,
-  Sorting,
-} from "@/components";
-import FilterSection from "@/components/FilterSection";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const CallToAction = dynamic(() => import("@/components/CallToAction"));
+const Footer = dynamic(() => import("@/components/Footer"));
+const FilterButton = dynamic(() => import("@/components/FilterButton"));
+const SearchField = dynamic(() => import("@/components/SearchField"));
+const Sorting = dynamic(() => import("@/components/Sorting"));
+const FilterSection = dynamic(() => import("@/components/FilterSection"));
 
 export default function SearchLayout({
   children,
@@ -22,7 +22,7 @@ export default function SearchLayout({
         </h1>
         <SearchField />
         <FilterButton />
-        <Sorting classNames=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex" />
+        <Sorting classNames=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-gray-200 px-2 dark:border-gray-700 md:flex" />
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
         <Suspense>

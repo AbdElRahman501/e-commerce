@@ -6,7 +6,7 @@ import LogoIcon from "./icons/LogoIcon";
 const Footer = () => {
   return (
     <footer className="mt-5 bg-primary_color px-5 py-5 md:px-20">
-      <div className="flex flex-col gap-5">
+      <div className="max-w-8xl mx-auto flex flex-col gap-5">
         <div className="flex grid-cols-5 flex-col gap-5 px-5 py-5 md:grid">
           {footerList.map((item, index) => (
             <div key={index} className="group flex flex-col gap-1">

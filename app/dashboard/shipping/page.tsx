@@ -107,6 +107,7 @@ export default async function OrdersPage({
             </button>
           </form>
           <Link
+            replace
             href={"/dashboard/shipping"}
             className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
           >
@@ -143,6 +144,7 @@ export default async function OrdersPage({
             </button>
           </form>
           <Link
+            replace
             href={"/dashboard/shipping"}
             className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
           >
@@ -206,6 +208,7 @@ export default async function OrdersPage({
             </button>
           </form>
           <Link
+            replace
             href={"/dashboard/shipping"}
             className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
           >
@@ -239,6 +242,7 @@ export default async function OrdersPage({
             </button>
           </form>
           <Link
+            replace
             href={"/dashboard/shipping"}
             className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
           >
@@ -250,12 +254,14 @@ export default async function OrdersPage({
         <div className="flex flex-col gap-5 p-5 lg:p-20">
           <div className="flex gap-2">
             <Link
+              replace
               href="/dashboard/shipping?addGovernorate=true"
               className="mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl bg-green-900 uppercase  text-white hover:bg-green-950"
             >
               Add Governorate
             </Link>
             <Link
+              replace
               href="/dashboard/shipping?addCity=true"
               className="mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl bg-green-900 uppercase  text-white hover:bg-green-950"
             >
@@ -272,6 +278,7 @@ export default async function OrdersPage({
               header={["governorate_name_en", "shipping_price"]}
               ActionComponent={(item) => (
                 <Link
+                  replace
                   href={"/dashboard/shipping?governorateId=" + item.id}
                   className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
                 >
@@ -288,6 +295,7 @@ export default async function OrdersPage({
               header={["city_name_en", "governorate_id", "shipping_price"]}
               ActionComponent={(item) => (
                 <Link
+                  replace
                   href={"/dashboard/shipping?cityId=" + item.id}
                   className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
                 >

@@ -70,13 +70,16 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
         ))}
         <SubmitButton />
       </CustomForm>
-
-      <button
-        onClick={() => setPreview(!preview)}
-        className="group my-2 h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
-      >
-        <p className="duration-500 group-hover:scale-110">Preview</p>
-      </button>
+      <div className="px-5 md:gap-5 lg:px-20">
+        <button
+          onClick={() => setPreview(!preview)}
+          className="group my-2 h-12 w-full overflow-hidden rounded-2xl border border-gray-300 uppercase text-white  dark:border-gray-700"
+        >
+          <p className="duration-500 group-hover:scale-110">
+            {preview ? "Close" : "Preview"}
+          </p>
+        </button>
+      </div>
       {preview &&
         [""].map((_, key) => {
           const modifiedData = {

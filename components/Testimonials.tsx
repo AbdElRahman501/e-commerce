@@ -6,7 +6,7 @@ const Testimonials = async () => {
   const reviews = await fetchReviews({ limit: 4 });
   return (
     <section className="bg-primary_color py-5">
-      <div className="rounded-4xl flex flex-col gap-4">
+      <div className="rounded-4xl max-w-8xl mx-auto flex flex-col gap-4">
         <SectionTitle
           title="Reviews"
           className="px-5 text-white lg:px-20"

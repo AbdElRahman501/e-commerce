@@ -18,10 +18,11 @@ const CustomTable = ({
         return (
           <Image
             src={item[header]}
-            className="aspect-card rounded-2xl"
             width={50}
             height={50}
-            alt=""
+            className="h-14 w-14 rounded-2xl"
+            style={{ objectFit: "cover" }}
+            alt="image"
           />
         );
       case "colors":

@@ -4,17 +4,24 @@ import { useFormStatus } from "react-dom";
 import LoadingDots from "./loading-dots";
 
 export default function SubmitButton(
-  props: ButtonHTMLAttributes<HTMLButtonElement>,
+  props: ButtonHTMLAttributes<HTMLButtonElement> & {
+    loadingItem?: React.ReactNode;
+  },
 ) {
   const { pending } = useFormStatus();
+  const { loadingItem, children, ...rest } = props;
   return (
-    <button {...props}>
+    <button {...rest}>
       {pending ? (
-        <p className="text-4xl">
-          <LoadingDots />
-        </p>
+        loadingItem ? (
+          loadingItem
+        ) : (
+          <p className="text-4xl">
+            <LoadingDots />
+          </p>
+        )
       ) : (
-        props.children
+        children
       )}
     </button>
   );

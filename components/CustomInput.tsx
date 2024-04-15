@@ -3,12 +3,7 @@ import React from "react";
 import DropDown_icon from "./icons/DropDown_icon";
 
 type CustomInputProps = FormInput & {
-  onChange?: (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
-  ) => void;
+  onChange?: (e: any) => void;
   value?: any;
   defaultValue?: any;
   disabled?: boolean;
@@ -148,6 +143,7 @@ const CustomInput = ({
           {label}
         </label>
       );
+
     default:
       return (
         <div className="relative flex w-full flex-col">

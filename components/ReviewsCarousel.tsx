@@ -66,7 +66,7 @@ const ReviewsCarousel = ({ reviews = [] }: { reviews: ReviewType[] }) => {
         {reviews.map((review, index) => (
           <div
             key={index}
-            className=" flex min-w-[100vw] snap-center items-center justify-center p-6 text-center text-white "
+            className="min-[1446px]:min-w-8xl flex min-w-[100vw] snap-center items-center justify-center p-6 text-center text-white "
           >
             <div className="w-full">
               <h2 className="text-base font-bold ">{review.name}</h2>
