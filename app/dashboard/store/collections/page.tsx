@@ -1,5 +1,6 @@
 import { CustomInput, SearchField } from "@/components";
 import CustomTable from "@/components/CustomTable";
+import ImageInput from "@/components/ImageInput";
 import Modal from "@/components/Modal";
 import {
   addNewCollection,
@@ -46,11 +47,11 @@ export default async function OrdersPage({
               readOnly
               hidden
             />
-            <CustomInput
+            <ImageInput
               label="image"
               placeholder="Enter image"
               defaultValue={collection?.image}
-              type="upload image"
+              type="text"
               name="image"
             />
             <CustomInput
@@ -86,10 +87,10 @@ export default async function OrdersPage({
       <Modal isOpen={!!addCollection}>
         <div className="flex flex-col gap-5 p-5 lg:p-20">
           <form action={addNewCollection} className="flex flex-col gap-2">
-            <CustomInput
+            <ImageInput
               label="image"
               placeholder="Enter image"
-              type="upload image"
+              type="text"
               name="image"
             />
             <CustomInput
