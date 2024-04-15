@@ -1,14 +1,12 @@
+"use client";
 import { FormInput } from "@/types";
 import React from "react";
 import DropDown_icon from "./icons/DropDown_icon";
+import ImageUpload from "./ImageUpload";
+import Image from "next/image";
 
 type CustomInputProps = FormInput & {
-  onChange?: (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
-  ) => void;
+  onChange?: (e: any) => void;
   value?: any;
   defaultValue?: any;
   disabled?: boolean;
@@ -29,7 +27,7 @@ const CustomInput = ({
   maxLength,
   pattern,
   onChange,
-  value,
+  value: initialValue,
   defaultValue,
   disabled = false,
   readOnly = false,
@@ -37,6 +35,8 @@ const CustomInput = ({
   min,
   max,
 }: CustomInputProps) => {
+  const [value, setValue] = React.useState(initialValue);
+
   switch (type) {
     case "select":
       return (
@@ -147,6 +147,41 @@ const CustomInput = ({
           <div className="flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-white outline outline-[1px] outline-gray-300  focus:border-2 peer-checked:bg-black peer-checked:outline-black peer-checked:after:font-bold peer-checked:after:content-['✓'] peer-checked:dark:bg-white peer-checked:dark:text-black  "></div>
           {label}
         </label>
+      );
+    case "upload image":
+      return (
+        <div className="relative flex w-full flex-col">
+          <Image
+            src={value || defaultValue || ""}
+            width={100}
+            height={100}
+            style={{ objectFit: "cover" }}
+            className="w-full rounded-2xl"
+            alt="image"
+          />
+          <input
+            required={required}
+            minLength={minLength}
+            maxLength={maxLength}
+            pattern={pattern}
+            type={type}
+            name={name}
+            defaultValue={value ? undefined : defaultValue}
+            id={name}
+            value={value}
+            onChange={onChange}
+            readOnly={readOnly || (value && !onChange ? true : false)}
+            placeholder=""
+            min={min}
+            max={max}
+            hidden={hidden ? true : false}
+            className="peer h-14 w-full rounded-lg border-[1px] border-gray-300 bg-transparent px-4 pt-3 text-base  outline-none placeholder-shown:pt-0 invalid:border-pink-500 invalid:text-pink-600 placeholder-shown:invalid:border-gray-300 placeholder-shown:invalid:text-black focus:border-2 focus:border-black focus:pt-3 focus:text-black placeholder-shown:invalid:focus:border-black motion-reduce:transition-none dark:border-gray-700  dark:text-white dark:placeholder-gray-300 dark:invalid:border-pink-500 dark:invalid:text-pink-600 placeholder-shown:dark:invalid:border-gray-700 placeholder-shown:dark:invalid:text-white  focus:dark:border-white focus:dark:text-white dark:focus:ring-gray-200 placeholder-shown:invalid:focus:dark:border-white "
+          />
+          <ImageUpload
+            handleAddImage={(image) => setValue(image)}
+            color={name}
+          />
+        </div>
       );
     default:
       return (

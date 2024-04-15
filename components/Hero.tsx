@@ -1,16 +1,18 @@
 "use server";
 import Image from "next/image";
-import { ArrowButton } from ".";
-import Stories from "./Stories";
-import { fetchStories } from "@/lib/actions/store.actions";
-import { collections } from "@/constants";
-import CollectionCard from "./CollectionCard";
+import { fetchCollections, fetchStories } from "@/lib/actions/store.actions";
+import dynamic from "next/dynamic";
+
+const CollectionCard = dynamic(() => import("./CollectionCard"));
+const ArrowButton = dynamic(() => import("./ArrowButton"));
+const Stories = dynamic(() => import("./Stories"));
 
 const Hero = async () => {
   const stories = await fetchStories();
+  const collections = await fetchCollections();
   const [firstCollection, ...restCollections] = collections.slice(0, 3);
   return (
-    <div className=" max-w-8xl mx-auto sm:p-5 lg:px-20 ">
+    <div className=" mx-auto max-w-8xl sm:p-5 lg:px-20 ">
       <div className="flex h-full w-full flex-col-reverse gap-3 md:grid md:grid-cols-9">
         <div className=" row-span-1 grid h-full w-full grid-cols-2 flex-col gap-3 px-5 sm:flex sm:flex-row sm:px-0 md:col-span-2 md:flex-col">
           {restCollections.map((collection) => (

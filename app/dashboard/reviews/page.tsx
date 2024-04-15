@@ -90,6 +90,7 @@ export default async function OrdersPage({
               Update
             </button>
             <Link
+              replace
               href={"/dashboard/reviews"}
               className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
             >
@@ -147,6 +148,7 @@ export default async function OrdersPage({
             </button>
           </form>
           <Link
+            replace
             href={"/dashboard/reviews"}
             className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
           >
@@ -166,6 +168,7 @@ export default async function OrdersPage({
             </button>
           </form>
           <Link
+            replace
             href={"/dashboard/reviews"}
             className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
           >
@@ -178,6 +181,7 @@ export default async function OrdersPage({
         <div className="flex flex-col gap-5 p-5 lg:p-20">
           <div className="flex gap-2">
             <Link
+              replace
               href="/dashboard/reviews?addReview=true"
               className="mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl bg-green-900 uppercase  text-white hover:bg-green-950"
             >
@@ -191,12 +195,14 @@ export default async function OrdersPage({
               ActionComponent={(item) => (
                 <div className="flex gap-2">
                   <Link
+                    replace
                     href={"/dashboard/reviews?reviewId=" + item._id}
                     className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
                   >
                     edit
                   </Link>
                   <Link
+                    replace
                     href={"/dashboard/reviews?removeReviewId=" + item._id}
                     className=" text-red-500 hover:underline dark:hover:underline "
                   >

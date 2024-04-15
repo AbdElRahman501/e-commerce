@@ -71,6 +71,10 @@ export default function ImageUpload({
       {previewSource && (
         <button
           type="button"
+          onClick={() => {
+            setLoading(true);
+            actionWithVariant();
+          }}
           className="w-full rounded-lg border border-gray-300 text-center dark:border-gray-700"
         >
           {loading ? (

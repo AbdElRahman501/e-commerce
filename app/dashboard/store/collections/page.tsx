@@ -1,15 +1,12 @@
 import { CustomInput, SearchField } from "@/components";
 import CustomTable from "@/components/CustomTable";
 import Modal from "@/components/Modal";
-import { fetchOffers } from "@/lib/actions/offer.actions";
-
 import {
-  addNewStory,
-  fetchAllStories,
-  removeStory,
-  updateStory,
+  addNewCollection,
+  fetchCollections,
+  removeCollection,
+  updateCollection,
 } from "@/lib/actions/store.actions";
-import { checkDateStatus } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -19,55 +16,54 @@ export default async function OrdersPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { stroyId, addStory, removeStroyId } = searchParams as {
+  const { collectionId, addCollection, removeCollectionId } = searchParams as {
     [key: string]: string;
   };
 
-  const stories = await fetchAllStories();
-  const offers = await fetchOffers();
+  const collections = await fetchCollections();
 
-  let story;
-  if (stroyId) {
-    story = stories.find((item) => item._id === stroyId);
+  let collection;
+  if (collectionId) {
+    collection = collections.find((item) => item._id === collectionId);
   }
-  if (removeStroyId) {
-    story = stories.find((item) => item._id === removeStroyId);
+  if (removeCollectionId) {
+    collection = collections.find((item) => item._id === removeCollectionId);
   }
   return (
     <Suspense>
       <div className="flex items-center justify-center gap-3 px-5 md:gap-5 lg:px-20">
-        <h1 className=" mr-auto hidden text-3xl font-bold md:block">Stories</h1>
-        <SearchField />
+        <h1 className=" mr-auto hidden text-3xl font-bold md:block">
+          Collections
+        </h1>
       </div>
-      <Modal isOpen={!!stroyId}>
+      <Modal isOpen={!!collectionId}>
         <div className="flex flex-col gap-5 p-5 lg:p-20">
-          <form action={updateStory} className="flex flex-col gap-2">
-            <input type="text" name="id" value={story?._id} readOnly hidden />
+          <form action={updateCollection} className="flex flex-col gap-2">
+            <input
+              type="text"
+              name="id"
+              value={collection?._id}
+              readOnly
+              hidden
+            />
             <CustomInput
               label="image"
               placeholder="Enter image"
-              defaultValue={story?.image}
+              defaultValue={collection?.image}
               type="upload image"
               name="image"
             />
             <CustomInput
-              placeholder="Enter start"
-              label="start"
-              defaultValue={story?.start}
-              type="date"
-              name="start"
-            />
-            <CustomInput
-              placeholder="Enter end"
-              label="end"
-              defaultValue={story?.end}
-              type="date"
-              name="end"
+              placeholder="Enter name"
+              label="name"
+              defaultValue={collection?.name}
+              type="text"
+              name="name"
             />
             <CustomInput
               placeholder="Enter url"
               label="url"
-              defaultValue={story?.url}
+              defaultValue={collection?.url}
               type="string"
               name="url"
             />
@@ -79,7 +75,7 @@ export default async function OrdersPage({
             </button>
             <Link
               replace
-              href={"/dashboard/store"}
+              href={"/dashboard/store/collections"}
               className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
             >
               close
@@ -87,9 +83,9 @@ export default async function OrdersPage({
           </form>
         </div>
       </Modal>
-      <Modal isOpen={!!addStory}>
+      <Modal isOpen={!!addCollection}>
         <div className="flex flex-col gap-5 p-5 lg:p-20">
-          <form action={addNewStory} className="flex flex-col gap-2">
+          <form action={addNewCollection} className="flex flex-col gap-2">
             <CustomInput
               label="image"
               placeholder="Enter image"
@@ -97,21 +93,16 @@ export default async function OrdersPage({
               name="image"
             />
             <CustomInput
-              placeholder="Enter start"
-              label="start"
-              type="date"
-              name="start"
-            />
-            <CustomInput
-              placeholder="Enter end"
-              label="end"
-              type="date"
-              name="end"
+              placeholder="Enter name"
+              label="name"
+              type="text"
+              name="name"
             />
             <CustomInput
               placeholder="Enter url"
               label="url"
               type="text"
+              defaultValue="/shop"
               name="url"
             />
             <button
@@ -123,24 +114,30 @@ export default async function OrdersPage({
           </form>
           <Link
             replace
-            href={"/dashboard/store"}
+            href={"/dashboard/store/collections"}
             className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
           >
             close
           </Link>
         </div>
       </Modal>
-      <Modal isOpen={!!removeStroyId}>
+      <Modal isOpen={!!removeCollectionId}>
         <div className="flex flex-col gap-5 p-5 lg:p-20">
-          <form action={removeStory} className="flex flex-col gap-2">
+          <form action={removeCollection} className="flex flex-col gap-2">
             <Image
-              src={story?.image || ""}
+              src={collection?.image || ""}
               width={100}
               height={100}
               className="aspect-[9/16]"
               alt="image"
             />
-            <input type="text" name="id" value={story?._id} readOnly hidden />
+            <input
+              type="text"
+              name="id"
+              value={collection?._id}
+              readOnly
+              hidden
+            />
             <button
               type="submit"
               className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
@@ -150,7 +147,7 @@ export default async function OrdersPage({
           </form>
           <Link
             replace
-            href={"/dashboard/store"}
+            href={"/dashboard/store/collections"}
             className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
           >
             close
@@ -163,53 +160,33 @@ export default async function OrdersPage({
           <div className="flex gap-2">
             <Link
               replace
-              href="/dashboard/store?addStory=true"
+              href="/dashboard/store/collections?addCollection=true"
               className="mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl bg-green-900 uppercase  text-white hover:bg-green-950"
             >
-              Add Story
+              Add Collection
             </Link>
           </div>
           <div className="flex flex-col gap-2">
             <CustomTable
-              data={stories.map((item) => ({
-                ...item,
-                status: checkDateStatus(item.start, item.end),
-              }))}
-              header={["image", "start", "end", "status", "url"]}
+              data={collections}
+              header={["image", "name", "url"]}
               ActionComponent={(item) => (
                 <div className="flex gap-2">
                   <Link
                     replace
-                    href={"/dashboard/store?stroyId=" + item._id}
+                    href={
+                      "/dashboard/store/collections?collectionId=" + item._id
+                    }
                     className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
                   >
                     edit
                   </Link>
                   <Link
                     replace
-                    href={"/dashboard/store?removeStroyId=" + item._id}
-                    className=" text-red-500 hover:underline dark:hover:underline "
-                  >
-                    remove
-                  </Link>
-                </div>
-              )}
-            />
-            <CustomTable
-              data={offers}
-              header={["image", "title", "sale", "category"]}
-              ActionComponent={(item) => (
-                <div className="flex gap-2">
-                  <Link
-                    replace
-                    href={"/dashboard/store?offerId=" + item._id}
-                    className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
-                  >
-                    edit
-                  </Link>
-                  <Link
-                    replace
-                    href={"/dashboard/store?removeOfferId=" + item._id}
+                    href={
+                      "/dashboard/store/collections?removeCollectionId=" +
+                      item._id
+                    }
                     className=" text-red-500 hover:underline dark:hover:underline "
                   >
                     remove

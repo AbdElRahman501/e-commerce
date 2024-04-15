@@ -60,6 +60,7 @@ export interface OfferType {
 }
 
 export interface CollectionType {
+  _id: string;
   name: string;
   image: string;
   url: string;

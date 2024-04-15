@@ -29,3 +29,12 @@ const navbarSchema = new mongoose.Schema({
 
 export const NavBarLink =
   mongoose.models.NavBarLink || mongoose.model("NavBarLink", navbarSchema);
+
+export const collectionSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  image: { type: String, required: true },
+  url: { type: String, required: true },
+});
+
+export const Collection =
+  mongoose.models.Collection || mongoose.model("Collection", collectionSchema);
