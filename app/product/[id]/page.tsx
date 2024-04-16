@@ -64,7 +64,7 @@ export default async function ProductDetailPage({
   const fav: string[] = favData ? JSON.parse(favData) : [];
   const isFav = !!fav.find((item) => item === id);
 
-  const product = await fetchProduct(id);
+  const product = await fetchProduct(id, true);
 
   if (!product?.id) {
     return notFound();

@@ -2,6 +2,7 @@
 import { Product } from "@/types";
 import Link from "next/link";
 import RemoveProduct from "./product/RemoveProduct";
+import DuplicateProduct from "./product/DuplicateProduct";
 
 const ProductsAction = (item: Product) => {
   return (
@@ -12,6 +13,7 @@ const ProductsAction = (item: Product) => {
       >
         edit
       </Link>
+      <DuplicateProduct id={item.id} />
       <RemoveProduct id={item.id} />
     </>
   );

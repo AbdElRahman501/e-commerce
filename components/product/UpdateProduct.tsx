@@ -8,6 +8,7 @@ import CustomForm from "../CustomForm";
 import { updateProduct } from "../actions/product.actions";
 import ImageEditor from "./ImageEditor";
 import { useFormStatus } from "react-dom";
+import ContentEditor from "./ContentEditor";
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
@@ -68,6 +69,10 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
             }}
           />
         ))}
+        <ContentEditor
+          content={data.content}
+          setContent={(content) => setData({ ...data, content })}
+        />
         <SubmitButton />
       </CustomForm>
       <div className="px-5 md:gap-5 lg:px-20">
@@ -80,24 +85,19 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
           </p>
         </button>
       </div>
-      {preview &&
-        [""].map((_, key) => {
-          const modifiedData = {
+      {preview && (
+        <ProductDetailsComponent
+          {...{
             ...data,
             colors: Object.keys(images || {}).map((key) => key),
             sizes: data.sizes.split(",").map((item: string) => item.trim()),
             images: images,
-          };
-          return (
-            <ProductDetailsComponent
-              key={key}
-              {...modifiedData}
-              isFav={false}
-              preview={true}
-              cart={[] as CartItem[]}
-            />
-          );
-        })}
+          }}
+          isFav={false}
+          preview={true}
+          cart={[] as CartItem[]}
+        />
+      )}
     </>
   );
 };

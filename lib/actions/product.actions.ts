@@ -194,10 +194,13 @@ export async function getAllProperties(): Promise<{
 }
 export async function fetchProduct(
   id: string,
+  isCustomer?: boolean,
 ): Promise<ProductOnSaleType | null> {
   try {
     await connectToDatabase();
-    const data = await Product.findByIdAndUpdate(id, { $inc: { views: 1 } });
+    const data = await Product.findByIdAndUpdate(id, {
+      $inc: { views: isCustomer ? 1 : 0 },
+    });
     const product: ProductType = JSON.parse(JSON.stringify(data));
     const offers: OfferType[] = await Offer.find({});
     const { salePrice, saleValue } = getSalePrice(offers, product);
@@ -306,6 +309,20 @@ export async function updateProductById(newProduct: ProductType) {
     });
     const productUpdated: ProductType = JSON.parse(JSON.stringify(data));
     return productUpdated;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+}
+export async function duplicateProductById(id: string) {
+  try {
+    await connectToDatabase();
+    const data = await Product.findById(id);
+    const product: ProductType = JSON.parse(JSON.stringify(data));
+    product.views = 0;
+    product.sales = 0;
+    const newProduct: ProductType = await Product.create(product);
+    return newProduct;
   } catch (error) {
     console.error("Error updating product:", error);
     throw error;
