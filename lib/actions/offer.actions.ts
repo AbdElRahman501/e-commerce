@@ -1,6 +1,8 @@
+"use server";
 import { OfferType } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import Offer from "../models/offer.model";
+import { redirect } from "next/navigation";
 
 export async function fetchOffers(): Promise<OfferType[]> {
   try {
@@ -9,7 +11,58 @@ export async function fetchOffers(): Promise<OfferType[]> {
     const offers: OfferType[] = JSON.parse(JSON.stringify(data));
     return offers;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching Offers:", error);
     throw error;
   }
 }
+
+export const addNewOffer = async (formData: FormData) => {
+  const data = {
+    title: formData.get("title")?.toString() || "",
+    url: formData.get("url")?.toString() || "",
+    description: formData.get("description")?.toString() || "",
+    sale: Number(formData.get("sale")) || 0,
+    image: formData.get("image")?.toString() || "",
+    category: formData.get("category")?.toString() || "",
+  };
+  try {
+    await connectToDatabase();
+    await Offer.create(data);
+  } catch (error) {
+    console.error("Error adding new Offer:", error);
+    throw error;
+  }
+  redirect("/dashboard/sales");
+};
+
+export const removeOffer = async (formData: FormData) => {
+  const id = formData.get("id")?.toString() || "";
+  try {
+    await connectToDatabase();
+    await Offer.findByIdAndDelete(id);
+  } catch (error) {
+    console.error("Error removing Offer:", error);
+    throw error;
+  }
+  redirect("/dashboard/sales");
+};
+
+export const updateOffer = async (formData: FormData) => {
+  const data = {
+    id: formData.get("id")?.toString() || "",
+    title: formData.get("title")?.toString() || "",
+    url: formData.get("url")?.toString() || "",
+    description: formData.get("description")?.toString() || "",
+    sale: Number(formData.get("sale")) || 0,
+    image: formData.get("image")?.toString() || "",
+    category: formData.get("category")?.toString() || "",
+  };
+  try {
+    await connectToDatabase();
+    await Offer.findByIdAndUpdate(data.id, data);
+  } catch (error) {
+    console.error("Error updating Offer:", error);
+    throw error;
+  }
+  redirect("/dashboard/sales");
+};

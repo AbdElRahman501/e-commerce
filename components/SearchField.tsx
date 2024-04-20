@@ -24,6 +24,7 @@ const SearchField = () => {
     const search = val.search as HTMLInputElement;
     const newParams = new URLSearchParams(searchParams.toString());
 
+    newParams.set("ft", "false");
     if (search.value) {
       newParams.set("q", search.value);
     } else {

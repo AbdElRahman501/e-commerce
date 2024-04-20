@@ -12,8 +12,6 @@ const ImageEditor = ({
   images: Record<string, string[]>;
   setImages: React.Dispatch<React.SetStateAction<Record<string, string[]>>>;
 }) => {
-  const [newColor, setNewColor] = useState("");
-
   const handleInputChange = (event: any, color: string, index: number) => {
     const { value } = event.target;
     setImages((prevState) => ({
@@ -111,7 +109,6 @@ const ImageEditor = ({
         <CustomSelect
           options={CSS_COLORS}
           placeholder="New Color"
-          value={newColor}
           onChange={(e) => handleAddColor(e)}
         />
         {/* <CustomInput

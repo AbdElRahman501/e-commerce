@@ -2,13 +2,21 @@
 import { createUrl } from "@/utils";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const FilterButton = () => {
+  const divRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
   const isOpen = searchParams?.get("ft") === "true";
+
+  const scrollToDiv = () => {
+    const offset = 64 + 12;
+    const position = divRef.current?.getBoundingClientRect();
+    const top = position?.top || 0;
+    return top + window.scrollY - offset;
+  };
 
   function setIsOpen(isOpen: boolean) {
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -22,7 +30,9 @@ const FilterButton = () => {
       setIsOpen(false);
     } else {
       setTimeout(() => {
-        window.scrollTo({ top: 220, behavior: "smooth" });
+        const top = scrollToDiv();
+        console.log("🚀 ~ setTimeout ~ top:", top);
+        window.scrollTo({ top: top, behavior: "smooth" });
       }, 300);
       setIsOpen(true);
     }
@@ -40,7 +50,7 @@ const FilterButton = () => {
   }, [isOpen]);
 
   return (
-    <div>
+    <div ref={divRef}>
       <button
         type="button"
         onClick={openFilter}

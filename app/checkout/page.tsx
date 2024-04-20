@@ -6,6 +6,7 @@ import { CartItem } from "@/types";
 import { reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
+import { fetchOffers } from "@/lib/actions/offer.actions";
 
 const BagCard = dynamic(() => import("@/components/BagCard"));
 const ShippingAddress = dynamic(
@@ -33,6 +34,11 @@ const CheckOutPage = async ({
   const promoCode = await fetchPromoCode(coupon);
   const { governorate, cities } = await fetchShipping();
 
+  const offers = await fetchOffers();
+  const freeShippingMinValue = Number(
+    offers.find((x) => x.title === "FREE_SHIPPING")?.description || 0,
+  );
+
   const discountPercentage = promoCode.discount / 100 || 0;
   const subTotal = cartProducts.reduce(
     (acc, item) => acc + (item.salePrice || item.price) * item.amount,
@@ -49,9 +55,12 @@ const CheckOutPage = async ({
     (item) => item.id === cityId,
   )?.shipping_price;
 
-  const shipping = cityShipping || stateShipping || 0;
   const discountValue = Math.ceil(discountPercentage * subTotal);
   const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
+  const restShipping =
+    subTotal + 50 < freeShippingMinValue ? freeShippingMinValue - subTotal : 0;
+  const shipping =
+    restShipping === 0 ? restShipping : cityShipping || stateShipping || 0;
   const total = subTotal + shipping - discount;
 
   return cart.length === 0 ? (
@@ -173,12 +182,14 @@ const CheckOutPage = async ({
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
               <p>Shipping</p>
               <p>
-                {shipping.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "EGP",
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+                {shipping === 0
+                  ? "Free Shipping 🎉🎉"
+                  : shipping.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "EGP",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
               </p>
             </div>
           </div>

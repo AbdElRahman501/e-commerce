@@ -88,7 +88,7 @@ const FilterContainer = ({
   return (
     <div
       style={{ bottom: searchParams?.get("ft") === "true" ? "0" : "-100vh" }}
-      className="scroll-bar-hidden fixed  left-0  z-20 flex h-fit max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-white px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
+      className="scroll-bar-hidden fixed  left-0  z-20 flex h-full max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-white px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
     >
       <Sorting classNames="  min-h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white flex md:hidden" />
       <div className="relative flex h-14 min-h-14 w-full flex-grow-0 rounded-full border md:max-w-xs">

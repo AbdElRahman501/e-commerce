@@ -23,6 +23,7 @@ export const fetchFilteredProducts = cache(
     sizeFilter = [],
     limit = 10,
     sort,
+    idsToExclude = [],
   }: FilterProps): Promise<{
     products: ProductOnSaleType[];
     count: number;
@@ -91,6 +92,9 @@ export const fetchFilteredProducts = cache(
         : { $or: [{ gender: "male" }, { gender: "female" }, { gender: "all" }] }
       : {};
 
+    const objectIdArray = idsToObjectId(idsToExclude);
+    const excludeCondition = { _id: { $nin: objectIdArray } };
+
     const finalQuery: any = {
       $and: [
         textSearchCondition,
@@ -100,6 +104,7 @@ export const fetchFilteredProducts = cache(
         sizeFilterCondition,
         colorFilterCondition,
         genderFilterCondition,
+        excludeCondition,
       ],
     };
 
@@ -214,8 +219,8 @@ export async function fetchProductsById(
   ids: string[],
 ): Promise<ProductOnSaleType[]> {
   try {
-    const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
     await connectToDatabase();
+    const objectIdArray = idsToObjectId(ids);
     const data = await Product.find({
       _id: {
         $in: objectIdArray,
@@ -234,6 +239,11 @@ export async function fetchProductsById(
   }
 }
 
+function idsToObjectId(array: string[]) {
+  if (!array || array.length === 0) return [];
+  const objectIdArray = array.map((id) => new mongoose.Types.ObjectId(id));
+  return objectIdArray;
+}
 export async function soldProducts(ids: string[]): Promise<void> {
   try {
     const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
