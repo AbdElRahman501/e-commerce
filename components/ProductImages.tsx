@@ -84,7 +84,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
   };
 
   return (
-    <div className="relative h-full w-full min-w-[60%] flex-1 gap-2 ">
+    <div className="relative h-full w-full flex-1 gap-2 sm:w-4/6 ">
       <button
         onClick={scrollToPrev}
         className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl sm:hidden `}

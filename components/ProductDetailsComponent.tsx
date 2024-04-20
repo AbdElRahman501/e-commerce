@@ -18,49 +18,6 @@ const SubmitButton = dynamic(() => import("./SubmitButton"));
 const HeartIcon = dynamic(() => import("./icons/HeartIcon"));
 const FAQCard = dynamic(() => import("./FAQCard"));
 
-const description: {
-  title: string;
-  content: {
-    title?: string;
-    list?: string[];
-    images?: string[];
-    description?: string;
-  }[];
-}[] = [
-  {
-    title: "customization",
-    content: [
-      {
-        title: "printing",
-        list: ["type: DTF Printing"],
-      },
-    ],
-  },
-  {
-    title: "size chart",
-    content: [
-      {
-        images: [
-          "https://printleteg.com/wp-content/uploads/2023/07/OVERSIZED-T-SHIRT-SIZE-CHART-PRINTLET-570x896.jpg",
-        ],
-      },
-    ],
-  },
-  {
-    title: "washing instructions",
-    content: [
-      {
-        list: [
-          "Wash inside out.",
-          "Wash with a temperature below 30 celsius.",
-          "Do not use fabric softeners.",
-          "Delicate cycle on your machine is preferred Iron inside out.",
-        ],
-      },
-    ],
-  },
-];
-
 interface ProductDetailsComponent extends ProductOnSaleType {
   cart: CartItem[];
   isFav: boolean;
@@ -79,6 +36,7 @@ const ProductDetailsComponent = ({
   cart,
   isFav,
   preview,
+  content,
 }: ProductDetailsComponent) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -122,13 +80,13 @@ const ProductDetailsComponent = ({
   }
 
   return (
-    <div className="mx-auto flex max-w-8xl flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
+    <div className="mx-auto flex w-full max-w-8xl flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={getAllImages(images)}
         selectedImage={images[selectedColor]?.[0] || ""}
         title={title}
       />
-      <div className="z-10 flex flex-col gap-3 p-5 md:col-span-2 md:py-0">
+      <div className="z-10 flex w-full flex-col gap-3 p-5 sm:w-5/12 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs text-gray-400">
           <Link
             href={"/shop"}
@@ -244,13 +202,13 @@ const ProductDetailsComponent = ({
           </CustomForm>
         </div>
         <div className="mt-10 flex flex-col gap-4">
-          {description.map((item, index) => (
-            <FAQCard key={index} question={item.title}>
-              {item.content.map((content, i) => (
+          {Object.entries(content || {}).map(([title, items], index) => (
+            <FAQCard key={index} question={title}>
+              {items.map((item, i) => (
                 <div key={i}>
-                  <p className="mt-3">{content.title || ""}</p>
+                  <p className="mt-3">{item.title || ""}</p>
                   <ul className="mt-3">
-                    {content.list?.map((listItem, listIndex) => (
+                    {item.list?.map((listItem, listIndex) => (
                       <li
                         key={listIndex}
                         className="list-inside list-disc py-1"
@@ -259,8 +217,8 @@ const ProductDetailsComponent = ({
                       </li>
                     ))}
                   </ul>
-                  <p>{content.description}</p>
-                  {content.images?.map((image, imageIndex) => (
+                  <p>{item.description}</p>
+                  {item.images?.map((image, imageIndex) => (
                     <Image
                       key={imageIndex}
                       src={image}

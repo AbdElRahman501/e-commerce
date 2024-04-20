@@ -43,6 +43,15 @@ export interface Product {
   views?: number;
   sales?: number;
   minPrice: number;
+  content: Record<
+    string,
+    {
+      title?: string;
+      list?: string[];
+      images?: string[];
+      description?: string;
+    }[]
+  >;
 }
 
 export interface ProductOnSaleType extends Product {

@@ -83,7 +83,7 @@ const ProductCard = ({
         <div className="relative flex items-center justify-center pt-2">
           {salePrice ? (
             <>
-              <p className="absolute -left-10 -top-1 w-full text-xs text-[#1a1a1ab3] line-through dark:text-gray-300 md:text-base">
+              <p className="absolute -left-10 -top-1 w-full text-xs text-[#1a1a1ab3] line-through dark:text-gray-300 md:-top-2 md:text-base">
                 {formatPrice(price, "EGP")}
               </p>
               <p className=" text-sm text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
