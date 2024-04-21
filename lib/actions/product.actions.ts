@@ -24,6 +24,7 @@ export const fetchFilteredProducts = cache(
     limit = 10,
     sort,
     idsToExclude = [],
+    minLimit = 0,
   }: FilterProps): Promise<{
     products: ProductOnSaleType[];
     count: number;
@@ -110,7 +111,7 @@ export const fetchFilteredProducts = cache(
 
     try {
       await connectToDatabase();
-      const count = await Product.countDocuments(finalQuery);
+      let count = await Product.countDocuments(finalQuery);
       const offers: OfferType[] = await Offer.find({});
       const data = await fetchDataBySection({
         sort,
@@ -118,11 +119,26 @@ export const fetchFilteredProducts = cache(
         limit,
         offers,
       });
-      const products: ProductType[] = JSON.parse(JSON.stringify(data));
-      const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+      let products: ProductType[] = JSON.parse(JSON.stringify(data));
+      let modifiedProducts: ProductOnSaleType[] = modifyProducts(
         products,
         offers,
       );
+
+      if (minLimit > count) {
+        const additionalData = await fetchDataBySection({
+          sort,
+          finalQuery: {},
+          limit: minLimit,
+          offers,
+        });
+        const additionalProducts: ProductType[] = JSON.parse(
+          JSON.stringify(additionalData),
+        );
+        products = removeDuplicatesById([...products, ...additionalProducts]);
+        modifiedProducts = modifyProducts(products, offers);
+        count = products.length;
+      }
       return { products: modifiedProducts, count };
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -130,6 +146,20 @@ export const fetchFilteredProducts = cache(
     }
   },
 );
+
+function removeDuplicatesById<T extends { id: string | number }>(
+  array: T[],
+): T[] {
+  const uniqueIds: { [id: string]: boolean } = {};
+  return array.filter((item) => {
+    if (!uniqueIds[item.id]) {
+      uniqueIds[item.id] = true;
+      return true;
+    }
+    return false;
+  });
+}
+
 export async function fetchProducts(): Promise<ProductType[]> {
   try {
     await connectToDatabase();

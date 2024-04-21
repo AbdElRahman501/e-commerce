@@ -185,6 +185,7 @@ export interface FilterProps extends FilterType {
   query?: string;
   limit?: number;
   sort?: string;
+  minLimit?: number;
   idsToExclude?: string[];
 }
 export interface CategoryCount {

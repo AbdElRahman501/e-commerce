@@ -24,6 +24,7 @@ async function ProductsRow({
         keywordFilter: keyWords || "",
         sort: title,
         limit: 4,
+        minLimit: 3,
       });
 
   if (products.length === 0) {
