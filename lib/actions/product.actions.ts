@@ -23,6 +23,8 @@ export const fetchFilteredProducts = cache(
     sizeFilter = [],
     limit = 10,
     sort,
+    idsToExclude = [],
+    minLimit = 0,
   }: FilterProps): Promise<{
     products: ProductOnSaleType[];
     count: number;
@@ -91,6 +93,9 @@ export const fetchFilteredProducts = cache(
         : { $or: [{ gender: "male" }, { gender: "female" }, { gender: "all" }] }
       : {};
 
+    const objectIdArray = idsToObjectId(idsToExclude);
+    const excludeCondition = { _id: { $nin: objectIdArray } };
+
     const finalQuery: any = {
       $and: [
         textSearchCondition,
@@ -100,12 +105,13 @@ export const fetchFilteredProducts = cache(
         sizeFilterCondition,
         colorFilterCondition,
         genderFilterCondition,
+        excludeCondition,
       ],
     };
 
     try {
       await connectToDatabase();
-      const count = await Product.countDocuments(finalQuery);
+      let count = await Product.countDocuments(finalQuery);
       const offers: OfferType[] = await Offer.find({});
       const data = await fetchDataBySection({
         sort,
@@ -113,11 +119,26 @@ export const fetchFilteredProducts = cache(
         limit,
         offers,
       });
-      const products: ProductType[] = JSON.parse(JSON.stringify(data));
-      const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+      let products: ProductType[] = JSON.parse(JSON.stringify(data));
+      let modifiedProducts: ProductOnSaleType[] = modifyProducts(
         products,
         offers,
       );
+
+      if (minLimit > count) {
+        const additionalData = await fetchDataBySection({
+          sort,
+          finalQuery: {},
+          limit: minLimit,
+          offers,
+        });
+        const additionalProducts: ProductType[] = JSON.parse(
+          JSON.stringify(additionalData),
+        );
+        products = removeDuplicatesById([...products, ...additionalProducts]);
+        modifiedProducts = modifyProducts(products, offers);
+        count = products.length;
+      }
       return { products: modifiedProducts, count };
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -125,6 +146,20 @@ export const fetchFilteredProducts = cache(
     }
   },
 );
+
+function removeDuplicatesById<T extends { id: string | number }>(
+  array: T[],
+): T[] {
+  const uniqueIds: { [id: string]: boolean } = {};
+  return array.filter((item) => {
+    if (!uniqueIds[item.id]) {
+      uniqueIds[item.id] = true;
+      return true;
+    }
+    return false;
+  });
+}
+
 export async function fetchProducts(): Promise<ProductType[]> {
   try {
     await connectToDatabase();
@@ -214,8 +249,8 @@ export async function fetchProductsById(
   ids: string[],
 ): Promise<ProductOnSaleType[]> {
   try {
-    const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
     await connectToDatabase();
+    const objectIdArray = idsToObjectId(ids);
     const data = await Product.find({
       _id: {
         $in: objectIdArray,
@@ -234,6 +269,11 @@ export async function fetchProductsById(
   }
 }
 
+function idsToObjectId(array: string[]) {
+  if (!array || array.length === 0) return [];
+  const objectIdArray = array.map((id) => new mongoose.Types.ObjectId(id));
+  return objectIdArray;
+}
 export async function soldProducts(ids: string[]): Promise<void> {
   try {
     const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));

@@ -42,6 +42,8 @@ const CartPricing = async ({
         ? ""
         : "You can't apply this coupon";
 
+  const restShipping =
+    subTotal + 50 < freeShippingMinValue ? freeShippingMinValue - subTotal : 0;
   return (
     <div className="flex h-fit w-full flex-col gap-2 rounded-3xl border border-gray-300 p-5 dark:border-gray-700 md:max-w-lg ">
       <Coupon coupon={coupon} />
@@ -93,14 +95,27 @@ const CartPricing = async ({
           </p>
         </div>
       </Link>
-      {freeShippingMinValue > 0 && (
-        <Link
-          href="/shop"
-          className="w-full text-center text-xs  text-primary_color underline hover:no-underline dark:text-white sm:text-sm"
-        >
-          {`Add ${subTotal + 50 < freeShippingMinValue ? freeShippingMinValue - subTotal : 0} EGP more to enjoy FREE SHIPPING`}
-        </Link>
-      )}
+      {freeShippingMinValue > 0 &&
+        (restShipping ? (
+          <Link
+            href="/shop"
+            className="w-full text-center text-xs  text-primary_color underline hover:no-underline dark:text-white sm:text-sm"
+          >
+            {" "}
+            `Add{" "}
+            {restShipping.toLocaleString("en-US", {
+              style: "currency",
+              currency: "EGP",
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
+            more to enjoy FREE SHIPPING`
+          </Link>
+        ) : (
+          <p className="w-full text-center text-xs sm:text-sm">
+            You are having free shipping 🎉🎉
+          </p>
+        ))}
     </div>
   );
 };

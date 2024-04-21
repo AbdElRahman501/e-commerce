@@ -99,12 +99,14 @@ const OrderConfirmationPage = async ({
           <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
             <p>Shipping</p>
             <p>
-              {order.shipping.toLocaleString("en-US", {
-                style: "currency",
-                currency: "EGP",
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {order.shipping === 0
+                ? "Free Shipping 🎉🎉"
+                : order.shipping.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "EGP",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
             </p>
           </div>
         </div>

@@ -13,6 +13,7 @@ export default function ImageUpload({
   handleAddImage: (url: string) => void;
 }) {
   const [previewSource, setPreviewSource] = useState("");
+  const [isUploaded, setIsUploaded] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -34,13 +35,18 @@ export default function ImageUpload({
   const actionWithVariant = formAction.bind(null, previewSource);
 
   useEffect(() => {
-    if (!mounted && response && response.secure_url && handleAddImage) {
-      handleAddImage(response.secure_url);
+    setIsUploaded(response?.secure_url ? true : false);
+  }, [response]);
+
+  useEffect(() => {
+    if (!mounted && previewSource && isUploaded && handleAddImage) {
+      response?.secure_url && handleAddImage(response?.secure_url);
       setPreviewSource("");
+      setIsUploaded(false);
       setMounted(true);
       setLoading(false);
     }
-  }, [response, handleAddImage, mounted]);
+  }, [response, handleAddImage, isUploaded, previewSource, mounted]);
 
   return (
     <div className="center-height-container  flex gap-1">
@@ -86,6 +92,15 @@ export default function ImageUpload({
           )}
         </button>
       )}
+      <button
+        type="button"
+        onClick={() => {
+          handleAddImage("");
+        }}
+        className="w-full rounded-lg border border-gray-300 text-center dark:border-gray-700"
+      >
+        add field
+      </button>
     </div>
   );
 }

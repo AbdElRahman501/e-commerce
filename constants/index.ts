@@ -178,7 +178,7 @@ const dashboardCards: DashboardCardProps[] = [
     image: "/icons/sales.svg",
     title: "Sales",
     number: "$5,000",
-    url: "#",
+    url: "/sales",
     description: "+$2,000",
   },
   {

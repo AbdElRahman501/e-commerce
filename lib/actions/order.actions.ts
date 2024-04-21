@@ -9,6 +9,8 @@ import { formatOrderItems, generateCode, reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { soldProducts } from "./product.actions";
+import { User } from "../models/users.model";
+import { sendPromoEmail } from "./users.actions";
 
 export async function createOrder(formData: FormData) {
   let redirectPath = "";
@@ -69,7 +71,13 @@ export async function createOrder(formData: FormData) {
     const data = await orderNew.save();
     const createdOrder: OrderType = JSON.parse(JSON.stringify(data));
     soldProducts(cart.map((item) => item.productId));
-    if (email) sendEmail(createdOrder, cart);
+    if (email) {
+      sendEmail(createdOrder, cart);
+      if (messageAccept) {
+        const user = await User.create({ email });
+        if (user) sendPromoEmail(user);
+      }
+    }
     cookies().delete("cart");
     redirectPath = "/confirmation/" + createdOrder.id;
   } catch (error) {
