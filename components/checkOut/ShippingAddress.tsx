@@ -22,26 +22,13 @@ const ShippingAddress = ({
   const [selectedState, setSelectedState] = React.useState(state);
   const [selectedCity, setSelectedCity] = React.useState(city);
 
-  function addParam(key: string, value: string) {
+  function addParam({ state, city }: { state: string; city: string }) {
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set(key, value.toString().toLocaleLowerCase().trim());
+    newSearchParams.set("state", state.toString().toLocaleLowerCase().trim());
+    newSearchParams.set("city", city.toString().toLocaleLowerCase().trim());
     const optionUrl = createUrl(pathname, newSearchParams);
     router.replace(optionUrl, { scroll: false });
   }
-
-  const govChange = (event: any) => {
-    const state =
-      governorate.find(
-        (item) => item.governorate_name_en === event.target.value,
-      )?.id || "";
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set("state", state.toString().toLocaleLowerCase().trim());
-    newSearchParams.set("city", "");
-    setSelectedState(state);
-    setSelectedCity("");
-    const optionUrl = createUrl(pathname, newSearchParams);
-    router.replace(optionUrl, { scroll: false });
-  };
 
   return (
     <>
@@ -54,7 +41,15 @@ const ShippingAddress = ({
               ?.governorate_name_en || ""
           }
           options={governorate.map((item) => item.governorate_name_en)}
-          onChange={govChange}
+          onChange={(event) => {
+            const state =
+              governorate.find(
+                (item) => item.governorate_name_en === event.target.value,
+              )?.id || "";
+            setSelectedState(state);
+            setSelectedCity("");
+            addParam({ state, city: "" });
+          }}
           placeholder="Choose your state"
           name="state"
           required={true}
@@ -73,7 +68,7 @@ const ShippingAddress = ({
             const city =
               cities.find((item) => item.city_name_en === event.target.value)
                 ?.id || "";
-            addParam("city", city);
+            addParam({ state: selectedState, city });
             setSelectedCity(city);
           }}
           placeholder="Choose your city"

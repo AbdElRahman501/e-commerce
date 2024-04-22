@@ -110,7 +110,7 @@ export const fetchFilteredProducts = cache(
     };
 
     try {
-      await connectToDatabase();
+      connectToDatabase();
       let count = await Product.countDocuments(finalQuery);
       const offers: OfferType[] = await Offer.find({});
       const data = await fetchDataBySection({
@@ -162,7 +162,7 @@ function removeDuplicatesById<T extends { id: string | number }>(
 
 export async function fetchProducts(): Promise<ProductType[]> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     // const data = await Product.find({}).select("title price colors images");
     const data = await Product.find({});
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
@@ -217,7 +217,7 @@ export async function getAllProperties(): Promise<{
   colors: string[];
 }> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     // Using distinct to get unique sizes
     const sizes = await Product.distinct("sizes").exec();
     const colors = await Product.distinct("colors").exec();
@@ -232,7 +232,7 @@ export async function fetchProduct(
   isCustomer?: boolean,
 ): Promise<ProductOnSaleType | null> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Product.findByIdAndUpdate(id, {
       $inc: { views: isCustomer ? 1 : 0 },
     });
@@ -249,7 +249,7 @@ export async function fetchProductsById(
   ids: string[],
 ): Promise<ProductOnSaleType[]> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const objectIdArray = idsToObjectId(ids);
     const data = await Product.find({
       _id: {
@@ -277,7 +277,7 @@ function idsToObjectId(array: string[]) {
 export async function soldProducts(ids: string[]): Promise<void> {
   try {
     const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Product.updateMany(
       { _id: { $in: objectIdArray } },
       { $inc: { sales: 1 } },
@@ -292,7 +292,7 @@ export const getCategoriesWithProductCount = async (): Promise<
   CategoryCount[]
 > => {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     // Aggregate pipeline to group products by categories and count the number of products in each category
     const aggregationPipeline = [
       {
@@ -331,7 +331,7 @@ export const getCategoriesWithProductCount = async (): Promise<
 
 export async function deleteProduct(id: string) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Product.findByIdAndDelete(id);
     return "Product deleted successfully";
   } catch (error) {
@@ -342,7 +342,7 @@ export async function deleteProduct(id: string) {
 
 export async function updateProductById(newProduct: ProductType) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const { id, ...rest } = newProduct;
     const data = await Product.findByIdAndUpdate(id, rest, {
       new: true,
@@ -356,7 +356,7 @@ export async function updateProductById(newProduct: ProductType) {
 }
 export async function duplicateProductById(id: string) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Product.findById(id);
     const product: ProductType = JSON.parse(JSON.stringify(data));
     product.views = 0;

@@ -8,6 +8,12 @@ import {
   removeOffer,
   updateOffer,
 } from "@/lib/actions/offer.actions";
+import {
+  addNewPromoCode,
+  fetchPromoCodes,
+  removePromoCode,
+  updatePromoCode,
+} from "@/lib/actions/promo-code.actions";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -18,19 +24,34 @@ export default async function SalesPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { offerId, addOffer, removeOfferId } = searchParams as {
+  const {
+    offerId,
+    addOffer,
+    removeOfferId,
+    addPromoCode,
+    promoCodeId,
+    removePromoCodeId,
+  } = searchParams as {
     [key: string]: string;
   };
   const pathName = "/dashboard/sales";
   const offers = await fetchOffers();
+  const promoCodes = await fetchPromoCodes();
+  console.log("🚀 ~ promoCodes:", promoCodes);
 
   let offer;
-  console.log("🚀 ~ offer:", offer, offerId);
   if (offerId) {
     offer = offers.find((item) => item._id === offerId);
   }
   if (removeOfferId) {
     offer = offers.find((item) => item._id === removeOfferId);
+  }
+  let promoCode;
+  if (promoCodeId) {
+    promoCode = promoCodes.find((item) => item._id === promoCodeId);
+  }
+  if (removePromoCodeId) {
+    promoCode = promoCodes.find((item) => item._id === removePromoCodeId);
   }
 
   return (
@@ -180,6 +201,138 @@ export default async function SalesPage({
         </div>
       </Modal>
 
+      <Modal isOpen={!!promoCodeId}>
+        <div className="flex flex-col gap-5 p-5 lg:p-20">
+          <form action={updatePromoCode} className="flex flex-col gap-2">
+            <input
+              type="text"
+              name="id"
+              value={promoCode?._id}
+              readOnly
+              hidden
+            />
+            <CustomInput
+              placeholder="Enter code"
+              defaultValue={promoCode?.code}
+              label="code"
+              type="text"
+              name="code"
+            />
+            <CustomInput
+              placeholder="Enter discount"
+              defaultValue={promoCode?.discount}
+              label="discount"
+              type="number"
+              name="discount"
+            />
+            <CustomInput
+              placeholder="Enter limit"
+              defaultValue={promoCode?.limit}
+              label="limit"
+              type="number"
+              name="limit"
+            />
+            <CustomInput
+              placeholder="Enter maxDiscount"
+              defaultValue={promoCode?.maxDiscount}
+              label="maxDiscount"
+              type="number"
+              name="maxDiscount"
+            />
+            <CustomInput
+              placeholder="Enter active"
+              defaultValue={promoCode?.active}
+              label="active"
+              type="checkbox"
+              name="active"
+            />
+            <button
+              type="submit"
+              className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
+            >
+              Update
+            </button>
+            <Link
+              replace
+              href={pathName}
+              className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
+            >
+              close
+            </Link>
+          </form>
+        </div>
+      </Modal>
+      <Modal isOpen={!!addPromoCode}>
+        <div className="flex flex-col gap-5 p-5 lg:p-20">
+          <form action={addNewPromoCode} className="flex flex-col gap-2">
+            <CustomInput
+              placeholder="Enter code"
+              label="code"
+              type="text"
+              name="code"
+            />
+            <CustomInput
+              placeholder="Enter discount"
+              label="discount"
+              type="number"
+              name="discount"
+            />
+            <CustomInput
+              placeholder="Enter limit"
+              label="limit"
+              type="number"
+              name="limit"
+            />
+            <CustomInput
+              placeholder="Enter maxDiscount"
+              label="maxDiscount"
+              type="number"
+              name="maxDiscount"
+            />
+            <CustomInput
+              placeholder="Enter active"
+              label="active"
+              type="checkbox"
+              name="active"
+            />
+            <button
+              type="submit"
+              className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
+            >
+              create
+            </button>
+          </form>
+          <Link
+            replace
+            href={pathName}
+            className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
+          >
+            close
+          </Link>
+        </div>
+      </Modal>
+      <Modal isOpen={!!removePromoCodeId}>
+        <div className="flex flex-col gap-5 p-5 lg:p-20">
+          <form action={removePromoCode} className="flex flex-col gap-2">
+            <p>Are you sure you want to remove this promo code?</p>
+            <input type="text" name="id" value={offer?._id} readOnly hidden />
+            <button
+              type="submit"
+              className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
+            >
+              remove
+            </button>
+          </form>
+          <Link
+            replace
+            href={pathName}
+            className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
+          >
+            close
+          </Link>
+        </div>
+      </Modal>
+
       <Suspense>
         <div className="flex flex-col gap-5 p-5 lg:p-20">
           <p>
@@ -198,7 +351,7 @@ export default async function SalesPage({
           <div className="flex flex-col gap-2">
             <CustomTable
               data={offers}
-              header={["image", "title", "sale", "category"]}
+              header={["image", "title", "sale", "url", "category"]}
               ActionComponent={(item) => (
                 <div className="flex gap-2">
                   <Link
@@ -211,6 +364,44 @@ export default async function SalesPage({
                   <Link
                     replace
                     href={pathName + "?removeOfferId=" + item._id}
+                    className=" text-red-500 hover:underline dark:hover:underline "
+                  >
+                    remove
+                  </Link>
+                </div>
+              )}
+            />
+          </div>
+          <div className="flex gap-2">
+            <Link
+              replace
+              href={`${pathName}?addPromoCode=true`}
+              className="mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl bg-green-900 uppercase  text-white hover:bg-green-950"
+            >
+              Add PromoCode
+            </Link>
+          </div>
+          <div className="flex flex-col gap-2">
+            <CustomTable
+              data={promoCodes.map((item) => ({
+                ...item,
+                status: item.active
+                  ? { name: "active", color: "green" }
+                  : { name: "inactive", color: "red" },
+              }))}
+              header={["code", "discount", "limit", "maxDiscount", "status"]}
+              ActionComponent={(item) => (
+                <div className="flex gap-2">
+                  <Link
+                    replace
+                    href={pathName + "?promoCodeId=" + item._id}
+                    className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
+                  >
+                    edit
+                  </Link>
+                  <Link
+                    replace
+                    href={pathName + "?removePromoCodeId=" + item._id}
                     className=" text-red-500 hover:underline dark:hover:underline "
                   >
                     remove

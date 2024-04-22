@@ -2,6 +2,7 @@ import React from "react";
 import ArrowButton from "./ArrowButton";
 import Image from "next/image";
 import { CollectionType } from "@/types";
+import Link from "next/link";
 
 const CollectionCard = ({
   name,
@@ -10,12 +11,13 @@ const CollectionCard = ({
   className,
 }: CollectionType & { className?: string }) => {
   return (
-    <div
+    <Link
+      href={url}
       key={name}
       className={
         className
           ? className
-          : "rounded-4xl relative aspect-square h-full w-full overflow-hidden"
+          : "rounded-4xl relative aspect-square h-full w-full cursor-pointer overflow-hidden"
       }
     >
       <Image
@@ -26,11 +28,8 @@ const CollectionCard = ({
         style={{ objectFit: "cover" }}
       />
 
-      <ArrowButton
-        href={url}
-        className="absolute right-3 top-3 bg-white  text-3xl text-black  hover:bg-black hover:text-white "
-      />
-    </div>
+      <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  hover:bg-black hover:text-white " />
+    </Link>
   );
 };
 

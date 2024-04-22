@@ -102,7 +102,7 @@ const ProductCard = ({
             <button
               key={index}
               onClick={() => setSelectedColor(item)}
-              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "border-2 border-black p-[1px]" : "border-transparent"} max-w-6 flex-1 rounded-full p-[1px] duration-200 hover:scale-110`}
+              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "border-2 border-black p-[1px] dark:border-white" : "border-transparent"} max-w-6 flex-1 rounded-full p-[1px] duration-200 hover:scale-110`}
             >
               <span
                 style={{ backgroundColor: item }}

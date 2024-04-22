@@ -2,7 +2,7 @@ import React from "react";
 
 export interface ArrowButtonProps {
   className?: string;
-  href: string;
+  href?: string;
 }
 
 export interface SectionTitleProps {

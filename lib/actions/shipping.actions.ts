@@ -11,7 +11,7 @@ export const fetchShipping = cache(
     cities: CityType[];
   }> => {
     try {
-      await connectToDatabase();
+      connectToDatabase();
       const governorateData = await Governorate.find({});
       const citiesData = await City.find({});
       const governorate: GovernorateType[] = JSON.parse(
@@ -33,7 +33,7 @@ export const updateGovernorate = async (formData: FormData) => {
     shipping_price: Number(formData.get("shipping_price")!),
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Governorate.updateOne({ id: data.id }, data);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -49,7 +49,7 @@ export const addNewGovernorate = async (formData: FormData) => {
     shipping_price: Number(formData.get("shipping_price")!),
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Governorate.create(data);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -65,7 +65,7 @@ export const updateCity = async (formData: FormData) => {
     shipping_price: Number(formData.get("shipping_price")!),
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await City.updateOne({ id: data.id }, data);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -82,7 +82,7 @@ export const addNewCity = async (formData: FormData) => {
     shipping_price: Number(formData.get("shipping_price")!),
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await City.create(data);
   } catch (error) {
     console.error("Error fetching products:", error);
