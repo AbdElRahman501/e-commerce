@@ -105,7 +105,7 @@ const CustomInput = ({
               options.map((option, index) => (
                 <label
                   key={index}
-                  className=" peer flex h-14 w-full cursor-pointer items-center justify-between rounded-lg border-[1px] border-gray-300 bg-transparent px-4 text-base outline-none  focus:border-2 has-[:checked]:border-black dark:border-gray-700 dark:text-white has-[:checked]:dark:border-white"
+                  className=" peer flex h-14 w-full cursor-pointer items-center justify-between rounded-lg border-[1px] border-gray-300 bg-transparent px-4 text-base outline-none  has-[:checked]:border-2 has-[:checked]:border-black dark:border-gray-700 dark:text-white has-[:checked]:dark:border-white"
                 >
                   {option}
                   <input

@@ -4,6 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import LoadingDots from "../loading-dots";
 import CustomInput from "../CustomInput";
+import Plus_Icon from "../icons/plus_icon";
 
 const Coupon = ({ coupon: initCoupon }: { coupon: string }) => {
   const searchParams = useSearchParams();
@@ -39,15 +40,11 @@ const Coupon = ({ coupon: initCoupon }: { coupon: string }) => {
         <button
           onClick={submitHandler}
           type="button"
-          className="h-12 w-12  rounded-full border-gray-200 bg-primary_color text-3xl text-white hover:bg-white hover:text-black "
+          className="h-14 w-14 rounded-lg border-gray-200 bg-primary_color text-center text-3xl text-white hover:bg-white hover:text-black "
         >
-          {loading ? (
-            <LoadingDots />
-          ) : (
-            <span className="m-auto block -translate-y-[1px] translate-x-[1px] ">
-              &#43;
-            </span>
-          )}
+          <div className="flex items-center justify-center">
+            {loading ? <LoadingDots /> : <Plus_Icon className="h-8 w-8" />}
+          </div>
         </button>
       </div>
     </div>

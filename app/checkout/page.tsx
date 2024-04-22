@@ -3,7 +3,7 @@ import { createOrder, fetchProductsById } from "@/lib";
 import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
 import { fetchShipping } from "@/lib/actions/shipping.actions";
 import { CartItem } from "@/types";
-import { reformatCartItems } from "@/utils";
+import { isFreeShipping, reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
 import { fetchOffers } from "@/lib/actions/offer.actions";
@@ -189,18 +189,14 @@ const CheckOutPage = async ({
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
               <p>Shipping</p>
               <p>
-                {shipping === 0 && freeShippingMinValue
-                  ? "Free Shipping 🎉🎉"
-                  : !statId
-                    ? " set state"
-                    : !cityId
-                      ? " set city"
-                      : shipping.toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "EGP",
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
+                {isFreeShipping(offers, subTotal)
+                  ? "free shipping 🎉🎉"
+                  : shipping.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "EGP",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
               </p>
             </div>
           </div>

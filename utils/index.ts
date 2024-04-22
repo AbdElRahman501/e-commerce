@@ -188,4 +188,12 @@ export function checkDateStatus(
     return { name: "passed", color: "red" };
   }
 }
+
+export function isFreeShipping(offers: OfferType[], subTotal: number) {
+  const freeShippingMinValue: number = Number(
+    offers.find((x) => x.title === "FREE_SHIPPING")?.description || 0,
+  );
+  if (subTotal - 50 > freeShippingMinValue) return true;
+  return false;
+}
 export { formatOrderItems };

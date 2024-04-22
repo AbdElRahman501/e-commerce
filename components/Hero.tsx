@@ -30,7 +30,10 @@ const Hero = async () => {
           </Link>
         </div>
         <div className="flex h-full  w-full flex-col-reverse gap-3 max-sm:row-span-3 sm:grid sm:grid-cols-7 md:col-span-7">
-          <div className="rounded-4xl relative col-span-4 mx-5 overflow-hidden max-sm:aspect-square sm:mx-0 ">
+          <Link
+            href={firstCollection.url}
+            className="rounded-4xl relative col-span-4 mx-5 overflow-hidden max-sm:aspect-square sm:mx-0 "
+          >
             <Image
               src={firstCollection.image}
               alt={firstCollection.name}
@@ -38,11 +41,8 @@ const Hero = async () => {
               sizes="100%"
               style={{ objectFit: "cover" }}
             />
-            <ArrowButton
-              href={firstCollection.url}
-              className="absolute right-3 top-3 bg-white  text-3xl text-black  dark:text-black"
-            />
-          </div>
+            <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  dark:text-black" />
+          </Link>
           <div className="relative col-span-3 flex w-full flex-col gap-3 sm:flex-col-reverse">
             <Stories stories={stories} />
             <div className="rounded-4xl absolute bottom-8 left-5 flex h-16  w-5/12 items-center justify-between overflow-hidden bg-white sm:static sm:w-full sm:bg-primary_color">
