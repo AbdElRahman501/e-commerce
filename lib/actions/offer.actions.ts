@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 export async function fetchOffers(): Promise<OfferType[]> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Offer.find({});
     const offers: OfferType[] = JSON.parse(JSON.stringify(data));
     return offers;
@@ -26,7 +26,7 @@ export const addNewOffer = async (formData: FormData) => {
     category: formData.get("category")?.toString() || "",
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Offer.create(data);
   } catch (error) {
     console.error("Error adding new Offer:", error);
@@ -38,7 +38,7 @@ export const addNewOffer = async (formData: FormData) => {
 export const removeOffer = async (formData: FormData) => {
   const id = formData.get("id")?.toString() || "";
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Offer.findByIdAndDelete(id);
   } catch (error) {
     console.error("Error removing Offer:", error);
@@ -58,7 +58,7 @@ export const updateOffer = async (formData: FormData) => {
     category: formData.get("category")?.toString() || "",
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Offer.findByIdAndUpdate(data.id, data);
   } catch (error) {
     console.error("Error updating Offer:", error);

@@ -1,42 +1,44 @@
 "use client";
 import { createUrl } from "@/utils";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import LoadingDots from "../loading-dots";
+import CustomInput from "../CustomInput";
 
-const Coupon = ({ coupon }: { coupon: string }) => {
+const Coupon = ({ coupon: initCoupon }: { coupon: string }) => {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const [coupon, setCoupon] = React.useState(initCoupon);
+  function submitHandler() {
     setLoading(true);
-    e.preventDefault();
-    const val = e.target as HTMLFormElement;
-    const coupon = val.coupon as HTMLInputElement;
     const newParams = new URLSearchParams(searchParams.toString());
-    if (coupon.value) {
-      newParams.set("coupon", coupon.value.trim());
+    if (coupon) {
+      newParams.set("coupon", coupon.trim());
     } else {
       newParams.delete("coupon");
     }
-    router.replace(createUrl("/cart", newParams));
+    router.replace(createUrl(pathname, newParams));
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex gap-2">
-      <input
+    <div className="flex gap-2">
+      <CustomInput
         type="text"
-        placeholder="Coupon code"
-        name="coupon"
+        label="Promo Code"
+        placeholder="Promo code"
         defaultValue={coupon}
-        className=" h-12 w-full rounded-2xl border border-gray-300 bg-transparent px-4 outline-none  dark:border-gray-700 dark:placeholder:text-gray-300 "
+        onChange={(e) => setCoupon(e.target.value)}
+        name="promoCode"
       />
       <div>
         <button
-          type="submit"
+          onClick={submitHandler}
+          type="button"
           className="h-12 w-12  rounded-full border-gray-200 bg-primary_color text-3xl text-white hover:bg-white hover:text-black "
         >
           {loading ? (
@@ -48,7 +50,7 @@ const Coupon = ({ coupon }: { coupon: string }) => {
           )}
         </button>
       </div>
-    </form>
+    </div>
   );
 };
 

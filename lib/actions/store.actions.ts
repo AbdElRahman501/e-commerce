@@ -7,7 +7,7 @@ import { checkDateStatus } from "@/utils";
 
 export async function fetchStories(): Promise<StoryType[]> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Story.find({});
     const stories: StoryType[] = JSON.parse(JSON.stringify(data));
     const filteredStories: StoryType[] = stories.filter(
@@ -21,7 +21,7 @@ export async function fetchStories(): Promise<StoryType[]> {
 }
 export async function fetchNavbarLinks(): Promise<NavbarType[]> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await NavBarLink.find({});
     const navbarLinks: NavbarType[] = JSON.parse(JSON.stringify(data));
     return navbarLinks;
@@ -33,7 +33,7 @@ export async function fetchNavbarLinks(): Promise<NavbarType[]> {
 
 export async function fetchAllStories(): Promise<StoryType[]> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Story.find({});
     const stories: StoryType[] = JSON.parse(JSON.stringify(data));
     return stories;
@@ -52,7 +52,7 @@ export const updateStory = async (formData: FormData) => {
     url: formData.get("url")?.toString() || "",
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Story.findByIdAndUpdate(data.id, data);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -70,7 +70,7 @@ export const addNewStory = async (formData: FormData) => {
   };
   if (!data.image) return;
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Story.create(data);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -82,7 +82,7 @@ export const removeStory = async (formData: FormData) => {
   const id = formData.get("id")?.toString() || "";
   if (!id) return;
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Story.findByIdAndDelete(id);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -95,7 +95,7 @@ export const removeStory = async (formData: FormData) => {
 
 export const fetchReviews = async ({ limit = 4 }: { limit?: number }) => {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Review.find({}).limit(limit);
     const reviews: ReviewType[] = JSON.parse(JSON.stringify(data));
     return reviews;
@@ -116,7 +116,7 @@ export const addNewReview = async (formData: FormData) => {
     images: images,
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Review.create(data);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -129,7 +129,7 @@ export const removeReview = async (formData: FormData) => {
   const id = formData.get("id")?.toString() || "";
   if (!id) return;
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Review.findByIdAndDelete(id);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -150,7 +150,7 @@ export const updateReview = async (formData: FormData) => {
     images: images,
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Review.findByIdAndUpdate(data.id, data);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -163,7 +163,7 @@ export const updateReview = async (formData: FormData) => {
 
 export const fetchCollections = async () => {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Collection.find({});
     const collections: CollectionType[] = JSON.parse(JSON.stringify(data));
     return collections;
@@ -180,7 +180,7 @@ export const addNewCollection = async (formData: FormData) => {
     url: formData.get("url")?.toString() || "",
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Collection.create(data);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -193,7 +193,7 @@ export const removeCollection = async (formData: FormData) => {
   const id = formData.get("id")?.toString() || "";
   if (!id) return;
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Collection.findByIdAndDelete(id);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -210,7 +210,7 @@ export const updateCollection = async (formData: FormData) => {
     url: formData.get("url")?.toString() || "",
   };
   try {
-    await connectToDatabase();
+    connectToDatabase();
     await Collection.findByIdAndUpdate(data.id, data);
   } catch (error) {
     console.error("Error fetching products:", error);

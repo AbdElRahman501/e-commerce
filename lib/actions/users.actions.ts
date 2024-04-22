@@ -3,20 +3,13 @@ import { redirect } from "next/navigation";
 import { User } from "../models/users.model";
 import { connectToDatabase } from "../mongoose";
 import nodemailer from "nodemailer";
-import path from "path";
-import fs, { link } from "fs";
-import {
-  formatOrderItems,
-  generateCode,
-  generateRandomCode,
-  reformatCartItems,
-} from "@/utils";
+import { generateRandomCode } from "@/utils";
 import PromoCode from "../models/promoCode.model";
-import { PromoCodeType, SubscriberType } from "@/types";
+import { SubscriberType } from "@/types";
 
 export async function fetchUsers(): Promise<{ email: string }[]> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await User.find({});
     const users: { email: string }[] = JSON.parse(JSON.stringify(data));
     console.log("🚀 ~ fetchUsers ~ users:", users);
@@ -29,7 +22,7 @@ export async function fetchUsers(): Promise<{ email: string }[]> {
 
 export async function fetchSubscriber(id: string): Promise<SubscriberType> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await User.findById(id);
     const user: SubscriberType = JSON.parse(JSON.stringify(data));
     return user;
@@ -43,12 +36,22 @@ export async function subscribe(formData: FormData) {
   const email = formData.get("email")?.toString() || "";
   if (!email) return;
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const user = await User.create({ email });
     if (user) sendPromoEmail(user);
     redirect("/?customer_posted=true");
   } catch (error) {
     redirect("/?customer_posted=true");
+  }
+}
+
+export async function subscribeWithEmail(email: string) {
+  try {
+    connectToDatabase();
+    const user = await User.create({ email });
+    if (user) sendPromoEmail(user);
+  } catch (error) {
+    console.log(error);
   }
 }
 export const sendPromoEmail = async (user: {
@@ -89,11 +92,30 @@ export const sendPromoEmail = async (user: {
       from: process.env.PAGE_EMAIL,
       to: email,
       subject: "Welcome to our store! 🌟",
-      html: `<div> <p>Can't see this email? </p> <a href="${emailUrl}"> View in Your Browser</a> </div> <p>Thank you for subscribing to our store. Your promo code is: <b>${promoCode.code}</b></p>`,
+      html: `<div>
+      <p>Can't see this email? <a href="${emailUrl}">View in Your Browser</a></p>
+    </div>
+    <img src="path_to_your_logo_image" alt="Logo">
+    <img src="path_to_your_image" alt="Offer Image">
+    <h2>HERE'S 15% OFF</h2>
+    <p>Enter the Code below to get 15% off your next purchase</p>
+    <p><b>${promoCode.code}</b></p>
+    <button style="background-color: #4CAF50; /* Green */
+                    border: none;
+                    color: white;
+                    padding: 15px 32px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    transition-duration: 0.4s;
+                    cursor: pointer;
+                    border-radius: 12px;">Shop Now</button>`,
     };
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent:", info.response);
   } catch (error) {
-    console.error("Email sending error:", error);
+    console.error("Subscribe confirmation Email sending error:", error);
   }
 };

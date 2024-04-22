@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { fetchCollections, fetchStories } from "@/lib/actions/store.actions";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const CollectionCard = dynamic(() => import("./CollectionCard"));
 const ArrowButton = dynamic(() => import("./ArrowButton"));
@@ -18,15 +19,15 @@ const Hero = async () => {
           {restCollections.map((collection) => (
             <CollectionCard key={collection.name} {...collection} />
           ))}
-          <div className="rounded-4xl relative col-span-2 flex h-32 w-full items-end overflow-hidden bg-primary_color p-5 sm:h-full md:h-1/2 ">
+          <Link
+            href={"/collections"}
+            className="rounded-4xl relative col-span-2 flex h-32 w-full items-end overflow-hidden bg-primary_color p-5 sm:h-full md:h-1/2 "
+          >
             <h1 className="text-2xl font-bold uppercase text-white dark:text-white">
               All Collections
             </h1>
-            <ArrowButton
-              href="/collections"
-              className="absolute right-3 top-3 bg-white  text-3xl text-black  dark:text-black "
-            />
-          </div>
+            <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  dark:text-black " />
+          </Link>
         </div>
         <div className="flex h-full  w-full flex-col-reverse gap-3 max-sm:row-span-3 sm:grid sm:grid-cols-7 md:col-span-7">
           <div className="rounded-4xl relative col-span-4 mx-5 overflow-hidden max-sm:aspect-square sm:mx-0 ">

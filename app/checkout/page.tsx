@@ -7,6 +7,7 @@ import { reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
 import { fetchOffers } from "@/lib/actions/offer.actions";
+import Coupon from "@/components/cart/Coupon";
 
 const BagCard = dynamic(() => import("@/components/BagCard"));
 const ShippingAddress = dynamic(
@@ -35,10 +36,11 @@ const CheckOutPage = async ({
   const { governorate, cities } = await fetchShipping();
 
   const offers = await fetchOffers();
-  const freeShippingMinValue = Number(
-    offers.find((x) => x.title === "FREE_SHIPPING")?.description || 0,
-  );
+  const freeShippingMin = offers.find(
+    (x) => x.title === "FREE_SHIPPING",
+  )?.description;
 
+  const freeShippingMinValue = Number(freeShippingMin) || null;
   const discountPercentage = promoCode.discount / 100 || 0;
   const subTotal = cartProducts.reduce(
     (acc, item) => acc + (item.salePrice || item.price) * item.amount,
@@ -58,9 +60,14 @@ const CheckOutPage = async ({
   const discountValue = Math.ceil(discountPercentage * subTotal);
   const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
   const restShipping =
-    subTotal + 50 < freeShippingMinValue ? freeShippingMinValue - subTotal : 0;
+    freeShippingMinValue && subTotal + 50 < freeShippingMinValue
+      ? freeShippingMinValue - subTotal
+      : 0;
+
   const shipping =
-    restShipping === 0 ? restShipping : cityShipping || stateShipping || 0;
+    restShipping === 0 && freeShippingMinValue
+      ? restShipping
+      : cityShipping || stateShipping || 0;
   const total = subTotal + shipping - discount;
 
   return cart.length === 0 ? (
@@ -125,8 +132,8 @@ const CheckOutPage = async ({
           {formInputs.map((input, index) => (
             <CustomInput key={index} {...input} />
           ))}
+          <Coupon coupon={coupon} />
           <div className="hidden">
-            <CustomInput type="text" value={coupon} name="promoCode" readOnly />
             <CustomInput type="number" value={total} name="total" readOnly />
             <CustomInput
               type="number"
@@ -182,14 +189,18 @@ const CheckOutPage = async ({
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
               <p>Shipping</p>
               <p>
-                {shipping === 0
+                {shipping === 0 && freeShippingMinValue
                   ? "Free Shipping 🎉🎉"
-                  : shipping.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "EGP",
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                  : !statId
+                    ? " set state"
+                    : !cityId
+                      ? " set city"
+                      : shipping.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "EGP",
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
               </p>
             </div>
           </div>
@@ -205,7 +216,10 @@ const CheckOutPage = async ({
             </p>
           </div>
 
-          <SubmitButton title={`Place Order ${total.toFixed(0)} EGP`} />
+          <SubmitButton
+            disable={!statId || !cityId}
+            title={`Place Order ${total.toFixed(0)} EGP`}
+          />
         </div>
       </form>
     </div>

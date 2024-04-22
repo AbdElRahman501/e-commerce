@@ -40,7 +40,7 @@ const CartPricing = async ({
       ? "this coupon is not valid"
       : subTotal - discountValue > minSubTotal
         ? ""
-        : "You can't apply this coupon";
+        : "You are having our best price!";
 
   const restShipping =
     subTotal + 50 < freeShippingMinValue ? freeShippingMinValue - subTotal : 0;

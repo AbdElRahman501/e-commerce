@@ -135,6 +135,7 @@ const CustomInput = ({
             name={name}
             id={name}
             value={label}
+            checked={defaultValue || value}
             onChange={onChange}
             readOnly={readOnly || (value && !onChange ? true : false)}
             className="peer hidden"

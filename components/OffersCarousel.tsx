@@ -45,9 +45,16 @@ const OffersCarousel = ({ offers }: { offers: OfferType[] }) => {
       });
     }
   };
+  React.useEffect(() => {
+    const interval = setInterval(scrollToNext, 3000);
+    return () => {
+      clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIndex]);
 
   return (
-    <div className="relative h-60 w-full ">
+    <div className="relative mb-5 h-60 w-full  ">
       <button
         onClick={scrollToPrev}
         className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl  `}

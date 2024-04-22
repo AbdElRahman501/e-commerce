@@ -10,12 +10,13 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { soldProducts } from "./product.actions";
 import { User } from "../models/users.model";
-import { sendPromoEmail } from "./users.actions";
+import { subscribeWithEmail } from "./users.actions";
+import { promoCodeUse } from "./promo-code.actions";
 
 export async function createOrder(formData: FormData) {
   let redirectPath = "";
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const cartData = cookies().get("cart")?.value;
     const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
 
@@ -74,9 +75,11 @@ export async function createOrder(formData: FormData) {
     if (email) {
       sendEmail(createdOrder, cart);
       if (messageAccept) {
-        const user = await User.create({ email });
-        if (user) sendPromoEmail(user);
+        subscribeWithEmail(email);
       }
+    }
+    if (promoCode) {
+      promoCodeUse(promoCode);
     }
     cookies().delete("cart");
     redirectPath = "/confirmation/" + createdOrder.id;
@@ -131,7 +134,7 @@ export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
     : {};
 
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Order.find(textSearchCondition).limit(limit);
     const orders: OrderType[] = JSON.parse(JSON.stringify(data));
     return orders;
@@ -143,7 +146,7 @@ export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
 
 export async function fetchOrder(id: string): Promise<OrderType | null> {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const data = await Order.findOne({ id: id });
     const order: OrderType = JSON.parse(JSON.stringify(data));
     return order;
@@ -196,7 +199,7 @@ export const sendEmail = async (
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent:", info.response);
+    console.log("order Confirmation Email sent:", info.response);
   } catch (error) {
     console.error("Email sending error:", error);
   }
