@@ -197,3 +197,71 @@ export function isFreeShipping(offers: OfferType[], subTotal: number) {
   return false;
 }
 export { formatOrderItems };
+
+export function addToCart(cart: CartItem[], item: CartItem) {
+  if (!cart || !item) return [];
+  const { productId, amount, selectedColor, selectedSize } = item;
+  let isInCart = cart.some(
+    (item) =>
+      item.productId === productId &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize,
+  );
+  if (!isInCart) {
+    const data = [
+      ...cart,
+      {
+        productId,
+        amount,
+        selectedColor,
+        selectedSize,
+      },
+    ];
+    return data;
+  } else {
+    return cart;
+  }
+}
+
+export function editCart(
+  cart: CartItem[],
+  oldItem: CartItem,
+  newItem: CartItem,
+) {
+  const data = cart.map((item) => {
+    if (
+      item.productId === oldItem.productId &&
+      item.selectedColor === oldItem.selectedColor &&
+      item.selectedSize === oldItem.selectedSize
+    ) {
+      return newItem;
+    }
+    return item;
+  });
+  return data;
+}
+
+export function removeFromCart(cart: CartItem[], item: CartItem) {
+  if (!cart || !item) return [];
+  const { productId, selectedColor, selectedSize } = item;
+  const data = cart.filter((item) => {
+    const matchItem =
+      item.productId === productId &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize;
+
+    if (matchItem) {
+      return false;
+    }
+    return true;
+  });
+  return data;
+}
+
+export function toggleFavoriteItem(favorite: string[], id: string) {
+  if (!favorite) return [];
+  const data = favorite.find((item) => item === id)
+    ? favorite.filter((item) => item !== id)
+    : [...favorite, id];
+  return data;
+}

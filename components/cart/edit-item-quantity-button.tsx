@@ -5,6 +5,7 @@ import LoadingDots from "../loading-dots";
 import { updateItem } from "../actions/cart.actions";
 import { CartItem } from "@/types";
 import DropDown_icon from "../icons/DropDown_icon";
+import { editCart } from "@/utils";
 
 function SubmitButton({
   type,
@@ -58,8 +59,19 @@ export function EditItemQuantityButton({
     newItem: newItem,
   });
 
+  const editItemFunction = () => {
+    if (typeof window == "undefined") return;
+    const cartData = localStorage.getItem("cartItems");
+    const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
+    localStorage.setItem(
+      "cartItems",
+      JSON.stringify(editCart(cart, item, newItem)),
+    );
+    actionWithVariant();
+  };
+
   return (
-    <form action={actionWithVariant} className="h-full w-1/3">
+    <form action={editItemFunction} className="h-full w-1/3">
       <SubmitButton
         type={type}
         disabled={type === "minus" && item.amount === 1}

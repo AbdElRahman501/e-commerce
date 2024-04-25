@@ -4,7 +4,12 @@ import React, { useState } from "react";
 import { CartItem, ProductOnSaleType } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createUrl, formatPrice, getAllImages } from "@/utils";
+import {
+  createUrl,
+  formatPrice,
+  getAllImages,
+  toggleFavoriteItem,
+} from "@/utils";
 import dynamic from "next/dynamic";
 import { toggleFav } from "./actions/fav.actions";
 import Image from "next/image";
@@ -78,6 +83,16 @@ const ProductDetailsComponent = ({
     const optionUrl = createUrl(pathname, newSearchParams);
     return router.replace(optionUrl, { scroll: false });
   }
+
+  const toggleFavItemAction = () => {
+    if (typeof window == "undefined") return;
+    const favData = localStorage.getItem("favoriteItems");
+    const favorite: string[] = favData ? JSON.parse(favData) : [];
+    localStorage.setItem(
+      "favoriteItems",
+      JSON.stringify(toggleFavoriteItem(favorite, id)),
+    );
+  };
 
   return (
     <div className="mx-auto flex w-full max-w-8xl flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
@@ -183,6 +198,7 @@ const ProductDetailsComponent = ({
           />
           <CustomForm
             action={toggleFav}
+            customAction={toggleFavItemAction}
             data={id}
             className="flex aspect-square h-14 w-14 items-center justify-center rounded-full border border-primary_bg bg-white py-1 text-lg text-black dark:border-white "
           >

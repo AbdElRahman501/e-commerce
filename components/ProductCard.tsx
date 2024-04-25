@@ -3,7 +3,7 @@ import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { formatPrice } from "@/utils";
+import { formatPrice, toggleFavoriteItem } from "@/utils";
 import { toggleFav } from "./actions/fav.actions";
 import dynamic from "next/dynamic";
 
@@ -31,6 +31,16 @@ const ProductCard = ({
   const [selectedColor, setSelectedColor] = React.useState<string>(colors[0]);
   const isFav = !!fav.find((item) => item === id);
 
+  const toggleFavItemAction = () => {
+    if (typeof window == "undefined") return;
+    const favData = localStorage.getItem("favoriteItems");
+    const favorite: string[] = favData ? JSON.parse(favData) : [];
+    localStorage.setItem(
+      "favoriteItems",
+      JSON.stringify(toggleFavoriteItem(favorite, id)),
+    );
+  };
+
   return (
     <div className={` animate-fadeIn relative  flex-col gap-4 ${className}`}>
       {saleValue && (
@@ -54,7 +64,12 @@ const ProductCard = ({
           </div>
         </Link>
         <div className="absolute bottom-2 right-2 rounded-full bg-white p-2 text-black ">
-          <CustomForm action={toggleFav} data={id} className="h-5 w-5">
+          <CustomForm
+            action={toggleFav}
+            customAction={toggleFavItemAction}
+            data={id}
+            className="h-5 w-5"
+          >
             <SubmitButton
               loadingItem={
                 <p className="text-center text-2xl">

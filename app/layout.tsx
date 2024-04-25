@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/theme-provider";
 import { NavBar } from "@/components";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import React, { Suspense } from "react";
+import LocalStorage from "@/components/LocalStorage";
 
 const inter = Inter({ subsets: ["latin"] });
 const golos = localFont({
@@ -53,6 +54,7 @@ export default function RootLayout({
       <body
         className={`${golos.variable} bg-white font-golos duration-200 dark:bg-[#0d1117]`}
       >
+        <LocalStorage />
         <Suspense>
           <ThemeProvider
             attribute="class"
