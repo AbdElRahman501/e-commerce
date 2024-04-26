@@ -43,7 +43,15 @@ const CustomTable = ({
         const status: { name: string; color: string } = item[header];
         return <div style={{ color: status.color }}>{status.name}</div>;
       default:
-        return item[header];
+        return typeof item[header] === "string"
+          ? item[header].includes("\n")
+            ? item[header]
+                .split("\n")
+                .map((line: string, index: number) => (
+                  <div key={index}>{line}</div>
+                ))
+            : item[header]
+          : item[header];
     }
   };
 

@@ -1,71 +1,6 @@
-import { CollectionType, DashboardCardProps } from "@/types";
+import { DashboardCardProps, SortFilterItem } from "@/types";
 import { formInputs, productInputs } from "./inputs";
-const footerList = [
-  {
-    title: "About Us",
-    links: [
-      {
-        name: "Our Story",
-        url: "/about/#our-story",
-      },
-      {
-        name: "Mission and Values",
-        url: "/about/#mission-and-values",
-      },
-      {
-        name: "Team",
-        url: "/about/#team",
-      },
-    ],
-  },
-  {
-    title: "Shop",
-    links: [
-      {
-        name: "All Products",
-        url: "/shop",
-      },
-      {
-        name: "New Arrivals",
-        url: "/shop?sort=New Arrivals",
-      },
-      {
-        name: "Sale",
-        url: "/shop?kw=sale",
-      },
-    ],
-  },
-  {
-    title: "Social Media",
-    links: [
-      {
-        name: "Instagram",
-        url: "https://www.instagram.com/eh.egyy/",
-      },
-      {
-        name: "Facebook",
-        url: "https://www.facebook.com/profile.php?id=100084787940589",
-      },
-    ],
-  },
-];
-
-export type SortFilterItem = {
-  title: string;
-  slug: string | null;
-  sortKey: "RELEVANCE" | "BEST_SELLING" | "CREATED_AT" | "PRICE";
-  reverse: boolean;
-};
-
-export const defaultSort: SortFilterItem = {
-  title: "Relevance",
-  slug: null,
-  sortKey: "RELEVANCE",
-  reverse: false,
-};
-
 export const sorting: SortFilterItem[] = [
-  defaultSort,
   {
     title: "Trending",
     slug: "trending-desc",
@@ -89,41 +24,6 @@ export const sorting: SortFilterItem[] = [
     slug: "price-desc",
     sortKey: "PRICE",
     reverse: true,
-  },
-];
-
-const categories = [
-  {
-    name: "Funny Prints",
-    url: "#",
-  },
-  {
-    name: "Graphic Designs",
-    url: "#",
-  },
-  {
-    name: "Quotes and Sayings",
-    url: "#",
-  },
-  {
-    name: "Custom Prints",
-    url: "#",
-  },
-  {
-    name: "Animal Prints",
-    url: "#",
-  },
-  {
-    name: "Nature Inspired",
-    url: "#",
-  },
-  {
-    name: "Abstract Art",
-    url: "#",
-  },
-  {
-    name: "Music and Bands",
-    url: "#",
   },
 ];
 
@@ -378,12 +278,4 @@ const CSS_COLORS = [
   "yellow",
   "yellowgreen",
 ];
-export {
-  CSS_COLORS,
-  dashboardCards,
-  categories,
-  faqSection,
-  formInputs,
-  footerList,
-  productInputs,
-};
+export { CSS_COLORS, dashboardCards, faqSection, formInputs, productInputs };

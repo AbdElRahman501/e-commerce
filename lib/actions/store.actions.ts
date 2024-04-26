@@ -1,7 +1,19 @@
 "use server";
-import { CollectionType, NavbarType, ReviewType, StoryType } from "@/types";
+import {
+  CollectionType,
+  FooterType,
+  NavbarType,
+  ReviewType,
+  StoryType,
+} from "@/types";
 import { connectToDatabase } from "../mongoose";
-import { Collection, NavBarLink, Review, Story } from "../models/store.model";
+import {
+  Collection,
+  FooterLink,
+  NavBarLink,
+  Review,
+  Story,
+} from "../models/store.model";
 import { redirect } from "next/navigation";
 import { checkDateStatus } from "@/utils";
 
@@ -25,6 +37,17 @@ export async function fetchNavbarLinks(): Promise<NavbarType[]> {
     const data = await NavBarLink.find({});
     const navbarLinks: NavbarType[] = JSON.parse(JSON.stringify(data));
     return navbarLinks;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+export async function fetchFooterLinks(): Promise<FooterType[]> {
+  try {
+    connectToDatabase();
+    const data = await FooterLink.find({});
+    const footerLinks: FooterType[] = JSON.parse(JSON.stringify(data));
+    return footerLinks;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;

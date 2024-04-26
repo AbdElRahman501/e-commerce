@@ -6,6 +6,8 @@ import Modal from "@/components/Modal";
 import {
   addNewStory,
   fetchAllStories,
+  fetchFooterLinks,
+  fetchNavbarLinks,
   removeStory,
   updateStory,
 } from "@/lib/actions/store.actions";
@@ -24,6 +26,8 @@ export default async function OrdersPage({
   };
 
   const stories = await fetchAllStories();
+  const navBarLinks = await fetchNavbarLinks();
+  const footerLinks = await fetchFooterLinks();
 
   let story;
   if (stroyId) {
@@ -175,6 +179,61 @@ export default async function OrdersPage({
                 status: checkDateStatus(item.start, item.end),
               }))}
               header={["image", "start", "end", "status", "url"]}
+              ActionComponent={(item) => (
+                <div className="flex gap-2">
+                  <Link
+                    replace
+                    href={"/dashboard/store?stroyId=" + item._id}
+                    className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
+                  >
+                    edit
+                  </Link>
+                  <Link
+                    replace
+                    href={"/dashboard/store?removeStroyId=" + item._id}
+                    className=" text-red-500 hover:underline dark:hover:underline "
+                  >
+                    remove
+                  </Link>
+                </div>
+              )}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <CustomTable
+              data={navBarLinks}
+              header={["title", "main", "url"]}
+              ActionComponent={(item) => (
+                <div className="flex gap-2">
+                  <Link
+                    replace
+                    href={"/dashboard/store?stroyId=" + item._id}
+                    className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
+                  >
+                    edit
+                  </Link>
+                  <Link
+                    replace
+                    href={"/dashboard/store?removeStroyId=" + item._id}
+                    className=" text-red-500 hover:underline dark:hover:underline "
+                  >
+                    remove
+                  </Link>
+                </div>
+              )}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <CustomTable
+              data={footerLinks.map((item) => ({
+                ...item,
+                links: item.links
+                  .map(
+                    (link) => "title: " + link.name + " - link :  " + link.url,
+                  )
+                  .join(" \n "),
+              }))}
+              header={["title", "links"]}
               ActionComponent={(item) => (
                 <div className="flex gap-2">
                   <Link

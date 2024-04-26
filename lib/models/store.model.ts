@@ -1,3 +1,4 @@
+import { link } from "fs";
 import mongoose from "mongoose";
 
 const storySchema = new mongoose.Schema({
@@ -29,6 +30,28 @@ const navbarSchema = new mongoose.Schema({
 
 export const NavBarLink =
   mongoose.models.NavBarLink || mongoose.model("NavBarLink", navbarSchema);
+
+const footerSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  links: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+});
+
+export const FooterLink =
+  mongoose.models.FooterLink || mongoose.model("FooterLink", footerSchema);
 
 export const collectionSchema = new mongoose.Schema({
   name: { type: String, required: true },

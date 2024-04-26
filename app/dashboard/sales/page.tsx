@@ -37,8 +37,6 @@ export default async function SalesPage({
   const pathName = "/dashboard/sales";
   const offers = await fetchOffers();
   const promoCodes = await fetchPromoCodes();
-  console.log("🚀 ~ promoCodes:", promoCodes);
-
   let offer;
   if (offerId) {
     offer = offers.find((item) => item._id === offerId);

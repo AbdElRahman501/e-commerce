@@ -1,8 +1,14 @@
-import React from "react";
-
 export interface ArrowButtonProps {
   className?: string;
   href?: string;
+}
+
+export interface FooterType {
+  title: string;
+  links: {
+    name: string;
+    url: string;
+  }[];
 }
 
 export interface SectionTitleProps {
@@ -23,6 +29,12 @@ export interface FilterData {
   categories: { name: string; count: number }[];
   sizes: string[];
   colors: string[];
+}
+export interface SortFilterItem {
+  title: string;
+  slug: string | null;
+  sortKey: "RELEVANCE" | "BEST_SELLING" | "CREATED_AT" | "PRICE";
+  reverse: boolean;
 }
 
 export interface Product {
