@@ -1,3 +1,4 @@
+import DashSideBar from "@/components/DashSideBar";
 import React, { Suspense } from "react";
 
 export default function DashBoardLayout({
@@ -8,10 +9,12 @@ export default function DashBoardLayout({
   return (
     <>
       <Suspense>
-        <Suspense>
-          <div>sidebar</div>
-        </Suspense>
-        {children}
+        <div className="flex">
+          <Suspense>
+            <DashSideBar />
+          </Suspense>
+          <div className="w-3/4 flex-1">{children}</div>
+        </div>
       </Suspense>
     </>
   );

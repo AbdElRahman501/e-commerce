@@ -121,16 +121,6 @@ const MenuBurgerButton = ({ navbarLinks }: { navbarLinks: NavbarType[] }) => {
           </ul>
         </div>
       </div>
-      {session?.user?.name === "Admin" && (
-        <Link
-          href="/dashboard"
-          className="left-0 top-1 hidden h-14 md:absolute md:block"
-        >
-          <p className=" bg-primary_color p-4 uppercase text-white duration-200 ">
-            dashboard
-          </p>
-        </Link>
-      )}
     </>
   );
 };
