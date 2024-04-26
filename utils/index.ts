@@ -265,3 +265,14 @@ export function toggleFavoriteItem(favorite: string[], id: string) {
     : [...favorite, id];
   return data;
 }
+
+export function firstMatch(arr1: string[], arr2: string[]): string | null {
+  for (const item1 of arr1) {
+    for (const item2 of arr2) {
+      if (item1 === item2) {
+        return item1;
+      }
+    }
+  }
+  return null; // Return null if no match is found
+}

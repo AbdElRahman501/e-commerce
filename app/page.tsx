@@ -27,22 +27,23 @@ export default async function Home({
   const { customer_posted } = searchParams as {
     [key: string]: string;
   };
-
-  const { products: trendingProducts } = await fetchFilteredProducts({
+  let myCount = 0;
+  const { products: trendingProducts, count } = await fetchFilteredProducts({
     sort: "Trending",
     limit: 4,
-    minLimit: 4,
   });
+  myCount = count - 4;
   const { products: newArrivalsProducts } = await fetchFilteredProducts({
     sort: "New Arrivals",
     limit: 4,
-    minLimit: 4,
+    minLimit: myCount === 0 ? 0 : 4,
     idsToExclude: trendingProducts.map((product) => product.id),
   });
+  myCount = myCount >= 4 ? myCount - 4 : 0;
   const { products: bestSellersProducts } = await fetchFilteredProducts({
     sort: "Best Sellers",
     limit: 4,
-    minLimit: 4,
+    minLimit: myCount === 0 ? 0 : 4,
     idsToExclude: [
       ...newArrivalsProducts.map((product) => product.id),
       ...trendingProducts.map((product) => product.id),

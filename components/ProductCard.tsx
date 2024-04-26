@@ -2,10 +2,11 @@
 import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { formatPrice, toggleFavoriteItem } from "@/utils";
+import React, { useEffect } from "react";
+import { firstMatch, formatPrice, toggleFavoriteItem } from "@/utils";
 import { toggleFav } from "./actions/fav.actions";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 
 const CustomForm = dynamic(() => import("./CustomForm"));
 const SubmitButton = dynamic(() => import("./SubmitButton"));
@@ -28,8 +29,18 @@ const ProductCard = ({
   fav = [],
   className,
 }: ProductCardProps) => {
+  const searchParams = useSearchParams();
   const [selectedColor, setSelectedColor] = React.useState<string>(colors[0]);
   const isFav = !!fav.find((item) => item === id);
+
+  useEffect(() => {
+    const colorFilter = searchParams?.get("clf")?.length
+      ? searchParams?.get("clf")?.split(",") || []
+      : [];
+    const color = firstMatch(colorFilter, colors);
+    setSelectedColor(color || colors[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const toggleFavItemAction = () => {
     if (typeof window == "undefined") return;

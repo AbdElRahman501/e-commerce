@@ -60,6 +60,7 @@ const FilterContainer = ({
     newSearchParams.set("clf", selectedColors.join(","));
     newSearchParams.set("minP", minPriceState.toString());
     newSearchParams.set("maxP", maxPriceState.toString());
+    newSearchParams.set("ft", "false");
     const optionUrl = createUrl(pathname, newSearchParams);
     router.replace(optionUrl, { scroll: false });
   }
@@ -229,7 +230,7 @@ const FilterContainer = ({
         <button
           type="button"
           onClick={submitHandler}
-          className="group mt-2 min-h-12 w-full rounded-2xl  bg-primary_color uppercase  text-white hover:bg-gray-900"
+          className="group mt-2 min-h-12 w-full rounded-2xl  bg-primary_color uppercase  text-white enabled:hover:bg-gray-900"
         >
           <p className="duration-500 group-hover:scale-110">Submit</p>
         </button>
