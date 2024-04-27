@@ -3,6 +3,7 @@ import { CartButton, MenuBurgerButton, ThemeSwitcher } from ".";
 import LogoIcon from "./icons/LogoIcon";
 import HeartIcon from "./icons/HeartIcon";
 import { fetchNavbarLinks } from "@/lib/actions/store.actions";
+import DashBoardHomeLink from "./DashBoardHomeLink";
 
 const NavBar = async () => {
   const navbarLinks = await fetchNavbarLinks();
@@ -23,6 +24,7 @@ const NavBar = async () => {
             {link.title}
           </Link>
         ))}
+        <DashBoardHomeLink />
       </div>
       <div className="flex flex-1 items-center justify-end gap-2 md:gap-8 ">
         <ThemeSwitcher

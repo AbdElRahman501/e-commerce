@@ -1,12 +1,16 @@
 import GoUpButton from "./GoUpButton";
-import { categories, footerList } from "@/constants";
 import Link from "next/link";
 import LogoIcon from "./icons/LogoIcon";
+import { fetchFooterLinks } from "@/lib/actions/store.actions";
 
-const Footer = () => {
+const Footer = async () => {
+  const footerLink = await fetchFooterLinks();
+  const footerList = footerLink.filter((item) => item.title !== "categories");
+  const categories = footerLink.find((item) => item.title === "categories")
+    ?.links as { name: string; url: string }[];
   return (
     <footer className="mt-5 bg-primary_color px-5 py-5 md:px-20">
-      <div className="max-w-8xl mx-auto flex flex-col gap-5">
+      <div className="mx-auto flex max-w-8xl flex-col gap-5">
         <div className="flex grid-cols-5 flex-col gap-5 px-5 py-5 md:grid">
           {footerList.map((item, index) => (
             <div key={index} className="group flex flex-col gap-1">

@@ -40,7 +40,7 @@ const Coupon = ({ coupon: initCoupon }: { coupon: string }) => {
         <button
           onClick={submitHandler}
           type="button"
-          className="h-14 w-14 rounded-lg border-gray-200 bg-primary_color text-center text-3xl text-white hover:bg-white hover:text-black "
+          className="h-14 w-14 rounded-lg border-gray-200 bg-black text-center text-3xl text-white duration-300 hover:bg-white hover:text-black "
         >
           <div className="flex items-center justify-center">
             {loading ? <LoadingDots /> : <Plus_Icon className="h-8 w-8" />}

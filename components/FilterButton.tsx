@@ -1,14 +1,13 @@
 "use client";
-import { createUrl } from "@/utils";
 import Image from "next/image";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 const FilterButton = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const isOpen = searchParams?.get("ft") === "true";
 
   const scrollToDiv = () => {
@@ -18,25 +17,9 @@ const FilterButton = () => {
     return top + window.scrollY - offset;
   };
 
-  function setIsOpen(isOpen: boolean) {
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set("ft", isOpen.toString());
-    const optionUrl = createUrl(pathname, newSearchParams);
-    router.replace(optionUrl);
-  }
-
-  const openFilter = () => {
-    if (isOpen) {
-      setIsOpen(false);
-    } else {
-      setTimeout(() => {
-        const top = scrollToDiv();
-        console.log("🚀 ~ setTimeout ~ top:", top);
-        window.scrollTo({ top: top, behavior: "smooth" });
-      }, 300);
-      setIsOpen(true);
-    }
-  };
+  useEffect(() => {
+    if (isOpen) window.scrollTo({ top: scrollToDiv(), behavior: "smooth" });
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -49,11 +32,15 @@ const FilterButton = () => {
     };
   }, [isOpen]);
 
+  const newSearchParams = new URLSearchParams(searchParams.toString());
+  newSearchParams.set("ft", (!isOpen).toString());
+
   return (
     <div ref={divRef}>
-      <button
-        type="button"
-        onClick={openFilter}
+      <Link
+        shallow
+        href={`${pathname}?${newSearchParams.toString()}`}
+        replace
         className="flex h-14 w-14 flex-grow-0 items-center justify-center  rounded-2xl border bg-primary_color dark:bg-white md:hidden"
       >
         <Image
@@ -63,7 +50,7 @@ const FilterButton = () => {
           height={30}
           className="invert dark:invert-0"
         />
-      </button>
+      </Link>
     </div>
   );
 };

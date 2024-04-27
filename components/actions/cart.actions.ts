@@ -1,44 +1,26 @@
 "use server";
 import { CartItem } from "@/types";
+import { addToCart, editCart, removeFromCart } from "@/utils";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function addItem(
-  previousState: any,
-  { selectedColor, selectedSize, amount, productId }: CartItem,
-) {
+export async function addItem(previousState: any, cartItem: CartItem) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
-  let isInCart;
+  cookies().set("cart", JSON.stringify(addToCart(cart, cartItem)));
+  revalidateTag("cart");
+  return "added to cart";
+}
 
-  if (cart) {
-    isInCart = cart.some(
-      (item) =>
-        item.productId === productId &&
-        item.selectedColor === selectedColor &&
-        item.selectedSize === selectedSize,
-    );
-  }
-
-  if (!isInCart) {
-    const data = [
-      ...cart,
-      {
-        productId,
-        amount,
-        selectedColor,
-        selectedSize,
-      },
-    ];
+export async function addItems(previousState: any, data: CartItem[]) {
+  if (data) {
     cookies().set("cart", JSON.stringify(data));
     revalidateTag("cart");
     return "added to cart";
-  } else {
-    redirect("/cart");
-    return "already in cart";
   }
 }
+
 export async function updateItem(
   previousState: any,
   {
@@ -51,42 +33,15 @@ export async function updateItem(
 ) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
-
-  const data = cart.map((item) => {
-    if (
-      item.productId === oldItem.productId &&
-      item.selectedColor === oldItem.selectedColor &&
-      item.selectedSize === oldItem.selectedSize
-    ) {
-      return newItem;
-    }
-    return item;
-  });
-  cookies().set("cart", JSON.stringify(data));
+  cookies().set("cart", JSON.stringify(editCart(cart, oldItem, newItem)));
   revalidateTag("cart");
   return "added to cart";
 }
 
-export async function removeItem(
-  previousState: any,
-  { selectedColor, selectedSize, productId }: CartItem,
-) {
+export async function removeItem(previousState: any, item: CartItem) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
-
-  const data = cart.filter((item) => {
-    const matchItem =
-      item.productId === productId &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize;
-
-    if (matchItem) {
-      return false;
-    }
-    return true;
-  });
-
-  cookies().set("cart", JSON.stringify(data));
+  cookies().set("cart", JSON.stringify(removeFromCart(cart, item)));
   revalidateTag("cart");
   return "removed from cart";
 }

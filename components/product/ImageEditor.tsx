@@ -111,15 +111,6 @@ const ImageEditor = ({
           placeholder="New Color"
           onChange={(e) => handleAddColor(e)}
         />
-        {/* <CustomInput
-          label="New Color"
-          name="color"
-          type="select"
-          options={CSS_COLORS}
-          placeholder="New Color"
-          value={newColor}
-          onChange={(e) => handleAddColor(e.target.value)}
-        /> */}
       </div>
     </>
   );

@@ -193,7 +193,112 @@ export function isFreeShipping(offers: OfferType[], subTotal: number) {
   const freeShippingMinValue: number = Number(
     offers.find((x) => x.title === "FREE_SHIPPING")?.description || 0,
   );
+  if (!freeShippingMinValue) return false;
   if (subTotal - 50 > freeShippingMinValue) return true;
   return false;
 }
 export { formatOrderItems };
+
+export function addToCart(cart: CartItem[], item: CartItem) {
+  if (!cart || !item) return [];
+  const { productId, amount, selectedColor, selectedSize } = item;
+  let isInCart = cart.some(
+    (item) =>
+      item.productId === productId &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize,
+  );
+  if (!isInCart) {
+    const data = [
+      ...cart,
+      {
+        productId,
+        amount,
+        selectedColor,
+        selectedSize,
+      },
+    ];
+    return data;
+  } else {
+    return cart;
+  }
+}
+
+export function editCart(
+  cart: CartItem[],
+  oldItem: CartItem,
+  newItem: CartItem,
+) {
+  const data = cart.map((item) => {
+    if (
+      item.productId === oldItem.productId &&
+      item.selectedColor === oldItem.selectedColor &&
+      item.selectedSize === oldItem.selectedSize
+    ) {
+      return newItem;
+    }
+    return item;
+  });
+  return data;
+}
+
+export function removeFromCart(cart: CartItem[], item: CartItem) {
+  if (!cart || !item) return [];
+  const { productId, selectedColor, selectedSize } = item;
+  const data = cart.filter((item) => {
+    const matchItem =
+      item.productId === productId &&
+      item.selectedColor === selectedColor &&
+      item.selectedSize === selectedSize;
+
+    if (matchItem) {
+      return false;
+    }
+    return true;
+  });
+  return data;
+}
+
+export function toggleFavoriteItem(favorite: string[], id: string) {
+  if (!favorite) return [];
+  const data = favorite.find((item) => item === id)
+    ? favorite.filter((item) => item !== id)
+    : [...favorite, id];
+  return data;
+}
+
+export function firstMatch(arr1: string[], arr2: string[]): string | null {
+  for (const item1 of arr1) {
+    for (const item2 of arr2) {
+      if (item1 === item2) {
+        return item1;
+      }
+    }
+  }
+  return null; // Return null if no match is found
+}
+
+function parseInputType(input: string) {
+  const type = input.toLowerCase();
+  if (type.startsWith("!")) {
+    const innerType = type.substring(1);
+    return { type: innerType, required: true };
+  } else {
+    return { type, required: false };
+  }
+}
+
+export function createInputArray(inputObj: any) {
+  const inputArray = [];
+  for (const key in inputObj) {
+    const { type, required } = parseInputType(inputObj[key]);
+    inputArray.push({
+      label: key,
+      type: type,
+      placeholder: `Enter ${key}`,
+      name: key,
+      required: required,
+    });
+  }
+  return inputArray;
+}

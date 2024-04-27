@@ -1,30 +1,38 @@
 "use client";
 import { useFormStatus } from "react-dom";
 import LoadingDots from "../loading-dots";
+import { useEffect, useState } from "react";
 
 export default function SubmitButton({
   title,
   disable,
 }: {
-  disable: boolean;
+  disable?: boolean;
   title: string;
 }) {
   const { pending } = useFormStatus();
-  console.log(pending || disable);
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (submitted && pending) {
+      localStorage.removeItem("cartItems");
+    }
+  }, [submitted, pending]);
 
   return (
     <button
       type="submit"
+      onClick={() => setSubmitted(true)}
       aria-label="checkout"
       disabled={pending || disable}
-      className="enabled:group mt-2 h-14 w-full overflow-hidden rounded-lg bg-black px-5 uppercase  text-white duration-300 enabled:hover:bg-white enabled:hover:text-black dark:bg-white dark:text-black dark:enabled:hover:bg-black dark:enabled:hover:text-white"
+      className="max-h-14 w-full rounded-lg border bg-black p-4 text-center uppercase text-white  duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white"
     >
       {pending ? (
-        <p className="text-4xl duration-300 group-hover:scale-110">
+        <p className="text-4xl duration-300 ">
           <LoadingDots />
         </p>
       ) : (
-        <p className="duration-300 group-hover:scale-110">{title}</p>
+        title
       )}
     </button>
   );

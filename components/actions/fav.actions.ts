@@ -1,25 +1,19 @@
 "use server";
+import { toggleFavoriteItem } from "@/utils";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 export async function toggleFav(previousState: any, id: string) {
   const favData = cookies().get("favorite")?.value;
   const favorite: string[] = favData ? JSON.parse(favData) : [];
-  let isFav: boolean = false;
+  const data = toggleFavoriteItem(favorite, id);
+  cookies().set("favorite", JSON.stringify(data));
+  revalidateTag("favorite");
+}
 
-  if (favorite) {
-    isFav = !!favorite.find((item) => item === id);
-  }
-
-  if (!isFav) {
-    const data = [...favorite, id];
-    cookies().set("favorite", JSON.stringify(data));
-    revalidateTag("favorite");
-    return !isFav;
-  } else {
-    const data = favorite.filter((item) => item !== id);
-    cookies().set("favorite", JSON.stringify(data));
-    revalidateTag("favorite");
-    return !isFav;
-  }
+export async function addFav(previousState: any, data: string[]) {
+  if (!data) return "no data";
+  cookies().set("favorite", JSON.stringify(data));
+  revalidateTag("favorite");
+  return "removed from favorite";
 }

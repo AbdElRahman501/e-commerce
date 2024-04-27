@@ -212,10 +212,7 @@ const CheckOutPage = async ({
             </p>
           </div>
 
-          <SubmitButton
-            disable={!statId || !cityId}
-            title={`Place Order ${total.toFixed(0)} EGP`}
-          />
+          <SubmitButton title={`Place Order ${total.toFixed(0)} EGP`} />
         </div>
       </form>
     </div>

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Sorting } from ".";
 import { CategoryCount } from "@/types";
 import { createUrl } from "@/utils";
@@ -48,43 +48,54 @@ const FilterContainer = ({
     React.useState<string[]>(sizeFilter);
   const [selectedColors, setSelectedColors] =
     React.useState<string[]>(colorFilter);
+  const [minPriceState, setMinPriceState] = React.useState<number>(minPrice);
+  const [maxPriceState, setMaxPriceState] = React.useState<number>(maxPrice);
+  const [changed, setChanged] = React.useState<boolean>(false);
 
-  function addParam(key: string, value: string) {
+  function submitHandler() {
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set(key, value.toString().toLowerCase().trim());
+    newSearchParams.set("gf", selectedGenders);
+    newSearchParams.set("ctf", selectedCategories.join(","));
+    newSearchParams.set("szf", selectedSizes.join(","));
+    newSearchParams.set("clf", selectedColors.join(","));
+    newSearchParams.set("minP", minPriceState.toString());
+    newSearchParams.set("maxP", maxPriceState.toString());
+    newSearchParams.set("ft", "false");
     const optionUrl = createUrl(pathname, newSearchParams);
     router.replace(optionUrl, { scroll: false });
   }
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const form = e.target as HTMLFormElement;
-    const min = (form.elements.namedItem("min") as HTMLInputElement)?.value;
-    const max = (form.elements.namedItem("max") as HTMLInputElement)?.value;
-
-    const newParams = new URLSearchParams(searchParams.toString());
-    if (min) {
-      newParams.set("minP", min);
-    } else {
-      newParams.delete("minP");
-    }
-    if (max) {
-      newParams.set("maxP", max);
-    } else {
-      newParams.delete("maxP");
-    }
-
-    router.push(createUrl(pathname, newParams), { scroll: false });
-  }
-
   function onReset() {
+    setChanged(false);
     router.replace(pathname, { scroll: false });
     setSelectedGenders("");
     setSelectedCategories([]);
     setSelectedSizes([]);
     setSelectedColors([]);
+    setMinPriceState(0);
+    setMaxPriceState(1000);
   }
+  useEffect(() => {
+    if (
+      selectedGenders ||
+      selectedCategories.length ||
+      selectedSizes.length ||
+      selectedColors.length ||
+      minPriceState !== 0 ||
+      maxPriceState !== 1000
+    ) {
+      setChanged(true);
+    } else {
+      setChanged(false);
+    }
+  }, [
+    selectedGenders,
+    selectedCategories,
+    selectedSizes,
+    selectedColors,
+    minPriceState,
+    maxPriceState,
+  ]);
   return (
     <div
       style={{ bottom: searchParams?.get("ft") === "true" ? "0" : "-100vh" }}
@@ -97,7 +108,6 @@ const FilterContainer = ({
         ></div>
         <button
           onClick={() => {
-            addParam("gf", selectedGenders === "1" ? "" : "1");
             setSelectedGenders(selectedGenders === "1" ? "" : "1");
           }}
           className={`${selectedGenders === "1" ? "text-white" : "text-primary_color"} m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)]  items-center justify-center text-center  `}
@@ -106,7 +116,6 @@ const FilterContainer = ({
         </button>
         <button
           onClick={() => {
-            addParam("gf", selectedGenders === "0" ? "" : "0");
             setSelectedGenders(selectedGenders === "0" ? "" : "0");
           }}
           className={`${selectedGenders === "0" ? "text-white" : "text-primary_color"} m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)] items-center justify-center text-center  `}
@@ -124,14 +133,6 @@ const FilterContainer = ({
             return (
               <button
                 onClick={() => {
-                  addParam(
-                    "ctf",
-                    selected
-                      ? selectedCategories
-                          .filter((category) => category !== item.name)
-                          .join(",")
-                      : [...selectedCategories, item.name].join(","),
-                  );
                   setSelectedCategories(
                     selected
                       ? selectedCategories.filter(
@@ -142,8 +143,6 @@ const FilterContainer = ({
                 }}
                 key={index}
                 className={`${selected ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 text-sm outline duration-200 hover:scale-105 hover:outline-black dark:hover:outline-white`}
-
-                // className={`${selected ? "bg-primary_color text-white" : ""} flex h-10 items-center justify-center rounded-full border border-primary_bg px-8 py-1 text-sm text-primary_color duration-300 dark:border-white dark:text-white`}
               >
                 <span>{item.name + " (" + item.count + ")"}</span>
               </button>
@@ -161,12 +160,6 @@ const FilterContainer = ({
             return (
               <button
                 onClick={() => {
-                  addParam(
-                    "szf",
-                    selected
-                      ? selectedSizes.filter((size) => size !== item).join(",")
-                      : [...selectedSizes, item].join(","),
-                  );
                   setSelectedSizes(
                     selected
                       ? selectedSizes.filter((size) => size !== item)
@@ -175,8 +168,6 @@ const FilterContainer = ({
                 }}
                 key={index}
                 className={`${selected ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 outline  duration-200 hover:scale-110 hover:outline-black dark:hover:outline-white`}
-
-                // className={`${selected ? "bg-primary_color text-white" : ""} flex aspect-square h-10 items-center justify-center rounded-xl border border-primary_bg py-1 text-sm text-primary_color dark:border-white dark:text-white`}
               >
                 <span>{item}</span>
               </button>
@@ -193,14 +184,6 @@ const FilterContainer = ({
               <button
                 key={index}
                 onClick={() => {
-                  addParam(
-                    "clf",
-                    selected
-                      ? selectedColors
-                          .filter((color) => color !== item)
-                          .join(",")
-                      : [...selectedColors, item].join(","),
-                  );
                   setSelectedColors(
                     selected
                       ? selectedColors.filter((color) => color !== item)
@@ -208,12 +191,9 @@ const FilterContainer = ({
                   );
                 }}
                 className={`${selected ? "outline-2 outline-black dark:outline-white " : "outline-1 outline-transparent"} rounded-full outline  outline-offset-2   duration-200 hover:scale-110`}
-
-                // className={`${selected ? "scale-110  outline  outline-2 outline-blue-900 dark:outline-blue-400" : "border-transparent"} h-8 w-8 rounded-full p-[1px] outline-offset-1 duration-200 hover:scale-110`}
               >
                 <span
                   style={{ backgroundColor: item }}
-                  // className="block aspect-square w-full rounded-full border"
                   className="block h-7 w-7 rounded-full border border-gray-300"
                 ></span>
               </button>
@@ -221,7 +201,7 @@ const FilterContainer = ({
           })}
         </div>
       </div>
-      <form onSubmit={onSubmit} className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3">
         <h1>Prices</h1>
         <div className="flex w-full items-center gap-1">
           <input
@@ -229,7 +209,8 @@ const FilterContainer = ({
             type="number"
             placeholder="Min"
             name="min"
-            defaultValue={minPrice}
+            value={minPriceState}
+            onChange={(e) => setMinPriceState(Number(e.target.value))}
             className="flex h-10 w-full items-center justify-center rounded-xl border border-primary_bg bg-transparent text-center text-sm text-primary_color dark:border-white dark:text-white"
           />
           <span>to</span>
@@ -238,20 +219,31 @@ const FilterContainer = ({
             type="number"
             name="max"
             placeholder="max"
-            defaultValue={maxPrice}
+            value={maxPriceState}
+            onChange={(e) => setMaxPriceState(Number(e.target.value))}
             className="flex h-10 w-full items-center justify-center rounded-xl border border-primary_bg bg-transparent text-center text-sm text-primary_color dark:border-white dark:text-white"
           />
           <input type="submit" className="hidden" />
         </div>
-      </form>
-
-      <button
-        type="button"
-        onClick={onReset}
-        className="group mt-2 min-h-12 w-full rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
-      >
-        <p className="duration-500 group-hover:scale-110">Reset</p>
-      </button>
+      </div>
+      <div className="flex flex-col gap-1">
+        <button
+          type="button"
+          onClick={submitHandler}
+          className="group mt-2 min-h-12 w-full rounded-2xl  bg-primary_color uppercase  text-white enabled:hover:bg-gray-900"
+        >
+          <p className="duration-500 group-hover:scale-110">Submit</p>
+        </button>
+        {changed && (
+          <button
+            type="button"
+            onClick={onReset}
+            className="group mt-2 min-h-12 w-full rounded-2xl border-2 uppercase "
+          >
+            <p className="duration-500 group-hover:scale-110">Reset</p>
+          </button>
+        )}
+      </div>
     </div>
   );
 };
