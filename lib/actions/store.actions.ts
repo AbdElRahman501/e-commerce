@@ -31,17 +31,6 @@ export async function fetchStories(): Promise<StoryType[]> {
     throw error;
   }
 }
-export async function fetchNavbarLinks(): Promise<NavbarType[]> {
-  try {
-    connectToDatabase();
-    const data = await NavBarLink.find({});
-    const navbarLinks: NavbarType[] = JSON.parse(JSON.stringify(data));
-    return navbarLinks;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-}
 export async function fetchFooterLinks(): Promise<FooterType[]> {
   try {
     connectToDatabase();
@@ -240,4 +229,64 @@ export const updateCollection = async (formData: FormData) => {
     throw error;
   }
   redirect("/dashboard/store/collections");
+};
+
+// nav bar actions
+
+export async function fetchNavbarLinks(): Promise<NavbarType[]> {
+  try {
+    connectToDatabase();
+    const data = await NavBarLink.find({});
+    const navbarLinks: NavbarType[] = JSON.parse(JSON.stringify(data));
+    return navbarLinks;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+}
+
+export const addNewNavbarLink = async (formData: FormData) => {
+  const data = {
+    title: formData.get("title")?.toString() || "",
+    main: formData.get("main")?.toString() === "main" || false,
+    url: formData.get("url")?.toString() || "",
+  };
+  try {
+    connectToDatabase();
+    await NavBarLink.create(data);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/store/navbar");
+};
+
+export const updateNavbarLink = async (formData: FormData) => {
+  const data = {
+    id: formData.get("id")?.toString() || "",
+    title: formData.get("title")?.toString() || "",
+    main: formData.get("main")?.toString() === "main" || false,
+    url: formData.get("url")?.toString() || "",
+  };
+  try {
+    connectToDatabase();
+    await NavBarLink.findByIdAndUpdate(data.id, data);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/store/navbar");
+};
+
+export const removeNavbarLink = async (formData: FormData) => {
+  const id = formData.get("id")?.toString() || "";
+  if (!id) return;
+  try {
+    connectToDatabase();
+    await NavBarLink.findByIdAndDelete(id);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/store/navbar");
 };

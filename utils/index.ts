@@ -277,3 +277,28 @@ export function firstMatch(arr1: string[], arr2: string[]): string | null {
   }
   return null; // Return null if no match is found
 }
+
+function parseInputType(input: string) {
+  const type = input.toLowerCase();
+  if (type.startsWith("!")) {
+    const innerType = type.substring(1);
+    return { type: innerType, required: true };
+  } else {
+    return { type, required: false };
+  }
+}
+
+export function createInputArray(inputObj: any) {
+  const inputArray = [];
+  for (const key in inputObj) {
+    const { type, required } = parseInputType(inputObj[key]);
+    inputArray.push({
+      label: key,
+      type: type,
+      placeholder: `Enter ${key}`,
+      name: key,
+      required: required,
+    });
+  }
+  return inputArray;
+}

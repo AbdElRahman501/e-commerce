@@ -1,6 +1,7 @@
 import { FormInput } from "@/types";
 import React from "react";
 import DropDown_icon from "./icons/DropDown_icon";
+import ImageInput from "./ImageInput";
 
 type CustomInputProps = FormInput & {
   onChange?: (e: any) => void;
@@ -135,7 +136,8 @@ const CustomInput = ({
             name={name}
             id={name}
             value={label}
-            checked={defaultValue || value}
+            checked={value}
+            defaultChecked={defaultValue}
             onChange={onChange}
             readOnly={readOnly || (value && !onChange ? true : false)}
             className="peer hidden"
@@ -144,7 +146,17 @@ const CustomInput = ({
           {label}
         </label>
       );
-
+    case "image":
+      return (
+        <ImageInput
+          label="image"
+          placeholder={placeholder}
+          type="text"
+          name={name}
+          defaultValue={defaultValue}
+          value={value}
+        />
+      );
     default:
       return (
         <div className="relative flex w-full flex-col">

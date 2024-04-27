@@ -1,16 +1,30 @@
 import Image from "next/image";
 import React from "react";
+import AddNewButton from "./dashboard/AddNewButton";
+import EditModal from "./dashboard/EditModal";
+import AddModal from "./dashboard/AddModal";
+import RemoveModal from "./dashboard/RemoveModal";
 
 const CustomTable = ({
   data,
   header,
+  inputObj,
+  editAction,
+  addAction,
+  removeAction,
+  name,
   ActionComponent,
 }: {
+  name?: string;
   data: any;
+  inputObj?: any;
+  editAction?: any;
+  addAction?: any;
+  removeAction?: any;
   header: string[];
   ActionComponent?: (item: any) => JSX.Element;
 }) => {
-  if (!data || !data?.length) return null;
+  if (!data) return null;
 
   const cell = (header: string, item: any) => {
     switch (header) {
@@ -56,43 +70,54 @@ const CustomTable = ({
   };
 
   return (
-    <div className="scroll-bar-hidden overflow-x-scroll rounded-3xl border border-blue-300 bg-white p-5 shadow-md  dark:border-gray-700 dark:bg-primary_color  ">
-      <table className="w-full">
-        <thead className="border-b">
-          <tr>
-            {header.map((item, index) => (
-              <th
-                key={index}
-                className={
-                  "text-left " + (index === header.length - 1)
-                    ? ActionComponent
-                      ? "pr-8"
-                      : ""
-                    : "pr-8"
-                }
-              >
-                {item}
-              </th>
-            ))}
-            {ActionComponent && <th>Action</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item: any, index: number) => (
-            <tr key={index} className="rounded-3xl border-b-2 ">
-              {header.map((header, index) => (
-                <td key={index} className="p-2">
-                  {cell(header, item)}
-                </td>
+    <>
+      <AddNewButton name={name} />
+      <EditModal
+        name={name}
+        inputObj={inputObj}
+        data={data}
+        action={editAction}
+      />
+      <AddModal name={name} inputObj={inputObj} action={addAction} />
+      <RemoveModal name={name} action={removeAction} />
+      <div className="scroll-bar-hidden overflow-x-scroll rounded-3xl border border-blue-300 bg-white p-5 shadow-md  dark:border-gray-700 dark:bg-primary_color  ">
+        <table className="w-full">
+          <thead className="border-b">
+            <tr>
+              {header.map((item, index) => (
+                <th
+                  key={index}
+                  className={
+                    "text-left " + (index === header.length - 1)
+                      ? ActionComponent
+                        ? "pr-8"
+                        : ""
+                      : "pr-8"
+                  }
+                >
+                  {item}
+                </th>
               ))}
-              <td className="p-2">
-                {ActionComponent ? <ActionComponent {...item} /> : null}
-              </td>
+              {ActionComponent && <th>Action</th>}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {data.map((item: any, index: number) => (
+              <tr key={index} className="rounded-3xl border-b-2 ">
+                {header.map((header, index) => (
+                  <td key={index} className="p-2">
+                    {cell(header, item)}
+                  </td>
+                ))}
+                <td className="p-2">
+                  {ActionComponent ? <ActionComponent {...item} /> : null}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 
