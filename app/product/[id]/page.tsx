@@ -101,8 +101,11 @@ export default async function ProductDetailPage({
       <Suspense>
         <ProductsRow
           title="You may also like"
-          keyWords={product.keywords}
           url="/shop"
+          filter={{
+            keywordFilter: product.keywords,
+            idsToExclude: [product.id],
+          }}
         />
       </Suspense>
 

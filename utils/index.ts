@@ -42,9 +42,11 @@ export function getSalePrice(offers: OfferType[], product: Product) {
   const { categories, price, minPrice, keywords } = product;
   const matchingString =
     categories.toLowerCase() + " " + keywords.toLowerCase();
-  let matchingSale = offers.find((sale) =>
-    matchingString.includes(sale.category.toLowerCase()),
-  );
+  let matchingSale = offers.find((sale) => {
+    if (!sale.category) return false;
+    const matching = matchingString.includes(sale.category.toLowerCase());
+    return matching;
+  });
 
   if (matchingSale) {
     let salePrice = Math.ceil(price - (price * matchingSale.sale) / 100);
@@ -81,7 +83,10 @@ export const sorProductPriceOffer = ({
   return sorter;
 };
 
-export const modifyProducts = (products: Product[], offers: OfferType[]) => {
+export const modifyProducts = (
+  products: Product[],
+  offers: OfferType[],
+): ProductOnSaleType[] => {
   const modifiedProducts = products.map((product) => {
     const { salePrice, saleValue } = getSalePrice(offers, product);
     return { ...product, salePrice, saleValue };
@@ -278,6 +283,21 @@ export function firstMatch(arr1: string[], arr2: string[]): string | null {
   return null; // Return null if no match is found
 }
 
+export function checkDiscount({
+  discount,
+  minSubTotal,
+  subTotal,
+}: {
+  discount: number;
+  minSubTotal: number;
+  subTotal: number;
+}) {
+  const discountPercentage = discount / 100;
+  const discountValue = Math.ceil(discountPercentage * subTotal);
+  if (discountValue > 0 && subTotal - discountValue > minSubTotal)
+    return discountValue;
+  return 0;
+}
 function parseInputType(input: string) {
   const type = input.toLowerCase();
   if (type.startsWith("!")) {

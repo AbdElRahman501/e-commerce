@@ -3,16 +3,16 @@ import { ProductCard, SectionTitle } from ".";
 import React from "react";
 import { fetchFilteredProducts } from "@/lib";
 import { cookies } from "next/headers";
-import { ProductOnSaleType } from "@/types";
+import { FilterProps, ProductOnSaleType } from "@/types";
 
 async function ProductsRow({
-  keyWords,
   title,
   url,
   initialProducts,
+  filter,
 }: {
+  filter?: FilterProps;
   initialProducts?: ProductOnSaleType[];
-  keyWords?: string;
   url: string;
   title: string;
 }) {
@@ -21,10 +21,10 @@ async function ProductsRow({
   const { products } = initialProducts
     ? { products: initialProducts }
     : await fetchFilteredProducts({
-        keywordFilter: keyWords || "",
         sort: title,
         limit: 4,
         minLimit: 3,
+        ...filter,
       });
 
   if (products.length === 0) {

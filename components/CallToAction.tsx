@@ -4,7 +4,7 @@ import OffersCarousel from "./OffersCarousel";
 
 const CallToAction = async () => {
   const offers = await fetchOffers();
-  return <OffersCarousel offers={offers} />;
+  return <OffersCarousel offers={offers.filter((offer) => offer.image)} />;
 };
 
 export default CallToAction;

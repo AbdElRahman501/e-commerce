@@ -30,12 +30,13 @@ export default async function SalesPage() {
           <CustomTable
             name="offer"
             inputObj={{
-              image: "!image",
+              image: "image",
               title: "!text",
-              sale: "!number",
-              description: "!text",
+              sale: "number",
+              description: "text",
               url: "!text",
-              category: "!text",
+              category: "text",
+              active: "checkbox",
             }}
             addAction={addNewOffer}
             editAction={updateOffer}

@@ -3,7 +3,7 @@ import { createOrder, fetchProductsById } from "@/lib";
 import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
 import { fetchShipping } from "@/lib/actions/shipping.actions";
 import { CartItem } from "@/types";
-import { isFreeShipping, reformatCartItems } from "@/utils";
+import { checkDiscount, isFreeShipping, reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
 import { fetchOffers } from "@/lib/actions/offer.actions";
@@ -36,12 +36,15 @@ const CheckOutPage = async ({
   const { governorate, cities } = await fetchShipping();
 
   const offers = await fetchOffers();
+
+  const city = cities.find((item) => item.id === cityId)?.city_name_en;
+  const cityOffer = offers.find((x) => x.category === city);
+
   const freeShippingMin = offers.find(
     (x) => x.title === "FREE_SHIPPING",
   )?.description;
 
   const freeShippingMinValue = Number(freeShippingMin) || null;
-  const discountPercentage = promoCode.discount / 100 || 0;
   const subTotal = cartProducts.reduce(
     (acc, item) => acc + (item.salePrice || item.price) * item.amount,
     0,
@@ -50,6 +53,18 @@ const CheckOutPage = async ({
     (acc, item) => acc + item.minPrice * item.amount,
     0,
   );
+
+  const cityDiscount = checkDiscount({
+    discount: cityOffer?.sale || 0,
+    minSubTotal,
+    subTotal,
+  });
+  const couponDiscount = checkDiscount({
+    discount: promoCode.discount,
+    minSubTotal,
+    subTotal,
+  });
+
   const stateShipping = governorate.find(
     (item) => item.id === statId,
   )?.shipping_price;
@@ -57,7 +72,7 @@ const CheckOutPage = async ({
     (item) => item.id === cityId,
   )?.shipping_price;
 
-  const discountValue = Math.ceil(discountPercentage * subTotal);
+  const discountValue = Math.max(cityDiscount, couponDiscount);
   const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
   const restShipping =
     freeShippingMinValue && subTotal + 50 < freeShippingMinValue
@@ -174,7 +189,7 @@ const CheckOutPage = async ({
               </p>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+              <div className="flex justify-between text-sm font-bold text-gray-600 dark:text-gray-300 md:text-base">
                 <p>Discounts</p>
                 <p>
                   {discount.toLocaleString("en-US", {
