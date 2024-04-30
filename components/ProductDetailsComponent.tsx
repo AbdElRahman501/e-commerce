@@ -10,18 +10,15 @@ import {
   getAllImages,
   toggleFavoriteItem,
 } from "@/utils";
-import dynamic from "next/dynamic";
 import { toggleFav } from "./actions/fav.actions";
 import Image from "next/image";
-
-const AddToCart = dynamic(() => import("./cart/AddToCart"), { ssr: false });
-const AmountButton = dynamic(() => import("./AmountButton"), { ssr: false });
-const ProductImages = dynamic(() => import("./ProductImages"));
-
-const CustomForm = dynamic(() => import("./CustomForm"));
-const SubmitButton = dynamic(() => import("./SubmitButton"));
-const HeartIcon = dynamic(() => import("./icons/HeartIcon"));
-const FAQCard = dynamic(() => import("./FAQCard"));
+import AmountButton from "./AmountButton";
+import AddToCart from "./cart/AddToCart";
+import ProductImages from "./ProductImages";
+import CustomForm from "./CustomForm";
+import SubmitButton from "./SubmitButton";
+import HeartIcon from "./icons/HeartIcon";
+import FAQCard from "./FAQCard";
 
 interface ProductDetailsComponent extends ProductOnSaleType {
   cart: CartItem[];

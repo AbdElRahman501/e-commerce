@@ -62,7 +62,13 @@ const ProductCard = ({
         </div>
       )}
       <div className="relative">
-        <Link className="relative block" href={`/product/${id}`}>
+        <Link
+          className="relative block"
+          href={{
+            pathname: `/product/${id}`,
+            query: { color: selectedColor.toString().replace("#", "HASH:") },
+          }}
+        >
           <div className="aspect-card group relative overflow-hidden rounded-3xl ">
             <Image
               src={images[selectedColor][0]}
