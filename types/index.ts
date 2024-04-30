@@ -77,6 +77,7 @@ export interface OfferType {
   sale: number;
   category: string;
   image: string;
+  active: boolean;
   url: string;
   _id: string;
 }

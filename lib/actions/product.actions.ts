@@ -126,9 +126,15 @@ export const fetchFilteredProducts = cache(
       );
 
       if (minLimit > count) {
+        const countNew = await Product.countDocuments({
+          $and: [excludeCondition],
+        });
+        const updatedFinalQuery = {
+          $and: [countNew > minLimit ? excludeCondition : {}],
+        };
         const additionalData = await fetchDataBySection({
           sort,
-          finalQuery: {},
+          finalQuery: updatedFinalQuery,
           limit: minLimit,
           offers,
         });
@@ -173,6 +179,16 @@ export async function fetchProducts(): Promise<ProductType[]> {
   }
 }
 
+export async function likeProduct(id: string, isFave: boolean) {
+  try {
+    connectToDatabase();
+    Product.findByIdAndUpdate(id, { $inc: { likes: isFave ? 1 : -1 } });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 async function fetchDataBySection({
   sort,
   limit,
@@ -189,9 +205,11 @@ async function fetchDataBySection({
     case "Trending":
       return await Product.find(finalQuery).sort({ views: -1 }).limit(limit);
     case "New Arrivals":
-      return await Product.find(finalQuery).limit(limit);
+      return await Product.find(finalQuery)
+        .sort({ createdAt: -1 })
+        .limit(limit);
     case "Best Sellers":
-      return await Product.find(finalQuery).limit(limit);
+      return await Product.find(finalQuery).sort({ sales: -1 }).limit(limit);
     case "Price: Low to High":
       return sorProductPriceOffer({
         products: await Product.find(finalQuery)
@@ -358,9 +376,12 @@ export async function duplicateProductById(id: string) {
   try {
     connectToDatabase();
     const data = await Product.findById(id);
-    const product: ProductType = JSON.parse(JSON.stringify(data));
-    product.views = 0;
-    product.sales = 0;
+    const product = JSON.parse(JSON.stringify(data));
+    delete product._id;
+    delete product.createdAt;
+    delete product.updatedAt;
+    delete product.views;
+    delete product.sales;
     const newProduct: ProductType = await Product.create(product);
     return newProduct;
   } catch (error) {

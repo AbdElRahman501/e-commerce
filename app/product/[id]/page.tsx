@@ -15,18 +15,27 @@ const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }): Promise<Metadata> {
   const product = await fetchProduct(params.id);
+  const { color } = searchParams as {
+    [key: string]: string;
+  };
 
   if (!product) return notFound();
-  const images = getAllImages(product.images);
+  const images = color ? product.images[color] : getAllImages(product.images);
   const url = getTransformedImageUrl(images[0] || "", 200, 300);
-
+  const colorString = color && !color.includes("HASH:") ? ` (${color})` : "";
   return {
     title:
-      product.title + " (" + (product.salePrice || product.price) + " EGP)",
+      product.title +
+      colorString +
+      " (" +
+      (product.salePrice || product.price) +
+      " EGP)",
     description: product.description,
     robots: {
       index: true,
@@ -69,13 +78,20 @@ export default async function ProductDetailPage({
   if (!product?.id) {
     return notFound();
   }
-
+  const url = process.env.NEXT_PUBLIC_VERCEL_URL;
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.title,
     description: product.description,
-    image: product.images[0],
+    image: {
+      "@type": "ImageObject",
+      url: product.images[0],
+      image: product.images[0],
+      name: product.title,
+      width: "1024",
+      height: "1024",
+    },
     offers: {
       "@type": "AggregateOffer",
       availability: "https://schema.org/InStock",
@@ -83,6 +99,10 @@ export default async function ProductDetailPage({
       highPrice: product.price,
       lowPrice: product.price * 0.9,
     },
+    category: product.categories.trim().split(",")[0],
+    brand: "eh!",
+    sku: product.id,
+    url: `${url}/product/${product.id}`,
   };
 
   return (
@@ -94,21 +114,16 @@ export default async function ProductDetailPage({
         }}
       />
 
-      <Suspense>
-        <ProductDetailsComponent {...product} isFav={isFav} cart={cart} />
-      </Suspense>
-
-      <Suspense>
-        <ProductsRow
-          title="You may also like"
-          keyWords={product.keywords}
-          url="/shop"
-        />
-      </Suspense>
-
-      <Suspense>
-        <Footer />
-      </Suspense>
+      <ProductDetailsComponent {...product} isFav={isFav} cart={cart} />
+      <ProductsRow
+        title="You may also like"
+        url="/shop"
+        filter={{
+          keywordFilter: product.keywords,
+          idsToExclude: [product.id],
+        }}
+      />
+      <Footer />
     </>
   );
 }

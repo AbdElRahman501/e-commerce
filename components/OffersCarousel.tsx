@@ -53,6 +53,8 @@ const OffersCarousel = ({ offers }: { offers: OfferType[] }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
+  if (offers.length === 0) return null;
+
   return (
     <div className="relative mb-5 h-60 w-full  ">
       <button

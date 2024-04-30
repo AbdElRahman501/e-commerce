@@ -29,7 +29,7 @@ export default function SearchLayout({
           <FilterSection />
         </Suspense>
         <div className="rounded-4xl flex min-h-[60vh] flex-1 flex-col gap-4  ">
-          {children}
+          <Suspense>{children}</Suspense>
         </div>
       </div>
       <Suspense>
