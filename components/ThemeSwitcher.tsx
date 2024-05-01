@@ -18,11 +18,15 @@ const ThemeSwitcher = ({
   }, []);
 
   if (!mounted) {
-    return null;
+    return (
+      <div className={className}>
+        <Circum_icon className="h-8 w-8" />
+      </div>
+    );
   }
 
   return (
-    <button
+    <div
       className={className}
       onClick={() => {
         setTheme(theme === "dark" ? "light" : "dark");
@@ -35,7 +39,7 @@ const ThemeSwitcher = ({
       ) : (
         <SunIcon className="h-8 w-8" />
       )}
-    </button>
+    </div>
   );
 };
 export default ThemeSwitcher;

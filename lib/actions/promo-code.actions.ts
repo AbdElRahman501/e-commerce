@@ -3,23 +3,31 @@ import { PromoCodeType } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import PromoCode from "../models/promoCode.model";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 
-export async function fetchPromoCode(code: string): Promise<PromoCodeType> {
-  if (!code) return {} as PromoCodeType;
-  try {
-    connectToDatabase();
-    const data = await PromoCode.findOne({
-      code,
-      limit: { $gt: 0 },
-    });
-    if (!data) return {} as PromoCodeType;
-    const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
-    return promoCode;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-}
+export const fetchPromoCode = unstable_cache(
+  async (code: string): Promise<PromoCodeType> => {
+    if (!code) return {} as PromoCodeType;
+    try {
+      connectToDatabase();
+      const data = await PromoCode.findOne({
+        code,
+        limit: { $gt: 0 },
+      });
+      if (!data) return {} as PromoCodeType;
+      const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
+      return promoCode;
+    } catch (error) {
+      console.error("Error fetching coupon:", error);
+      throw error;
+    }
+  },
+  ["coupons"],
+  {
+    tags: ["coupons"],
+    revalidate: 60 * 1,
+  },
+);
 
 export async function fetchPromoCodeById(id: string): Promise<PromoCodeType> {
   if (!id) return {} as PromoCodeType;

@@ -106,7 +106,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
             onClick={() => setShowFullImage(false)}
           ></div>
           <button
-            className="absolute top-6 z-50 m-4 aspect-square h-12 w-12 rounded-full bg-white   text-4xl text-black"
+            className="absolute top-6 z-50 m-4 aspect-square h-12 w-12 rounded-full bg-white text-4xl text-black"
             onClick={() => setShowFullImage(false)}
           >
             <Ex_icon className="h-full w-full" />
@@ -121,13 +121,12 @@ const ProductImages: React.FC<YourComponentProps> = ({
           />
         </div>
       )}
-      <button
+      <div
         onClick={() => setShowFullImage(true)}
-        type="button"
-        className="absolute right-3 top-3 z-20 p-2"
+        className="absolute right-3 top-3 z-20 rounded-lg bg-white p-2"
       >
         <FullSizeIcon className="w-6 text-black" />
-      </button>
+      </div>
       <div
         className="scroll-bar-hidden images-container  relative h-full w-full snap-x snap-mandatory overflow-scroll max-sm:!flex sm:grid sm:gap-2 sm:overflow-hidden"
         ref={containerRef}
@@ -145,6 +144,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
               src={item}
               alt={title}
               fill
+              priority={index === 0}
               style={{ objectFit: "cover" }}
               sizes="100%"
               className="cursor-pointer duration-700 hover:scale-105"

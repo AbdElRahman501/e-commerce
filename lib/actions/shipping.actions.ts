@@ -4,8 +4,9 @@ import { connectToDatabase } from "../mongoose";
 import { City, Governorate } from "../models/shipping.model";
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 
-export const fetchShipping = cache(
+export const fetchShipping = unstable_cache(
   async (): Promise<{
     governorate: GovernorateType[];
     cities: CityType[];
@@ -24,6 +25,8 @@ export const fetchShipping = cache(
       throw error;
     }
   },
+  ["shipping"],
+  { tags: ["shipping"] },
 );
 
 export const updateGovernorate = async (formData: FormData) => {

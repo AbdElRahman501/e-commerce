@@ -115,15 +115,19 @@ export default async function ProductDetailPage({
       />
 
       <ProductDetailsComponent {...product} isFav={isFav} cart={cart} />
-      <ProductsRow
-        title="You may also like"
-        url="/shop"
-        filter={{
-          keywordFilter: product.keywords,
-          idsToExclude: [product.id],
-        }}
-      />
-      <Footer />
+      <Suspense>
+        <ProductsRow
+          title="You may also like"
+          url="/shop"
+          filter={{
+            keywordFilter: product.keywords,
+            idsToExclude: [product.id],
+          }}
+        />
+      </Suspense>
+      <Suspense>
+        <Footer />
+      </Suspense>
     </>
   );
 }

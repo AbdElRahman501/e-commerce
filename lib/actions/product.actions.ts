@@ -9,9 +9,9 @@ import {
   Product as ProductType,
 } from "@/types";
 import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
-import { cache } from "react";
+import { unstable_cache } from "next/cache";
 
-export const fetchFilteredProducts = cache(
+export const fetchFilteredProducts = unstable_cache(
   async ({
     query = "",
     selectedCategories = [],
@@ -151,6 +151,10 @@ export const fetchFilteredProducts = cache(
       throw error;
     }
   },
+  ["products"],
+  {
+    tags: ["products"],
+  },
 );
 
 function removeDuplicatesById<T extends { id: string | number }>(
@@ -230,62 +234,76 @@ async function fetchDataBySection({
       return await Product.find(finalQuery).limit(limit);
   }
 }
-export async function getAllProperties(): Promise<{
-  sizes: string[];
-  colors: string[];
-}> {
-  try {
-    connectToDatabase();
-    // Using distinct to get unique sizes
-    const sizes = await Product.distinct("sizes").exec();
-    const colors = await Product.distinct("colors").exec();
-    return { sizes, colors };
-  } catch (error) {
-    console.error("Error fetching sizes:", error);
-    throw new Error("Unable to fetch sizes");
-  }
-}
-export async function fetchProduct(
-  id: string,
-  isCustomer?: boolean,
-): Promise<ProductOnSaleType | null> {
-  try {
-    connectToDatabase();
-    const data = await Product.findByIdAndUpdate(id, {
-      $inc: { views: isCustomer ? 1 : 0 },
-    });
-    const product: ProductType = JSON.parse(JSON.stringify(data));
-    const offers: OfferType[] = await Offer.find({});
-    const { salePrice, saleValue } = getSalePrice(offers, product);
-    return { ...product, salePrice, saleValue };
-  } catch (error) {
-    console.error("Error fetching product detail:", error);
-    return null;
-  }
-}
-export async function fetchProductsById(
-  ids: string[],
-): Promise<ProductOnSaleType[]> {
-  try {
-    connectToDatabase();
-    const objectIdArray = idsToObjectId(ids);
-    const data = await Product.find({
-      _id: {
-        $in: objectIdArray,
-      },
-    });
-    const offers: OfferType[] = await Offer.find({});
-    const products: ProductType[] = JSON.parse(JSON.stringify(data));
-    const modifiedProducts: ProductOnSaleType[] = modifyProducts(
-      products,
-      offers,
-    );
-    return modifiedProducts;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-}
+export const getAllProperties = unstable_cache(
+  async () => {
+    try {
+      connectToDatabase();
+      const sizes = await Product.distinct("sizes").exec();
+      const colors = await Product.distinct("colors").exec();
+      return { sizes, colors };
+    } catch (error) {
+      console.error("Error fetching sizes:", error);
+      throw new Error("Unable to fetch sizes");
+    }
+  },
+  ["properties"],
+  {
+    tags: ["properties"],
+  },
+);
+
+export const fetchProduct = unstable_cache(
+  async (
+    id: string,
+    isCustomer?: boolean,
+  ): Promise<ProductOnSaleType | null> => {
+    try {
+      connectToDatabase();
+      const data = await Product.findByIdAndUpdate(id, {
+        $inc: { views: isCustomer ? 1 : 0 },
+      });
+      const product: ProductType = JSON.parse(JSON.stringify(data));
+      const offers: OfferType[] = await Offer.find({});
+      const { salePrice, saleValue } = getSalePrice(offers, product);
+      return { ...product, salePrice, saleValue };
+    } catch (error) {
+      console.error("Error fetching product detail:", error);
+      return null;
+    }
+  },
+  ["products"],
+  {
+    tags: ["products"],
+  },
+);
+
+export const fetchProductsById = unstable_cache(
+  async (ids: string[]): Promise<ProductOnSaleType[]> => {
+    try {
+      connectToDatabase();
+      const objectIdArray = idsToObjectId(ids);
+      const data = await Product.find({
+        _id: {
+          $in: objectIdArray,
+        },
+      });
+      const offers: OfferType[] = await Offer.find({});
+      const products: ProductType[] = JSON.parse(JSON.stringify(data));
+      const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+        products,
+        offers,
+      );
+      return modifiedProducts;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+  ["products"],
+  {
+    tags: ["products"],
+  },
+);
 
 function idsToObjectId(array: string[]) {
   if (!array || array.length === 0) return [];
@@ -346,6 +364,16 @@ export const getCategoriesWithProductCount = async (): Promise<
     throw error;
   }
 };
+
+export const getCategories = unstable_cache(
+  async (): Promise<CategoryCount[]> => {
+    return await getCategoriesWithProductCount();
+  },
+  ["categories"],
+  {
+    tags: ["categories"],
+  },
+);
 
 export async function deleteProduct(id: string) {
   try {

@@ -3,18 +3,25 @@ import { OfferType } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import Offer from "../models/offer.model";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 
-export async function fetchOffers(): Promise<OfferType[]> {
-  try {
-    connectToDatabase();
-    const data = await Offer.find({});
-    const offers: OfferType[] = JSON.parse(JSON.stringify(data));
-    return offers;
-  } catch (error) {
-    console.error("Error fetching Offers:", error);
-    throw error;
-  }
-}
+export const fetchOffers = unstable_cache(
+  async (): Promise<OfferType[]> => {
+    try {
+      connectToDatabase();
+      const data = await Offer.find({});
+      const offers: OfferType[] = JSON.parse(JSON.stringify(data));
+      return offers;
+    } catch (error) {
+      console.error("Error fetching Offers:", error);
+      throw error;
+    }
+  },
+  ["offers"],
+  {
+    tags: ["offers"],
+  },
+);
 
 export const addNewOffer = async (formData: FormData) => {
   const data = {
