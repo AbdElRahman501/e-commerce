@@ -181,6 +181,7 @@ export interface Order {
   shipping: number;
   discount: number;
   createdAt: string;
+  status: "Pending" | "Delivered" | "Shipped" | "Accepted" | "Canceled";
 }
 
 export interface FilterType {

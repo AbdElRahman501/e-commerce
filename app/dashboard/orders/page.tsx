@@ -1,7 +1,11 @@
 import { SearchField } from "@/components";
+import { setOrderNumber } from "@/components/actions/order.actions";
 import CustomTable from "@/components/CustomTable";
+import SubmitButton from "@/components/SubmitButton";
 import { fetchOrders } from "@/lib/actions/order.actions";
 import { formatDate } from "@/utils";
+import { cookies } from "next/headers";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export default async function OrdersPage({
@@ -12,17 +16,36 @@ export default async function OrdersPage({
   const { q: searchValue } = searchParams as {
     [key: string]: string;
   };
-
   const orders = await fetchOrders({ query: searchValue });
+  const ordersNumberData = cookies().get("orders")?.value;
+  const seenOrders: string[] = ordersNumberData
+    ? JSON.parse(ordersNumberData)
+    : [];
+
   const resultsText = orders.length > 1 ? "results" : "result";
   return (
     <Suspense>
-      <div className="flex items-center justify-center gap-3 px-5 md:gap-5 lg:px-20">
+      <div className="flex items-center justify-center gap-3 px-2 md:gap-2 lg:px-5">
         <h1 className=" mr-auto hidden text-3xl font-bold md:block">Orders</h1>
         <SearchField />
       </div>
       <Suspense>
-        <div className="flex flex-col gap-5 p-5 lg:p-20">
+        <form className="flex w-full justify-end p-2" action={setOrderNumber}>
+          <input
+            type="text"
+            name="orders"
+            defaultValue={orders.map((item) => item.id).join(",")}
+            id=""
+            hidden
+          />
+          <SubmitButton
+            type="submit"
+            className="rounded-lg bg-black px-4 py-2 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
+          >
+            read all {(orders.length - seenOrders.length).toFixed(0)}
+          </SubmitButton>
+        </form>
+        <div className="flex flex-col gap-5 px-2 lg:p-20">
           {searchValue ? (
             <p className="mb-4">
               {orders.length === 0
@@ -38,6 +61,14 @@ export default async function OrdersPage({
                 ...item.personalInfo,
                 date: formatDate(item.createdAt),
               }))}
+              CustomActions={[
+                {
+                  key: "id",
+                  Action: (item) => (
+                    <Link href={`/confirmation/${item.id}`}>{item.id}</Link>
+                  ),
+                },
+              ]}
               header={[
                 "id",
                 "firstName",

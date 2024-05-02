@@ -13,7 +13,7 @@ export default function DashBoardLayout({
           <Suspense>
             <DashSideBar />
           </Suspense>
-          <div className="w-3/4 flex-1">{children}</div>
+          <div className="w-3/4 flex-1 py-5">{children}</div>
         </div>
       </Suspense>
     </>

@@ -5,6 +5,10 @@ import EditModal from "./dashboard/EditModal";
 import AddModal from "./dashboard/AddModal";
 import RemoveModal from "./dashboard/RemoveModal";
 
+type CustomActionType = {
+  key: string;
+  Action: (item: any) => JSX.Element;
+};
 const CustomTable = ({
   data,
   header,
@@ -14,6 +18,7 @@ const CustomTable = ({
   removeAction,
   name,
   ActionComponent,
+  CustomActions,
 }: {
   name?: string;
   data: any;
@@ -22,11 +27,14 @@ const CustomTable = ({
   addAction?: any;
   removeAction?: any;
   header: string[];
+  CustomActions?: CustomActionType[];
   ActionComponent?: (item: any) => JSX.Element;
 }) => {
   if (!data) return null;
 
   const cell = (header: string, item: any) => {
+    const CustomAction: CustomActionType | null =
+      CustomActions?.find((action) => action.key === header) || null;
     switch (header) {
       case "image":
         return (
@@ -56,6 +64,8 @@ const CustomTable = ({
       case "status":
         const status: { name: string; color: string } = item[header];
         return <div style={{ color: status.color }}>{status.name}</div>;
+      case CustomAction?.key:
+        return CustomAction?.Action && <CustomAction.Action {...item} />;
       default:
         return typeof item[header] === "string"
           ? item[header].includes("\n")

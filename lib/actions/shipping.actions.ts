@@ -2,9 +2,8 @@
 import { CityType, GovernorateType } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import { City, Governorate } from "../models/shipping.model";
-import { cache } from "react";
 import { redirect } from "next/navigation";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 
 export const fetchShipping = unstable_cache(
   async (): Promise<{
@@ -38,6 +37,7 @@ export const updateGovernorate = async (formData: FormData) => {
   try {
     connectToDatabase();
     await Governorate.updateOne({ id: data.id }, data);
+    revalidateTag("shipping");
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -54,6 +54,7 @@ export const addNewGovernorate = async (formData: FormData) => {
   try {
     connectToDatabase();
     await Governorate.create(data);
+    revalidateTag("shipping");
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -70,6 +71,7 @@ export const updateCity = async (formData: FormData) => {
   try {
     connectToDatabase();
     await City.updateOne({ id: data.id }, data);
+    revalidateTag("shipping");
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -87,6 +89,7 @@ export const addNewCity = async (formData: FormData) => {
   try {
     connectToDatabase();
     await City.create(data);
+    revalidateTag("shipping");
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;

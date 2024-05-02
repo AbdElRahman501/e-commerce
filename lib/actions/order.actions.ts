@@ -135,7 +135,9 @@ export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
 
   try {
     connectToDatabase();
-    const data = await Order.find(textSearchCondition).limit(limit);
+    const data = await Order.find(textSearchCondition)
+      .sort({ createdAt: -1 })
+      .limit(limit);
     const orders: OrderType[] = JSON.parse(JSON.stringify(data));
     return orders;
   } catch (error) {
