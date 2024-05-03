@@ -165,7 +165,7 @@ export function formatDate(timestamp: string): string {
   return `${year}/${month}/${day}`;
 }
 
-export function formatPrice(price: number, currency: string) {
+export function formatPrice(price: number, currency: "EGP" | "USD") {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency,
@@ -298,25 +298,35 @@ export function checkDiscount({
     return discountValue;
   return 0;
 }
-function parseInputType(input: string) {
-  const type = input.toLowerCase();
+function parseInputType(type: string) {
   if (type.startsWith("!")) {
-    const innerType = type.substring(1);
+    const innerType = type.slice(1);
     return { type: innerType, required: true };
   } else {
     return { type, required: false };
   }
 }
 
+export function parseListString(type: string) {
+  const prefix = "LIST:";
+  if (type.startsWith(prefix)) {
+    const values = type.slice(prefix.length).split(",");
+    return { type: "select", options: values.map((value) => value.trim()) };
+  }
+  return { type, options: [] };
+}
+
 export function createInputArray(inputObj: any) {
   const inputArray = [];
   for (const key in inputObj) {
-    const { type, required } = parseInputType(inputObj[key]);
+    const { type: initialType, required } = parseInputType(inputObj[key]);
+    const { type, options } = parseListString(initialType);
     inputArray.push({
       label: key,
       type: type,
       placeholder: `Enter ${key}`,
       name: key,
+      options: options,
       required: required,
     });
   }

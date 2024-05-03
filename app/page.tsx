@@ -18,6 +18,9 @@ const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
 const SubscriptionSection = dynamic(
   () => import("@/components/SubscriptionSection"),
 );
+const SubscriptionModal = dynamic(
+  () => import("@/components/SubscriptionModal"),
+);
 
 export default async function Home({
   searchParams,
@@ -79,6 +82,7 @@ export default async function Home({
         </Suspense>
         <FAQSection />
         <SubscriptionSection customer_posted={customer_posted} />
+        <SubscriptionModal />
         <Suspense>
           <Footer />
         </Suspense>

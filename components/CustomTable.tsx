@@ -5,6 +5,10 @@ import EditModal from "./dashboard/EditModal";
 import AddModal from "./dashboard/AddModal";
 import RemoveModal from "./dashboard/RemoveModal";
 
+type CustomActionType = {
+  key: string;
+  Action: (item: any) => JSX.Element;
+};
 const CustomTable = ({
   data,
   header,
@@ -14,6 +18,7 @@ const CustomTable = ({
   removeAction,
   name,
   ActionComponent,
+  CustomActions,
 }: {
   name?: string;
   data: any;
@@ -22,12 +27,17 @@ const CustomTable = ({
   addAction?: any;
   removeAction?: any;
   header: string[];
+  CustomActions?: CustomActionType[];
   ActionComponent?: (item: any) => JSX.Element;
 }) => {
   if (!data) return null;
 
   const cell = (header: string, item: any) => {
+    const CustomAction: CustomActionType | null =
+      CustomActions?.find((action) => action.key === header) || null;
     switch (header) {
+      case CustomAction?.key:
+        return CustomAction?.Action && <CustomAction.Action {...item} />;
       case "image":
         return (
           <Image
@@ -71,7 +81,7 @@ const CustomTable = ({
 
   return (
     <>
-      <AddNewButton name={name} />
+      {addAction && <AddNewButton name={name} />}
       <EditModal
         name={name}
         inputObj={inputObj}

@@ -34,6 +34,7 @@ const orderSchema = new mongoose.Schema(
     shipping: { type: Number, required: true },
     discount: { type: Number, required: true },
     total: { type: Number, required: true },
+    status: { type: String, default: "Pending" },
   },
   {
     timestamps: true,

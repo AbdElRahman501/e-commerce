@@ -16,32 +16,46 @@ import {
 } from "../models/store.model";
 import { redirect } from "next/navigation";
 import { checkDateStatus } from "@/utils";
+import { unstable_cache } from "next/cache";
 
-export async function fetchStories(): Promise<StoryType[]> {
-  try {
-    connectToDatabase();
-    const data = await Story.find({});
-    const stories: StoryType[] = JSON.parse(JSON.stringify(data));
-    const filteredStories: StoryType[] = stories.filter(
-      (story) => checkDateStatus(story.start, story.end).name === "active",
-    );
-    return filteredStories;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-}
-export async function fetchFooterLinks(): Promise<FooterType[]> {
-  try {
-    connectToDatabase();
-    const data = await FooterLink.find({});
-    const footerLinks: FooterType[] = JSON.parse(JSON.stringify(data));
-    return footerLinks;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-}
+export const fetchStories = unstable_cache(
+  async (): Promise<StoryType[]> => {
+    try {
+      connectToDatabase();
+      const data = await Story.find({});
+      const stories: StoryType[] = JSON.parse(JSON.stringify(data));
+      const filteredStories: StoryType[] = stories.filter(
+        (story) => checkDateStatus(story.start, story.end).name === "active",
+      );
+      return filteredStories;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+  ["stories"],
+  {
+    tags: ["stories"],
+  },
+);
+
+export const fetchFooterLinks = unstable_cache(
+  async (): Promise<FooterType[]> => {
+    try {
+      connectToDatabase();
+      const data = await FooterLink.find({});
+      const footerLinks: FooterType[] = JSON.parse(JSON.stringify(data));
+      return footerLinks;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+  ["footer"],
+  {
+    tags: ["footer"],
+  },
+);
 
 export async function fetchAllStories(): Promise<StoryType[]> {
   try {
@@ -105,17 +119,23 @@ export const removeStory = async (formData: FormData) => {
 
 //// REVIEW ACTIONS
 
-export const fetchReviews = async ({ limit = 4 }: { limit?: number }) => {
-  try {
-    connectToDatabase();
-    const data = await Review.find({}).limit(limit);
-    const reviews: ReviewType[] = JSON.parse(JSON.stringify(data));
-    return reviews;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-};
+export const fetchReviews = unstable_cache(
+  async ({ limit = 4 }: { limit?: number }): Promise<ReviewType[]> => {
+    try {
+      connectToDatabase();
+      const data = await Review.find({}).limit(limit);
+      const reviews: ReviewType[] = JSON.parse(JSON.stringify(data));
+      return reviews;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+  ["reviews"],
+  {
+    tags: ["reviews"],
+  },
+);
 
 export const addNewReview = async (formData: FormData) => {
   const imagesString = formData.get("images")?.toString();
@@ -173,17 +193,23 @@ export const updateReview = async (formData: FormData) => {
 
 // Collections actions
 
-export const fetchCollections = async () => {
-  try {
-    connectToDatabase();
-    const data = await Collection.find({});
-    const collections: CollectionType[] = JSON.parse(JSON.stringify(data));
-    return collections;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-};
+export const fetchCollections = unstable_cache(
+  async () => {
+    try {
+      connectToDatabase();
+      const data = await Collection.find({});
+      const collections: CollectionType[] = JSON.parse(JSON.stringify(data));
+      return collections;
+    } catch (error) {
+      console.error("Error fetching collections:", error);
+      throw error;
+    }
+  },
+  ["collections"],
+  {
+    tags: ["collections"],
+  },
+);
 
 export const addNewCollection = async (formData: FormData) => {
   const data = {
@@ -233,17 +259,23 @@ export const updateCollection = async (formData: FormData) => {
 
 // nav bar actions
 
-export async function fetchNavbarLinks(): Promise<NavbarType[]> {
-  try {
-    connectToDatabase();
-    const data = await NavBarLink.find({});
-    const navbarLinks: NavbarType[] = JSON.parse(JSON.stringify(data));
-    return navbarLinks;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-}
+export const fetchNavbarLinks = unstable_cache(
+  async () => {
+    try {
+      connectToDatabase();
+      const data = await NavBarLink.find({});
+      const navbarLinks: NavbarType[] = JSON.parse(JSON.stringify(data));
+      return navbarLinks;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+  ["navbarLinks"],
+  {
+    tags: ["navbarLinks"],
+  },
+);
 
 export const addNewNavbarLink = async (formData: FormData) => {
   const data = {

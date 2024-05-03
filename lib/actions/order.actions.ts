@@ -5,7 +5,12 @@ import { fetchProductsById, Order } from "@/lib";
 import nodemailer from "nodemailer";
 import path from "path";
 import fs from "fs";
-import { formatOrderItems, generateCode, reformatCartItems } from "@/utils";
+import {
+  formatOrderItems,
+  formatPrice,
+  generateCode,
+  reformatCartItems,
+} from "@/utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { soldProducts } from "./product.actions";
@@ -135,7 +140,9 @@ export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
 
   try {
     connectToDatabase();
-    const data = await Order.find(textSearchCondition).limit(limit);
+    const data = await Order.find(textSearchCondition)
+      .sort({ createdAt: -1 })
+      .limit(limit);
     const orders: OrderType[] = JSON.parse(JSON.stringify(data));
     return orders;
   } catch (error) {
@@ -154,6 +161,22 @@ export async function fetchOrder(id: string): Promise<OrderType | null> {
     console.error("Error fetching order detail:", error);
     return null;
   }
+}
+
+export async function updateOrder(formData: FormData): Promise<void> {
+  const id = formData.get("id")?.toString() || "";
+  const status = formData.get("status")?.toString() || "";
+  try {
+    connectToDatabase();
+    const order = await Order.findOne({ id: id });
+    if (!order) return;
+    order.status = status;
+    await order.save();
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    throw error;
+  }
+  redirect("/dashboard/orders");
 }
 
 export const sendEmail = async (
@@ -176,20 +199,21 @@ export const sendEmail = async (
     const filePath = path.join(process.cwd(), "public", "confirmation.html");
     const htmlContent = fs.readFileSync(filePath, "utf8");
     const replacedHtml = htmlContent
-      .replace(/{{HOST_URL}}/g, `${process.env.NEXT_PUBLIC_VERCEL_URL}`)
       .replace(/{{FIRST_NAME}}/g, order.personalInfo.firstName)
       .replace(/{{LAST_NAME}}/g, order.personalInfo.lastName)
       .replace(/{{EMAIL}}/g, order.personalInfo?.email || "")
       .replace(/{{STATE}}/g, order.personalInfo.state)
       .replace(/{{STREET_ADDRESS}}/g, order.personalInfo.streetAddress)
       .replace(/{{ORDER_ID}}/g, order.id)
-      .replace(/{{TOTAL}}/g, order.total.toFixed(2))
-      .replace(/{{SUBTOTAL}}/g, order.subTotal.toFixed(2))
-      .replace(/{{DISCOUNTS}}/g, order.discount.toFixed(2))
-      .replace(/{{SHIPPING}}/g, order.shipping.toFixed(2))
+      .replace(/{{TOTAL}}/g, formatPrice(order.total, "EGP"))
+      .replace(/{{SUBTOTAL}}/g, formatPrice(order.subTotal, "EGP"))
+      .replace(/{{DISCOUNTS}}/g, formatPrice(order.discount, "EGP"))
+      .replace(/{{SHIPPING}}/g, formatPrice(order.shipping, "EGP"))
       .replace(/{{INVOICE_DATE}}/g, "August 1, 2024")
       .replace(/{{PAYMENT}}/g, order.personalInfo.paymentMethod)
-      .replace(/{{ITEMS}}/g, formatOrderItems(cartProducts));
+      .replace(/{{ITEMS}}/g, formatOrderItems(cartProducts))
+      .replace(/{{COUNT}}/g, cartProducts.length.toString())
+      .replace(/{{HOST_URL}}/g, `${process.env.NEXT_PUBLIC_VERCEL_URL}`);
 
     const mailOptions = {
       from: process.env.PAGE_EMAIL,

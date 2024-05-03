@@ -26,12 +26,14 @@ const EditModal = ({
   if (!data || !action || !name) return null;
   const editId = searchParams?.get("edit" + name.toUpperCase() + "Id") || "";
   const inputArray = createInputArray(inputObj);
-  const selectedItem = data.find((x: any) => x._id === editId);
+  const selectedItem = data.find(
+    (x: any) => x._id === editId || x.id === editId,
+  );
 
   return (
     <Modal isOpen={!!selectedItem} onCloseBath={pathname}>
       <div className="flex flex-col gap-5 p-5 lg:p-20">
-        <form action={action} className="flex flex-col gap-2">
+        <form action={action} className="flex min-w-60 flex-col gap-2">
           {children}
           <input type="text" name="id" value={editId} readOnly hidden />
           {inputArray.map((item, index) => {
@@ -43,6 +45,7 @@ const EditModal = ({
                 type={item.type}
                 defaultValue={selectedItem?.[item.name]}
                 name={item.name}
+                options={item.options}
                 required={item.required}
               />
             );

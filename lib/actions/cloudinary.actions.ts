@@ -9,7 +9,8 @@ cloudinary.config({
 export async function uploadFile(file: any) {
   try {
     const data = await cloudinary.uploader.upload(file, {
-      upload_preset: "Givaco",
+      upload_preset: "eh-egy",
+      folder: "eh-egy",
     });
     return data;
   } catch (error) {

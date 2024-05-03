@@ -127,6 +127,12 @@ const dashboardCards: DashboardCardProps[] = [
     url: "/store",
     description: "+20",
   },
+  {
+    image: "/icons/customers.svg",
+    title: "Collection",
+    number: "100",
+    url: "/store/collections",
+  },
 ];
 
 const CSS_COLORS = [

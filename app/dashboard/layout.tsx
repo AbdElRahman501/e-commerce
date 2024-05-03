@@ -1,6 +1,6 @@
-import DashSideBar from "@/components/DashSideBar";
 import React, { Suspense } from "react";
-
+import dynamic from "next/dynamic";
+const DashSideBar = dynamic(() => import("@/components/DashSideBar"));
 export default function DashBoardLayout({
   children,
 }: {
@@ -13,7 +13,7 @@ export default function DashBoardLayout({
           <Suspense>
             <DashSideBar />
           </Suspense>
-          <div className="w-3/4 flex-1">{children}</div>
+          <div className="w-3/4 flex-1 py-5">{children}</div>
         </div>
       </Suspense>
     </>

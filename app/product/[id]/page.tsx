@@ -12,7 +12,9 @@ const ProductDetailsComponent = dynamic(
 );
 const Footer = dynamic(() => import("@/components/Footer"));
 const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
-
+const SubscriptionModal = dynamic(
+  () => import("@/components/SubscriptionModal"),
+);
 export async function generateMetadata({
   params,
   searchParams,
@@ -115,15 +117,20 @@ export default async function ProductDetailPage({
       />
 
       <ProductDetailsComponent {...product} isFav={isFav} cart={cart} />
-      <ProductsRow
-        title="You may also like"
-        url="/shop"
-        filter={{
-          keywordFilter: product.keywords,
-          idsToExclude: [product.id],
-        }}
-      />
-      <Footer />
+      <Suspense>
+        <ProductsRow
+          title="You may also like"
+          url="/shop"
+          filter={{
+            keywordFilter: product.keywords,
+            idsToExclude: [product.id],
+          }}
+        />
+      </Suspense>
+      <Suspense>
+        <SubscriptionModal />
+        <Footer />
+      </Suspense>
     </>
   );
 }
