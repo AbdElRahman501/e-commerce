@@ -15,6 +15,5 @@ export async function uploadFile(file: any) {
     return data;
   } catch (error) {
     console.log("🚀 ~ uploadFile ~ error:", error);
-    return error;
   }
 }
