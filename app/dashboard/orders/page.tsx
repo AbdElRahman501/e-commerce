@@ -1,12 +1,34 @@
 import { SearchField } from "@/components";
-import { setOrderNumber } from "@/components/actions/order.actions";
 import CustomTable from "@/components/CustomTable";
-import SubmitButton from "@/components/SubmitButton";
-import { fetchOrders } from "@/lib/actions/order.actions";
+import { fetchOrders, updateOrder } from "@/lib/actions/order.actions";
+import { Order } from "@/types";
 import { formatDate } from "@/utils";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { Suspense } from "react";
+
+const OrderStatus = (item: Order) => {
+  const st = item.status;
+  const color =
+    st === "Accepted" || st === "Delivered"
+      ? "text-green-500"
+      : st === "Shipped"
+        ? "text-blue-500"
+        : st === "Pending"
+          ? "text-yellow-500"
+          : "text-red-500";
+  const pathName = "/dashboard/orders";
+  const editPathName = "edit" + "order".toUpperCase() + "Id";
+
+  return (
+    <Link
+      replace
+      href={`${pathName}?${editPathName}=${item.id}`}
+      className={" text-sm font-bold  hover:underline " + color}
+    >
+      {item.status}
+    </Link>
+  );
+};
 
 export default async function OrdersPage({
   searchParams,
@@ -17,11 +39,6 @@ export default async function OrdersPage({
     [key: string]: string;
   };
   const orders = await fetchOrders({ query: searchValue });
-  const ordersNumberData = cookies().get("orders")?.value;
-  const seenOrders: string[] = ordersNumberData
-    ? JSON.parse(ordersNumberData)
-    : [];
-
   const resultsText = orders.length > 1 ? "results" : "result";
   return (
     <Suspense>
@@ -30,22 +47,7 @@ export default async function OrdersPage({
         <SearchField />
       </div>
       <Suspense>
-        <form className="flex w-full justify-end p-2" action={setOrderNumber}>
-          <input
-            type="text"
-            name="orders"
-            defaultValue={orders.map((item) => item.id).join(",")}
-            id=""
-            hidden
-          />
-          <SubmitButton
-            type="submit"
-            className="rounded-lg bg-black px-4 py-2 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
-          >
-            read all {(orders.length - seenOrders.length).toFixed(0)}
-          </SubmitButton>
-        </form>
-        <div className="flex flex-col gap-5 px-2 lg:p-20">
+        <div className="mt-5 flex flex-col gap-5 px-2 lg:p-20">
           {searchValue ? (
             <p className="mb-4">
               {orders.length === 0
@@ -56,6 +58,11 @@ export default async function OrdersPage({
           ) : null}
           <div className="flex flex-col gap-2">
             <CustomTable
+              editAction={updateOrder}
+              inputObj={{
+                status: "LIST:Pending,Delivered,Shipped,Accepted,Canceled",
+              }}
+              name="order"
               data={orders.map((item) => ({
                 ...item,
                 ...item.personalInfo,
@@ -65,18 +72,38 @@ export default async function OrdersPage({
                 {
                   key: "id",
                   Action: (item) => (
-                    <Link href={`/confirmation/${item.id}`}>{item.id}</Link>
+                    <Link
+                      className="text-blue-700 hover:underline"
+                      href={`/confirmation/${item.id}`}
+                    >
+                      #{item.id}
+                    </Link>
                   ),
+                },
+                {
+                  key: "phoneNumber",
+                  Action: (item) => (
+                    <Link
+                      className="text-blue-700 hover:underline"
+                      href={`tel:${item.phoneNumber}`}
+                    >
+                      {item.phoneNumber}
+                    </Link>
+                  ),
+                },
+                {
+                  key: "state",
+                  Action: OrderStatus,
                 },
               ]}
               header={[
                 "id",
                 "firstName",
                 "phoneNumber",
-                "state",
                 "city",
                 "streetAddress",
                 "total",
+                "state",
                 "date",
               ]}
             />

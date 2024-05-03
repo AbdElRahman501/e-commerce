@@ -12,7 +12,9 @@ const ProductDetailsComponent = dynamic(
 );
 const Footer = dynamic(() => import("@/components/Footer"));
 const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
-
+const SubscriptionModal = dynamic(
+  () => import("@/components/SubscriptionModal"),
+);
 export async function generateMetadata({
   params,
   searchParams,
@@ -126,6 +128,7 @@ export default async function ProductDetailPage({
         />
       </Suspense>
       <Suspense>
+        <SubscriptionModal />
         <Footer />
       </Suspense>
     </>

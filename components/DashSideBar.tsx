@@ -47,7 +47,7 @@ const DashSideBar = () => {
         <ul className="flex h-full w-full flex-col gap-1 text-left">
           <div
             onClick={() => setMinMenu(!minMenu)}
-            className="cursor-pointer duration-200 group-hover:scale-110"
+            className="hidden cursor-pointer duration-200 group-hover:scale-110 md:block"
           >
             <li className="flex w-full justify-end overflow-hidden border-b border-gray-200 p-4 uppercase duration-200 hover:bg-primary_color hover:text-white dark:border-gray-700 dark:hover:bg-white dark:hover:text-black  ">
               <DropDown_icon className=" w-6 rotate-[90deg] " />

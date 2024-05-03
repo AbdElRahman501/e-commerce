@@ -1,6 +1,6 @@
-import DashSideBar from "@/components/DashSideBar";
 import React, { Suspense } from "react";
-
+import dynamic from "next/dynamic";
+const DashSideBar = dynamic(() => import("@/components/DashSideBar"));
 export default function DashBoardLayout({
   children,
 }: {

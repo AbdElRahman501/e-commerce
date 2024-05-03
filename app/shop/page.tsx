@@ -7,7 +7,9 @@ const LoadMore = dynamic(() => import("@/components/LoadMore"), {
   ssr: false,
 });
 const ProductCard = dynamic(() => import("@/components/ProductCard"));
-
+const SubscriptionModal = dynamic(
+  () => import("@/components/SubscriptionModal"),
+);
 export const metadata = {
   title: "Shop",
   description: "Search for products in the store.",
@@ -62,6 +64,7 @@ export default async function SearchPage({
   const resultsText = products.length > 1 ? "results" : "result";
   return (
     <>
+      <SubscriptionModal />
       {searchValue ? (
         <p className="mb-4">
           {products.length === 0

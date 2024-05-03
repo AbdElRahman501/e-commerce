@@ -36,6 +36,8 @@ const CustomTable = ({
     const CustomAction: CustomActionType | null =
       CustomActions?.find((action) => action.key === header) || null;
     switch (header) {
+      case CustomAction?.key:
+        return CustomAction?.Action && <CustomAction.Action {...item} />;
       case "image":
         return (
           <Image
@@ -64,8 +66,6 @@ const CustomTable = ({
       case "status":
         const status: { name: string; color: string } = item[header];
         return <div style={{ color: status.color }}>{status.name}</div>;
-      case CustomAction?.key:
-        return CustomAction?.Action && <CustomAction.Action {...item} />;
       default:
         return typeof item[header] === "string"
           ? item[header].includes("\n")
@@ -81,7 +81,7 @@ const CustomTable = ({
 
   return (
     <>
-      <AddNewButton name={name} />
+      {addAction && <AddNewButton name={name} />}
       <EditModal
         name={name}
         inputObj={inputObj}

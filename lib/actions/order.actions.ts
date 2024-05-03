@@ -158,6 +158,22 @@ export async function fetchOrder(id: string): Promise<OrderType | null> {
   }
 }
 
+export async function updateOrder(formData: FormData): Promise<void> {
+  const id = formData.get("id")?.toString() || "";
+  const status = formData.get("status")?.toString() || "";
+  try {
+    connectToDatabase();
+    const order = await Order.findOne({ id: id });
+    if (!order) return;
+    order.status = status;
+    await order.save();
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    throw error;
+  }
+  redirect("/dashboard/orders");
+}
+
 export const sendEmail = async (
   order: OrderType,
   cart: CartItem[],

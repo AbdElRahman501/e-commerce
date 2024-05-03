@@ -210,7 +210,7 @@ export interface DashboardCardProps {
   image: string;
   title: string;
   number: string;
-  description?: string;
+  description?: string | number;
   url: string;
 }
 
@@ -227,3 +227,5 @@ export interface ReviewType {
   rating: number;
   images: string[];
 }
+
+export type SubscriptionState = "subscribed" | "ignored" | "unsubscribed";
