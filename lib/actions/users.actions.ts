@@ -84,6 +84,7 @@ export const sendPromoEmail = async (user: {
     const htmlContent = fs.readFileSync(filePath, "utf8");
     const replacedHtml = htmlContent
       .replace(/{{PROMO_CODE}}/g, promoCode.code)
+      .replace(/{{HOST_URL}}/g, `${process.env.NEXT_PUBLIC_VERCEL_URL}`)
       .replace(/{{DISCOUNTS}}/g, discounts.toFixed(0));
     const mailOptions = {
       from: process.env.PAGE_EMAIL,

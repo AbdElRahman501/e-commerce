@@ -59,7 +59,7 @@ const SubscriptionModal = () => {
       <form action={actionWithVariant}>
         <button
           type="submit"
-          className="w-full cursor-pointer pt-2 text-center hover:underline"
+          className="w-full cursor-pointer pt-2 text-center uppercase hover:underline"
         >
           <p>I {`don't`} want 15% off</p>
         </button>

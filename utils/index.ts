@@ -165,7 +165,7 @@ export function formatDate(timestamp: string): string {
   return `${year}/${month}/${day}`;
 }
 
-export function formatPrice(price: number, currency: string) {
+export function formatPrice(price: number, currency: "EGP" | "USD") {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency,
