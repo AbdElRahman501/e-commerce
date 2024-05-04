@@ -154,6 +154,7 @@ export const fetchFilteredProducts = unstable_cache(
   ["products"],
   {
     tags: ["products"],
+    revalidate: 60 * 60,
   },
 );
 
@@ -249,6 +250,7 @@ export const getAllProperties = unstable_cache(
   ["properties"],
   {
     tags: ["properties"],
+    revalidate: 60 * 60,
   },
 );
 
@@ -274,6 +276,7 @@ export const fetchProduct = unstable_cache(
   ["products"],
   {
     tags: ["products"],
+    revalidate: 60 * 60,
   },
 );
 
@@ -302,6 +305,7 @@ export const fetchProductsById = unstable_cache(
   ["products"],
   {
     tags: ["products"],
+    revalidate: 60 * 60,
   },
 );
 
@@ -372,6 +376,7 @@ export const getCategories = unstable_cache(
   ["categories"],
   {
     tags: ["categories"],
+    revalidate: 60 * 60,
   },
 );
 
