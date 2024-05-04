@@ -7,15 +7,13 @@ export default function DashBoardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Suspense>
-        <div className="flex">
-          <Suspense>
-            <DashSideBar />
-          </Suspense>
-          <div className="w-3/4 flex-1 py-5">{children}</div>
-        </div>
-      </Suspense>
-    </>
+    <Suspense>
+      <div className="flex">
+        <Suspense>
+          <DashSideBar />
+        </Suspense>
+        <div className="w-3/4 flex-1 py-5">{children}</div>
+      </div>
+    </Suspense>
   );
 }

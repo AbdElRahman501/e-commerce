@@ -1,14 +1,11 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
 import localFont from "next/font/local";
-
 import { ThemeProvider } from "@/theme-provider";
 import { NavBar } from "@/components";
-import { NextAuthProvider } from "@/NextAuthProvider";
 import React, { Suspense } from "react";
 import LocalStorage from "@/components/LocalStorage";
+import { NextAuthProvider } from "@/NextAuthProvider";
 
-const inter = Inter({ subsets: ["latin"] });
 const golos = localFont({
   src: [
     {
@@ -55,19 +52,21 @@ export default function RootLayout({
         className={`${golos.variable} bg-white font-golos duration-200 dark:bg-[#0d1117]`}
       >
         <LocalStorage />
-        <Suspense>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <NextAuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextAuthProvider>
+            <Suspense>
               <NavBar />
-              <main>{children}</main>
-            </NextAuthProvider>
-          </ThemeProvider>
-        </Suspense>
+            </Suspense>
+          </NextAuthProvider>
+          <Suspense>
+            <main>{children}</main>
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   );
