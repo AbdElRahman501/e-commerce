@@ -26,7 +26,9 @@ const ThemeSwitcher = ({
   }
 
   return (
-    <div
+    <button
+      type="button"
+      aria-label="Theme switcher button "
       className={className}
       onClick={() => {
         setTheme(theme === "dark" ? "light" : "dark");
@@ -35,11 +37,11 @@ const ThemeSwitcher = ({
     >
       {!onlyIcon && <p>{theme === "dark" ? "Light mode" : "Dark mode"}</p>}
       {theme === "dark" ? (
-        <Circum_icon className="h-8 w-8" />
+        <SunIcon className="w-6 md:w-8" />
       ) : (
-        <SunIcon className="h-8 w-8" />
+        <Circum_icon className="w-6 md:w-8" />
       )}
-    </div>
+    </button>
   );
 };
 export default ThemeSwitcher;

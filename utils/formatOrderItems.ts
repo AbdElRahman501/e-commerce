@@ -52,7 +52,7 @@ const formatOrderItems = (products: CartProduct[]): string => {
                   style="max-width: 290px"
                 >
                 <a
-                href="{{HOST_URL}}/product/${item.id}?color=${item.selectedColor}?size=${item.selectedSize}"
+                href="{{HOST_URL}}/product/${item.id}?color=${item.selectedColor}&size=${item.selectedSize}"
                 style="outline: none"
                 tabindex="-1"
                 target="_blank"

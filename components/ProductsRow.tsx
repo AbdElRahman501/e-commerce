@@ -36,12 +36,13 @@ async function ProductsRow({
         <SectionTitle title={title} url={url} />
         <div className="scroll-bar-hidden overflow-x-scroll ">
           <div className="flex w-full gap-4">
-            {products.map((product) => (
+            {products.map((product, index) => (
               <ProductCard
                 className="min-w-[306px] flex-1"
                 fav={fav}
                 key={product.id}
                 {...product}
+                index={index}
               />
             ))}
           </div>

@@ -1,14 +1,21 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ThemeSwitcher } from ".";
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import useLongPress from "./useLongPress";
-import { NavbarType } from "@/types";
+import { CartItem, NavbarType } from "@/types";
 import { FaceBookIcon, InstagramIcon, ThreadsIcon } from "./icons/socialmedia";
+import BurgerMenu_icon from "./icons/BurgerMenu_icon";
+import Ex_icon from "./icons/Ex_icon";
 
-const MenuBurgerButton = ({ navbarLinks }: { navbarLinks: NavbarType[] }) => {
+const MenuBurgerButton = ({
+  navbarLinks,
+  cart,
+}: {
+  cart: CartItem[];
+  navbarLinks: NavbarType[];
+}) => {
   const [menu, setMenu] = useState(false);
   const { data: session } = useSession();
 
@@ -62,14 +69,17 @@ const MenuBurgerButton = ({ navbarLinks }: { navbarLinks: NavbarType[] }) => {
   return (
     <>
       <div className="flex flex-1 items-center justify-start md:hidden">
-        <button type="button" {...longPressEvent}>
-          <Image
-            className="invert duration-300  hover:scale-110 dark:invert md:invert-0"
-            src={menu ? "/icons/close.svg" : "/icons/menu-burger.svg"}
-            alt="menu"
-            width={30}
-            height={30}
-          />
+        <button
+          type="button"
+          aria-label="menu button"
+          className="p-2"
+          {...longPressEvent}
+        >
+          {menu ? (
+            <Ex_icon className="w-8 text-white duration-200 hover:scale-110 md:text-black md:dark:text-white" />
+          ) : (
+            <BurgerMenu_icon className="w-8 text-white duration-200 hover:scale-110 md:text-black md:dark:text-white" />
+          )}
         </button>
         <div
           style={{ left: menu ? "0" : "-100vw" }}
@@ -84,7 +94,9 @@ const MenuBurgerButton = ({ navbarLinks }: { navbarLinks: NavbarType[] }) => {
                 className="duration-200 group-hover:scale-110"
               >
                 <li className="w-full overflow-hidden border-b  border-gray-200 p-4 uppercase duration-200 hover:bg-primary_color hover:text-white dark:border-gray-700 dark:hover:bg-white dark:hover:text-black  ">
-                  {link.title}
+                  {link.title.toLocaleLowerCase() === "cart"
+                    ? "cart (" + cart.length + ")"
+                    : link.title}
                 </li>
               </Link>
             ))}

@@ -255,14 +255,11 @@ export const getAllProperties = unstable_cache(
 );
 
 export const fetchProduct = unstable_cache(
-  async (
-    id: string,
-    isCustomer?: boolean,
-  ): Promise<ProductOnSaleType | null> => {
+  async (id: string): Promise<ProductOnSaleType | null> => {
     try {
       connectToDatabase();
       const data = await Product.findByIdAndUpdate(id, {
-        $inc: { views: isCustomer ? 1 : 0 },
+        $inc: { views: 1 },
       });
       const product: ProductType = JSON.parse(JSON.stringify(data));
       const offers: OfferType[] = await Offer.find({});

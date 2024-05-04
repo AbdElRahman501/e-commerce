@@ -15,8 +15,6 @@ import Image from "next/image";
 import AmountButton from "./AmountButton";
 import AddToCart from "./cart/AddToCart";
 import ProductImages from "./ProductImages";
-import CustomForm from "./CustomForm";
-import SubmitButton from "./SubmitButton";
 import HeartIcon from "./icons/HeartIcon";
 import FAQCard from "./FAQCard";
 
@@ -193,26 +191,20 @@ const ProductDetailsComponent = ({
               selectedSize,
             }}
           />
-          <CustomForm
-            action={toggleFav}
-            customAction={toggleFavItemAction}
-            data={id}
-            className="flex aspect-square h-14 w-14 items-center justify-center rounded-full border border-primary_bg bg-white py-1 text-lg text-black dark:border-white "
-          >
-            <SubmitButton type="submit">
-              {isFav ? (
-                <HeartIcon
-                  fillRule="nonzero"
-                  className="h-6 w-6 text-red-800  duration-200 hover:scale-110"
-                />
-              ) : (
-                <HeartIcon
-                  fillRule="evenodd"
-                  className="h-6 w-6  duration-200 hover:scale-110"
-                />
-              )}
-            </SubmitButton>
-          </CustomForm>
+          <div className="flex aspect-square h-14 w-14 items-center justify-center rounded-full border border-primary_bg bg-white py-1 text-lg text-black dark:border-white ">
+            <button
+              type="button"
+              onClick={async () => {
+                await toggleFav(id);
+                toggleFavItemAction();
+              }}
+            >
+              <HeartIcon
+                fillRule={isFav ? "nonzero" : "evenodd"}
+                className={`${isFav ? "text-red-800" : ""} w-8  duration-200 hover:scale-110`}
+              />
+            </button>
+          </div>
         </div>
         <div className="mt-10 flex flex-col gap-4">
           {Object.entries(content || {}).map(([title, items], index) => (

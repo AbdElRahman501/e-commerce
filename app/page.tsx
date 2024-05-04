@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { fetchFilteredProducts } from "@/lib";
+import { FAQSection, Footer, Hero, Testimonials } from "@/components";
+import ProductsRow from "@/components/ProductsRow";
+import SubscriptionSection from "@/components/SubscriptionSection";
 
 export const metadata = {
   description:
@@ -10,14 +13,6 @@ export const metadata = {
   },
 };
 
-const FAQSection = dynamic(() => import("@/components/FAQSection"));
-const Footer = dynamic(() => import("@/components/Footer"));
-const Hero = dynamic(() => import("@/components/Hero"));
-const Testimonials = dynamic(() => import("@/components/Testimonials"));
-const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
-const SubscriptionSection = dynamic(
-  () => import("@/components/SubscriptionSection"),
-);
 const SubscriptionModal = dynamic(
   () => import("@/components/SubscriptionModal"),
 );

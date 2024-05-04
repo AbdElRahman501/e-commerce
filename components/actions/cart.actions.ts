@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function addItem(previousState: any, cartItem: CartItem) {
+export async function addItem(cartItem: CartItem) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   cookies().set("cart", JSON.stringify(addToCart(cart, cartItem)));
@@ -13,7 +13,7 @@ export async function addItem(previousState: any, cartItem: CartItem) {
   return "added to cart";
 }
 
-export async function addItems(previousState: any, data: CartItem[]) {
+export async function addItems(data: CartItem[]) {
   if (data) {
     cookies().set("cart", JSON.stringify(data));
     revalidateTag("cart");
@@ -21,16 +21,7 @@ export async function addItems(previousState: any, data: CartItem[]) {
   }
 }
 
-export async function updateItem(
-  previousState: any,
-  {
-    oldItem,
-    newItem,
-  }: {
-    oldItem: CartItem;
-    newItem: CartItem;
-  },
-) {
+export async function updateItem(oldItem: CartItem, newItem: CartItem) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   cookies().set("cart", JSON.stringify(editCart(cart, oldItem, newItem)));
@@ -38,7 +29,7 @@ export async function updateItem(
   return "added to cart";
 }
 
-export async function removeItem(previousState: any, item: CartItem) {
+export async function removeItem(item: CartItem) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   cookies().set("cart", JSON.stringify(removeFromCart(cart, item)));

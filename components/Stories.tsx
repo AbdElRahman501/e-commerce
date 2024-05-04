@@ -79,6 +79,7 @@ const Stories = ({ stories = [] }: { stories: StoryType[] }) => {
               src={story.image}
               alt="shop image"
               fill
+              priority={index === 0}
               sizes="100%"
               style={{ objectFit: "cover" }}
             />

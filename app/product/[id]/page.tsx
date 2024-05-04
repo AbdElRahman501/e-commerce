@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { cache, Suspense } from "react";
 import { CartItem, ProductDetailPageProps } from "@/types";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
@@ -6,15 +6,18 @@ import { getAllImages, getTransformedImageUrl } from "@/utils";
 import { fetchProduct } from "@/lib";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
+import { Footer, ProductDetailsComponent } from "@/components";
+import ProductsRow from "@/components/ProductsRow";
 
-const ProductDetailsComponent = dynamic(
-  () => import("@/components/ProductDetailsComponent"),
-);
-const Footer = dynamic(() => import("@/components/Footer"));
-const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
 const SubscriptionModal = dynamic(
   () => import("@/components/SubscriptionModal"),
 );
+
+const getProduct = cache(async (id: string) => {
+  const product = await fetchProduct(id);
+  if (!product) return notFound();
+  return product;
+});
 export async function generateMetadata({
   params,
   searchParams,
@@ -22,7 +25,7 @@ export async function generateMetadata({
   params: { id: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }): Promise<Metadata> {
-  const product = await fetchProduct(params.id);
+  const product = await getProduct(params.id);
   const { color } = searchParams as {
     [key: string]: string;
   };
@@ -75,7 +78,7 @@ export default async function ProductDetailPage({
   const fav: string[] = favData ? JSON.parse(favData) : [];
   const isFav = !!fav.find((item) => item === id);
 
-  const product = await fetchProduct(id, true);
+  const product = await getProduct(id);
 
   if (!product?.id) {
     return notFound();

@@ -9,7 +9,8 @@ const CollectionCard = ({
   image,
   url,
   className,
-}: CollectionType & { className?: string }) => {
+  index = 0,
+}: CollectionType & { className?: string; index?: number }) => {
   return (
     <Link
       href={url}
@@ -24,6 +25,7 @@ const CollectionCard = ({
         src={image}
         alt={name}
         fill
+        priority={index < 3}
         sizes="100%"
         style={{ objectFit: "cover" }}
       />
