@@ -10,6 +10,8 @@ import {
 } from "@/types";
 import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
+import { notFound } from "next/navigation";
 
 export const fetchFilteredProducts = unstable_cache(
   async ({
@@ -154,6 +156,7 @@ export const fetchFilteredProducts = unstable_cache(
   ["products"],
   {
     tags: ["products"],
+    revalidate: 60 * 60,
   },
 );
 
@@ -249,18 +252,16 @@ export const getAllProperties = unstable_cache(
   ["properties"],
   {
     tags: ["properties"],
+    revalidate: 60 * 60,
   },
 );
 
 export const fetchProduct = unstable_cache(
-  async (
-    id: string,
-    isCustomer?: boolean,
-  ): Promise<ProductOnSaleType | null> => {
+  async (id: string): Promise<ProductOnSaleType | null> => {
     try {
       connectToDatabase();
       const data = await Product.findByIdAndUpdate(id, {
-        $inc: { views: isCustomer ? 1 : 0 },
+        $inc: { views: 1 },
       });
       const product: ProductType = JSON.parse(JSON.stringify(data));
       const offers: OfferType[] = await Offer.find({});
@@ -274,8 +275,15 @@ export const fetchProduct = unstable_cache(
   ["products"],
   {
     tags: ["products"],
+    revalidate: 60 * 60,
   },
 );
+
+export const getProduct = cache(async (id: string) => {
+  const product = await fetchProduct(id);
+  if (!product) return notFound();
+  return product;
+});
 
 export const fetchProductsById = unstable_cache(
   async (ids: string[]): Promise<ProductOnSaleType[]> => {
@@ -302,6 +310,7 @@ export const fetchProductsById = unstable_cache(
   ["products"],
   {
     tags: ["products"],
+    revalidate: 60 * 60,
   },
 );
 
@@ -372,6 +381,7 @@ export const getCategories = unstable_cache(
   ["categories"],
   {
     tags: ["categories"],
+    revalidate: 60 * 60,
   },
 );
 

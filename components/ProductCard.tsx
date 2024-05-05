@@ -5,17 +5,13 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { firstMatch, formatPrice, toggleFavoriteItem } from "@/utils";
 import { toggleFav } from "./actions/fav.actions";
-import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-
-const CustomForm = dynamic(() => import("./CustomForm"));
-const SubmitButton = dynamic(() => import("./SubmitButton"));
-const HeartIcon = dynamic(() => import("./icons/HeartIcon"));
-const LoadingDots = dynamic(() => import("./loading-dots"));
+import HeartIcon from "./icons/HeartIcon";
 
 interface ProductCardProps extends ProductOnSaleType {
   fav: string[];
   className?: string;
+  index?: number;
 }
 
 const ProductCard = ({
@@ -28,10 +24,11 @@ const ProductCard = ({
   saleValue,
   fav = [],
   className,
+  index = 0,
 }: ProductCardProps) => {
+  const [isFav, setIsFav] = React.useState(!!fav.find((item) => item === id));
   const searchParams = useSearchParams();
   const [selectedColor, setSelectedColor] = React.useState<string>(colors[0]);
-  const isFav = !!fav.find((item) => item === id);
 
   useEffect(() => {
     const colorFilter = searchParams?.get("clf")?.length
@@ -53,7 +50,7 @@ const ProductCard = ({
   };
 
   return (
-    <div className={` animate-fadeIn relative  flex-col gap-4 ${className}`}>
+    <div className={` relative  flex-col gap-4 ${className}`}>
       {saleValue && (
         <div className="absolute left-2 top-2 z-10 text-center text-[10px] uppercase text-white md:text-xs">
           <p className="mb-3 h-full w-full  rounded-full bg-gray-950 p-1 px-4">
@@ -64,6 +61,7 @@ const ProductCard = ({
       <div className="relative">
         <Link
           className="relative block"
+          scroll={true}
           href={{
             pathname: `/product/${id}`,
             query: { color: selectedColor.toString().replace("#", "HASH:") },
@@ -75,43 +73,32 @@ const ProductCard = ({
               alt="jacket"
               fill
               sizes="100%"
+              priority={index < 3}
               style={{ objectFit: "cover" }}
               className={`bg-gradient-to-r from-[#8c8c88] to-[#979a96] duration-700 hover:scale-105 `}
             />
           </div>
         </Link>
-        <div className="absolute bottom-2 right-2 rounded-full bg-white p-2 text-black ">
-          <CustomForm
-            action={toggleFav}
-            customAction={toggleFavItemAction}
-            data={id}
-            className="h-5 w-5"
-          >
-            <SubmitButton
-              loadingItem={
-                <p className="text-center text-2xl">
-                  <LoadingDots />
-                </p>
-              }
-              type="submit"
-            >
-              {isFav ? (
-                <HeartIcon
-                  fillRule="nonzero"
-                  className="h-5 w-5 text-red-800  duration-200 hover:scale-110"
-                />
-              ) : (
-                <HeartIcon
-                  fillRule="evenodd"
-                  className="h-5 w-5  duration-200 hover:scale-110"
-                />
-              )}
-            </SubmitButton>
-          </CustomForm>
-        </div>
+        <button
+          onClick={async () => {
+            setIsFav(!isFav);
+            await toggleFav(id);
+            toggleFavItemAction();
+          }}
+          aria-label="Add to favorites"
+          type="button"
+          className="absolute bottom-2  right-2 rounded-full bg-white p-2 text-black "
+        >
+          <div className="h-5 w-5">
+            <HeartIcon
+              fillRule={isFav ? "nonzero" : "evenodd"}
+              className={`${isFav ? "text-red-800" : ""} w-full  duration-200 hover:scale-110`}
+            />
+          </div>
+        </button>
       </div>
       <div className="flex flex-col gap-1 p-4 text-center">
-        <p className="w-full  text-sm font-bold">{title}</p>
+        <p className="line-clamp-2  w-full text-sm font-bold">{title}</p>
         <div className="relative flex items-center justify-center pt-2">
           {salePrice ? (
             <>
@@ -133,6 +120,8 @@ const ProductCard = ({
           {colors.map((item, index) => (
             <button
               key={index}
+              type="button"
+              aria-label={"Select color " + item}
               onClick={() => setSelectedColor(item)}
               className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "border-2 border-black p-[1px] dark:border-white" : "border-transparent"} max-w-6 flex-1 rounded-full p-[1px] duration-200 hover:scale-110`}
             >

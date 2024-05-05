@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { FilterSkeleton } from "@/components/LoadingSkeleton";
 
 const CallToAction = dynamic(() => import("@/components/CallToAction"));
 const Footer = dynamic(() => import("@/components/Footer"));
@@ -25,7 +26,7 @@ export default function SearchLayout({
         <Sorting classNames=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-gray-200 px-2 dark:border-gray-700 md:flex" />
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
-        <Suspense>
+        <Suspense fallback={<FilterSkeleton />}>
           <FilterSection />
         </Suspense>
         <div className="rounded-4xl flex min-h-[60vh] flex-1 flex-col gap-4  ">

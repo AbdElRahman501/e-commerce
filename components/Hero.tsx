@@ -1,12 +1,10 @@
 "use server";
 import Image from "next/image";
 import { fetchCollections, fetchStories } from "@/lib/actions/store.actions";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-
-const CollectionCard = dynamic(() => import("./CollectionCard"));
-const ArrowButton = dynamic(() => import("./ArrowButton"));
-const Stories = dynamic(() => import("./Stories"));
+import CollectionCard from "./CollectionCard";
+import ArrowButton from "./ArrowButton";
+import Stories from "./Stories";
 
 const Hero = async () => {
   const stories = await fetchStories();
@@ -15,9 +13,9 @@ const Hero = async () => {
   return (
     <div className=" mx-auto max-w-8xl sm:p-5 lg:px-20 ">
       <div className="flex h-full w-full flex-col-reverse gap-3 md:grid md:grid-cols-9">
-        <div className=" row-span-1 grid h-full w-full grid-cols-2 flex-col gap-3 px-5 sm:flex sm:flex-row sm:px-0 md:col-span-2 md:flex-col">
-          {restCollections.map((collection) => (
-            <CollectionCard key={collection.name} {...collection} />
+        <div className="grid w-full grid-cols-2 flex-col gap-3 px-5 sm:px-0 md:col-span-2 md:flex md:flex-col">
+          {restCollections.map((collection, index) => (
+            <CollectionCard key={index} index={index} {...collection} />
           ))}
           <Link
             href={"/collections"}
@@ -38,6 +36,7 @@ const Hero = async () => {
               src={firstCollection.image}
               alt={firstCollection.name}
               fill
+              priority
               sizes="100%"
               style={{ objectFit: "cover" }}
             />

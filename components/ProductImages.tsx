@@ -123,7 +123,7 @@ const ProductImages: React.FC<YourComponentProps> = ({
       )}
       <div
         onClick={() => setShowFullImage(true)}
-        className="absolute right-3 top-3 z-20 rounded-lg bg-white p-2"
+        className="absolute right-3 top-3 z-20 cursor-pointer rounded-lg bg-white p-2"
       >
         <FullSizeIcon className="w-6 text-black" />
       </div>

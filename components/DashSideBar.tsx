@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import DropDown_icon from "./icons/DropDown_icon";
+import BurgerMenu_icon from "./icons/BurgerMenu_icon";
 
 const DashSideBar = () => {
   const [menu, setMenu] = React.useState(false);
@@ -30,13 +31,7 @@ const DashSideBar = () => {
         onClick={openMenu}
         className="fixed left-0 top-0 z-[9999] m-1 h-14 w-14 bg-primary_color md:hidden"
       >
-        <Image
-          className="m-auto h-14 invert dark:invert"
-          src={"/icons/menu-burger.svg"}
-          alt="menu"
-          width={30}
-          height={30}
-        />
+        <BurgerMenu_icon className="w-10 text-white duration-200 hover:scale-110 md:text-black md:dark:text-white" />
       </div>
       <div
         style={{

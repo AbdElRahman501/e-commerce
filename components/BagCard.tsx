@@ -47,7 +47,7 @@ const BagCard = ({
           <div className="flex flex-1 flex-col justify-start gap-2 xl:justify-center">
             <Link
               href={`/product/${id}`}
-              className="font-regular w-3/4 text-sm font-semibold text-black hover:underline dark:text-white xl:text-base  "
+              className="font-regular line-clamp-1 w-3/4 text-sm font-semibold text-black hover:underline dark:text-white xl:text-base  "
             >
               {title}
             </Link>

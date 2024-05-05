@@ -4,11 +4,11 @@ import { cookies } from "next/headers";
 import { fetchProductsById } from "@/lib";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { BagCard, CartPricing } from "@/components";
+import ProductsRow from "@/components/ProductsRow";
+import { ProductSkeleton } from "@/components/LoadingSkeleton";
 
-const BagCard = dynamic(() => import("@/components/BagCard"));
-const CartPricing = dynamic(() => import("@/components/CartPricing"));
 const Message = dynamic(() => import("@/components/Message"));
-const ProductsRow = dynamic(() => import("@/components/ProductsRow"));
 
 export default async function CartComponent({
   searchParams,
@@ -41,7 +41,7 @@ export default async function CartComponent({
           </div>
         )}
       </div>
-      <Suspense>
+      <Suspense fallback={<ProductSkeleton />}>
         <ProductsRow
           title="You may also like"
           url="/shop"

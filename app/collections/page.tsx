@@ -13,7 +13,7 @@ const CollectionsPage = async () => {
           <CollectionCard
             key={collection.name}
             {...collection}
-            className={` ${index === 0 ? "col-span-2 md:row-span-2" : ""} rounded-4xl relative aspect-square h-full w-full overflow-hidden`}
+            className={index === 0 ? "col-span-2 md:row-span-2" : ""}
           />
         ))}
       </div>

@@ -2,11 +2,11 @@ import { fetchFilteredProducts } from "@/lib";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
 import React, { Suspense } from "react";
+import { ProductCard } from "@/components";
 
 const LoadMore = dynamic(() => import("@/components/LoadMore"), {
   ssr: false,
 });
-const ProductCard = dynamic(() => import("@/components/ProductCard"));
 const SubscriptionModal = dynamic(
   () => import("@/components/SubscriptionModal"),
 );
@@ -76,9 +76,7 @@ export default async function SearchPage({
 
       <div className=" grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-4">
         {products.map((product) => (
-          <Suspense key={product.id}>
-            <ProductCard fav={fav} {...product} />
-          </Suspense>
+          <ProductCard key={product.id} fav={fav} {...product} />
         ))}
       </div>
       {count > limit && <LoadMore newLimit={limit + 12} />}
