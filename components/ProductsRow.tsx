@@ -4,6 +4,7 @@ import React from "react";
 import { fetchFilteredProducts } from "@/lib";
 import { cookies } from "next/headers";
 import { FilterProps, ProductOnSaleType } from "@/types";
+import SliderHead from "./SliderHead";
 
 async function ProductsRow({
   title,
@@ -34,19 +35,21 @@ async function ProductsRow({
     <section className="mx-auto max-w-8xl p-5 lg:px-20">
       <div className="rounded-4xl flex flex-col gap-4">
         <SectionTitle title={title} url={url} />
-        <div className="scroll-bar-hidden overflow-x-scroll ">
-          <div className="flex w-full gap-4">
-            {products.map((product, index) => (
-              <ProductCard
-                className="min-w-[306px] flex-1"
-                fav={fav}
-                key={product.id}
-                {...product}
-                index={index}
-              />
-            ))}
-          </div>
-        </div>
+        <SliderHead
+          containerClass="relative"
+          carouselClass="scroll-bar-hidden flex w-full gap-4 overflow-x-scroll"
+          length={products.length}
+        >
+          {products.map((product, index) => (
+            <ProductCard
+              className="min-w-[306px] flex-1 snap-x snap-mandatory snap-start"
+              fav={fav}
+              key={product.id}
+              {...product}
+              index={index}
+            />
+          ))}
+        </SliderHead>
       </div>
     </section>
   );

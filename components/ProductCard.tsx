@@ -28,14 +28,16 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const [isFav, setIsFav] = React.useState(!!fav.find((item) => item === id));
   const searchParams = useSearchParams();
-  const [selectedColor, setSelectedColor] = React.useState<string>(colors[0]);
+  const colorFilter = searchParams?.get("clf")?.length
+    ? searchParams?.get("clf")?.split(",") || []
+    : [];
+  const color = firstMatch(colorFilter, colors);
+  const [selectedColor, setSelectedColor] = React.useState<string>(
+    color || colors[0],
+  );
 
   useEffect(() => {
-    const colorFilter = searchParams?.get("clf")?.length
-      ? searchParams?.get("clf")?.split(",") || []
-      : [];
-    const color = firstMatch(colorFilter, colors);
-    setSelectedColor(color || colors[0]);
+    setSelectedColor(firstMatch(colorFilter, colors) || colors[0]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
