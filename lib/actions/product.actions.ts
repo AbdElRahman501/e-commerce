@@ -10,6 +10,8 @@ import {
 } from "@/types";
 import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
+import { notFound } from "next/navigation";
 
 export const fetchFilteredProducts = unstable_cache(
   async ({
@@ -276,6 +278,12 @@ export const fetchProduct = unstable_cache(
     revalidate: 60 * 60,
   },
 );
+
+export const getProduct = cache(async (id: string) => {
+  const product = await fetchProduct(id);
+  if (!product) return notFound();
+  return product;
+});
 
 export const fetchProductsById = unstable_cache(
   async (ids: string[]): Promise<ProductOnSaleType[]> => {

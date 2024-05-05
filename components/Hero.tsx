@@ -13,7 +13,7 @@ const Hero = async () => {
   return (
     <div className=" mx-auto max-w-8xl sm:p-5 lg:px-20 ">
       <div className="flex h-full w-full flex-col-reverse gap-3 md:grid md:grid-cols-9">
-        <div className=" row-span-1 grid h-full w-full grid-cols-2 flex-col gap-3 px-5 sm:flex sm:flex-row sm:px-0 md:col-span-2 md:flex-col">
+        <div className="grid w-full grid-cols-2 flex-col gap-3 px-5 sm:px-0 md:col-span-2 md:flex md:flex-col">
           {restCollections.map((collection, index) => (
             <CollectionCard key={index} index={index} {...collection} />
           ))}

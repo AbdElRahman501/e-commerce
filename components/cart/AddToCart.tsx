@@ -5,6 +5,7 @@ import CheckMark from "../icons/CheckMark";
 import { addItem } from "../actions/cart.actions";
 import ShoppingBag_icon from "../icons/ShoppingBag_icon";
 import { addToCart, checkIsInCart } from "@/utils";
+import React from "react";
 
 const AddToCart = ({
   cart,
@@ -14,6 +15,8 @@ const AddToCart = ({
   cartItem: CartItem;
 }) => {
   const { selectedColor, selectedSize, amount, productId } = cartItem;
+
+  const [isInCart, setIsInCart] = React.useState(checkIsInCart(cart, cartItem));
   const addItemToLocalStorage = () => {
     if (typeof window == "undefined") return;
     const cartData = localStorage.getItem("cartItems");
@@ -23,7 +26,6 @@ const AddToCart = ({
       JSON.stringify(addToCart(cart, cartItem)),
     );
   };
-  const isInCart = checkIsInCart(cart, cartItem);
 
   return isInCart ? (
     <Link
@@ -44,9 +46,10 @@ const AddToCart = ({
       aria-label="add cart item"
       disabled={!selectedSize || !selectedColor || !amount}
       onClick={async () => {
+        setIsInCart(true);
+        new Audio("/sounds/short-success.mp3").play();
         await addItem(cartItem);
         addItemToLocalStorage();
-        new Audio("/sounds/short-success.mp3").play();
       }}
       className=" flex h-14 w-full items-center gap-3 rounded-full bg-primary_color p-1  text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
     >

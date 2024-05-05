@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { BagCard, CartPricing } from "@/components";
 import ProductsRow from "@/components/ProductsRow";
+import { ProductSkeleton } from "@/components/LoadingSkeleton";
 
 const Message = dynamic(() => import("@/components/Message"));
 
@@ -40,7 +41,7 @@ export default async function CartComponent({
           </div>
         )}
       </div>
-      <Suspense>
+      <Suspense fallback={<ProductSkeleton />}>
         <ProductsRow
           title="You may also like"
           url="/shop"

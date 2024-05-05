@@ -21,7 +21,10 @@ export async function addItems(data: CartItem[]) {
   }
 }
 
-export async function updateItem(oldItem: CartItem, newItem: CartItem) {
+export async function updateItem(
+  previous: any,
+  { oldItem, newItem }: { oldItem: CartItem; newItem: CartItem },
+) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   cookies().set("cart", JSON.stringify(editCart(cart, oldItem, newItem)));
@@ -29,7 +32,7 @@ export async function updateItem(oldItem: CartItem, newItem: CartItem) {
   return "added to cart";
 }
 
-export async function removeItem(item: CartItem) {
+export async function removeItem(previous: any, item: CartItem) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   cookies().set("cart", JSON.stringify(removeFromCart(cart, item)));

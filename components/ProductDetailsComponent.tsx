@@ -34,7 +34,7 @@ const ProductDetailsComponent = ({
   name,
   salePrice,
   cart,
-  isFav,
+  isFav: initialFav,
   preview,
   content,
 }: ProductDetailsComponent) => {
@@ -54,6 +54,7 @@ const ProductDetailsComponent = ({
   const [selectedColor, setSelectedColor] = useState<string>(color);
   const [selectedSize, setSelectedSize] = useState<string>(size);
   const [amountValue, setAmountValue] = useState<number>(amount);
+  const [isFav, setIsFav] = useState<boolean>(initialFav);
 
   function selectColor(color: string) {
     setSelectedColor(color);
@@ -195,6 +196,7 @@ const ProductDetailsComponent = ({
             <button
               type="button"
               onClick={async () => {
+                setIsFav(!isFav);
                 await toggleFav(id);
                 toggleFavItemAction();
               }}

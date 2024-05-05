@@ -5,7 +5,6 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { firstMatch, formatPrice, toggleFavoriteItem } from "@/utils";
 import { toggleFav } from "./actions/fav.actions";
-import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import HeartIcon from "./icons/HeartIcon";
 
@@ -27,9 +26,9 @@ const ProductCard = ({
   className,
   index = 0,
 }: ProductCardProps) => {
+  const [isFav, setIsFav] = React.useState(!!fav.find((item) => item === id));
   const searchParams = useSearchParams();
   const [selectedColor, setSelectedColor] = React.useState<string>(colors[0]);
-  const isFav = !!fav.find((item) => item === id);
 
   useEffect(() => {
     const colorFilter = searchParams?.get("clf")?.length
@@ -51,7 +50,7 @@ const ProductCard = ({
   };
 
   return (
-    <div className={` animate-fadeIn relative  flex-col gap-4 ${className}`}>
+    <div className={` relative  flex-col gap-4 ${className}`}>
       {saleValue && (
         <div className="absolute left-2 top-2 z-10 text-center text-[10px] uppercase text-white md:text-xs">
           <p className="mb-3 h-full w-full  rounded-full bg-gray-950 p-1 px-4">
@@ -82,6 +81,7 @@ const ProductCard = ({
         </Link>
         <button
           onClick={async () => {
+            setIsFav(!isFav);
             await toggleFav(id);
             toggleFavItemAction();
           }}
@@ -98,7 +98,7 @@ const ProductCard = ({
         </button>
       </div>
       <div className="flex flex-col gap-1 p-4 text-center">
-        <p className="w-full  text-sm font-bold">{title}</p>
+        <p className="line-clamp-2  w-full text-sm font-bold">{title}</p>
         <div className="relative flex items-center justify-center pt-2">
           {salePrice ? (
             <>
