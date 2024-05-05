@@ -9,20 +9,7 @@ import { updateProduct } from "../actions/product.actions";
 import ImageEditor from "./ImageEditor";
 import { useFormStatus } from "react-dom";
 import ContentEditor from "./ContentEditor";
-
-const SubmitButton = () => {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      className="group mt-2  h-12 w-full overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
-    >
-      <p className="duration-500 group-hover:scale-110">
-        {pending ? "Loading..." : "Update"}
-      </p>
-    </button>
-  );
-};
+import SubmitButton from "../SubmitButton";
 
 const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
   const [data, setData] = React.useState<any>({
@@ -73,12 +60,17 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
           content={data.content}
           setContent={(content) => setData({ ...data, content })}
         />
-        <SubmitButton />
+        <SubmitButton
+          type="submit"
+          className="group flex h-14 w-full items-center justify-center rounded-lg bg-black px-5 uppercase text-white duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white"
+        >
+          Update
+        </SubmitButton>
       </CustomForm>
       <div className="px-5 md:gap-5 lg:px-20">
         <button
           onClick={() => setPreview(!preview)}
-          className="group my-2 h-12 w-full overflow-hidden rounded-2xl border border-gray-300 uppercase text-white  dark:border-gray-700"
+          className="group flex h-14 w-full items-center justify-center rounded-lg px-5 uppercase  duration-300 hover:bg-black hover:text-white  dark:text-white dark:hover:bg-white dark:hover:text-black"
         >
           <p className="duration-500 group-hover:scale-110">
             {preview ? "Close" : "Preview"}

@@ -15,8 +15,8 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        primary_bg: "255, 255, 255",
-        primary_color: "#333742",
+        primary_bg: "var(--background)",
+        primary_color: "var(--primary-color)",
       },
       fontFamily: {
         golos: ["var(--font-golos-ui)"],

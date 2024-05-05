@@ -18,6 +18,7 @@ const productSchema = new mongoose.Schema(
     views: { type: Number, default: 0 },
     sales: { type: Number, default: 0 },
     content: { type: Map, of: Object },
+    mainProduct: { type: String },
   },
   {
     timestamps: true,

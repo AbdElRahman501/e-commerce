@@ -22,6 +22,8 @@ interface ProductDetailsComponent extends ProductOnSaleType {
   cart: CartItem[];
   isFav: boolean;
   preview?: boolean;
+  productVariants?: ProductOnSaleType[];
+  productMainProduct?: ProductOnSaleType | null;
 }
 const ProductDetailsComponent = ({
   id,
@@ -37,6 +39,9 @@ const ProductDetailsComponent = ({
   isFav: initialFav,
   preview,
   content,
+  productVariants,
+  mainProduct,
+  productMainProduct,
 }: ProductDetailsComponent) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -208,6 +213,65 @@ const ProductDetailsComponent = ({
             </button>
           </div>
         </div>
+        {productVariants && productVariants.length > 0 && (
+          <div>
+            <h1 className="mt-2 text-lg font-bold">Variations Available</h1>
+            {productVariants.map((product, index) => (
+              <Link
+                key={index}
+                href={`/product/${product.id}?color=${selectedColor}&size=${selectedSize}`}
+                className="mt-3 flex max-w-md items-center gap-3"
+              >
+                <Image
+                  src={
+                    product.images[selectedColor]?.[0] ||
+                    getAllImages(product.images)[0]
+                  }
+                  alt={title + " " + product.title}
+                  width={200}
+                  height={200}
+                  className="w-20 rounded-lg"
+                />
+                <div>
+                  <p className="hover:underline">{product.title}</p>
+                  <div className="relative">
+                    <p className="text-sm text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
+                      {formatPrice(product.price, "EGP")}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+        {productMainProduct && (
+          <div>
+            <h1 className="mt-2 text-lg font-bold">Main Product</h1>
+            <Link
+              href={`/product/${productMainProduct.id}?color=${selectedColor}&size=${selectedSize}`}
+              className="mt-3 flex max-w-md items-center gap-3"
+            >
+              <Image
+                src={
+                  productMainProduct.images[selectedColor]?.[0] ||
+                  getAllImages(productMainProduct.images)[0]
+                }
+                alt={title + " " + productMainProduct.title}
+                width={200}
+                height={200}
+                className="w-20 rounded-lg"
+              />
+              <div>
+                <p className="hover:underline">{productMainProduct.title}</p>
+                <div className="relative">
+                  <p className="text-sm text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
+                    {formatPrice(productMainProduct.price, "EGP")}
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </div>
+        )}
         <div className="mt-10 flex flex-col gap-4">
           {Object.entries(content || {}).map(([title, items], index) => (
             <FAQCard key={index} question={title}>

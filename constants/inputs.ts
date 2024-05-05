@@ -57,6 +57,20 @@ const productInputs: FormInput[] = [
     required: true,
   },
   {
+    label: "Name",
+    type: "text",
+    placeholder: "Enter product name",
+    name: "name",
+    required: true,
+  },
+
+  {
+    label: "mainProduct",
+    type: "text",
+    placeholder: "Enter product mainProduct",
+    name: "mainProduct",
+  },
+  {
     label: "Keywords",
     type: "text",
     placeholder: "Enter keywords",
@@ -98,13 +112,7 @@ const productInputs: FormInput[] = [
     name: "description",
     required: true,
   },
-  {
-    label: "Name",
-    type: "text",
-    placeholder: "Enter product name",
-    name: "name",
-    required: true,
-  },
+
   {
     label: "Gender",
     type: "select",

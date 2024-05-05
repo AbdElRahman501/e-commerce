@@ -31,7 +31,10 @@ export async function generateMetadata({
   };
 
   if (!product) return notFound();
-  const images = color ? product.images[color] : getAllImages(product.images);
+  const images =
+    color && product.images[color]
+      ? product.images[color]
+      : getAllImages(product.images);
   const url = getTransformedImageUrl(images[0] || "", 200, 300);
   const colorString = color && !color.includes("HASH:") ? ` (${color})` : "";
   return {

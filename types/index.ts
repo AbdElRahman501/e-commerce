@@ -55,6 +55,7 @@ export interface Product {
   views?: number;
   sales?: number;
   minPrice: number;
+  mainProduct?: string;
   content: Record<
     string,
     {
@@ -201,6 +202,7 @@ export interface FilterProps extends FilterType {
   sort?: string;
   minLimit?: number;
   idsToExclude?: string[];
+  containMainProduct?: boolean;
 }
 export interface CategoryCount {
   name: string;
