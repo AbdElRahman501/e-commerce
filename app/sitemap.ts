@@ -7,25 +7,25 @@ type Route = {
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  ? `${process.env.NEXT_PUBLIC_VERCEL_URL}`
   : "http://localhost:3000";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const routesMap: Route[] = [
     {
-      url: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+      url: `${baseUrl}`,
       lastModified: new Date(),
     },
     {
-      url: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/shop`,
+      url: `${baseUrl}/shop`,
       lastModified: new Date(),
     },
     {
-      url: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/about`,
+      url: `${baseUrl}/about`,
       lastModified: new Date(),
     },
     {
-      url: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/blog`,
+      url: `${baseUrl}/collections`,
       lastModified: new Date(),
     },
   ];
