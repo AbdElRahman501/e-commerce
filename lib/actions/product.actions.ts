@@ -1,6 +1,6 @@
 import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
-import { Offer, Product } from "@/lib";
+import { Product } from "@/lib";
 import {
   CategoryCount,
   FilterProps,
@@ -9,9 +9,10 @@ import {
   Product as ProductType,
 } from "@/types";
 import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { notFound } from "next/navigation";
+import { fetchOffers } from "./offer.actions";
 
 export const fetchFilteredProducts = unstable_cache(
   async ({
@@ -27,6 +28,7 @@ export const fetchFilteredProducts = unstable_cache(
     sort,
     idsToExclude = [],
     minLimit = 0,
+    containMainProduct = false,
   }: FilterProps): Promise<{
     products: ProductOnSaleType[];
     count: number;
@@ -98,8 +100,17 @@ export const fetchFilteredProducts = unstable_cache(
     const objectIdArray = idsToObjectId(idsToExclude);
     const excludeCondition = { _id: { $nin: objectIdArray } };
 
+    const notContainMainProduct = !containMainProduct
+      ? {
+          $or: [
+            { mainProduct: { $exists: false } },
+            { mainProduct: { $eq: "" } },
+          ],
+        }
+      : {};
     const finalQuery: any = {
       $and: [
+        notContainMainProduct,
         textSearchCondition,
         categoryFilterCondition,
         keywordFilterCondition,
@@ -114,7 +125,7 @@ export const fetchFilteredProducts = unstable_cache(
     try {
       connectToDatabase();
       let count = await Product.countDocuments(finalQuery);
-      const offers: OfferType[] = await Offer.find({});
+      const offers: OfferType[] = await fetchOffers();
       const data = await fetchDataBySection({
         sort,
         finalQuery,
@@ -264,7 +275,7 @@ export const fetchProduct = unstable_cache(
         $inc: { views: 1 },
       });
       const product: ProductType = JSON.parse(JSON.stringify(data));
-      const offers: OfferType[] = await Offer.find({});
+      const offers: OfferType[] = await fetchOffers();
       const { salePrice, saleValue } = getSalePrice(offers, product);
       return { ...product, salePrice, saleValue };
     } catch (error) {
@@ -295,7 +306,7 @@ export const fetchProductsById = unstable_cache(
           $in: objectIdArray,
         },
       });
-      const offers: OfferType[] = await Offer.find({});
+      const offers: OfferType[] = await fetchOffers();
       const products: ProductType[] = JSON.parse(JSON.stringify(data));
       const modifiedProducts: ProductOnSaleType[] = modifyProducts(
         products,
@@ -389,6 +400,7 @@ export async function deleteProduct(id: string) {
   try {
     connectToDatabase();
     const data = await Product.findByIdAndDelete(id);
+    revalidateTag("products");
     return "Product deleted successfully";
   } catch (error) {
     console.error("Error deleting product:", error);
@@ -404,6 +416,7 @@ export async function updateProductById(newProduct: ProductType) {
       new: true,
     });
     const productUpdated: ProductType = JSON.parse(JSON.stringify(data));
+    revalidateTag("products");
     return productUpdated;
   } catch (error) {
     console.error("Error updating product:", error);
@@ -421,9 +434,34 @@ export async function duplicateProductById(id: string) {
     delete product.views;
     delete product.sales;
     const newProduct: ProductType = await Product.create(product);
+    revalidateTag("products");
     return newProduct;
   } catch (error) {
     console.error("Error updating product:", error);
     throw error;
   }
 }
+
+export const fetchProductVariants = unstable_cache(
+  async (id: string): Promise<ProductOnSaleType[]> => {
+    try {
+      connectToDatabase();
+      const data = await Product.find({ mainProduct: id });
+      const offers: OfferType[] = await fetchOffers();
+      const products: ProductType[] = JSON.parse(JSON.stringify(data));
+      const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+        products,
+        offers,
+      );
+      return modifiedProducts;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+  ["products"],
+  {
+    tags: ["products"],
+    revalidate: 60 * 60,
+  },
+);

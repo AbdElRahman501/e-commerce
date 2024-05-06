@@ -44,6 +44,7 @@ export default async function ProductsPage({
     colorFilter: colorFilter,
     sizeFilter: sizeFilter,
     limit: 99999,
+    containMainProduct: true,
   });
   const resultsText = products.length > 1 ? "results" : "result";
   return (

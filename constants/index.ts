@@ -31,12 +31,12 @@ const faqSection = [
   {
     question: "How do I place an order?",
     answer:
-      "To place an order, simply visit our online store, browse the products, and add the desired items to your cart. Follow the checkout process to complete your purchase.",
+      "To place an order, simply browse the products, and add the desired items to your cart. Follow the checkout process to complete your purchase.",
   },
   {
     question: "What payment methods do you accept?",
     answer:
-      "We accept various payment methods, including credit/debit cards and PayPal. You can find the available payment options during the checkout process.",
+      "Currently, we are operating on a cash-on-delivery basis. However, we’re excited to announce that we will soon be accepting all major payment methods to make your shopping experience even smoother.",
   },
   {
     question: "Can I modify or cancel my order after placing it?",
@@ -46,17 +46,16 @@ const faqSection = [
   {
     question: "How can I track my order?",
     answer:
-      "Once your order is shipped, you will receive a confirmation email with a tracking number. You can use this tracking number on our website or the carrier's site to monitor the status of your delivery.",
+      "Once your order is shipped, you will receive a confirmation email with a tracking number. You can use this tracking number on our website or the carrier's site to monitor the status of your delivery. Keep an eye on your email for updates",
   },
   {
     question: "What is your return policy?",
-    answer:
-      "Our return policy allows you to return items within 30 days of purchase. Please review our detailed return policy on the website for information on eligibility and the return process.",
+    answer: `Your satisfaction matters to us. If you receive a defective product due to manufacturing, you have the right to replace it within 14 days of receiving it. Please note that returns outside this window are not eligible for replacement or refund.
+      When returning a product, you’ll likely receive a refund, which may take 3-7 working days. Kindly bear in mind that the initial shipping costs are nonrefundable. We apologize for any inconvenience.`,
   },
   {
-    question: "How do I contact customer support?",
-    answer:
-      "For any questions or concerns, you can reach our customer support team through the 'Contact Us' page on our website or by emailing support@example.com. We aim to respond to inquiries promptly.",
+    question: "What’s the EH! Insider Club?",
+    answer: `The EH! Insider Club is an exclusive circle for our most passionate fans. As a member, you get early access to new collections, limited-edition designs, and special surprises. Join the club and be part of the inner circle!`,
   },
 ];
 const dashboardCards: DashboardCardProps[] = [

@@ -80,7 +80,7 @@ export const sendPromoEmail = async (user: {
         pass: process.env.PAGE_PASS,
       },
     });
-    const filePath = path.join(process.cwd(), "public", "welcome.html");
+    const filePath = path.join(process.cwd(), "public", "welcome-NwtXN.html");
     const htmlContent = fs.readFileSync(filePath, "utf8");
     const replacedHtml = htmlContent
       .replace(/{{PROMO_CODE}}/g, promoCode.code)

@@ -196,7 +196,11 @@ export const sendEmail = async (
       },
     });
 
-    const filePath = path.join(process.cwd(), "public", "confirmation.html");
+    const filePath = path.join(
+      process.cwd(),
+      "public",
+      "confirmation-nREdE.html",
+    );
     const htmlContent = fs.readFileSync(filePath, "utf8");
     const replacedHtml = htmlContent
       .replace(/{{FIRST_NAME}}/g, order.personalInfo.firstName)

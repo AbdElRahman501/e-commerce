@@ -2,10 +2,13 @@ import React, { Suspense } from "react";
 import ProductDetailsComponent from "./ProductDetailsComponent";
 import { ProductSkeleton } from "./LoadingSkeleton";
 import ProductsRow from "./ProductsRow";
-import { getProduct } from "@/lib/actions/product.actions";
+import {
+  fetchProductVariants,
+  getProduct,
+} from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
-import { CartItem } from "@/types";
+import { CartItem, ProductOnSaleType } from "@/types";
 
 const ProductDetailPage = async ({ id }: { id: string }) => {
   const cartData = cookies().get("cart")?.value;
@@ -16,6 +19,10 @@ const ProductDetailPage = async ({ id }: { id: string }) => {
   const isFav = !!fav.find((item) => item === id);
 
   const product = await getProduct(id);
+  const productVariants = await fetchProductVariants(id);
+  const productMainProduct = product.mainProduct
+    ? await getProduct(product.mainProduct)
+    : null;
 
   if (!product?.id) {
     return notFound();
@@ -56,7 +63,13 @@ const ProductDetailPage = async ({ id }: { id: string }) => {
         }}
       />
 
-      <ProductDetailsComponent {...product} isFav={isFav} cart={cart} />
+      <ProductDetailsComponent
+        productVariants={productVariants}
+        productMainProduct={productMainProduct}
+        {...product}
+        isFav={isFav}
+        cart={cart}
+      />
       <Suspense fallback={<ProductSkeleton />}>
         <ProductsRow
           title="You may also like"

@@ -1,9 +1,7 @@
 import React from "react";
 import { getAllProperties } from "../lib";
-import dynamic from "next/dynamic";
 import { getCategories } from "@/lib/actions/product.actions";
-
-const FilterContainer = dynamic(() => import("./FilterContainer"));
+import FilterContainer from "./FilterContainer";
 
 const FilterSection = async () => {
   const { colors, sizes } = await getAllProperties();
