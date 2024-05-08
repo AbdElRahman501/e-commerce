@@ -36,7 +36,7 @@ export const fetchStories = unstable_cache(
   ["stories"],
   {
     tags: ["stories"],
-    revalidate: 60 * 60,
+    revalidate: 60 * 60 * 24,
   },
 );
 
@@ -55,7 +55,7 @@ export const fetchFooterLinks = unstable_cache(
   ["footer"],
   {
     tags: ["footer"],
-    revalidate: 60 * 60,
+    revalidate: 60 * 60 * 24,
   },
 );
 
@@ -136,7 +136,7 @@ export const fetchReviews = unstable_cache(
   ["reviews"],
   {
     tags: ["reviews"],
-    revalidate: 60 * 60,
+    revalidate: 60 * 60 * 24,
   },
 );
 
@@ -211,7 +211,7 @@ export const fetchCollections = unstable_cache(
   ["collections"],
   {
     tags: ["collections"],
-    revalidate: 60 * 60,
+    revalidate: 60 * 60 * 24,
   },
 );
 
@@ -278,7 +278,7 @@ export const fetchNavbarLinks = unstable_cache(
   ["navbarLinks"],
   {
     tags: ["navbarLinks"],
-    revalidate: 60 * 60,
+    revalidate: 60 * 60 * 24,
   },
 );
 

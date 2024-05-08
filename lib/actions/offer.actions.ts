@@ -20,7 +20,7 @@ export const fetchOffers = unstable_cache(
   ["offers"],
   {
     tags: ["offers"],
-    revalidate: 60 * 60,
+    revalidate: 60 * 60 * 24,
   },
 );
 

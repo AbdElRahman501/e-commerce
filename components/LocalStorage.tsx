@@ -5,18 +5,18 @@ import { CartItem } from "@/types";
 import { addFav } from "./actions/fav.actions";
 
 const LocalStorage = () => {
+  const cart =
+    typeof window !== "undefined" && localStorage.getItem("cartItems");
+  const cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
+  const favorite =
+    typeof window !== "undefined" && localStorage.getItem("favoriteItems");
+  const favoriteItems: string[] = favorite ? JSON.parse(favorite) : [];
+
+  const addCartItemsToCookies = addItems.bind(null, cartItems);
+  const addFavoriteItemsToCookies = addFav.bind(null, favoriteItems);
   React.useEffect(() => {
-    const cart =
-      typeof window !== "undefined" && localStorage.getItem("cartItems");
-    const cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
-    const favorite =
-      typeof window !== "undefined" && localStorage.getItem("favoriteItems");
-    const favoriteItems: string[] = favorite ? JSON.parse(favorite) : [];
-    const updateLocalStorage = async () => {
-      await addItems(cartItems);
-      await addFav(favoriteItems);
-    };
-    updateLocalStorage();
+    addCartItemsToCookies(cartItems);
+    addFavoriteItemsToCookies(favoriteItems);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
