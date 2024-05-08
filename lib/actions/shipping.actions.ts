@@ -25,7 +25,7 @@ export const fetchShipping = unstable_cache(
     }
   },
   ["shipping"],
-  { tags: ["shipping"], revalidate: 60 * 60 },
+  { tags: ["shipping"], revalidate: 60 * 60 * 24 },
 );
 
 export const updateGovernorate = async (formData: FormData) => {

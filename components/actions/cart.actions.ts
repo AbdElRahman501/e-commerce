@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function addItem(cartItem: CartItem) {
+export async function addItem(previousState: any, cartItem: CartItem) {
   const cartData = cookies().get("cart")?.value;
   const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
   cookies().set("cart", JSON.stringify(addToCart(cart, cartItem)));
@@ -13,7 +13,7 @@ export async function addItem(cartItem: CartItem) {
   return "added to cart";
 }
 
-export async function addItems(data: CartItem[]) {
+export async function addItems(previous: any, data: CartItem[]) {
   if (data) {
     cookies().set("cart", JSON.stringify(data));
     revalidateTag("cart");

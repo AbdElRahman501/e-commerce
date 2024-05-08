@@ -53,21 +53,19 @@ export default function RootLayout({
         className={`${golos.variable} bg-white font-golos duration-200 dark:bg-[#0d1117]`}
       >
         <LocalStorage />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NextAuthProvider>
-            <Suspense>
+        <Suspense>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NextAuthProvider>
               <NavBar />
-            </Suspense>
-          </NextAuthProvider>
-          <Suspense>
-            <main>{children}</main>
-          </Suspense>
-        </ThemeProvider>
+              <main>{children}</main>
+            </NextAuthProvider>
+          </ThemeProvider>
+        </Suspense>
       </body>
     </html>
   );

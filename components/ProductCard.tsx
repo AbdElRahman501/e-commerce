@@ -63,7 +63,6 @@ const ProductCard = ({
       <div className="relative">
         <Link
           className="relative block"
-          scroll={true}
           href={{
             pathname: `/product/${id}`,
             query: { color: selectedColor.toString().replace("#", "HASH:") },

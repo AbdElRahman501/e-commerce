@@ -14,7 +14,7 @@ export async function toggleFav(id: string) {
   revalidateTag("favorite");
 }
 
-export async function addFav(data: string[]) {
+export async function addFav(p: any, data: string[]) {
   if (!data) return "no data";
   cookies().set("favorite", JSON.stringify(data));
   revalidateTag("favorite");

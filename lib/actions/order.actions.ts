@@ -90,6 +90,7 @@ export async function createOrder(formData: FormData) {
     redirectPath = "/confirmation/" + createdOrder.id;
   } catch (error) {
     console.error("Error creating order:", error);
+    throw error;
   }
 
   redirect(redirectPath);
@@ -155,11 +156,12 @@ export async function fetchOrder(id: string): Promise<OrderType | null> {
   try {
     await connectToDatabase();
     const data = await Order.findOne({ id: id });
+    if (!data) throw new Error("Order not found");
     const order: OrderType = JSON.parse(JSON.stringify(data));
     return order;
   } catch (error) {
     console.error("Error fetching order detail:", error);
-    return null;
+    throw error;
   }
 }
 
