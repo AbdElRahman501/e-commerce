@@ -123,7 +123,7 @@ export const fetchFilteredProducts = unstable_cache(
     };
 
     try {
-      connectToDatabase();
+      await connectToDatabase();
       let count = await Product.countDocuments(finalQuery);
       const offers: OfferType[] = await fetchOffers();
       const data = await fetchDataBySection({
@@ -186,7 +186,7 @@ function removeDuplicatesById<T extends { id: string | number }>(
 
 export async function fetchProducts(): Promise<ProductType[]> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     // const data = await Product.find({}).select("title price colors images");
     const data = await Product.find({});
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
@@ -199,7 +199,7 @@ export async function fetchProducts(): Promise<ProductType[]> {
 
 export async function likeProduct(id: string, isFave: boolean) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     Product.findByIdAndUpdate(id, { $inc: { likes: isFave ? 1 : -1 } });
   } catch (error) {
     console.log(error);
@@ -251,7 +251,7 @@ async function fetchDataBySection({
 export const getAllProperties = unstable_cache(
   async () => {
     try {
-      connectToDatabase();
+      await connectToDatabase();
       const sizes = await Product.distinct("sizes").exec();
       const colors = await Product.distinct("colors").exec();
       return { sizes, colors };
@@ -270,7 +270,7 @@ export const getAllProperties = unstable_cache(
 export const fetchProduct = unstable_cache(
   async (id: string): Promise<ProductOnSaleType | null> => {
     try {
-      connectToDatabase();
+      await connectToDatabase();
       const data = await Product.findByIdAndUpdate(id, {
         $inc: { views: 1 },
       });
@@ -280,7 +280,7 @@ export const fetchProduct = unstable_cache(
       return { ...product, salePrice, saleValue };
     } catch (error) {
       console.error("Error fetching product detail:", error);
-      return null;
+      throw error;
     }
   },
   ["products"],
@@ -299,7 +299,7 @@ export const getProduct = cache(async (id: string) => {
 export const fetchProductsById = unstable_cache(
   async (ids: string[]): Promise<ProductOnSaleType[]> => {
     try {
-      connectToDatabase();
+      await connectToDatabase();
       const objectIdArray = idsToObjectId(ids);
       const data = await Product.find({
         _id: {
@@ -333,7 +333,7 @@ function idsToObjectId(array: string[]) {
 export async function soldProducts(ids: string[]): Promise<void> {
   try {
     const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Product.updateMany(
       { _id: { $in: objectIdArray } },
       { $inc: { sales: 1 } },
@@ -348,7 +348,7 @@ export const getCategoriesWithProductCount = async (): Promise<
   CategoryCount[]
 > => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     // Aggregate pipeline to group products by categories and count the number of products in each category
     const aggregationPipeline = [
       {
@@ -398,7 +398,7 @@ export const getCategories = unstable_cache(
 
 export async function deleteProduct(id: string) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Product.findByIdAndDelete(id);
     revalidateTag("products");
     return "Product deleted successfully";
@@ -410,7 +410,7 @@ export async function deleteProduct(id: string) {
 
 export async function updateProductById(newProduct: ProductType) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const { id, ...rest } = newProduct;
     const data = await Product.findByIdAndUpdate(id, rest, {
       new: true,
@@ -425,7 +425,7 @@ export async function updateProductById(newProduct: ProductType) {
 }
 export async function duplicateProductById(id: string) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Product.findById(id);
     const product = JSON.parse(JSON.stringify(data));
     delete product._id;
@@ -445,7 +445,7 @@ export async function duplicateProductById(id: string) {
 export const fetchProductVariants = unstable_cache(
   async (id: string): Promise<ProductOnSaleType[]> => {
     try {
-      connectToDatabase();
+      await connectToDatabase();
       const data = await Product.find({ mainProduct: id });
       const offers: OfferType[] = await fetchOffers();
       const products: ProductType[] = JSON.parse(JSON.stringify(data));

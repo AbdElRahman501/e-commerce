@@ -11,7 +11,7 @@ export const fetchShipping = unstable_cache(
     cities: CityType[];
   }> => {
     try {
-      connectToDatabase();
+      await connectToDatabase();
       const governorateData = await Governorate.find({});
       const citiesData = await City.find({});
       const governorate: GovernorateType[] = JSON.parse(
@@ -35,7 +35,7 @@ export const updateGovernorate = async (formData: FormData) => {
     shipping_price: Number(formData.get("shipping_price")!),
   };
   try {
-    connectToDatabase();
+    await connectToDatabase();
     await Governorate.updateOne({ id: data.id }, data);
     revalidateTag("shipping");
   } catch (error) {
@@ -52,7 +52,7 @@ export const addNewGovernorate = async (formData: FormData) => {
     shipping_price: Number(formData.get("shipping_price")!),
   };
   try {
-    connectToDatabase();
+    await connectToDatabase();
     await Governorate.create(data);
     revalidateTag("shipping");
   } catch (error) {
@@ -69,7 +69,7 @@ export const updateCity = async (formData: FormData) => {
     shipping_price: Number(formData.get("shipping_price")!),
   };
   try {
-    connectToDatabase();
+    await connectToDatabase();
     await City.updateOne({ id: data.id }, data);
     revalidateTag("shipping");
   } catch (error) {
@@ -87,7 +87,7 @@ export const addNewCity = async (formData: FormData) => {
     shipping_price: Number(formData.get("shipping_price")!),
   };
   try {
-    connectToDatabase();
+    await connectToDatabase();
     await City.create(data);
     revalidateTag("shipping");
   } catch (error) {

@@ -3,12 +3,13 @@ import ProductDetailsComponent from "./ProductDetailsComponent";
 import { ProductSkeleton } from "./LoadingSkeleton";
 import ProductsRow from "./ProductsRow";
 import {
+  fetchProduct,
   fetchProductVariants,
   getProduct,
 } from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
-import { CartItem, ProductOnSaleType } from "@/types";
+import { CartItem } from "@/types";
 
 const ProductDetailPage = async ({ id }: { id: string }) => {
   const cartData = cookies().get("cart")?.value;
@@ -21,7 +22,7 @@ const ProductDetailPage = async ({ id }: { id: string }) => {
   const product = await getProduct(id);
   const productVariants = await fetchProductVariants(id);
   const productMainProduct = product.mainProduct
-    ? await getProduct(product.mainProduct)
+    ? await fetchProduct(product.mainProduct)
     : null;
 
   if (!product?.id) {

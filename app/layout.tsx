@@ -5,7 +5,6 @@ import { NavBar } from "@/components";
 import React, { Suspense } from "react";
 import LocalStorage from "@/components/LocalStorage";
 import { NextAuthProvider } from "@/NextAuthProvider";
-import Head from "next/head";
 
 const golos = localFont({
   src: [
@@ -40,6 +39,7 @@ export const metadata = {
     follow: true,
     index: true,
   },
+  "p:domain_verify": "41c125c5f6a54ece8129399596b0a264",
 };
 
 export default function RootLayout({
@@ -49,12 +49,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <meta
-          name="p:domain_verify"
-          content="41c125c5f6a54ece8129399596b0a264"
-        />
-      </Head>
       <body
         className={`${golos.variable} bg-white font-golos duration-200 dark:bg-[#0d1117]`}
       >

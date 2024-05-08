@@ -12,7 +12,7 @@ import { cookies } from "next/headers";
 
 export async function fetchUsers(): Promise<{ email: string }[]> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await User.find({});
     const users: { email: string }[] = JSON.parse(JSON.stringify(data));
     console.log("🚀 ~ fetchUsers ~ users:", users);
@@ -25,7 +25,7 @@ export async function fetchUsers(): Promise<{ email: string }[]> {
 
 export async function fetchSubscriber(id: string): Promise<SubscriberType> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await User.findById(id);
     const user: SubscriberType = JSON.parse(JSON.stringify(data));
     return user;
@@ -39,7 +39,7 @@ export async function subscribe(formData: FormData) {
   const email = formData.get("email")?.toString() || "";
   if (!email) return;
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const user = await User.create({ email });
     if (user) sendPromoEmail(user);
     cookies().set("subscriptionState", "subscribed");
@@ -51,7 +51,7 @@ export async function subscribe(formData: FormData) {
 
 export async function subscribeWithEmail(email: string) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const user = await User.create({ email });
     if (user) sendPromoEmail(user);
   } catch (error) {
