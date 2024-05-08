@@ -1,12 +1,9 @@
 import React, { Suspense } from "react";
-import { CartItem } from "@/types";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getAllImages, getTransformedImageUrl } from "@/utils";
-import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
-import { Footer, ProductDetailsComponent } from "@/components";
-import ProductsRow from "@/components/ProductsRow";
+import { Footer } from "@/components";
 import {
   ProductDetailSkeleton,
   ProductSkeleton,

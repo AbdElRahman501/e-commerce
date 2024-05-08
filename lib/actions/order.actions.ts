@@ -21,7 +21,7 @@ import { promoCodeUse } from "./promo-code.actions";
 export async function createOrder(formData: FormData) {
   let redirectPath = "";
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const cartData = cookies().get("cart")?.value;
     const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
 
@@ -139,7 +139,7 @@ export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
     : {};
 
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Order.find(textSearchCondition)
       .sort({ createdAt: -1 })
       .limit(limit);
@@ -153,7 +153,7 @@ export async function fetchOrders(filter?: FilterProps): Promise<OrderType[]> {
 
 export async function fetchOrder(id: string): Promise<OrderType | null> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await Order.findOne({ id: id });
     const order: OrderType = JSON.parse(JSON.stringify(data));
     return order;
@@ -167,7 +167,7 @@ export async function updateOrder(formData: FormData): Promise<void> {
   const id = formData.get("id")?.toString() || "";
   const status = formData.get("status")?.toString() || "";
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const order = await Order.findOne({ id: id });
     if (!order) return;
     order.status = status;

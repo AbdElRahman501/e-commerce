@@ -9,7 +9,7 @@ export const fetchPromoCode = unstable_cache(
   async (code: string): Promise<PromoCodeType> => {
     if (!code) return {} as PromoCodeType;
     try {
-      connectToDatabase();
+      await connectToDatabase();
       const data = await PromoCode.findOne({
         code,
         limit: { $gt: 0 },
@@ -32,7 +32,7 @@ export const fetchPromoCode = unstable_cache(
 export async function fetchPromoCodeById(id: string): Promise<PromoCodeType> {
   if (!id) return {} as PromoCodeType;
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await PromoCode.findById(id);
     if (!data) return {} as PromoCodeType;
     const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
@@ -45,7 +45,7 @@ export async function fetchPromoCodeById(id: string): Promise<PromoCodeType> {
 
 export async function fetchPromoCodes() {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await PromoCode.find({});
     const promoCodes: PromoCodeType[] = JSON.parse(JSON.stringify(data));
     return promoCodes;
@@ -57,7 +57,7 @@ export async function fetchPromoCodes() {
 
 export async function promoCodeUse(code: string) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const data = await PromoCode.findOneAndUpdate(
       { code },
       { $inc: { limit: -1 } },
@@ -83,7 +83,7 @@ export async function updatePromoCode(formData: FormData) {
   };
 
   try {
-    connectToDatabase();
+    await connectToDatabase();
     await PromoCode.findByIdAndUpdate(data.id, data);
   } catch (error) {
     console.error("Error updating promo code:", error);
@@ -101,7 +101,7 @@ export async function addNewPromoCode(formData: FormData) {
     maxDiscount: Number(formData.get("maxDiscount")) || 0,
   };
   try {
-    connectToDatabase();
+    await connectToDatabase();
     await PromoCode.create(data);
   } catch (error) {
     console.error("Error adding promo code:", error);
@@ -113,7 +113,7 @@ export async function addNewPromoCode(formData: FormData) {
 export async function removePromoCode(formData: FormData) {
   const id = formData.get("id")?.toString() || "";
   try {
-    connectToDatabase();
+    await connectToDatabase();
     await PromoCode.findByIdAndDelete(id);
   } catch (error) {
     console.error("Error removing promo code:", error);
