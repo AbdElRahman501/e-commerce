@@ -13,6 +13,7 @@ const ActionButtons = ({ name, id }: { name: string; id: string }) => {
     <div className="flex gap-2">
       <Link
         replace
+        scroll={false}
         href={`${pathName}?${editPathName}=${id}`}
         className=" text-blue-500 hover:underline dark:text-blue-400 dark:hover:underline "
       >
@@ -20,6 +21,7 @@ const ActionButtons = ({ name, id }: { name: string; id: string }) => {
       </Link>
       <Link
         replace
+        scroll={false}
         href={`${pathName}?${removePathName}=${id}`}
         className=" text-red-500 hover:underline dark:hover:underline "
       >

@@ -184,13 +184,17 @@ function removeDuplicatesById<T extends { id: string | number }>(
   });
 }
 
-export async function fetchProducts(): Promise<ProductType[]> {
+export async function fetchProducts(): Promise<ProductOnSaleType[]> {
   try {
     await connectToDatabase();
-    // const data = await Product.find({}).select("title price colors images");
     const data = await Product.find({});
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
-    return products;
+    const offers: OfferType[] = await fetchOffers();
+    const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+      products,
+      offers,
+    );
+    return modifiedProducts;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;

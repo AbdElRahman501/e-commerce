@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import DropDown_icon from "./icons/DropDown_icon";
 import BurgerMenu_icon from "./icons/BurgerMenu_icon";
+import { AkarIconsDashboard } from "./icons/Dashboard_icon";
 
 const DashSideBar = () => {
   const [menu, setMenu] = React.useState(false);
@@ -29,9 +30,9 @@ const DashSideBar = () => {
     <>
       <div
         onClick={openMenu}
-        className="fixed left-0 top-0 z-[9999] m-1 h-14 w-14 bg-primary_color md:hidden"
+        className="fixed left-0 top-0 z-[9999] m-1 flex h-14 w-14 cursor-pointer items-center justify-center bg-primary_color md:hidden"
       >
-        <BurgerMenu_icon className="w-10 text-white duration-200 hover:scale-110 md:text-black md:dark:text-white" />
+        <BurgerMenu_icon className="w-8 text-white duration-200 hover:scale-110 md:text-black md:dark:text-white" />
       </div>
       <div
         style={{
@@ -48,7 +49,16 @@ const DashSideBar = () => {
               <DropDown_icon className=" w-6 rotate-[90deg] " />
             </li>
           </div>
-
+          <Link
+            onClick={openMenu}
+            href={"/dashboard"}
+            className="duration-200 group-hover:scale-110"
+          >
+            <li className="w-full  overflow-hidden border-b border-gray-200 p-4 uppercase duration-200 hover:bg-primary_color hover:text-white dark:border-gray-700 dark:hover:bg-white dark:hover:text-black  ">
+              <AkarIconsDashboard className="inline-block w-6 object-contain text-red-500" />
+              {!minMenu && <p className="ml-2 inline-block">Dashboard</p>}
+            </li>
+          </Link>
           {dashboardCards.map((link, index) => (
             <Link
               key={index}

@@ -1,4 +1,4 @@
-import { fetchProducts } from "@/lib";
+import { fetchProducts } from "@/lib/actions/product.actions";
 import { MetadataRoute } from "next";
 
 type Route = {

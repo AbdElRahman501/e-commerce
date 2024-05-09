@@ -15,7 +15,6 @@ export async function fetchUsers(): Promise<{ email: string }[]> {
     await connectToDatabase();
     const data = await User.find({});
     const users: { email: string }[] = JSON.parse(JSON.stringify(data));
-    console.log("🚀 ~ fetchUsers ~ users:", users);
     return users;
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -36,7 +35,7 @@ export async function fetchSubscriber(id: string): Promise<SubscriberType> {
 }
 
 export async function subscribe(formData: FormData) {
-  const email = formData.get("email")?.toString() || "";
+  const email = formData.get("email")?.toString()?.toLowerCase()?.trim() || "";
   if (!email) return;
   try {
     await connectToDatabase();
@@ -50,6 +49,7 @@ export async function subscribe(formData: FormData) {
 }
 
 export async function subscribeWithEmail(email: string) {
+  email = email.toLowerCase().trim();
   try {
     await connectToDatabase();
     const user = await User.create({ email });

@@ -16,7 +16,7 @@ import {
 } from "../models/store.model";
 import { redirect } from "next/navigation";
 import { checkDateStatus } from "@/utils";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 
 export const fetchStories = unstable_cache(
   async (): Promise<StoryType[]> => {
@@ -36,25 +36,6 @@ export const fetchStories = unstable_cache(
   ["stories"],
   {
     tags: ["stories"],
-    revalidate: 60 * 60 * 24,
-  },
-);
-
-export const fetchFooterLinks = unstable_cache(
-  async (): Promise<FooterType[]> => {
-    try {
-      await connectToDatabase();
-      const data = await FooterLink.find({});
-      const footerLinks: FooterType[] = JSON.parse(JSON.stringify(data));
-      return footerLinks;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      throw error;
-    }
-  },
-  ["footer"],
-  {
-    tags: ["footer"],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -295,7 +276,7 @@ export const addNewNavbarLink = async (formData: FormData) => {
     console.error("Error fetching products:", error);
     throw error;
   }
-  redirect("/dashboard/store/navbar");
+  redirect("/dashboard/store");
 };
 
 export const updateNavbarLink = async (formData: FormData) => {
@@ -312,7 +293,7 @@ export const updateNavbarLink = async (formData: FormData) => {
     console.error("Error fetching products:", error);
     throw error;
   }
-  redirect("/dashboard/store/navbar");
+  redirect("/dashboard/store");
 };
 
 export const removeNavbarLink = async (formData: FormData) => {
@@ -325,5 +306,64 @@ export const removeNavbarLink = async (formData: FormData) => {
     console.error("Error fetching products:", error);
     throw error;
   }
-  redirect("/dashboard/store/navbar");
+  redirect("/dashboard/store");
+};
+
+/// footer links actions
+
+export const fetchFooterLinks = unstable_cache(
+  async (): Promise<FooterType[]> => {
+    try {
+      await connectToDatabase();
+      const data = await FooterLink.find({});
+      const footerLinks: FooterType[] = JSON.parse(JSON.stringify(data));
+      return footerLinks;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+  ["footer"],
+  {
+    tags: ["footer"],
+    revalidate: 60 * 60 * 24,
+  },
+);
+
+export const addNewFooterLink = async (formData: FormData) => {
+  const data = {
+    title: formData.get("title")?.toString() || "",
+    url: formData.get("url")?.toString() || "",
+    links: JSON.parse(formData.get("links")?.toString() || "[]"),
+  };
+  try {
+    await connectToDatabase();
+    await FooterLink.create(data);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/store");
+};
+
+export const updateFooterLink = async (formData: FormData) => {
+  const id = formData.get("id");
+  const data: any = {
+    title: formData.get("title"),
+    links: [],
+  };
+  formData.getAll("linkName[]").forEach((name, index) => {
+    const url = formData.getAll("linkURL[]")[index];
+    if (name === "" || url === "") return;
+    data.links.push({ name, url });
+  });
+  try {
+    await connectToDatabase();
+    const result = await FooterLink.findByIdAndUpdate(id, data);
+    revalidateTag("footer");
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  redirect("/dashboard/store");
 };
