@@ -63,6 +63,7 @@ const ProductCard = ({
       <div className="relative">
         <Link
           className="relative block"
+          aria-label={`Link to product ${title}`}
           href={{
             pathname: `/product/${id}`,
             query: { color: selectedColor.toString().replace("#", "HASH:") },
@@ -71,7 +72,7 @@ const ProductCard = ({
           <div className="aspect-card group relative overflow-hidden rounded-3xl ">
             <Image
               src={images[selectedColor][0]}
-              alt="jacket"
+              alt={`${title + " Color " + selectedColor} image`}
               fill
               sizes="100%"
               priority={index < 3}
