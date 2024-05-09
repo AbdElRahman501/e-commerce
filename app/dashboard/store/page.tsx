@@ -1,12 +1,6 @@
-import { CustomInput, SearchField } from "@/components";
+import { CustomInput } from "@/components";
 import CustomTable from "@/components/CustomTable";
 import ActionButtons from "@/components/dashboard/ActionButtons";
-import AddModal from "@/components/dashboard/AddModal";
-import AddNewButton from "@/components/dashboard/AddNewButton";
-import EditModal from "@/components/dashboard/EditModal";
-import RemoveModal from "@/components/dashboard/RemoveModal";
-import ImageInput from "@/components/ImageInput";
-import Modal from "@/components/Modal";
 
 import {
   addNewNavbarLink,
@@ -16,18 +10,27 @@ import {
   fetchNavbarLinks,
   removeNavbarLink,
   removeStory,
+  updateFooterLink,
   updateNavbarLink,
   updateStory,
 } from "@/lib/actions/store.actions";
 import { checkDateStatus } from "@/utils";
-import Image from "next/image";
-import Link from "next/link";
 import { Suspense } from "react";
 
-export default async function OrdersPage() {
+export default async function OrdersPage({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const { editFOOTERId } = searchParams as {
+    [key: string]: string;
+  };
   const stories = await fetchAllStories();
   const navBarLinks = await fetchNavbarLinks();
   const footerLinks = await fetchFooterLinks();
+  const selectedFooterLink = footerLinks.find(
+    (x: any) => x._id === editFOOTERId || x.id === editFOOTERId,
+  );
 
   return (
     <Suspense>
@@ -71,14 +74,60 @@ export default async function OrdersPage() {
         <div className="flex flex-col gap-2">
           <CustomTable
             name="footer"
+            editAction={updateFooterLink}
             data={footerLinks.map((item) => ({
               ...item,
               allLinks: item.links
                 .map((link) => "title: " + link.name + " - link :  " + link.url)
                 .join(" \n "),
             }))}
-            inputObj={{ title: "!text", links: "!text" }}
             header={["title", "allLinks"]}
+            CustomInputs={
+              <>
+                <CustomInput
+                  placeholder="Enter footer title"
+                  name="title"
+                  defaultValue={selectedFooterLink?.title}
+                  required
+                  type="text"
+                />
+                {selectedFooterLink &&
+                  selectedFooterLink.links.map((link, index) => (
+                    <div key={index} className="flex gap-2">
+                      <CustomInput
+                        placeholder="Enter footer link name"
+                        name="linkName[]"
+                        defaultValue={link.name}
+                        required
+                        type="text"
+                      />
+                      <CustomInput
+                        placeholder="Enter footer link url"
+                        name="linkURL[]"
+                        defaultValue={link.url}
+                        required
+                        type="text"
+                      />
+                    </div>
+                  ))}
+                <div className="flex gap-2">
+                  <CustomInput
+                    placeholder="Enter footer link name"
+                    name="linkName[]"
+                    defaultValue=""
+                    required
+                    type="text"
+                  />
+                  <CustomInput
+                    placeholder="Enter footer link url"
+                    name="linkURL[]"
+                    defaultValue=""
+                    required
+                    type="text"
+                  />
+                </div>
+              </>
+            }
             ActionComponent={(item) => (
               <ActionButtons name="footer" id={item._id} />
             )}

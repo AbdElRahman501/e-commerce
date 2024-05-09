@@ -1,6 +1,5 @@
 //actions
 import {
-  fetchProducts,
   fetchProduct,
   fetchProductsById,
   getCategoriesWithProductCount,
@@ -19,7 +18,6 @@ import Offer from "./models/offer.model";
 export {
   getAllProperties,
   fetchFilteredProducts,
-  fetchProducts,
   fetchProduct,
   getCategoriesWithProductCount,
   fetchProductsById,

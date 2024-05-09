@@ -10,7 +10,7 @@ const TotalCard = ({
   description,
   url,
 }: DashboardCardProps) => {
-  return (
+  return url ? (
     <Link
       href={"/dashboard" + url}
       className="flex h-28 items-center  gap-3 rounded-3xl border border-blue-300 bg-white p-5 shadow-md dark:border-gray-700 dark:bg-primary_color "
@@ -32,6 +32,25 @@ const TotalCard = ({
         </p>
       </div>
     </Link>
+  ) : (
+    <div className="flex h-28 items-center  gap-3 rounded-3xl border border-blue-300 bg-white p-5 shadow-md dark:border-gray-700 dark:bg-primary_color ">
+      <Image
+        src={image}
+        width={45}
+        height={45}
+        alt={`${title} icon`}
+        className="object-contain"
+      />
+      <div>
+        <h1 className="text-base font-bold">{title}</h1>
+        <p className="text-sm font-bold">
+          {number}{" "}
+          <span className=" text-xs font-normal text-green-600">
+            {description}
+          </span>
+        </p>
+      </div>
+    </div>
   );
 };
 

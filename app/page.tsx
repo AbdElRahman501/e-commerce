@@ -7,7 +7,7 @@ import { ProductSkeleton } from "@/components/LoadingSkeleton";
 
 export const metadata = {
   description:
-    "Explore a curated collection of high-quality printed t-shirts featuring unique and creative designs for every occasion.",
+    "Stand out from the crowd in custom t-shirts made just for you from EH!. Add personalized designs that reflect your individuality and interests. Nationwide delivery in Egypt for your unique tees.",
   openGraph: {
     type: "website",
   },

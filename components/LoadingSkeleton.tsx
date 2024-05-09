@@ -12,11 +12,26 @@ export const LoadingLogo = () => {
 
 export const ProductSkeleton: React.FC = () => {
   return (
-    <section className="mx-auto max-w-8xl p-5 lg:px-20">
+    <section className="mx-auto max-w-8xl p-5  text-transparent lg:px-20">
       <div className="rounded-4xl flex flex-col gap-4">
-        <div className="title flex h-8 w-full items-center justify-between">
-          <div className="h-10 w-[40%] animate-pulse rounded-md bg-gray-300"></div>
-          <div className="h-10 w-[25%] animate-pulse rounded-full bg-gray-300"></div>
+        <div className={`title flex items-center justify-between`}>
+          <h1 className="min-w-52 animate-pulse rounded-md bg-gray-300 text-3xl font-bold uppercase md:text-4xl ">
+            &nbsp;
+          </h1>
+          <div
+            className={
+              "group flex items-center justify-between  gap-2 rounded-full text-sm md:text-base"
+            }
+          >
+            <p className="w-20 animate-pulse text-nowrap rounded-md bg-gray-300 uppercase group-hover:underline">
+              &nbsp;
+            </p>
+            <div
+              className={` flex h-6 w-6 animate-pulse items-center justify-center rounded-full bg-gray-300 duration-300 group-hover:bg-black group-hover:text-white dark:bg-primary_color dark:group-hover:bg-gray-200 dark:group-hover:text-black `}
+            >
+              <div className="h-4 w-4 -rotate-[135deg] fill-current  "></div>
+            </div>
+          </div>
         </div>
         <div className="scroll-bar-hidden overflow-x-scroll md:overflow-hidden">
           <div className="scroll-bar-hidden overflow-x-scroll ">
@@ -24,27 +39,39 @@ export const ProductSkeleton: React.FC = () => {
               {[...Array(4)].map((_, index) => (
                 <div
                   key={index}
-                  className="flex min-w-[306px] animate-pulse flex-col gap-2 text-transparent"
+                  className="relative  min-w-[306px] flex-1 snap-x snap-mandatory snap-start flex-col gap-4 "
                 >
-                  <div className="aspect-card rounded-3xl bg-gray-300"></div>
-                  <div className="flex flex-col gap-1 p-4 text-center">
-                    <div className="w-full animate-pulse bg-gray-300 text-sm font-bold ">
-                      title Oversized T-shirt
+                  <div className="relative">
+                    <div className="relative block">
+                      <div className="aspect-card group relative animate-pulse overflow-hidden rounded-3xl bg-gray-300 "></div>
                     </div>
+                    <div className="absolute bottom-2  right-2 rounded-full bg-white p-2 text-black ">
+                      <div className="h-5 w-5"></div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1 p-4 text-center">
+                    <p className="line-clamp-2  w-full animate-pulse rounded-md bg-gray-300 text-sm font-bold">
+                      &nbsp;
+                    </p>
                     <div className="relative flex items-center justify-center pt-2">
-                      <p className="animate-pulse bg-gray-300 text-sm  md:text-base  ">
-                        EGP 1000
+                      <p className="w-20 animate-pulse rounded-md bg-gray-300 text-sm md:text-base">
+                        &nbsp;
                       </p>
                     </div>
 
                     <div className="flex items-center justify-center gap-2">
-                      {[...Array(4)].map((item, index) => (
-                        <div
+                      {[...Array(3)].map((item, index) => (
+                        <button
                           key={index}
-                          className={` max-w-6 flex-1  rounded-full  p-[1px]`}
+                          type="button"
+                          aria-label={"Select color " + item}
+                          className="max-w-6 flex-1 animate-pulse rounded-full border-transparent bg-gray-300 p-[1px] duration-200 hover:scale-110"
                         >
-                          <span className="block aspect-square w-full animate-pulse rounded-full border bg-gray-300"></span>
-                        </div>
+                          <span
+                            style={{ backgroundColor: item }}
+                            className="block aspect-square w-full rounded-full border"
+                          ></span>
+                        </button>
                       ))}
                     </div>
                   </div>

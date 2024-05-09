@@ -3,17 +3,6 @@ import React from "react";
 import DropDown_icon from "./icons/DropDown_icon";
 import ImageInput from "./ImageInput";
 
-type CustomInputProps = FormInput & {
-  onChange?: (e: any) => void;
-  value?: any;
-  defaultValue?: any;
-  disabled?: boolean;
-  readOnly?: boolean;
-  hidden?: boolean;
-  min?: number;
-  max?: number;
-};
-
 const CustomInput = ({
   label,
   type,
@@ -32,7 +21,7 @@ const CustomInput = ({
   hidden,
   min,
   max,
-}: CustomInputProps) => {
+}: FormInput) => {
   switch (type) {
     case "select":
       return (

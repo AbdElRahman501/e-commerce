@@ -22,6 +22,7 @@ const OrderStatus = (item: Order) => {
   return (
     <Link
       replace
+      scroll={false}
       href={`${pathName}?${editPathName}=${item.id}`}
       className={" text-sm font-bold  hover:underline " + color}
     >

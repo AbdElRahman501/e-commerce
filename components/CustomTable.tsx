@@ -2,13 +2,10 @@ import Image from "next/image";
 import React from "react";
 import AddNewButton from "./dashboard/AddNewButton";
 import EditModal from "./dashboard/EditModal";
-import AddModal from "./dashboard/AddModal";
 import RemoveModal from "./dashboard/RemoveModal";
+import { CustomActionType } from "@/types";
+import AddModal from "./dashboard/AddModal";
 
-type CustomActionType = {
-  key: string;
-  Action: (item: any) => JSX.Element;
-};
 const CustomTable = ({
   data,
   header,
@@ -19,6 +16,7 @@ const CustomTable = ({
   name,
   ActionComponent,
   CustomActions,
+  CustomInputs,
 }: {
   name?: string;
   data: any;
@@ -29,6 +27,7 @@ const CustomTable = ({
   header: string[];
   CustomActions?: CustomActionType[];
   ActionComponent?: (item: any) => JSX.Element;
+  CustomInputs?: React.ReactNode;
 }) => {
   if (!data) return null;
 
@@ -87,8 +86,12 @@ const CustomTable = ({
         inputObj={inputObj}
         data={data}
         action={editAction}
-      />
-      <AddModal name={name} inputObj={inputObj} action={addAction} />
+      >
+        {CustomInputs}
+      </EditModal>
+      <AddModal name={name} inputObj={inputObj} action={addAction}>
+        {CustomInputs}
+      </AddModal>
       <RemoveModal name={name} action={removeAction} />
       <div className="scroll-bar-hidden overflow-x-scroll rounded-3xl border border-blue-300 bg-white p-5 shadow-md  dark:border-gray-700 dark:bg-primary_color  ">
         <table className="w-full">

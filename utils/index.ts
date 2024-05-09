@@ -1,4 +1,11 @@
-import { CartItem, OfferType, Product, ProductOnSaleType } from "@/types";
+import {
+  CartItem,
+  OfferType,
+  Order,
+  PersonalInfo,
+  Product,
+  ProductOnSaleType,
+} from "@/types";
 import formatOrderItems from "./formatOrderItems";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -331,4 +338,53 @@ export function createInputArray(inputObj: any) {
     });
   }
   return inputArray;
+}
+
+export const getRevenue = (orders: Order[], products: ProductOnSaleType[]) => {
+  if (!orders || !products) return 0;
+  let revenue = 0;
+  for (let i = 0; i < orders.length; i++) {
+    const order = orders[i];
+    const cart = order.products;
+    const cartProducts = reformatCartItems(cart, products);
+    const subTotal = order.subTotal;
+    const minSubTotal = cartProducts.reduce(
+      (acc, item) => acc + item.minPrice * item.amount,
+      0,
+    );
+    revenue += subTotal - order.discount - minSubTotal;
+  }
+  return revenue;
+};
+
+type Customer = PersonalInfo & { count: number; alternativeEmails: string[] };
+
+export function findUniqueCustomers(customers: PersonalInfo[]) {
+  let uniqueCustomers: Customer[] = [];
+
+  for (let i = 0; i < customers.length; i++) {
+    const customer = customers[i];
+    if (uniqueCustomers.find((c) => c.phoneNumber === customer.phoneNumber)) {
+      uniqueCustomers = uniqueCustomers.map((c) => {
+        const subEmails = c.alternativeEmails.filter(
+          (email) =>
+            email?.toLocaleLowerCase() !== customer.email?.toLocaleLowerCase(),
+        );
+        const alternativeEmails = customer.email
+          ? [...subEmails, customer.email]
+          : subEmails;
+        return c.phoneNumber === customer.phoneNumber
+          ? {
+              ...c,
+              count: c.count + 1,
+              alternativeEmails,
+            }
+          : c;
+      });
+    } else {
+      uniqueCustomers.push({ ...customer, count: 1, alternativeEmails: [] });
+    }
+  }
+
+  return uniqueCustomers;
 }

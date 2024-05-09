@@ -67,6 +67,11 @@ export interface Product {
   >;
 }
 
+export interface CustomActionType {
+  key: string;
+  Action: (item: any) => JSX.Element;
+}
+
 export interface ProductOnSaleType extends Product {
   salePrice: number | null;
   saleValue: number | null;
@@ -158,7 +163,16 @@ export interface FormInput {
   minLength?: number;
   maxLength?: number;
   pattern?: string;
+  onChange?: (e: any) => void;
+  value?: any;
+  defaultValue?: any;
+  disabled?: boolean;
+  readOnly?: boolean;
+  hidden?: boolean;
+  min?: number;
+  max?: number;
 }
+
 export interface PersonalInfo {
   firstName: string;
   lastName: string;
@@ -211,9 +225,9 @@ export interface CategoryCount {
 export interface DashboardCardProps {
   image: string;
   title: string;
-  number: string;
+  number: string | number;
   description?: string | number;
-  url: string;
+  url?: string;
 }
 
 export interface NavbarType {
