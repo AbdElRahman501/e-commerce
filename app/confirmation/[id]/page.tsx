@@ -1,7 +1,11 @@
 import { fetchProductsById } from "@/lib";
 import { fetchOrder } from "@/lib/actions/order.actions";
 import { CartProduct } from "@/types";
-import { reformatCartItems } from "@/utils";
+import {
+  getNextWorkingDay,
+  orderStatusColor,
+  reformatCartItems,
+} from "@/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import OrderId from "@/components/confirmation/OrderId";
@@ -39,12 +43,27 @@ const OrderConfirmationPage = async ({
               {order.personalInfo.email || order.personalInfo.phoneNumber}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-300 sm:text-base">
+              {order.personalInfo.comment}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 sm:text-base">
               {order.personalInfo.state +
                 " - " +
                 order.personalInfo.city +
                 " - " +
                 order.personalInfo.streetAddress}
             </p>
+            <p>
+              Status:{" "}
+              <strong className={`${orderStatusColor(order.status)}`}>
+                {order.status}
+              </strong>
+            </p>
+            {order.status !== "Delivered" && order.status !== "Canceled" && (
+              <p>
+                expected delivery:{" "}
+                <strong>{getNextWorkingDay(order.createdAt, 5)}</strong>
+              </p>
+            )}
           </div>
         )}
         <div className=" text-center text-primary_color dark:text-white">
