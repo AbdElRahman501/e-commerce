@@ -1,7 +1,5 @@
 import { SectionTitle } from "@/components";
 import CustomTable from "@/components/CustomTable";
-import OrdersTable from "@/components/OrdersTable";
-import ProductTable from "@/components/ProductTable";
 import TotalCard from "@/components/TotalCard";
 import { dashboardCards } from "@/constants";
 import { fetchFilteredProducts } from "@/lib";
