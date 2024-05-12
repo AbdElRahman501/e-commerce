@@ -388,3 +388,47 @@ export function findUniqueCustomers(customers: PersonalInfo[]) {
 
   return uniqueCustomers;
 }
+
+export const orderStatusColor = (
+  status: "Pending" | "Delivered" | "Shipped" | "Accepted" | "Canceled",
+) => {
+  switch (status) {
+    case "Pending":
+      return "text-yellow-500";
+    case "Delivered":
+      return "text-green-500";
+    case "Canceled":
+      return "text-red-500";
+    default:
+      return "text-gray-500";
+  }
+};
+
+function formatDayDate(date: Date) {
+  var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var dayOfWeek = date.getDay();
+  var day = date.getDate();
+  var month = date.getMonth() + 1;
+  var year = date.getFullYear();
+  var formattedDate =
+    weekdays[dayOfWeek] + " - " + day + "/" + month + "/" + year;
+
+  return formattedDate;
+}
+
+export function getNextWorkingDay(startDate: string | Date, days: number) {
+  var currentDate = new Date(startDate);
+  for (var i = 0; i < days; i++) {
+    currentDate.setDate(currentDate.getDate() + 1);
+    if (currentDate.getDay() === 5) {
+      // Friday
+      currentDate.setDate(currentDate.getDate() + 2);
+    } else if (currentDate.getDay() === 6) {
+      // Saturday
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  }
+
+  // Return the next working day
+  return formatDayDate(currentDate);
+}

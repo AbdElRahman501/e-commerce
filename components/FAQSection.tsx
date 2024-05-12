@@ -25,13 +25,13 @@ const FAQSection = () => {
             </p>
           </FAQCard>
         </div>
-        <div className="hidden  w-1/2 md:flex">
+        <div className="hidden w-1/2 md:flex">
           <Image
-            src="/panorama.png"
+            src="https://res.cloudinary.com/dls8drwle/image/upload/v1714359533/Givaco/v9gd9ebf9aydtoajzxwn.png"
             alt="faq"
             width={500}
             height={500}
-            className=" h-full w-full rounded-3xl object-cover"
+            className="h-full w-full rounded-3xl object-cover"
           />
         </div>
       </div>

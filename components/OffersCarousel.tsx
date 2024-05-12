@@ -2,6 +2,7 @@
 import { OfferType } from "@/types";
 import Image from "next/image";
 import React from "react";
+import DropDown_icon from "./icons/DropDown_icon";
 
 const OffersCarousel = ({ offers }: { offers: OfferType[] }) => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -29,9 +30,11 @@ const OffersCarousel = ({ offers }: { offers: OfferType[] }) => {
   }, []);
 
   const scrollToNext = () => {
-    if (containerRef.current && currentIndex < offers.length - 1) {
-      containerRef.current.scrollBy({
-        left: containerRef.current.offsetWidth,
+    const nextScrollIndex = (currentIndex + 1) % offers.length;
+    if (containerRef.current) {
+      const nextScrollLeft = containerRef.current.offsetWidth * nextScrollIndex;
+      containerRef.current.scrollTo({
+        left: nextScrollLeft,
         behavior: "smooth",
       });
     }
@@ -61,14 +64,8 @@ const OffersCarousel = ({ offers }: { offers: OfferType[] }) => {
         onClick={scrollToPrev}
         className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl  `}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
-          <Image
-            src={"/icons/arrow-down.svg"}
-            width={24}
-            height={24}
-            alt={"sort icon"}
-            className="rotate-90"
-          />
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-black hover:text-white">
+          <DropDown_icon className=" w-6 rotate-90" />
         </div>
       </button>
       <div
@@ -95,14 +92,8 @@ const OffersCarousel = ({ offers }: { offers: OfferType[] }) => {
         onClick={scrollToNext}
         className={`${currentIndex === offers.length - 1 ? "hidden" : ""} absolute right-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl `}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
-          <Image
-            src={"/icons/arrow-down.svg"}
-            width={24}
-            height={24}
-            alt={"sort icon"}
-            className="-rotate-90"
-          />
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-black hover:text-white">
+          <DropDown_icon className="w-6 -rotate-90 " />
         </div>
       </button>
       <div className="absolute bottom-2 right-2 flex w-full justify-center text-white  ">

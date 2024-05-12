@@ -1,8 +1,9 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
+import Ex_icon from "./icons/Ex_icon";
+import Filter_icon from "./icons/Filter_icon";
 
 const FilterButton = () => {
   const divRef = useRef<HTMLDivElement>(null);
@@ -41,15 +42,9 @@ const FilterButton = () => {
         shallow
         href={`${pathname}?${newSearchParams.toString()}`}
         replace
-        className="flex h-14 w-14 flex-grow-0 items-center justify-center  rounded-2xl border bg-primary_color dark:bg-white md:hidden"
+        className="flex h-14 w-14 flex-grow-0 items-center justify-center rounded-2xl border  bg-primary_color text-white dark:bg-white dark:text-primary_color md:hidden"
       >
-        <Image
-          src={isOpen ? "/icons/close.svg" : "/icons/filter.svg"}
-          alt="search"
-          width={30}
-          height={30}
-          className="invert dark:invert-0"
-        />
+        {isOpen ? <Ex_icon className="w-8" /> : <Filter_icon className="w-8" />}
       </Link>
     </div>
   );

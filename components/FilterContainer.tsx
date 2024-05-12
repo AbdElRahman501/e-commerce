@@ -18,22 +18,16 @@ const FilterContainer = ({
   const pathname = usePathname();
   const router = useRouter();
   const genderFilter = searchParams?.get("gf") || "";
-  const categoryFilter = React.useMemo(() => {
-    return searchParams?.get("ctf")?.length
-      ? searchParams?.get("ctf")?.split(",") || []
-      : [];
-  }, [searchParams]);
-  const sizeFilter = React.useMemo(() => {
-    return searchParams?.get("szf")?.length
-      ? searchParams?.get("szf")?.split(",") || []
-      : [];
-  }, [searchParams]);
+  const categoryFilter = searchParams?.get("ctf")?.length
+    ? searchParams?.get("ctf")?.split(",") || []
+    : [];
+  const sizeFilter = searchParams?.get("szf")?.length
+    ? searchParams?.get("szf")?.split(",") || []
+    : [];
 
-  const colorFilter = React.useMemo(() => {
-    return searchParams?.get("clf")?.length
-      ? searchParams?.get("clf")?.split(",") || []
-      : [];
-  }, [searchParams]);
+  const colorFilter = searchParams?.get("clf")?.length
+    ? searchParams?.get("clf")?.split(",") || []
+    : [];
 
   const minPriceParam = searchParams?.get("minP") || "";
   const minPrice = minPriceParam ? parseInt(minPriceParam) : 0;
@@ -64,6 +58,17 @@ const FilterContainer = ({
     const optionUrl = createUrl(pathname, newSearchParams);
     router.replace(optionUrl, { scroll: false });
   }
+
+  useEffect(() => {
+    setSelectedGenders(genderFilter);
+    setSelectedCategories(categoryFilter);
+    setSelectedSizes(sizeFilter);
+    setSelectedColors(colorFilter);
+    setMinPriceState(minPrice);
+    setMaxPriceState(maxPrice);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   function onReset() {
     setChanged(false);

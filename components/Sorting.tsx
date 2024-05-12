@@ -2,6 +2,7 @@
 import { createUrl } from "@/utils";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import DropDown_icon from "./icons/DropDown_icon";
 
 const Sorting = ({ classNames = "" }: { classNames?: string }) => {
   const options = [
@@ -46,13 +47,7 @@ const Sorting = ({ classNames = "" }: { classNames?: string }) => {
             </option>
           ))}
       </select>
-      <Image
-        src={"/icons/arrow-down.svg"}
-        width={24}
-        height={24}
-        alt={"sort icon"}
-        className="dark:invert"
-      />
+      <DropDown_icon className="w-6" />
     </div>
   );
 };
