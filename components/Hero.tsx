@@ -24,7 +24,7 @@ const Hero = async () => {
             <h1 className="text-2xl font-bold uppercase text-white dark:text-white">
               All Collections
             </h1>
-            <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  dark:text-black " />
+            <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  hover:bg-black hover:text-white  " />
           </Link>
         </div>
         <div className="flex h-full  w-full flex-col-reverse gap-3 max-sm:row-span-3 sm:grid sm:grid-cols-7 md:col-span-7">
@@ -40,7 +40,7 @@ const Hero = async () => {
               sizes="100%"
               style={{ objectFit: "cover" }}
             />
-            <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  dark:text-black" />
+            <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  hover:bg-black hover:text-white " />
           </Link>
           <div className="relative col-span-3 flex w-full flex-col gap-3 sm:flex-col-reverse">
             <Stories stories={stories} />
@@ -51,7 +51,7 @@ const Hero = async () => {
               <div className="aspect-square h-full p-1">
                 <ArrowButton
                   href="/shop"
-                  className="m-0 h-full w-full bg-white text-3xl text-black dark:text-black"
+                  className="m-0 h-full w-full bg-white  text-3xl text-black  hover:bg-black hover:text-white"
                 />
               </div>
             </div>

@@ -3,7 +3,12 @@ import { ProductOnSaleType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect } from "react";
-import { firstMatch, formatPrice, toggleFavoriteItem } from "@/utils";
+import {
+  firstMatch,
+  formatPrice,
+  getAllImages,
+  toggleFavoriteItem,
+} from "@/utils";
 import { toggleFav } from "./actions/fav.actions";
 import { useSearchParams } from "next/navigation";
 import HeartIcon from "./icons/HeartIcon";
@@ -35,9 +40,33 @@ const ProductCard = ({
   const [selectedColor, setSelectedColor] = React.useState<string>(
     color || colors[0],
   );
+  const [[firstImage, secondImage], setImages] = React.useState<string[]>(
+    images[selectedColor].length > 1
+      ? images[selectedColor]
+      : [
+          ...images[selectedColor],
+          ...getAllImages(images).filter(
+            (img) => !images[selectedColor].includes(img),
+          ),
+        ],
+  );
+
+  const selectColor = (color: string) => {
+    setSelectedColor(color);
+    setImages(
+      images[color].length > 1
+        ? images[color]
+        : [
+            ...images[color],
+            ...getAllImages(images).filter(
+              (img) => !images[color].includes(img),
+            ),
+          ],
+    );
+  };
 
   useEffect(() => {
-    setSelectedColor(firstMatch(colorFilter, colors) || colors[0]);
+    selectColor(firstMatch(colorFilter, colors) || colors[0]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
@@ -69,16 +98,27 @@ const ProductCard = ({
             query: { color: selectedColor.toString().replace("#", "HASH:") },
           }}
         >
-          <div className="aspect-card group relative overflow-hidden rounded-3xl ">
+          <div className="aspect-card group relative overflow-hidden rounded-lg bg-gradient-to-r from-slate-100 to-slate-200">
             <Image
-              src={images[selectedColor][0]}
+              src={firstImage}
               alt={`${title + " Color " + selectedColor} image`}
               fill
               sizes="100%"
               priority={index < 3}
               style={{ objectFit: "cover" }}
-              className={`bg-gradient-to-r from-[#8c8c88] to-[#979a96] duration-700 hover:scale-105 `}
+              className={`duration-300 ${secondImage ? "group-hover:opacity-0" : "hover:scale-105"} `}
             />
+            {secondImage && (
+              <Image
+                src={secondImage}
+                alt={`${title + " Color " + selectedColor} image`}
+                fill
+                sizes="100%"
+                style={{ objectFit: "cover" }}
+                priority={index < 3}
+                className="opacity-0 duration-300 group-hover:opacity-100"
+              />
+            )}
           </div>
         </Link>
         <button
@@ -124,7 +164,7 @@ const ProductCard = ({
               key={index}
               type="button"
               aria-label={"Select color " + item}
-              onClick={() => setSelectedColor(item)}
+              onClick={() => selectColor(item)}
               className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "border-2 border-black p-[1px] dark:border-white" : "border-transparent"} max-w-6 flex-1 rounded-full p-[1px] duration-200 hover:scale-110`}
             >
               <span

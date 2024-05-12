@@ -16,9 +16,11 @@ const NavBar = async () => {
   return (
     <nav className="sticky -top-[1px] z-30 flex max-h-16 items-center justify-center gap-4 bg-primary_color px-5 py-3 dark:bg-primary_color md:bg-white md:px-20 ">
       <MenuBurgerButton cart={cart} navbarLinks={navbarLinks} />
-      <Link href="/" className=" md:flex-1">
-        <LogoIcon className="w-16 fill-white md:fill-black md:dark:fill-white" />
-      </Link>
+      <div className=" md:flex-1">
+        <Link href="/" aria-label="Home link" className="block w-fit">
+          <LogoIcon className="w-16  fill-white md:fill-black md:dark:fill-white" />
+        </Link>
+      </div>
       <div className=" hidden max-w-md flex-1 items-center justify-center gap-4 md:flex">
         {mainNav.map((link, index) => (
           <Link

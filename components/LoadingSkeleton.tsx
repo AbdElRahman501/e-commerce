@@ -115,31 +115,29 @@ export const ProductDetailSkeleton = () => {
   return (
     <div className="mx-auto flex w-full max-w-8xl flex-col text-transparent sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <div className="relative h-full w-full flex-1 gap-2 sm:w-4/6 ">
-        <button
+        <div
           className={` absolute left-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl sm:hidden `}
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
             <div className="h-10 w-10"></div>
           </div>
-        </button>
+        </div>
 
         <div className="scroll-bar-hidden images-container  relative h-full w-full snap-x snap-mandatory overflow-scroll max-sm:!flex sm:grid sm:gap-2 sm:overflow-hidden">
           {[...Array(4)].map((item, index) => (
             <div
               key={index}
               className={`area-${index + 1}  aspect-card relative min-w-[100vw] snap-center overflow-hidden bg-gradient-to-r from-slate-100 to-slate-200 sm:min-w-full sm:rounded-3xl`}
-            >
-              <div></div>
-            </div>
+            ></div>
           ))}
         </div>
-        <button
+        <div
           className={` absolute right-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl sm:hidden`}
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
             <div className="h-10 w-10"></div>
           </div>
-        </button>
+        </div>
         <div className="absolute bottom-2 right-2 flex w-full justify-center text-white  sm:hidden">
           <div className="flex space-x-1">
             {[...Array(4)].map((_, index) => (
@@ -157,8 +155,10 @@ export const ProductDetailSkeleton = () => {
             shop
           </p>
           <div className="inline-block">
-            <span className="mx-1 text-base text-gray-500">&#8250;</span>
-            <div className=" animate-pulse rounded-md bg-gray-300">
+            <span className="mx-1 inline-block text-base text-gray-500">
+              &#8250;
+            </span>
+            <div className=" inline-block animate-pulse rounded-md bg-gray-300">
               anything
             </div>
           </div>
@@ -181,12 +181,12 @@ export const ProductDetailSkeleton = () => {
           </p>
           <div className="flex flex-wrap gap-2">
             {["XS", "S", "M", "L", "XL"].map((item, index) => (
-              <button
+              <div
                 key={index}
                 className="animate-pulse rounded-xl bg-gray-300 p-2 px-4 text-sm "
               >
                 <span>{item}</span>
-              </button>
+              </div>
             ))}
           </div>
         </div>
@@ -199,12 +199,12 @@ export const ProductDetailSkeleton = () => {
           </p>
           <div className="flex flex-wrap gap-2">
             {["red", "green", "blue", "yellow"].map((item, index) => (
-              <button
+              <div
                 key={index}
                 className="animate-pulse rounded-full bg-gray-300  "
               >
                 <span className="block h-7 w-7 rounded-full"></span>
-              </button>
+              </div>
             ))}
           </div>
         </div>

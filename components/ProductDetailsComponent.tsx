@@ -146,7 +146,7 @@ const ProductDetailsComponent = ({
               <button
                 key={index}
                 onClick={() => selectSize(item)}
-                className={`${item === selectedSize ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 text-sm outline duration-200 hover:scale-105 hover:outline-black dark:hover:outline-white`}
+                className={`${item === selectedSize ? " border-black dark:border-white " : " border-gray-200 dark:border-gray-700 "} rounded-xl border-2 p-2 px-4 text-sm duration-200 hover:scale-105 hover:border-black dark:hover:border-white`}
               >
                 <span>{item}</span>
               </button>
@@ -165,7 +165,7 @@ const ProductDetailsComponent = ({
                   selectColor(item);
                 }}
                 key={index}
-                className={`${item === selectedColor ? "outline-2 outline-black dark:outline-white " : "outline-1 outline-transparent"} rounded-full outline  outline-offset-2   duration-200 hover:scale-110`}
+                className={`${item === selectedColor ? " border-black dark:border-white " : "border-1 border-transparent"} rounded-full border-2 p-[1px]  duration-200 hover:scale-110`}
               >
                 <span
                   style={{ backgroundColor: item }}

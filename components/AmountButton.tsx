@@ -12,7 +12,7 @@ const AmountButton = ({
 }) => {
   return (
     <div
-      className={` flex  max-w-max items-center justify-between gap-1 overflow-hidden rounded-2xl outline outline-1 ${className}`}
+      className={` flex  max-w-max items-center justify-between gap-1 overflow-hidden rounded-2xl border ${className}`}
     >
       <button
         onClick={() => {

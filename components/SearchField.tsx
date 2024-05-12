@@ -1,8 +1,8 @@
 "use client";
 import { createUrl } from "@/utils";
-import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
+import Search_icon from "./icons/Search_icon";
 
 const SearchField = () => {
   const divRef = useRef<HTMLDivElement>(null);
@@ -54,9 +54,12 @@ const SearchField = () => {
           }}
           className="h-14 w-full rounded-3xl  border border-gray-200 bg-transparent p-2 px-4  pe-10 text-base outline-none focus:border-primary_color focus:ring-blue-500 dark:border-gray-700  dark:text-white dark:placeholder-gray-700 dark:focus:border-gray-200 dark:focus:ring-gray-200"
         />
-        <div className="absolute right-0 top-0 flex h-full w-14 items-center justify-center">
-          <Image src="/icons/search.svg" alt="search" width={24} height={24} />
-        </div>
+        <button
+          type="submit"
+          className="absolute right-0 top-0 flex h-full w-14 items-center justify-center text-gray-400 hover:text-black dark:text-gray-600 dark:hover:text-white"
+        >
+          <Search_icon className="w-6" />
+        </button>
       </form>
     </div>
   );

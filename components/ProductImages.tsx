@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import FullSizeIcon from "./icons/FullSizeIcon";
 import Ex_icon from "./icons/Ex_icon";
 import ZoomableImage from "./ZoomableImage";
+import DropDown_icon from "./icons/DropDown_icon";
 
 interface YourComponentProps {
   images: string[];
@@ -119,14 +120,8 @@ const ProductImages: React.FC<YourComponentProps> = ({
         onClick={scrollToPrev}
         className={`${currentIndex === 0 ? "hidden" : ""} absolute left-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl sm:hidden `}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
-          <Image
-            src={"/icons/arrow-down.svg"}
-            width={24}
-            height={24}
-            alt={"sort icon"}
-            className="rotate-90"
-          />
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-black hover:text-white">
+          <DropDown_icon className=" w-6 rotate-90" />
         </div>
       </button>
       {showFullImage && (
@@ -199,14 +194,8 @@ const ProductImages: React.FC<YourComponentProps> = ({
         onClick={scrollToNext}
         className={`${currentIndex === images.length - 1 ? "hidden" : ""} absolute right-1 top-0 z-10 flex h-full w-10 items-center justify-center text-3xl sm:hidden`}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
-          <Image
-            src={"/icons/arrow-down.svg"}
-            width={24}
-            height={24}
-            alt={"sort icon"}
-            className="-rotate-90"
-          />
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-black hover:text-white">
+          <DropDown_icon className="w-6 -rotate-90 " />
         </div>
       </button>
       <div className="absolute bottom-2 right-2 flex w-full justify-center text-white  sm:hidden">

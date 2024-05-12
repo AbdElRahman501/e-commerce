@@ -1,7 +1,7 @@
 import { fetchFilteredProducts } from "@/lib";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
-import React, { Suspense } from "react";
+import React from "react";
 import { ProductCard } from "@/components";
 
 const LoadMore = dynamic(() => import("@/components/LoadMore"), {

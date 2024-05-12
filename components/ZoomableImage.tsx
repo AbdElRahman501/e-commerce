@@ -9,6 +9,7 @@ const ZoomableImage = ({
   ...props
 }: ImageProps & { parentClassName?: string }) => {
   const [backgroundPosition, setBackgroundPosition] = useState("0% 0%");
+  const [isZoomed, setIsZoomed] = useState(false);
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     const {
       left,
@@ -24,16 +25,18 @@ const ZoomableImage = ({
   };
 
   return (
-    <div
+    <figure
       onMouseMove={handleMouseMove}
       style={{
         backgroundImage: `url(${src})`,
         backgroundPosition,
       }}
-      className="group h-full w-full cursor-zoom-in bg-no-repeat object-cover"
+      onMouseEnter={() => setIsZoomed(true)}
+      onClick={() => setIsZoomed((prev) => !prev)}
+      className={`${isZoomed ? "group cursor-zoom-out" : " cursor-zoom-in"} relative h-full w-full bg-no-repeat object-cover`}
     >
       <Image alt={alt} src={src} {...props} />
-    </div>
+    </figure>
   );
 };
 
