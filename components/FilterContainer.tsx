@@ -242,7 +242,7 @@ const FilterContainer = ({
           <input type="submit" className="hidden" />
         </div>
       </div>
-      <div className="sticky bottom-0 flex  flex-col gap-1 bg-white pb-10 dark:bg-primary_bg">
+      <div className="sticky bottom-0 flex  flex-col gap-1 bg-white pb-4 dark:bg-primary_bg">
         <button
           type="button"
           onClick={submitHandler}

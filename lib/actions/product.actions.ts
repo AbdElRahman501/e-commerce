@@ -284,7 +284,7 @@ export const fetchProduct = unstable_cache(
       return { ...product, salePrice, saleValue };
     } catch (error) {
       console.error("Error fetching product detail:", error);
-      throw error;
+      return null;
     }
   },
   ["products"],

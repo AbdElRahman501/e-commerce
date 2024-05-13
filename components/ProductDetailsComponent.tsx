@@ -97,13 +97,13 @@ const ProductDetailsComponent = ({
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-8xl flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
+    <div className="relative mx-auto flex w-full max-w-8xl flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
         images={getAllImages(images)}
         selectedImage={images[selectedColor]?.[0] || ""}
         title={title}
       />
-      <div className="z-10 flex w-full flex-col gap-3 p-5 sm:w-5/12 md:col-span-2 md:py-0">
+      <div className="sticky top-16 z-10 flex h-fit w-full flex-col gap-3 p-5 sm:w-5/12 md:col-span-2 md:py-0">
         <div className="flex items-center justify-between">
           <div className="nav group w-fit text-xs text-gray-400">
             <Link

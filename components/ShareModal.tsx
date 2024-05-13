@@ -4,8 +4,10 @@ import Modal from "./Modal";
 import Link from "next/link";
 import {
   LogosFacebook,
+  LogosLinkedinIcon,
   LogosPinterest,
   LogosWhatsappIcon,
+  PrimeTwitter,
 } from "./icons/socialmedia";
 import { ProductOnSaleType } from "@/types";
 import { IcRoundShare } from "./icons/Share_icon";
@@ -33,10 +35,7 @@ const ShareModal = ({
   const [isOpen, setIsOpen] = React.useState(false);
 
   const url =
-    process.env.NEXT_PUBLIC_VERCEL_URL +
-    pathname +
-    "?" +
-    searchParams.toString();
+    "https://www.eh-eg.store" + pathname + "?" + searchParams.toString();
   const message = encodeURIComponent(
     `Check out this awesome product from @eh.egyy: ${url}`,
   );
@@ -47,37 +46,59 @@ const ShareModal = ({
       </button>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="text-center">
-          <p className="p-5 pb-1 pt-5 text-lg">
-            copy this link and share it with your friends.
-          </p>
-          <button onClick={() => copyToClipboard(url)} type="button">
+        <h2 className="text-lg">Share this link via</h2>
+        <div className="flex justify-center gap-3 p-2">
+          <Link
+            target="_blank"
+            className="aspect-square rounded-full border border-gray-300 p-3 "
+            href={`whatsapp://send?text=${message}`}
+          >
+            <LogosWhatsappIcon className=" w-6 duration-300 hover:scale-125" />{" "}
+          </Link>
+          <Link
+            target="_blank"
+            className="aspect-square rounded-full border border-gray-300 p-3 "
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent("Check out this awesome product from @eh.egyy" + title)}`}
+          >
+            <LogosFacebook className=" w-6 duration-300 hover:scale-125" />{" "}
+          </Link>
+          <Link
+            target="_blank"
+            className="aspect-square rounded-full border border-gray-300 p-3 "
+            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`}
+          >
+            <PrimeTwitter className=" w-6 duration-300 hover:scale-125" />
+          </Link>
+          <Link
+            target="_blank"
+            className="aspect-square rounded-full border border-gray-300 p-3 "
+            href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`}
+          >
+            <LogosLinkedinIcon className=" w-6 duration-300 hover:scale-125" />
+          </Link>
+          <Link
+            target="_blank"
+            className="aspect-square rounded-full border border-gray-300 p-3 "
+            href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(images[color]?.[0])}&description=${encodeURIComponent(title)}`}
+          >
+            <LogosPinterest className=" w-6 duration-300 hover:scale-125" />{" "}
+          </Link>
+        </div>
+        <h2 className="text-lg">Or copy link</h2>
+        <div className="flex items-center justify-between gap-1 break-all border p-2 font-bold">
+          <p className="inline text-wrap">{url}</p>
+          <button
+            className="text-nowrap rounded-lg bg-black px-4 py-4 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
+            onClick={() => copyToClipboard(url)}
+            type="button"
+          >
+            <p className="inline px-2">Copy</p>
             {copied ? (
               <CheckMark className="inline fill-current" />
             ) : (
               <Copy_icon className="inline fill-current" />
             )}
           </button>
-          <div className="text-wrap break-all border p-2 font-bold">
-            <p className="inline">{url}</p>
-          </div>
-        </div>
-        <div className="flex justify-center gap-3 p-2">
-          <Link target="_blank" href={`whatsapp://send?text=${message}`}>
-            <LogosWhatsappIcon className="w-8" />{" "}
-          </Link>
-          <Link
-            target="_blank"
-            href={`https://www.facebook.com/sharer/sharer.php?u=${message}`}
-          >
-            <LogosFacebook className="w-8" />{" "}
-          </Link>
-          <Link
-            target="_blank"
-            href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(images[color]?.[0])}&description=${encodeURIComponent(title)}`}
-          >
-            <LogosPinterest className="w-8" />{" "}
-          </Link>
         </div>
       </Modal>
     </>
