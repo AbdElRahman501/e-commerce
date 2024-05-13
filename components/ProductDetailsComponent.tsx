@@ -17,6 +17,7 @@ import AddToCart from "./cart/AddToCart";
 import ProductImages from "./ProductImages";
 import HeartIcon from "./icons/HeartIcon";
 import FAQCard from "./FAQCard";
+import ShareModal from "./ShareModal";
 
 interface ProductDetailsComponent extends ProductOnSaleType {
   cart: CartItem[];
@@ -103,24 +104,27 @@ const ProductDetailsComponent = ({
         title={title}
       />
       <div className="z-10 flex w-full flex-col gap-3 p-5 sm:w-5/12 md:col-span-2 md:py-0">
-        <div className="nav group w-fit text-xs text-gray-400">
-          <Link
-            href={"/shop"}
-            className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
-          >
-            Shop
-          </Link>
-          {categories.split(",").map((item, index) => (
-            <div key={index} className="inline-block">
-              <span className="mx-1 text-base">&#8250;</span>
-              <Link
-                href={`/shop?ctf=${item.trim()}`}
-                className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
-              >
-                {item}
-              </Link>
-            </div>
-          ))}
+        <div className="flex items-center justify-between">
+          <div className="nav group w-fit text-xs text-gray-400">
+            <Link
+              href={"/shop"}
+              className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
+            >
+              Shop
+            </Link>
+            {categories.split(",").map((item, index) => (
+              <div key={index} className="inline-block">
+                <span className="mx-1 text-base">&#8250;</span>
+                <Link
+                  href={`/shop?ctf=${item.trim()}`}
+                  className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
+                >
+                  {item}
+                </Link>
+              </div>
+            ))}
+          </div>
+          <ShareModal images={images} title={title} />
         </div>
         <h6 className="text-lg font-bold ">{title}</h6>
         <p className="text-sm text-gray-400 ">{name}</p>

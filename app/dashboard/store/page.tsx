@@ -3,6 +3,7 @@ import CustomTable from "@/components/CustomTable";
 import ActionButtons from "@/components/dashboard/ActionButtons";
 
 import {
+  addNewFooterLink,
   addNewNavbarLink,
   addNewStory,
   fetchAllStories,
@@ -75,6 +76,7 @@ export default async function OrdersPage({
           <CustomTable
             name="footer"
             editAction={updateFooterLink}
+            addAction={addNewFooterLink}
             data={footerLinks.map((item) => ({
               ...item,
               allLinks: item.links
@@ -115,14 +117,12 @@ export default async function OrdersPage({
                     placeholder="Enter footer link name"
                     name="linkName[]"
                     defaultValue=""
-                    required
                     type="text"
                   />
                   <CustomInput
                     placeholder="Enter footer link url"
                     name="linkURL[]"
                     defaultValue=""
-                    required
                     type="text"
                   />
                 </div>

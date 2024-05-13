@@ -331,11 +331,15 @@ export const fetchFooterLinks = unstable_cache(
 );
 
 export const addNewFooterLink = async (formData: FormData) => {
-  const data = {
-    title: formData.get("title")?.toString() || "",
-    url: formData.get("url")?.toString() || "",
-    links: JSON.parse(formData.get("links")?.toString() || "[]"),
+  const data: any = {
+    title: formData.get("title"),
+    links: [],
   };
+  formData.getAll("linkName[]").forEach((name, index) => {
+    const url = formData.getAll("linkURL[]")[index];
+    if (name === "" || url === "") return;
+    data.links.push({ name, url });
+  });
   try {
     await connectToDatabase();
     await FooterLink.create(data);
