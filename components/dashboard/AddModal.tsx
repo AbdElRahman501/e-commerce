@@ -46,6 +46,7 @@ const AddModal = ({
         </form>
         <Link
           replace
+          scroll={false}
           href={pathname}
           className="rounded-lg border px-4 py-2 text-center "
         >

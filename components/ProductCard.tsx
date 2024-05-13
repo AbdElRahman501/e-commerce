@@ -98,7 +98,7 @@ const ProductCard = ({
             query: { color: selectedColor.toString().replace("#", "HASH:") },
           }}
         >
-          <div className="aspect-card group relative overflow-hidden rounded-lg bg-gradient-to-r from-slate-100 to-slate-200">
+          <div className="aspect-card group relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-100 to-slate-200">
             <Image
               src={firstImage}
               alt={`${title + " Color " + selectedColor} image`}

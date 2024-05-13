@@ -1,12 +1,13 @@
 "use client";
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import React, { useEffect } from "react";
 
 interface ModalProps {
   isOpen: boolean;
-  onCloseBath?: string;
+  onCloseBath?: LinkProps["href"];
   children: React.ReactNode;
   delay?: number;
+  onClose?: () => void;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -14,6 +15,7 @@ const Modal: React.FC<ModalProps> = ({
   onCloseBath,
   children,
   delay = 0,
+  onClose,
 }) => {
   const [isOpened, setIsOpened] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
@@ -37,8 +39,15 @@ const Modal: React.FC<ModalProps> = ({
       {onCloseBath ? (
         <Link
           href={onCloseBath}
+          replace
+          scroll={false}
           className="absolute inset-0 bg-black opacity-50"
         ></Link>
+      ) : onClose ? (
+        <div
+          onClick={onClose}
+          className=" absolute inset-0 cursor-pointer bg-black opacity-50"
+        ></div>
       ) : (
         <div className="absolute inset-0 bg-black opacity-50"></div>
       )}

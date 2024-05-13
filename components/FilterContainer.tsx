@@ -33,6 +33,7 @@ const FilterContainer = ({
   const minPrice = minPriceParam ? parseInt(minPriceParam) : 0;
   const maxPriceParam = searchParams?.get("maxP") || "";
   const maxPrice = maxPriceParam ? parseInt(maxPriceParam) : 1000;
+  const [submitChanges, setSubmitChanges] = React.useState<boolean>(false);
 
   const [selectedGenders, setSelectedGenders] =
     React.useState<string>(genderFilter);
@@ -47,6 +48,7 @@ const FilterContainer = ({
   const [changed, setChanged] = React.useState<boolean>(false);
 
   function submitHandler() {
+    setSubmitChanges(true);
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("gf", selectedGenders);
     newSearchParams.set("ctf", selectedCategories.join(","));
@@ -66,6 +68,10 @@ const FilterContainer = ({
     setSelectedColors(colorFilter);
     setMinPriceState(minPrice);
     setMaxPriceState(maxPrice);
+
+    if (!submitChanges && searchParams?.get("ft") === "false") {
+      submitHandler();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
@@ -104,7 +110,7 @@ const FilterContainer = ({
   return (
     <div
       style={{ bottom: searchParams?.get("ft") === "true" ? "0" : "-100vh" }}
-      className="scroll-bar-hidden fixed  left-0  z-20 flex h-full max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-white px-5 py-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
+      className=" scroll-bar-hidden fixed  left-0  z-20 flex h-full max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-white px-5 pt-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
     >
       <Sorting classNames="  min-h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white flex md:hidden" />
       <div className="relative flex h-14 min-h-14 w-full flex-grow-0 rounded-full border md:max-w-xs">
@@ -113,6 +119,7 @@ const FilterContainer = ({
         ></div>
         <button
           onClick={() => {
+            setSubmitChanges(false);
             setSelectedGenders(selectedGenders === "1" ? "" : "1");
           }}
           className={`${selectedGenders === "1" ? "text-white" : "text-primary_color"} m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)]  items-center justify-center text-center  `}
@@ -121,6 +128,7 @@ const FilterContainer = ({
         </button>
         <button
           onClick={() => {
+            setSubmitChanges(false);
             setSelectedGenders(selectedGenders === "0" ? "" : "0");
           }}
           className={`${selectedGenders === "0" ? "text-white" : "text-primary_color"} m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)] items-center justify-center text-center  `}
@@ -138,6 +146,7 @@ const FilterContainer = ({
             return (
               <button
                 onClick={() => {
+                  setSubmitChanges(false);
                   setSelectedCategories(
                     selected
                       ? selectedCategories.filter(
@@ -165,6 +174,7 @@ const FilterContainer = ({
             return (
               <button
                 onClick={() => {
+                  setSubmitChanges(false);
                   setSelectedSizes(
                     selected
                       ? selectedSizes.filter((size) => size !== item)
@@ -189,6 +199,7 @@ const FilterContainer = ({
               <button
                 key={index}
                 onClick={() => {
+                  setSubmitChanges(false);
                   setSelectedColors(
                     selected
                       ? selectedColors.filter((color) => color !== item)
@@ -231,7 +242,7 @@ const FilterContainer = ({
           <input type="submit" className="hidden" />
         </div>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="sticky bottom-0 flex  flex-col gap-1 bg-white pb-4 dark:bg-primary_bg">
         <button
           type="button"
           onClick={submitHandler}
