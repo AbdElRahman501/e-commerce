@@ -25,8 +25,8 @@ const ShareModal = ({
   const color = searchParams.get("color")?.replace("HASH:", "#") || "";
 
   const [copied, setCopied] = React.useState(false);
-  const copyToClipboard = (id: string) => {
-    navigator.clipboard.writeText(id);
+  const copyToClipboard = (url: string) => {
+    navigator?.clipboard?.writeText(url);
     setCopied(true);
   };
 

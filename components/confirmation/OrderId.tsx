@@ -6,7 +6,7 @@ import CheckMark from "../icons/CheckMark";
 const OrderId = ({ id }: { id: string }) => {
   const [copied, setCopied] = React.useState(false);
   const copyToClipboard = (id: string) => {
-    navigator.clipboard.writeText(id);
+    navigator?.clipboard?.writeText(id);
     setCopied(true);
   };
   return (
