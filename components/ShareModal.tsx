@@ -35,7 +35,10 @@ const ShareModal = ({
   const [isOpen, setIsOpen] = React.useState(false);
 
   const url =
-    "https://www.eh-eg.store" + pathname + "?" + searchParams.toString();
+    process.env.NEXT_PUBLIC_VERCEL_URL +
+    pathname +
+    "?" +
+    searchParams.toString();
   const message = encodeURIComponent(
     `Check out this awesome product from @eh.egyy: ${url}`,
   );
@@ -87,19 +90,19 @@ const ShareModal = ({
         <h2 className="text-lg">Or copy link</h2>
         <div className="flex items-center justify-between gap-1 break-all border p-2 font-bold">
           <p className="inline text-wrap">{url}</p>
-          <button
-            className="text-nowrap rounded-lg bg-black px-4 py-4 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
-            onClick={() => copyToClipboard(url)}
-            type="button"
-          >
-            <p className="inline px-2">Copy</p>
-            {copied ? (
-              <CheckMark className="inline fill-current" />
-            ) : (
-              <Copy_icon className="inline fill-current" />
-            )}
-          </button>
         </div>
+        <button
+          className="my-2 w-full rounded-lg bg-black px-4 py-4 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
+          onClick={() => copyToClipboard(url)}
+          type="button"
+        >
+          <p className="inline px-2">Copy</p>
+          {copied ? (
+            <CheckMark className="inline fill-current" />
+          ) : (
+            <Copy_icon className="inline fill-current" />
+          )}
+        </button>
       </Modal>
     </>
   );

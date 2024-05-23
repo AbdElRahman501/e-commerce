@@ -85,6 +85,13 @@ const CheckOutPage = async ({
       : cityShipping || stateShipping || 0;
   const total = subTotal + shipping - discount;
 
+  const errorMessage =
+    coupon && !promoCode?.code
+      ? "this coupon is not valid"
+      : subTotal - discountValue > minSubTotal
+        ? ""
+        : "You are having our best price!";
+
   return cart.length === 0 ? (
     <div className="p-5 lg:px-20">
       <h2 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h2>
@@ -147,7 +154,11 @@ const CheckOutPage = async ({
           {formInputs.map((input, index) => (
             <CustomInput key={index} {...input} />
           ))}
-          <Coupon coupon={coupon} />
+          <Coupon
+            coupon={coupon}
+            success={discount > 0}
+            error={!!errorMessage}
+          />
           <div className="hidden">
             <CustomInput type="number" value={total} name="total" readOnly />
             <CustomInput
@@ -189,7 +200,7 @@ const CheckOutPage = async ({
               </p>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-sm font-bold text-gray-600 dark:text-gray-300 md:text-base">
+              <div className="flex justify-between text-sm font-bold text-green-600 dark:text-gray-300 md:text-base">
                 <p>Discounts</p>
                 <p>
                   {discount.toLocaleString("en-US", {
