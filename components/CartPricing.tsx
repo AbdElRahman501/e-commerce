@@ -46,7 +46,7 @@ const CartPricing = async ({
     subTotal + 50 < freeShippingMinValue ? freeShippingMinValue - subTotal : 0;
   return (
     <div className="flex h-fit w-full flex-col gap-2 rounded-3xl border border-gray-300 p-5 dark:border-gray-700 md:max-w-lg ">
-      <Coupon coupon={coupon} />
+      <Coupon coupon={coupon} success={discount > 0} error={!!errorMessage} />
       <p className="text-sm text-pink-500">{errorMessage}</p>
       <div className="flex flex-col gap-2">
         <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
@@ -61,7 +61,7 @@ const CartPricing = async ({
           </p>
         </div>
         {discount > 0 && (
-          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 md:text-base">
+          <div className="flex justify-between text-sm text-green-600 dark:text-gray-300 md:text-base">
             <p>Promo Code Discount</p>
             <p>
               {discount.toLocaleString("en-US", {

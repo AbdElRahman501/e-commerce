@@ -22,7 +22,7 @@ export function SubmitButton({
       href="/cart"
       className=" flex h-14 w-full items-center gap-3 rounded-full bg-primary_color p-1  text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
     >
-      <div className="flex aspect-square h-12 w-12 items-center justify-center rounded-full bg-white text-3xl text-black ">
+      <div className="flex aspect-square h-12 items-center justify-center rounded-full bg-white text-3xl text-black ">
         <CheckMark className="h-8 w-8 fill-green-500" />
       </div>
       <p className="w-full text-center text-lg uppercase duration-500">
@@ -37,7 +37,7 @@ export function SubmitButton({
       aria-disabled={pending}
       className=" flex h-14 w-full items-center gap-3 rounded-full bg-primary_color p-1  text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
     >
-      <div className="flex aspect-square h-12 w-12 items-center justify-center rounded-full bg-white text-3xl text-black ">
+      <div className="flex aspect-square h-12 items-center justify-center rounded-full bg-white text-3xl text-black ">
         {pending ? <LoadingDots /> : <ShoppingBag_icon className="w-8" />}
       </div>
 

@@ -49,7 +49,10 @@ const Modal: React.FC<ModalProps> = ({
           className=" absolute inset-0 cursor-pointer bg-black opacity-50"
         ></div>
       ) : (
-        <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div
+          onClick={() => setIsOpened(false)}
+          className=" absolute inset-0 cursor-pointer bg-black opacity-50"
+        ></div>
       )}
       <div className="relative z-10 max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-lg bg-white p-8 shadow-lg dark:bg-[#0d1117] sm:max-w-md">
         {children}
