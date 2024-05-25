@@ -37,6 +37,18 @@ export interface SortFilterItem {
   reverse: boolean;
 }
 
+type VariationOption = {
+  name: string;
+  priceAdjustment: number;
+  imageUrl?: string; // Optional, only for color variations
+  subVariations?: Variation[]; // Optional, for nested variations relative to this option
+};
+
+export interface Variation {
+  type: string;
+  options: VariationOption[];
+}
+
 export interface Product {
   id: string;
   title: string;
@@ -44,27 +56,19 @@ export interface Product {
   images: Record<string, string[]>; // Mapping color to image filename
   categories: string;
   price: number;
-  sizes: string[];
-  colors: string[];
   description: string;
   name: string;
   gender: "male" | "female" | "all";
   quantity: number;
   likes: number;
   updatedAt: string;
+  createdAt: string;
+  collections: string[];
+  variations: Variation[];
   views?: number;
   sales?: number;
   minPrice: number;
-  mainProduct?: string;
-  content: Record<
-    string,
-    {
-      title?: string;
-      list?: string[];
-      images?: string[];
-      description?: string;
-    }[]
-  >;
+  content: { name: string; html: string }[];
 }
 
 export interface CustomActionType {
@@ -142,15 +146,13 @@ export interface ProductDetailPageProps {
 
 export interface CartProduct extends ProductOnSaleType {
   amount: number;
-  selectedColor: string;
-  selectedSize: string;
+  selectedOptions: Record<string, string>;
 }
 
 export interface CartItem {
   productId: string;
   amount: number;
-  selectedColor: string;
-  selectedSize: string;
+  selectedOptions: Record<string, string>;
 }
 
 export interface FormInput {

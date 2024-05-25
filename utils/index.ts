@@ -5,6 +5,7 @@ import {
   PersonalInfo,
   Product,
   ProductOnSaleType,
+  Variation,
 } from "@/types";
 import formatOrderItems from "./formatOrderItems";
 import { ReadonlyURLSearchParams } from "next/navigation";
@@ -103,12 +104,11 @@ export const modifyProducts = (
 
 export const checkIsInCart = (cart: CartItem[], cartItem: CartItem) => {
   if (!cart?.length || !cartItem) return false;
-  const { productId, selectedColor, selectedSize } = cartItem;
+  const { productId, selectedOptions } = cartItem;
   const isInCart = cart.some(
     (item) =>
       item.productId === productId &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize,
+      deepEqual(item.selectedOptions, selectedOptions),
   );
 
   return isInCart;
@@ -129,8 +129,7 @@ export const reformatCartItems = (
       cartProducts.push({
         ...product,
         amount: cartItem.amount,
-        selectedColor: cartItem.selectedColor,
-        selectedSize: cartItem.selectedSize,
+        selectedOptions: cartItem.selectedOptions,
       });
     }
   }
@@ -213,12 +212,11 @@ export { formatOrderItems };
 
 export function addToCart(cart: CartItem[], item: CartItem) {
   if (!cart || !item) return [];
-  const { productId, amount, selectedColor, selectedSize } = item;
+  const { productId, amount, selectedOptions } = item;
   let isInCart = cart.some(
     (item) =>
       item.productId === productId &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize,
+      deepEqual(item.selectedOptions, selectedOptions),
   );
   if (!isInCart) {
     const data = [
@@ -226,8 +224,7 @@ export function addToCart(cart: CartItem[], item: CartItem) {
       {
         productId,
         amount,
-        selectedColor,
-        selectedSize,
+        selectedOptions,
       },
     ];
     return data;
@@ -244,8 +241,7 @@ export function editCart(
   const data = cart.map((item) => {
     if (
       item.productId === oldItem.productId &&
-      item.selectedColor === oldItem.selectedColor &&
-      item.selectedSize === oldItem.selectedSize
+      deepEqual(item.selectedOptions, oldItem.selectedOptions)
     ) {
       return newItem;
     }
@@ -256,12 +252,11 @@ export function editCart(
 
 export function removeFromCart(cart: CartItem[], item: CartItem) {
   if (!cart || !item) return [];
-  const { productId, selectedColor, selectedSize } = item;
+  const { productId, selectedOptions } = item;
   const data = cart.filter((item) => {
     const matchItem =
       item.productId === productId &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize;
+      deepEqual(item.selectedOptions, selectedOptions);
 
     if (matchItem) {
       return false;
@@ -279,7 +274,8 @@ export function toggleFavoriteItem(favorite: string[], id: string) {
   return data;
 }
 
-export function firstMatch(arr1: string[], arr2: string[]): string | null {
+export function firstMatch(arr1?: string[], arr2?: string[]): string | null {
+  if (!arr1 || !arr2) return null;
   for (const item1 of arr1) {
     for (const item2 of arr2) {
       if (item1 === item2) {
@@ -432,3 +428,113 @@ export function getNextWorkingDay(startDate: string | Date, days: number) {
   // Return the next working day
   return formatDayDate(currentDate);
 }
+
+export function calculatePrice(
+  basePrice: number,
+  selectedOptions: Record<string, string>,
+  variations: Variation[],
+): number {
+  let finalPrice = basePrice;
+
+  for (const [type, selectedOption] of Object.entries(selectedOptions)) {
+    const variation = variations.find((v) => v.type === type);
+    if (variation) {
+      const option = variation.options.find((o) => o.name === selectedOption);
+      if (option) {
+        finalPrice += option.priceAdjustment;
+
+        // Handle sub-variations if any
+        if (option.subVariations) {
+          for (const subVariation of option.subVariations) {
+            const subSelectedOption = selectedOptions[subVariation.type];
+            if (subSelectedOption) {
+              const subOption = subVariation.options.find(
+                (o) => o.name === subSelectedOption,
+              );
+              if (subOption) {
+                finalPrice += subOption.priceAdjustment;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return finalPrice;
+}
+
+export const getSubVariations = (
+  variations: Variation[],
+  selectedOptions: Record<string, string>,
+): Variation[] => {
+  const subVariations: Variation[] = [];
+  for (const type in selectedOptions) {
+    const variation = variations.find((v) => v.type === type);
+    if (variation) {
+      const selectedOption = variation.options.find(
+        (option) => option.name === selectedOptions[type],
+      );
+      if (selectedOption && selectedOption.subVariations) {
+        subVariations.push(...selectedOption.subVariations);
+      }
+    }
+  }
+  return subVariations;
+};
+
+export const getFirstOptionsWithSubVariants = (
+  variants: Variation[],
+): Record<string, string> => {
+  const selectedOptions: Record<string, string> = {};
+
+  for (const variant of variants) {
+    if (variant.options.length > 0) {
+      selectedOptions[variant.type] = variant.options[0].name;
+      if (variant.options[0].subVariations) {
+        for (const subVariant of variant.options[0].subVariations) {
+          if (subVariant.options.length > 0) {
+            selectedOptions[subVariant.type] = subVariant.options[0].name;
+          }
+        }
+      }
+    }
+  }
+
+  return selectedOptions;
+};
+
+export const getSelectedOptionsFromURL = (
+  variations: Variation[],
+  searchParams: any,
+): Record<string, string> => {
+  const selectedOptions: Record<string, string> = {};
+  for (const variation of variations) {
+    const selectedOption = searchParams.get(variation.type);
+    if (selectedOption) {
+      selectedOptions[variation.type] = selectedOption;
+    }
+  }
+  return selectedOptions;
+};
+
+const sortObjectKeys = (obj: Record<string, any>): Record<string, any> => {
+  const sortedObj: Record<string, any> = {};
+  const sortedKeys = Object.keys(obj).sort();
+
+  for (const key of sortedKeys) {
+    sortedObj[key] = obj[key];
+  }
+
+  return sortedObj;
+};
+
+const deepEqual = (
+  obj1: Record<string, any>,
+  obj2: Record<string, any>,
+): boolean => {
+  const sortedObj1 = sortObjectKeys(obj1);
+  const sortedObj2 = sortObjectKeys(obj2);
+
+  return JSON.stringify(sortedObj1) === JSON.stringify(sortedObj2);
+};

@@ -63,13 +63,6 @@ const productInputs: FormInput[] = [
     name: "name",
     required: true,
   },
-
-  {
-    label: "mainProduct",
-    type: "text",
-    placeholder: "Enter product mainProduct",
-    name: "mainProduct",
-  },
   {
     label: "Keywords",
     type: "text",
@@ -96,13 +89,6 @@ const productInputs: FormInput[] = [
     type: "number",
     placeholder: "Enter product min price",
     name: "minPrice",
-    required: true,
-  },
-  {
-    label: "Sizes",
-    type: "text",
-    placeholder: "Enter available sizes",
-    name: "sizes",
     required: true,
   },
   {

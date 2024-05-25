@@ -52,14 +52,18 @@ const formatOrderItems = (products: CartProduct[]): string => {
                   style="max-width: 290px"
                 >
                 <a
-                href="{{HOST_URL}}/product/${item.id}?color=${item.selectedColor}&size=${item.selectedSize}"
+                href="{{HOST_URL}}/product/${item.id}?${Object.entries(
+                  item.selectedOptions,
+                )
+                  .map(([key, value]) => key + "=" + value)
+                  .join("&")}"
                 style="outline: none"
                 tabindex="-1"
                 target="_blank"
                 ><img
                   alt="I'm an image"
                   height="auto"
-                  src="${item.images[item.selectedColor][0]}"
+                  src="${item.images[item.selectedOptions.color][0]}"
                   style="
                     display: block;
                     height: auto;
@@ -167,8 +171,7 @@ const formatOrderItems = (products: CartProduct[]): string => {
                   style="margin: 0; word-break: break-word"
                 >
                 <span style="color: #808389"
-                    >size: ${item.selectedSize}</span
-                  
+                    >${Object.values(item.selectedOptions).join(" / ")}</span
                 </p>
                 <p
                   style="margin: 0; word-break: break-word"
@@ -177,13 +180,7 @@ const formatOrderItems = (products: CartProduct[]): string => {
                     >Quantity: ${item.amount}</span
                   >
                 </p>
-                <p
-                  style="margin: 0; word-break: break-word"
-                >
-                  <span style="color: #808389"
-                    >Color: ${item.selectedColor}<br
-                  /></span>
-                </p>
+                
               </div>
             </td>
           </tr>

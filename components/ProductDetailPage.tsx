@@ -2,11 +2,7 @@ import React, { Suspense } from "react";
 import ProductDetailsComponent from "./ProductDetailsComponent";
 import { ProductSkeleton } from "./LoadingSkeleton";
 import ProductsRow from "./ProductsRow";
-import {
-  fetchProduct,
-  fetchProductVariants,
-  getProduct,
-} from "@/lib/actions/product.actions";
+import { getProduct } from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { CartItem } from "@/types";
@@ -20,10 +16,6 @@ const ProductDetailPage = async ({ id }: { id: string }) => {
   const isFav = !!fav.find((item) => item === id);
 
   const product = await getProduct(id);
-  const productVariants = await fetchProductVariants(id);
-  const productMainProduct = product.mainProduct
-    ? await fetchProduct(product.mainProduct)
-    : null;
 
   if (!product?.id) {
     return notFound();
@@ -64,13 +56,7 @@ const ProductDetailPage = async ({ id }: { id: string }) => {
         }}
       />
 
-      <ProductDetailsComponent
-        productVariants={productVariants}
-        productMainProduct={productMainProduct}
-        {...product}
-        isFav={isFav}
-        cart={cart}
-      />
+      <ProductDetailsComponent {...product} isFav={isFav} cart={cart} />
       <Suspense fallback={<ProductSkeleton />}>
         <ProductsRow
           title="You may also like"

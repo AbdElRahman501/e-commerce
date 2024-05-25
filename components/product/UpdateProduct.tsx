@@ -1,5 +1,5 @@
 "use client";
-import { CartItem, Product, ProductOnSaleType } from "@/types";
+import { CartItem, Product, ProductOnSaleType, Variation } from "@/types";
 import React from "react";
 import CustomInput from "../CustomInput";
 import { productInputs } from "@/constants";
@@ -10,13 +10,15 @@ import ImageEditor from "./ImageEditor";
 import { useFormStatus } from "react-dom";
 import ContentEditor from "./ContentEditor";
 import SubmitButton from "../SubmitButton";
+import VariationsEditor from "../VariationsEditor";
+
+interface Content {
+  name: string;
+  html: string;
+}
 
 const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
-  const [data, setData] = React.useState<any>({
-    ...product,
-    colors: product.colors.join(","),
-    sizes: product.sizes.join(","),
-  });
+  const [data, setData] = React.useState<any>(product);
 
   const [images, setImages] = React.useState<Record<string, string[]>>(
     product.images,
@@ -27,15 +29,16 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
     <>
       <CustomForm
         action={updateProduct}
-        data={{
-          ...data,
-          colors: Object.keys(images || {}).map((key) => key),
-          sizes: data.sizes.split(",").map((item: string) => item.trim()),
-          images: images,
-        }}
+        data={data}
         className="flex w-full flex-col gap-3 px-5 md:gap-5 lg:px-20"
       >
         <ImageEditor images={images} setImages={setImages} />
+        <VariationsEditor
+          variations={data.variations}
+          setVariations={(variations: Variation[]) =>
+            setData({ ...data, variations })
+          }
+        />
         {productInputs.map((input, index) => (
           <CustomInput
             key={index}
@@ -57,8 +60,8 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
           />
         ))}
         <ContentEditor
-          content={data.content}
-          setContent={(content) => setData({ ...data, content })}
+          content={data.content as Content[]}
+          setContent={(content: Content[]) => setData({ ...data, content })}
         />
         <SubmitButton
           type="submit"
@@ -79,12 +82,7 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
       </div>
       {preview && (
         <ProductDetailsComponent
-          {...{
-            ...data,
-            colors: Object.keys(images || {}).map((key) => key),
-            sizes: data.sizes.split(",").map((item: string) => item.trim()),
-            images: images,
-          }}
+          {...data}
           isFav={false}
           preview={true}
           cart={[] as CartItem[]}

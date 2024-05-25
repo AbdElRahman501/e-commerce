@@ -1,212 +1,84 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import CustomInput from "../CustomInput";
 
-interface DescriptionItem {
-  title?: string;
-  list?: string[];
-  images?: string[];
-  description?: string;
+interface Content {
+  name: string;
+  html: string;
 }
 
-interface ContentProps {
-  [category: string]: DescriptionItem[];
+interface ContentEditorProps {
+  content: Content[];
+  setContent: (content: Content[]) => void;
 }
 
-type KeysType = "title" | "list" | "images" | "description";
-
-const ContentEditor = ({
+const ContentEditor: React.FC<ContentEditorProps> = ({
   content,
   setContent,
-}: {
-  content: ContentProps;
-  setContent: (content: ContentProps) => void;
 }) => {
-  const [title, setTitle] = React.useState<string>("");
-
-  const addTitle = () => {
-    if (title.trim() !== "") {
-      setContent({
-        ...content,
-        [title]: [],
-      });
-      setTitle("");
-    }
+  const addContent = () => {
+    setContent([...content, { name: "", html: "" }]);
   };
 
-  const addObject = (title: string) => {
-    const updatedContent = { ...content };
-    const updatedItems = updatedContent[title];
-    updatedItems.push({});
-    setContent(updatedContent);
+  const removeContent = (index: number) => {
+    setContent(content.filter((_, i) => i !== index));
   };
 
-  const handleRemoveTitle = (title: string) => {
-    const updatedContent = { ...content };
-    delete updatedContent[title];
-    setContent(updatedContent);
-  };
-  const handleRemoveObject = (title: string, index: number) => {
-    const updatedContent = { ...content };
-    const updatedItems = updatedContent[title].filter((_, i) => i !== index);
-    updatedContent[title] = updatedItems;
-    setContent(updatedContent);
-  };
-
-  const handleRemoveKey = (title: string, index: number, key: KeysType) => {
-    const updatedContent = { ...content };
-    const updatedItems = updatedContent[title];
-    delete updatedItems[index][key];
-    updatedContent[title] = updatedItems;
-    setContent(updatedContent);
-  };
-
-  const handleAddKey = (title: string, index: number, key: KeysType) => {
-    const updatedContent = { ...content };
-    const updatedItems = updatedContent[title];
-    const item = updatedItems[index];
-    updateItemKeyValue(item, key, "");
-    setContent(updatedContent);
-  };
-
-  const handleOnChange = (
-    title: string,
+  const updateContent = (
     index: number,
-    key: KeysType,
+    field: keyof Content,
     value: string,
   ) => {
-    const updatedContent = { ...content };
-    const updatedItems = updatedContent[title];
-    const item = updatedItems[index];
-    updateItemKeyValue(item, key, value);
-    setContent(updatedContent);
+    const newContents = content.map((content, i) =>
+      i === index ? { ...content, [field]: value } : content,
+    );
+    setContent(newContents);
   };
 
-  const updateItemKeyValue = (
-    item: DescriptionItem,
-    key: KeysType,
-    value: string,
-  ) => {
-    switch (key) {
-      case "title":
-        item.title = value;
-        break;
-      case "list":
-        item.list = value.split(" - ");
-        break;
-      case "images":
-        item.images = value.split(" - ");
-        break;
-      case "description":
-        item.description = value;
-        break;
-      default:
-        break;
-    }
-  };
-  const restOfyKeys = (array: string[]) => {
-    const keys = ["title", "list", "images", "description"];
-    return keys.filter((key) => !array.includes(key));
-  };
   return (
-    <>
-      <div className="flex flex-col gap-1">
-        {Object.entries(content).map(([title, items]) => (
-          <div
-            key={title}
-            className="flex flex-col gap-1 rounded-lg border border-gray-300 p-3 dark:border-gray-700"
-          >
-            <div className="flex items-center justify-between gap-1">
-              <h2>{title}</h2>
-              <button
-                className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
-                type="button"
-                onClick={() => handleRemoveTitle(title)}
-              >
-                remove
-              </button>
-            </div>
-            {items.map((item, index) => (
-              <div className="flex flex-col gap-1 rounded-lg p-3" key={index}>
-                {Object.entries(item).map(([key, value]) => (
-                  <div key={key} className="flex gap-1">
-                    <CustomInput
-                      label={key}
-                      name={key}
-                      type="text"
-                      placeholder={`Enter new ${key} ${key === "title" || key === "description" ? "" : "separated with ' - '"} `}
-                      defaultValue={value}
-                      onChange={(e) => {
-                        handleOnChange(
-                          title,
-                          index,
-                          key as KeysType,
-                          e.target.value,
-                        );
-                      }}
-                    />
-                    <button
-                      className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
-                      type="button"
-                      onClick={() =>
-                        handleRemoveKey(title, index, key as KeysType)
-                      }
-                    >
-                      remove
-                    </button>
-                  </div>
-                ))}
-                <div className="flex gap-3">
-                  {restOfyKeys(Object.entries(item).map(([key]) => key)).map(
-                    (key) => (
-                      <button
-                        onClick={() =>
-                          handleAddKey(title, index, key as KeysType)
-                        }
-                        key={key}
-                        type="button"
-                      >
-                        {key}
-                      </button>
-                    ),
-                  )}
-                  <button
-                    type="button"
-                    className="text-pink-500"
-                    onClick={() => handleRemoveObject(title, index)}
-                  >
-                    remove object
-                  </button>
-                </div>
-              </div>
-            ))}
+    <div className="flex flex-col gap-3">
+      <h1>Content Editor</h1>
+
+      {content.map((content, index) => (
+        <div
+          key={index}
+          className="flex flex-col gap-1 rounded-lg border border-gray-300 p-3 dark:border-gray-700"
+        >
+          <div className="flex gap-1">
+            <CustomInput
+              label={"name"}
+              name={"name"}
+              type="text"
+              placeholder="Enter Name"
+              value={content.name}
+              onChange={(e) => updateContent(index, "name", e.target.value)}
+            />
             <button
-              className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-green-500 dark:border-gray-700"
+              className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
               type="button"
-              onClick={() => addObject(title)}
+              onClick={() => removeContent(index)}
             >
-              add object
+              Remove
             </button>
           </div>
-        ))}
-      </div>
-      <div className="flex gap-1">
-        <CustomInput
-          label="Title"
-          name="title"
-          type="text"
-          placeholder="Enter new Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <button
-          className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 dark:border-gray-700"
-          type="button"
-          onClick={addTitle}
-        >
-          Add title
-        </button>
-      </div>
-    </>
+          <CustomInput
+            label={"html"}
+            name={"html"}
+            type="textarea"
+            placeholder="Enter HTML"
+            value={content.html}
+            onChange={(e) => updateContent(index, "html", e.target.value)}
+          />
+        </div>
+      ))}
+      <button
+        className="h-14 w-full text-nowrap rounded-lg border border-gray-300 px-2 text-green-500 dark:border-gray-700"
+        type="button"
+        onClick={addContent}
+      >
+        Add
+      </button>
+    </div>
   );
 };
 

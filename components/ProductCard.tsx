@@ -21,22 +21,27 @@ interface ProductCardProps extends ProductOnSaleType {
 
 const ProductCard = ({
   images,
-  colors,
   id,
   title,
   price,
   salePrice,
   saleValue,
+  variations,
   fav = [],
   className,
   index = 0,
 }: ProductCardProps) => {
   const [isFav, setIsFav] = React.useState(!!fav.find((item) => item === id));
+  const colors =
+    variations
+      .find((variant) => variant.type === "color")
+      ?.options?.map((item) => item.name) || [];
+
   const searchParams = useSearchParams();
   const colorFilter = searchParams?.get("clf")?.length
     ? searchParams?.get("clf")?.split(",") || []
     : [];
-  const color = firstMatch(colorFilter, colors);
+  const color = firstMatch(colorFilter, colors) || "";
   const [selectedColor, setSelectedColor] = React.useState<string>(
     color || colors[0],
   );

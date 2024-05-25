@@ -1,15 +1,35 @@
 import mongoose from "mongoose";
 
+const optionSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    priceAdjustment: { type: Number, default: 0 },
+  },
+  { _id: false },
+); // Prevent _id from being added to options
+
+const variationSchema = new mongoose.Schema(
+  {
+    type: { type: String, required: true },
+    options: [optionSchema],
+  },
+  { _id: false },
+); // Prevent _id from being added to the main schema
+
+const contentSchema = new mongoose.Schema(
+  { name: String, html: String },
+  { _id: false },
+);
 const productSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     keywords: { type: String, required: true },
     images: { type: Map, of: Array },
     categories: { type: String, required: true },
+    collections: [String],
     price: { type: Number, required: true },
     minPrice: { type: Number, required: true, default: 0 },
-    sizes: [String],
-    colors: [String],
+    variations: [variationSchema],
     description: { type: String, required: true },
     name: { type: String, required: true },
     quantity: { type: Number, required: true },
@@ -17,8 +37,7 @@ const productSchema = new mongoose.Schema(
     likes: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
     sales: { type: Number, default: 0 },
-    content: { type: Map, of: Object },
-    mainProduct: { type: String },
+    content: [contentSchema],
   },
   {
     timestamps: true,

@@ -3,6 +3,7 @@ import CustomTable from "@/components/CustomTable";
 import FilterSection from "@/components/FilterSection";
 import ProductsAction from "@/components/ProductsAction";
 import { fetchFilteredProducts } from "@/lib";
+import { getAllImages } from "@/utils";
 import { Suspense } from "react";
 
 export default async function ProductsPage({
@@ -74,7 +75,7 @@ export default async function ProductsPage({
             <CustomTable
               data={products.map((item) => ({
                 ...item,
-                image: item.images[item.colors[0]][0],
+                image: getAllImages(item.images)[0],
               }))}
               header={["views", "sales", "image", "title", "price"]}
               ActionComponent={ProductsAction}

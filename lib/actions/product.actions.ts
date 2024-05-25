@@ -7,6 +7,7 @@ import {
   OfferType,
   ProductOnSaleType,
   Product as ProductType,
+  Variation,
 } from "@/types";
 import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
 import { revalidateTag, unstable_cache } from "next/cache";
@@ -80,16 +81,19 @@ export const fetchFilteredProducts = unstable_cache(
     const sizeFilterCondition =
       sizeFilter?.length > 0
         ? {
-            sizes: {
+            "variations.options.name": {
               $in: sizeFilter.map(
-                (size: string) =>
-                  new RegExp(`\\b${size.trim().toLowerCase()}\\b`, "i"),
+                (size) => new RegExp(`\\b${size.trim().toLowerCase()}\\b`, "i"),
               ),
             },
           }
         : {};
     const colorFilterCondition =
-      colorsFilter?.length > 0 ? { colors: { $in: colorsFilter } } : {};
+      colorsFilter?.length > 0
+        ? {
+            "variations.options.name": { $in: colorsFilter },
+          }
+        : {};
 
     const genderFilterCondition = genderFilter
       ? genderFilter !== "all"
@@ -256,12 +260,25 @@ export const getAllProperties = unstable_cache(
   async () => {
     try {
       await connectToDatabase();
-      const sizes = await Product.distinct("sizes").exec();
-      const colors = await Product.distinct("colors").exec();
-      return { sizes, colors };
+      const products = await Product.find({}, "variations").exec();
+
+      const sizes = new Set<string>();
+      const colors = new Set<string>();
+
+      products.forEach((product) => {
+        product.variations.forEach((variation: Variation) => {
+          if (variation.type === "size") {
+            variation.options.forEach((option) => sizes.add(option.name));
+          } else if (variation.type === "color") {
+            variation.options.forEach((option) => colors.add(option.name));
+          }
+        });
+      });
+
+      return { sizes: Array.from(sizes), colors: Array.from(colors) };
     } catch (error) {
-      console.error("Error fetching sizes:", error);
-      throw new Error("Unable to fetch sizes");
+      console.error("Error fetching properties:", error);
+      throw new Error("Unable to fetch properties");
     }
   },
   ["properties"],
@@ -445,27 +462,3 @@ export async function duplicateProductById(id: string) {
     throw error;
   }
 }
-
-export const fetchProductVariants = unstable_cache(
-  async (id: string): Promise<ProductOnSaleType[]> => {
-    try {
-      await connectToDatabase();
-      const data = await Product.find({ mainProduct: id });
-      const offers: OfferType[] = await fetchOffers();
-      const products: ProductType[] = JSON.parse(JSON.stringify(data));
-      const modifiedProducts: ProductOnSaleType[] = modifyProducts(
-        products,
-        offers,
-      );
-      return modifiedProducts;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      throw error;
-    }
-  },
-  ["products"],
-  {
-    tags: ["products"],
-    revalidate: 60 * 60 * 24,
-  },
-);

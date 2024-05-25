@@ -5,7 +5,12 @@ import { dashboardCards } from "@/constants";
 import { fetchFilteredProducts } from "@/lib";
 import { fetchOrders } from "@/lib/actions/order.actions";
 import { fetchUsers } from "@/lib/actions/users.actions";
-import { findUniqueCustomers, formatPrice, getRevenue } from "@/utils";
+import {
+  findUniqueCustomers,
+  formatPrice,
+  getAllImages,
+  getRevenue,
+} from "@/utils";
 import Link from "next/link";
 import React, { Suspense } from "react";
 
@@ -83,7 +88,7 @@ const DashBoardPage = async () => {
         <CustomTable
           data={products.slice(0, 5).map((item) => ({
             ...item,
-            image: item.images[item.colors[0]][0],
+            image: getAllImages(item.images)[0],
           }))}
           header={["views", "sales", "image", "price"]}
         />

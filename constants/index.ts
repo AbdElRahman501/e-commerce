@@ -1,4 +1,4 @@
-import { DashboardCardProps, SortFilterItem } from "@/types";
+import { DashboardCardProps, ProductOnSaleType, SortFilterItem } from "@/types";
 import { formInputs, productInputs } from "./inputs";
 export const sorting: SortFilterItem[] = [
   {
