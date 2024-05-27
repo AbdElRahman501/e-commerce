@@ -14,6 +14,7 @@ import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { fetchOffers } from "./offer.actions";
+import { tags } from "@/constants";
 
 export const fetchFilteredProducts = unstable_cache(
   async ({
@@ -168,9 +169,9 @@ export const fetchFilteredProducts = unstable_cache(
       throw error;
     }
   },
-  ["products"],
+  [tags.products],
   {
-    tags: ["products"],
+    tags: [tags.products],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -281,9 +282,9 @@ export const getAllProperties = unstable_cache(
       throw new Error("Unable to fetch properties");
     }
   },
-  ["properties"],
+  [tags.properties],
   {
-    tags: ["properties"],
+    tags: [tags.properties],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -304,9 +305,9 @@ export const fetchProduct = unstable_cache(
       return null;
     }
   },
-  ["products"],
+  [tags.products],
   {
-    tags: ["products"],
+    tags: [tags.products],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -339,9 +340,9 @@ export const fetchProductsById = unstable_cache(
       throw error;
     }
   },
-  ["products"],
+  [tags.products],
   {
-    tags: ["products"],
+    tags: [tags.products],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -410,9 +411,9 @@ export const getCategories = unstable_cache(
   async (): Promise<CategoryCount[]> => {
     return await getCategoriesWithProductCount();
   },
-  ["categories"],
+  [tags.categories],
   {
-    tags: ["categories"],
+    tags: [tags.categories],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -421,7 +422,9 @@ export async function deleteProduct(id: string) {
   try {
     await connectToDatabase();
     const data = await Product.findByIdAndDelete(id);
-    revalidateTag("products");
+    revalidateTag(tags.products);
+    revalidateTag(tags.properties);
+    revalidateTag(tags.categories);
     return "Product deleted successfully";
   } catch (error) {
     console.error("Error deleting product:", error);
@@ -437,7 +440,9 @@ export async function updateProductById(newProduct: ProductType) {
       new: true,
     });
     const productUpdated: ProductType = JSON.parse(JSON.stringify(data));
-    revalidateTag("products");
+    revalidateTag(tags.products);
+    revalidateTag(tags.properties);
+    revalidateTag(tags.categories);
     return productUpdated;
   } catch (error) {
     console.error("Error updating product:", error);
@@ -455,7 +460,9 @@ export async function duplicateProductById(id: string) {
     delete product.views;
     delete product.sales;
     const newProduct: ProductType = await Product.create(product);
-    revalidateTag("products");
+    revalidateTag(tags.products);
+    revalidateTag(tags.properties);
+    revalidateTag(tags.categories);
     return newProduct;
   } catch (error) {
     console.error("Error updating product:", error);

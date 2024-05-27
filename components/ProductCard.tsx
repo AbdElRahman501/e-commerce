@@ -4,9 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import {
+  calculateMinPrice,
+  calculatePrice,
   firstMatch,
   formatPrice,
   getAllImages,
+  getFirstOptionsWithSubVariants,
+  getSale,
   toggleFavoriteItem,
 } from "@/utils";
 import { toggleFav } from "./actions/fav.actions";
@@ -23,8 +27,8 @@ const ProductCard = ({
   images,
   id,
   title,
-  price,
-  salePrice,
+  price: basePrice,
+  minPrice: baseMinPrice,
   saleValue,
   variations,
   fav = [],
@@ -55,6 +59,10 @@ const ProductCard = ({
           ),
         ],
   );
+  const selectedOptions = getFirstOptionsWithSubVariants(variations);
+  const price = calculatePrice(basePrice, selectedOptions, variations);
+  const minPrice = calculateMinPrice(baseMinPrice, selectedOptions, variations);
+  const salePrice = getSale(minPrice, price, saleValue);
 
   const selectColor = (color: string) => {
     setSelectedColor(color);
@@ -145,20 +153,16 @@ const ProductCard = ({
         </button>
       </div>
       <div className="flex flex-col gap-1 p-4 text-center">
-        <p className="line-clamp-2  w-full text-sm font-bold">{title}</p>
-        <div className="relative flex items-center justify-center pt-2">
-          {salePrice ? (
-            <>
-              <p className="absolute -left-10 -top-1 w-full text-xs text-[#1a1a1ab3] line-through dark:text-gray-300 md:-top-2 md:text-base">
-                {formatPrice(price, "EGP")}
-              </p>
-              <p className=" text-sm text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
-                {formatPrice(salePrice, "EGP")}
-              </p>
-            </>
-          ) : (
-            <p className="text-sm text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
-              {formatPrice(price, "EGP")}
+        <p className="line-clamp-2  w-full  font-bold">{title}</p>
+        <div className="relative flex items-center justify-center gap-2">
+          <p
+            className={` ${salePrice ? "line-through opacity-80" : ""}  text-[#1a1a1ab3]  dark:text-gray-300 md:text-base`}
+          >
+            {formatPrice(price, "EGP")}
+          </p>
+          {salePrice && (
+            <p className=" text-[#1a1a1ab3] dark:text-gray-300 md:text-base ">
+              {formatPrice(salePrice, "EGP")}
             </p>
           )}
         </div>

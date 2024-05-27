@@ -126,8 +126,22 @@ export const reformatCartItems = (
       (product: ProductOnSaleType) => product.id === cartItem.productId,
     );
     if (product) {
+      const price = calculatePrice(
+        product.price,
+        cartItem.selectedOptions,
+        product.variations,
+      );
+      const minPrice = calculateMinPrice(
+        product.minPrice,
+        cartItem.selectedOptions,
+        product.variations,
+      );
+      const salePrice = getSale(minPrice, price, product.saleValue);
       cartProducts.push({
         ...product,
+        price,
+        minPrice,
+        salePrice,
         amount: cartItem.amount,
         selectedOptions: cartItem.selectedOptions,
       });
@@ -463,12 +477,47 @@ export function calculatePrice(
 
   return finalPrice;
 }
+export function calculateMinPrice(
+  basePrice: number,
+  selectedOptions: Record<string, string>,
+  variations: Variation[],
+): number {
+  let finalPrice = basePrice;
+
+  for (const [type, selectedOption] of Object.entries(selectedOptions)) {
+    const variation = variations.find((v) => v.type === type);
+    if (variation) {
+      const option = variation.options.find((o) => o.name === selectedOption);
+      if (option) {
+        finalPrice += option.minPriceAdjustment;
+
+        // Handle sub-variations if any
+        if (option.subVariations) {
+          for (const subVariation of option.subVariations) {
+            const subSelectedOption = selectedOptions[subVariation.type];
+            if (subSelectedOption) {
+              const subOption = subVariation.options.find(
+                (o) => o.name === subSelectedOption,
+              );
+              if (subOption) {
+                finalPrice += subOption.minPriceAdjustment;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return finalPrice;
+}
 
 export const getSubVariations = (
   variations: Variation[],
   selectedOptions: Record<string, string>,
 ): Variation[] => {
   const subVariations: Variation[] = [];
+
   for (const type in selectedOptions) {
     const variation = variations.find((v) => v.type === type);
     if (variation) {
@@ -476,10 +525,19 @@ export const getSubVariations = (
         (option) => option.name === selectedOptions[type],
       );
       if (selectedOption && selectedOption.subVariations) {
-        subVariations.push(...selectedOption.subVariations);
+        selectedOption.subVariations.forEach((subVariation) => {
+          // Assign parent type and name to each option in the subVariation
+          subVariation.options = subVariation.options.map((option) => ({
+            ...option,
+            parentType: type,
+            parentName: selectedOption.name,
+          }));
+          subVariations.push(subVariation);
+        });
       }
     }
   }
+
   return subVariations;
 };
 
@@ -504,6 +562,72 @@ export const getFirstOptionsWithSubVariants = (
   return selectedOptions;
 };
 
+export function validateSelectedOptions(
+  selectedOptions: Record<string, string>,
+  variationData: Variation[],
+) {
+  const validatedOptions = { ...selectedOptions };
+
+  // Iterate through variation data
+  for (const variation of variationData) {
+    const { type, options } = variation;
+    const selectedOption = selectedOptions[type];
+
+    // If option is not selected, skip validation
+    if (!selectedOption) continue;
+
+    const selectedOptionData = options.find(
+      (option) => option.name === selectedOption,
+    );
+
+    // If selected option not found or validated to empty string, remove from validated options
+    if (!selectedOptionData) {
+      delete validatedOptions[type];
+      continue;
+    }
+
+    // Check if sub-variations exist
+    if (
+      selectedOptionData.subVariations &&
+      selectedOptionData.subVariations.length > 0
+    ) {
+      // Iterate through sub-variations
+      for (const subVariation of selectedOptionData.subVariations) {
+        const subType = subVariation.type;
+        const subSelectedOption = selectedOptions[subType];
+
+        // If sub-option is not selected, skip validation
+        if (!subSelectedOption) continue;
+
+        const subSelectedOptionData = subVariation.options.find(
+          (option) => option.name === subSelectedOption,
+        );
+
+        // If selected sub-option not found or validated to empty string, remove from validated options
+        if (!subSelectedOptionData) {
+          delete validatedOptions[subType];
+        }
+      }
+    }
+  }
+
+  return validatedOptions;
+}
+
+export const addToCartCheck = (
+  references: Record<string, string>,
+  selectedOptions: Record<string, string>,
+) => {
+  const keys1 = Object.keys(references).sort();
+  const keys2 = Object.keys(selectedOptions).sort();
+  for (const key of keys1) {
+    if (selectedOptions[key] === undefined || selectedOptions[key] === "") {
+      return false;
+    }
+  }
+  return JSON.stringify(keys1) === JSON.stringify(keys2);
+};
+
 export const getSelectedOptionsFromURL = (
   variations: Variation[],
   searchParams: any,
@@ -515,7 +639,7 @@ export const getSelectedOptionsFromURL = (
       selectedOptions[variation.type] = selectedOption;
     }
   }
-  return selectedOptions;
+  return validateSelectedOptions(selectedOptions, variations);
 };
 
 const sortObjectKeys = (obj: Record<string, any>): Record<string, any> => {
@@ -538,3 +662,17 @@ const deepEqual = (
 
   return JSON.stringify(sortedObj1) === JSON.stringify(sortedObj2);
 };
+
+export function getSale(
+  minPrice: number,
+  price: number,
+  sale: number | null,
+): number | null {
+  if (!sale) return null;
+  let salePrice = Math.ceil(price - (price * sale) / 100);
+
+  if (salePrice > minPrice) {
+    return salePrice;
+  }
+  return null;
+}

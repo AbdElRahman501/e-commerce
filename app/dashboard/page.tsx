@@ -1,9 +1,10 @@
 import { SectionTitle } from "@/components";
 import CustomTable from "@/components/CustomTable";
+import SubmitButton from "@/components/SubmitButton";
 import TotalCard from "@/components/TotalCard";
-import { dashboardCards } from "@/constants";
 import { fetchFilteredProducts } from "@/lib";
 import { fetchOrders } from "@/lib/actions/order.actions";
+import { revalidateAll } from "@/lib/actions/store.actions";
 import { fetchUsers } from "@/lib/actions/users.actions";
 import {
   findUniqueCustomers,
@@ -83,6 +84,14 @@ const DashBoardPage = async () => {
           number={subscribers.length}
         />
       </div>
+      <form action={revalidateAll}>
+        <SubmitButton
+          className="rounded-lg bg-black px-4 py-2 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
+          type="submit"
+        >
+          revalidate all data
+        </SubmitButton>
+      </form>
       <div className="flex flex-col gap-2">
         <SectionTitle title={"Products"} url={"/dashboard/products"} />
         <CustomTable

@@ -37,12 +37,15 @@ export interface SortFilterItem {
   reverse: boolean;
 }
 
-type VariationOption = {
+export interface VariationOption {
   name: string;
   priceAdjustment: number;
+  minPriceAdjustment: number;
   imageUrl?: string; // Optional, only for color variations
-  subVariations?: Variation[]; // Optional, for nested variations relative to this option
-};
+  subVariations: Variation[]; // Optional, for nested variations relative to this option
+  parentType?: string;
+  parentName?: string;
+}
 
 export interface Variation {
   type: string;

@@ -50,6 +50,20 @@ const formInputs: FormInput[] = [
 ];
 const productInputs: FormInput[] = [
   {
+    label: "Price",
+    type: "number",
+    placeholder: "Enter product price",
+    name: "price",
+    required: true,
+  },
+  {
+    label: "Min Price",
+    type: "number",
+    placeholder: "Enter product min price",
+    name: "minPrice",
+    required: true,
+  },
+  {
     label: "Title",
     type: "text",
     placeholder: "Enter product title",
@@ -77,20 +91,7 @@ const productInputs: FormInput[] = [
     name: "categories",
     required: true,
   },
-  {
-    label: "Price",
-    type: "number",
-    placeholder: "Enter product price",
-    name: "price",
-    required: true,
-  },
-  {
-    label: "Min Price",
-    type: "number",
-    placeholder: "Enter product min price",
-    name: "minPrice",
-    required: true,
-  },
+
   {
     label: "Description",
     type: "textarea",

@@ -107,9 +107,21 @@ const ImageEditor = ({
       ))}
       <div className="flex gap-1">
         <CustomSelect
+          type="text"
+          label="Add new color"
+          name="name"
           options={CSS_COLORS}
           placeholder="New Color"
           onChange={(e) => handleAddColor(e)}
+          optionComponent={(option) => (
+            <>
+              <span
+                style={{ backgroundColor: option }}
+                className="mx-2 inline-block aspect-square h-4 rounded-full border border-gray-300"
+              ></span>
+              {option}
+            </>
+          )}
         />
       </div>
     </>

@@ -51,7 +51,9 @@ export function SubmitButton({
 const AddToCart = ({
   cart,
   cartItem,
+  disabled,
 }: {
+  disabled: boolean;
   cart: CartItem[];
   cartItem: CartItem;
 }) => {
@@ -74,7 +76,7 @@ const AddToCart = ({
     <form action={addItemAction} className="w-full">
       <SubmitButton
         isInCart={checkIsInCart(cart, cartItem)}
-        disabled={cartItem.amount < 1}
+        disabled={disabled || cartItem.amount < 1}
       />
     </form>
   );

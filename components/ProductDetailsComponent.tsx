@@ -8,10 +8,13 @@ import {
 } from "@/types";
 import Link from "next/link";
 import {
+  addToCartCheck,
+  calculateMinPrice,
   calculatePrice,
   formatPrice,
   getAllImages,
   getFirstOptionsWithSubVariants,
+  getSale,
   getSelectedOptionsFromURL,
   getSubVariations,
   toggleFavoriteItem,
@@ -37,10 +40,12 @@ const ProductDetailsComponent = ({
   id,
   title,
   price: basePrice,
+  minPrice: baseMinPrice,
   images,
   categories,
   name,
-  salePrice,
+  salePrice: baseSalePrice,
+  saleValue,
   cart,
   isFav: initialFav,
   preview,
@@ -58,11 +63,15 @@ const ProductDetailsComponent = ({
     getSubVariations(variations, paramSelectedOptions),
     searchParams,
   );
+
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >({ ...baseVariants, ...paramSelectedOptions, ...paramsSubSelectedOptions });
 
   const price = calculatePrice(basePrice, selectedOptions, variations);
+  const minPrice = calculateMinPrice(baseMinPrice, selectedOptions, variations);
+  const salePrice = getSale(minPrice, price, saleValue);
+
   const [amountValue, setAmountValue] = useState<number>(1);
   const [isFav, setIsFav] = useState<boolean>(initialFav);
 
@@ -108,18 +117,16 @@ const ProductDetailsComponent = ({
         </div>
         <h6 className="text-lg font-bold ">{title}</h6>
         <p className="text-sm text-gray-400 ">{name}</p>
-        {salePrice ? (
-          <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          {salePrice && (
             <p className=" md:text-base ">{formatPrice(salePrice, "EGP")}</p>
-            <sup className="text-xs text-gray-500 line-through">
-              {formatPrice(price, "EGP")}
-            </sup>
-          </div>
-        ) : (
-          <p className=" font-bold  md:text-base ">
+          )}
+          <p
+            className={`${salePrice ? "line-through opacity-60" : ""} md:text-base `}
+          >
             {formatPrice(price, "EGP")}
           </p>
-        )}
+        </div>
         <Variation
           basePrice={basePrice}
           variations={variations}
@@ -142,6 +149,7 @@ const ProductDetailsComponent = ({
         >
           <AddToCart
             cart={cart}
+            disabled={!addToCartCheck(baseVariants, selectedOptions)}
             cartItem={{
               amount: amountValue,
               productId: id,

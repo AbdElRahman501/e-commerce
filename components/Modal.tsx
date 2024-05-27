@@ -8,6 +8,8 @@ interface ModalProps {
   children: React.ReactNode;
   delay?: number;
   onClose?: () => void;
+  className?: string;
+  formAction?: any;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -16,6 +18,8 @@ const Modal: React.FC<ModalProps> = ({
   children,
   delay = 0,
   onClose,
+  className,
+  formAction,
 }) => {
   const [isOpened, setIsOpened] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
@@ -48,13 +52,26 @@ const Modal: React.FC<ModalProps> = ({
           onClick={onClose}
           className=" absolute inset-0 cursor-pointer bg-black opacity-50"
         ></div>
+      ) : formAction ? (
+        <form action={formAction}>
+          <button
+            type="submit"
+            className=" absolute inset-0 cursor-pointer bg-black opacity-50"
+          ></button>
+        </form>
       ) : (
         <div
           onClick={() => setIsOpened(false)}
           className=" absolute inset-0 cursor-pointer bg-black opacity-50"
         ></div>
       )}
-      <div className="relative z-10 max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-lg bg-white p-8 shadow-lg dark:bg-[#0d1117] sm:max-w-md">
+      <div
+        className={
+          className
+            ? className
+            : "relative z-10 max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-lg bg-white p-8 shadow-lg dark:bg-[#0d1117] sm:max-w-md"
+        }
+      >
         {children}
       </div>
     </div>

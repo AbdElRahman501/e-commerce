@@ -1,29 +1,29 @@
 "use client";
 import { useState } from "react";
 import DropDown_icon from "./icons/DropDown_icon";
+import { FormInput } from "@/types";
 
 export default function CustomSelect({
   placeholder,
   options,
   onChange,
   value,
-}: {
-  placeholder: string;
-  options: string[];
-  onChange?: (e: any) => void;
-  value?: any;
+  name,
+  optionComponent,
+}: FormInput & {
+  optionComponent: (option: any) => JSX.Element;
 }) {
   const [isActive, setIsActive] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(value);
 
   return (
     <div className="relative w-full">
       <div className="relative flex w-full flex-col">
         <input
           type={"text"}
-          name={"name"}
-          id={"name"}
-          value={query}
+          name={name}
+          id={name}
+          value={query || value}
           onFocus={() => setIsActive(true)}
           onChange={(e) => setQuery(e.target.value)}
           placeholder=""
@@ -32,7 +32,7 @@ export default function CustomSelect({
 
         <label
           className="peer-placeholder-shown:text-blue-gray-500  peer-disabled:peer-placeholder-shown:text-blue-gray-500 !overflow-block pointer-events-none absolute left-0 top-2 flex h-full w-full select-none truncate px-4 text-[11px] font-normal leading-tight text-gray-500 transition-all  peer-placeholder-shown:top-0 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75]  peer-focus:top-2 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-black peer-disabled:text-transparent dark:peer-focus:text-white "
-          htmlFor={"name"}
+          htmlFor={name}
         >
           {placeholder}
         </label>
@@ -53,21 +53,17 @@ export default function CustomSelect({
       >
         {options?.length &&
           options
-            .filter((option) => option.includes(query))
-            .map((option) => (
+            .filter((option) => (query ? option.includes(query) : true))
+            .map((option, index) => (
               <div
-                key={option}
+                key={index}
                 onClick={() => {
                   setIsActive(false);
                   onChange && onChange(option);
                 }}
                 className="cursor-pointer p-2 text-white hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white "
               >
-                <span
-                  style={{ backgroundColor: option }}
-                  className="mx-2 inline-block aspect-square h-4 rounded-full border border-gray-300"
-                ></span>
-                {option}
+                {optionComponent && optionComponent(option)}
               </div>
             ))}
       </div>

@@ -1,9 +1,30 @@
 import mongoose from "mongoose";
 
+const subVariationsOptionSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    priceAdjustment: { type: Number, default: 0 },
+    minPriceAdjustment: { type: Number, default: 0 },
+    imageUrl: { type: String },
+  },
+  { _id: false },
+); // Prevent _id from being added to options
+
+const subVariationSchema = new mongoose.Schema(
+  {
+    type: { type: String, required: true },
+    options: [subVariationsOptionSchema],
+  },
+  { _id: false },
+); // Prevent _id from being added to the main schema
+
 const optionSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     priceAdjustment: { type: Number, default: 0 },
+    minPriceAdjustment: { type: Number, default: 0 },
+    imageUrl: { type: String },
+    subVariations: [subVariationSchema],
   },
   { _id: false },
 ); // Prevent _id from being added to options
@@ -43,7 +64,7 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       virtuals: true, // Include virtual properties if any
-      transform: function (doc, ret) {
+      transform: function (doc, ret: any) {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v; // Optionally remove the __v field if it exists
