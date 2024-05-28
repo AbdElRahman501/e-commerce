@@ -15,6 +15,7 @@ type VariationProps = {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<Record<string, string>>
   >;
+  setImageUrl?: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const item = ({
@@ -24,7 +25,7 @@ const item = ({
   selectedOptions,
   price,
 }: {
-  handleSelectionChange: (type: string, value: string) => void;
+  handleSelectionChange: (type: string, option: VariationOption) => void;
   selectedOptions: Record<string, string>;
   variation: any;
   option: any;
@@ -35,7 +36,7 @@ const item = ({
     case "color":
       return (
         <button
-          onClick={() => handleSelectionChange(variation.type, option.name)}
+          onClick={() => handleSelectionChange(variation.type, option)}
           key={option.name}
           className={`${selectedOptions[variation.type] === option.name ? " border-black dark:border-white " : "border-1 border-transparent"} rounded-full border-2 p-[1px]  duration-200 hover:scale-110`}
         >
@@ -50,7 +51,7 @@ const item = ({
       return (
         <button
           key={option.name}
-          onClick={() => handleSelectionChange(variation.type, option.name)}
+          onClick={() => handleSelectionChange(variation.type, option)}
           className={`${selectedOptions[variation.type] === option.name ? " border-black dark:border-white " : " border-gray-200 dark:border-gray-700 "} rounded-xl border-2 p-2 px-4 text-sm duration-200 hover:scale-105 hover:border-black dark:hover:border-white`}
         >
           <span>{option.name} </span> {price && <span>- {"EGP " + price}</span>}
@@ -64,6 +65,7 @@ const Variation = ({
   variations,
   selectedOptions,
   setSelectedOptions,
+  setImageUrl,
 }: VariationProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -80,12 +82,13 @@ const Variation = ({
     return router.replace(optionUrl, { scroll: false });
   }
 
-  const handleSelectionChange = (type: string, value: string) => {
+  const handleSelectionChange = (type: string, option: VariationOption) => {
     const newOptions = validateSelectedOptions(
-      { ...selectedOptions, [type]: value },
+      { ...selectedOptions, [type]: option.name },
       variations,
     );
     setSelectedOptions(newOptions);
+    setImageUrl && setImageUrl((pv) => option.imageUrl || pv);
     setParam(newOptions);
   };
 

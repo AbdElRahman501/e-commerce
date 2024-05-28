@@ -30,7 +30,6 @@ export const fetchFilteredProducts = unstable_cache(
     sort,
     idsToExclude = [],
     minLimit = 0,
-    containMainProduct = false,
   }: FilterProps): Promise<{
     products: ProductOnSaleType[];
     count: number;
@@ -105,17 +104,8 @@ export const fetchFilteredProducts = unstable_cache(
     const objectIdArray = idsToObjectId(idsToExclude);
     const excludeCondition = { _id: { $nin: objectIdArray } };
 
-    const notContainMainProduct = !containMainProduct
-      ? {
-          $or: [
-            { mainProduct: { $exists: false } },
-            { mainProduct: { $eq: "" } },
-          ],
-        }
-      : {};
     const finalQuery: any = {
       $and: [
-        notContainMainProduct,
         textSearchCondition,
         categoryFilterCondition,
         keywordFilterCondition,
@@ -469,3 +459,51 @@ export async function duplicateProductById(id: string) {
     throw error;
   }
 }
+
+const tokenize = (text: string): string[] => {
+  return text.toLowerCase().match(/\w+/g) || [];
+};
+
+const countKeywordMatches = (keywords: string[], text: string): number => {
+  const keywordSet = new Set(keywords);
+  const textTokens = tokenize(text);
+  return textTokens.filter((token) => keywordSet.has(token)).length;
+};
+
+export const findBestMatchProducts = unstable_cache(
+  async (product: ProductType, limit = 4): Promise<ProductOnSaleType[]> => {
+    const keywords = tokenize(product.keywords);
+
+    const objectIdArray = idsToObjectId([product.id]);
+    const excludeCondition = { _id: { $nin: objectIdArray } };
+
+    const finalQuery: any = {
+      $and: [excludeCondition],
+    };
+
+    try {
+      const data = await Product.find(finalQuery);
+      const products: ProductType[] = JSON.parse(JSON.stringify(data));
+      const rankedProducts = products
+        .map((product) => ({
+          product,
+          matchCount: countKeywordMatches(keywords, product.keywords),
+        }))
+        .sort((a, b) => b.matchCount - a.matchCount)
+        .slice(0, limit);
+
+      const offers: OfferType[] = await fetchOffers();
+      const modifiedProducts: ProductOnSaleType[] = modifyProducts(
+        rankedProducts.map((item) => item.product),
+        offers,
+      );
+
+      return modifiedProducts;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  },
+  [tags.products],
+  { tags: [tags.products] },
+);

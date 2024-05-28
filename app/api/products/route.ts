@@ -7,19 +7,16 @@ import { tags } from "@/constants";
 
 function updateProducts(products: any[]): ProductType[] {
   return products.map((product) => {
-    const { sizes, colors, ...updatedProduct } = product;
-    updatedProduct.collections = ["New Collection"];
-    updatedProduct.content = [
-      { name: "description", html: " any thing " },
-      { name: "description", html: " any thing " },
-    ];
-    return updatedProduct;
+    product.images = Object.values(product.images).flat();
+    return product;
   });
 }
 export async function GET() {
   await connectToDatabase();
-  Product.collection.drop();
-  const products = await Product.insertMany(updateProducts(baseProducts));
-  revalidateTag(tags.products);
-  return new Response(JSON.stringify({ products }));
+  // Product.collection.drop();
+  // const products = await Product.insertMany(updateProducts(baseProducts));
+  // revalidateTag(tags.products);
+  const products = await Product.find({});
+  return new Response(JSON.stringify(products));
+  // return new Response(JSON.stringify({ message: " request success" }));
 }

@@ -1,22 +1,17 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-import {
-  CartItem,
-  ProductOnSaleType,
-  Variation as VariationType,
-} from "@/types";
+import { CartItem, ProductOnSaleType } from "@/types";
 import Link from "next/link";
 import {
   addToCartCheck,
   calculateMinPrice,
   calculatePrice,
   formatPrice,
-  getAllImages,
   getFirstOptionsWithSubVariants,
+  getImageUrl,
   getSale,
   getSelectedOptionsFromURL,
-  getSubVariations,
   toggleFavoriteItem,
 } from "@/utils";
 import { toggleFav } from "./actions/fav.actions";
@@ -59,14 +54,10 @@ const ProductDetailsComponent = ({
     variations,
     searchParams,
   );
-  const paramsSubSelectedOptions = getSelectedOptionsFromURL(
-    getSubVariations(variations, paramSelectedOptions),
-    searchParams,
-  );
 
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
-  >({ ...baseVariants, ...paramSelectedOptions, ...paramsSubSelectedOptions });
+  >({ ...baseVariants, ...paramSelectedOptions });
 
   const price = calculatePrice(basePrice, selectedOptions, variations);
   const minPrice = calculateMinPrice(baseMinPrice, selectedOptions, variations);
@@ -88,8 +79,8 @@ const ProductDetailsComponent = ({
   return (
     <div className="relative mx-auto flex w-full max-w-8xl flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
       <ProductImages
-        images={getAllImages(images)}
-        selectedImage={images[selectedOptions.color]?.[0] || ""}
+        images={images}
+        selectedImage={getImageUrl(variations, selectedOptions) || images[0]}
         title={title}
       />
       <div className="sticky top-16 z-10 flex h-fit w-full flex-col gap-3 p-5 sm:w-5/12 md:col-span-2 md:py-0">
@@ -113,7 +104,7 @@ const ProductDetailsComponent = ({
               </div>
             ))}
           </div>
-          <ShareModal images={images} title={title} />
+          <ShareModal variations={variations} images={images} title={title} />
         </div>
         <h6 className="text-lg font-bold ">{title}</h6>
         <p className="text-sm text-gray-400 ">{name}</p>

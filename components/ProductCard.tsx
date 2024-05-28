@@ -6,11 +6,12 @@ import React, { useEffect } from "react";
 import {
   calculateMinPrice,
   calculatePrice,
-  firstMatch,
+  findVariationOptions,
   formatPrice,
-  getAllImages,
   getFirstOptionsWithSubVariants,
   getSale,
+  moveToTop,
+  removeDuplicateOptions,
   toggleFavoriteItem,
 } from "@/utils";
 import { toggleFav } from "./actions/fav.actions";
@@ -36,50 +37,38 @@ const ProductCard = ({
   index = 0,
 }: ProductCardProps) => {
   const [isFav, setIsFav] = React.useState(!!fav.find((item) => item === id));
-  const colors =
-    variations
-      .find((variant) => variant.type === "color")
-      ?.options?.map((item) => item.name) || [];
-
   const searchParams = useSearchParams();
   const colorFilter = searchParams?.get("clf")?.length
     ? searchParams?.get("clf")?.split(",") || []
     : [];
-  const color = firstMatch(colorFilter, colors) || "";
+
+  const colorsOptions = removeDuplicateOptions(
+    findVariationOptions(variations, "color"),
+  );
+
   const [selectedColor, setSelectedColor] = React.useState<string>(
-    color || colors[0],
+    colorsOptions[0]?.name,
   );
-  const [[firstImage, secondImage], setImages] = React.useState<string[]>(
-    images[selectedColor].length > 1
-      ? images[selectedColor]
-      : [
-          ...images[selectedColor],
-          ...getAllImages(images).filter(
-            (img) => !images[selectedColor].includes(img),
-          ),
-        ],
-  );
+
+  const [[firstImage, secondImage], setImages] =
+    React.useState<string[]>(images);
+
   const selectedOptions = getFirstOptionsWithSubVariants(variations);
   const price = calculatePrice(basePrice, selectedOptions, variations);
   const minPrice = calculateMinPrice(baseMinPrice, selectedOptions, variations);
   const salePrice = getSale(minPrice, price, saleValue);
 
-  const selectColor = (color: string) => {
+  const selectColor = (color: string, image?: string) => {
     setSelectedColor(color);
-    setImages(
-      images[color].length > 1
-        ? images[color]
-        : [
-            ...images[color],
-            ...getAllImages(images).filter(
-              (img) => !images[color].includes(img),
-            ),
-          ],
-    );
+    const moveToTopImages = image ? moveToTop(images, image) : images;
+    setImages(moveToTopImages);
   };
 
   useEffect(() => {
-    selectColor(firstMatch(colorFilter, colors) || colors[0]);
+    const colorOption =
+      colorsOptions.find((op) => colorFilter.includes(op.name)) ||
+      colorsOptions[0];
+    selectColor(colorOption?.name, colorOption?.imageUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
@@ -152,7 +141,7 @@ const ProductCard = ({
           </div>
         </button>
       </div>
-      <div className="flex flex-col gap-1 p-4 text-center">
+      <div className="flex flex-col gap-1 p-4 text-center text-xs md:text-base">
         <p className="line-clamp-2  w-full  font-bold">{title}</p>
         <div className="relative flex items-center justify-center gap-2">
           <p
@@ -168,20 +157,23 @@ const ProductCard = ({
         </div>
 
         <div className="flex items-center justify-center gap-2">
-          {colors.map((item, index) => (
-            <button
-              key={index}
-              type="button"
-              aria-label={"Select color " + item}
-              onClick={() => selectColor(item)}
-              className={`${(selectedColor ? item === selectedColor : colors[0] === item) ? "border-2 border-black p-[1px] dark:border-white" : "border-transparent"} max-w-6 flex-1 rounded-full p-[1px] duration-200 hover:scale-110`}
-            >
-              <span
-                style={{ backgroundColor: item }}
-                className="block aspect-square w-full rounded-full border"
-              ></span>
-            </button>
-          ))}
+          {colorsOptions &&
+            colorsOptions.map((option, index) => (
+              <button
+                key={index}
+                type="button"
+                aria-label={"Select color " + option}
+                onClick={() => {
+                  selectColor(option.name, option.imageUrl);
+                }}
+                className={`${(selectedColor ? option.name === selectedColor : colorsOptions[0].name === option.name) ? "border-2 border-black p-[1px] dark:border-white" : "border-transparent"} max-w-6 flex-1 rounded-full p-[1px] duration-200 hover:scale-110`}
+              >
+                <span
+                  style={{ backgroundColor: option.name }}
+                  className="block aspect-square w-full rounded-full border"
+                ></span>
+              </button>
+            ))}
         </div>
       </div>
     </div>

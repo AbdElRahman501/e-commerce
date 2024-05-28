@@ -18,11 +18,8 @@ interface Content {
 
 const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
   const [data, setData] = React.useState<any>(product);
-  const [profitRate, setProfitRate] = React.useState<number>(0);
+  const [profitRate, setProfitRate] = React.useState<number>(25);
 
-  const [images, setImages] = React.useState<Record<string, string[]>>(
-    product.images,
-  );
   const [preview, setPreview] = React.useState(false);
 
   return (
@@ -32,7 +29,10 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
         data={data}
         className="flex w-full flex-col gap-3 px-5 md:gap-5 lg:px-20"
       >
-        <ImageEditor images={images} setImages={setImages} />
+        <ImageEditor
+          images={data.images}
+          setImages={(images) => setData({ ...data, images })}
+        />
         <VariationsEditor
           images={data.images}
           variations={data.variations}

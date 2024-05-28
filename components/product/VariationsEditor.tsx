@@ -2,14 +2,14 @@ import React from "react";
 import CustomInput from "../CustomInput";
 import { Variation, VariationOption } from "@/types";
 import CustomSelect from "../CustomeSelect";
-import { getAllImages } from "@/utils";
 import Image from "next/image";
+import { CSS_COLORS } from "@/constants";
 
 interface ContentEditorProps {
   variations: Variation[];
   setVariations: (variations: Variation[]) => void;
   profitRate: number;
-  images: Record<string, string[]>;
+  images: string[];
 }
 
 const VariationsEditor: React.FC<ContentEditorProps> = ({
@@ -316,21 +316,50 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
               <div key={optionIndex} className="ml-4 flex flex-col gap-2">
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2">
-                    <CustomInput
-                      name="name"
-                      label="Option Name"
-                      type="text"
-                      placeholder="Option Name"
-                      value={option.name}
-                      onChange={(e) =>
-                        updateOption(
-                          variationIndex,
-                          optionIndex,
-                          "name",
-                          e.target.value,
-                        )
-                      }
-                    />
+                    {variation.type === "color" ? (
+                      <CustomSelect
+                        type="text"
+                        name="imageUrl"
+                        label="Image Url"
+                        options={CSS_COLORS}
+                        placeholder="select Image Url"
+                        value={option.name}
+                        onChange={(e) =>
+                          updateOption(
+                            variationIndex,
+                            optionIndex,
+                            "name",
+                            e.target.value,
+                          )
+                        }
+                        optionComponent={(option) => (
+                          <div>
+                            <span
+                              style={{ backgroundColor: option }}
+                              className="mx-2 inline-block aspect-square h-4 rounded-full border border-gray-300"
+                            ></span>
+                            {option}
+                          </div>
+                        )}
+                      />
+                    ) : (
+                      <CustomInput
+                        name="name"
+                        label="Option Name"
+                        type="text"
+                        placeholder="Option Name"
+                        value={option.name}
+                        onChange={(e) =>
+                          updateOption(
+                            variationIndex,
+                            optionIndex,
+                            "name",
+                            e.target.value,
+                          )
+                        }
+                      />
+                    )}
+
                     <CustomInput
                       name="priceAdjustment"
                       label="Price Adjustment"
@@ -391,8 +420,8 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                       type="text"
                       name="imageUrl"
                       label="Image Url"
-                      options={getAllImages(images)}
-                      placeholder="New Color"
+                      options={images}
+                      placeholder="select Image Url"
                       value={option.imageUrl}
                       onChange={(option) =>
                         updateOption(
@@ -410,7 +439,6 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                             height={50}
                             width={50}
                           />
-                          {option}
                         </>
                       )}
                     />
@@ -470,72 +498,145 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                         <div className="ml-4">
                           {subVariation.options.map(
                             (subOption, subOptionIndex) => (
-                              <div key={subOptionIndex} className="flex gap-2">
-                                <CustomInput
-                                  name="name"
-                                  label="Option Name"
-                                  type="text"
-                                  placeholder="Option Name"
-                                  value={subOption.name}
-                                  onChange={(e) =>
-                                    updateSubVariationOption(
-                                      variationIndex,
-                                      optionIndex,
-                                      subVariationIndex,
-                                      subOptionIndex,
-                                      "name",
-                                      e.target.value,
-                                    )
-                                  }
-                                />
-                                <CustomInput
-                                  name="priceAdjustment"
-                                  label="Price Adjustment"
-                                  type="number"
-                                  placeholder={`${(subOption.minPriceAdjustment / ((100 - profitRate) / 100)).toFixed(2)} Price Adjustment `}
-                                  value={subOption.priceAdjustment}
-                                  onChange={(e) =>
-                                    updateSubVariationOption(
-                                      variationIndex,
-                                      optionIndex,
-                                      subVariationIndex,
-                                      subOptionIndex,
-                                      "priceAdjustment",
-                                      parseFloat(e.target.value),
-                                    )
-                                  }
-                                />
-                                <CustomInput
-                                  name="minPriceAdjustment"
-                                  label="Min Price Adjustment"
-                                  type="number"
-                                  placeholder="Min Price Adjustment"
-                                  value={subOption.minPriceAdjustment}
-                                  onChange={(e) =>
-                                    updateSubVariationOption(
-                                      variationIndex,
-                                      optionIndex,
-                                      subVariationIndex,
-                                      subOptionIndex,
-                                      "minPriceAdjustment",
-                                      parseFloat(e.target.value),
-                                    )
-                                  }
-                                />
-                                <button
-                                  type="button"
-                                  className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
-                                  onClick={() =>
-                                    removeSubVariationOption(
-                                      variationIndex,
-                                      optionIndex,
-                                      subVariationIndex,
-                                      subOptionIndex,
-                                    )
-                                  }
-                                >
-                                  Remove
-                                </button>
+                              <div
+                                key={subOptionIndex}
+                                className="flex flex-col gap-2"
+                              >
+                                <div className="flex gap-2">
+                                  {subVariation.type === "color" ? (
+                                    <CustomSelect
+                                      type="text"
+                                      name="imageUrl"
+                                      label="Image Url"
+                                      options={CSS_COLORS}
+                                      placeholder="select Image Url"
+                                      value={subOption.name}
+                                      onChange={(e) =>
+                                        updateSubVariationOption(
+                                          variationIndex,
+                                          optionIndex,
+                                          subVariationIndex,
+                                          subOptionIndex,
+                                          "name",
+                                          e.target.value,
+                                        )
+                                      }
+                                      optionComponent={(option) => (
+                                        <div>
+                                          <span
+                                            style={{ backgroundColor: option }}
+                                            className="mx-2 inline-block aspect-square h-4 rounded-full border border-gray-300"
+                                          ></span>
+                                          {option}
+                                        </div>
+                                      )}
+                                    />
+                                  ) : (
+                                    <CustomInput
+                                      name="name"
+                                      label="Option Name"
+                                      type="text"
+                                      placeholder="Option Name"
+                                      value={subOption.name}
+                                      onChange={(e) =>
+                                        updateSubVariationOption(
+                                          variationIndex,
+                                          optionIndex,
+                                          subVariationIndex,
+                                          subOptionIndex,
+                                          "name",
+                                          e.target.value,
+                                        )
+                                      }
+                                    />
+                                  )}
+                                  <CustomInput
+                                    name="priceAdjustment"
+                                    label="Price Adjustment"
+                                    type="number"
+                                    placeholder={`${(subOption.minPriceAdjustment / ((100 - profitRate) / 100)).toFixed(2)} Price Adjustment `}
+                                    value={subOption.priceAdjustment}
+                                    onChange={(e) =>
+                                      updateSubVariationOption(
+                                        variationIndex,
+                                        optionIndex,
+                                        subVariationIndex,
+                                        subOptionIndex,
+                                        "priceAdjustment",
+                                        parseFloat(e.target.value),
+                                      )
+                                    }
+                                  />
+                                  <CustomInput
+                                    name="minPriceAdjustment"
+                                    label="Min Price Adjustment"
+                                    type="number"
+                                    placeholder="Min Price Adjustment"
+                                    value={subOption.minPriceAdjustment}
+                                    onChange={(e) =>
+                                      updateSubVariationOption(
+                                        variationIndex,
+                                        optionIndex,
+                                        subVariationIndex,
+                                        subOptionIndex,
+                                        "minPriceAdjustment",
+                                        parseFloat(e.target.value),
+                                      )
+                                    }
+                                  />
+                                  <button
+                                    type="button"
+                                    className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
+                                    onClick={() =>
+                                      removeSubVariationOption(
+                                        variationIndex,
+                                        optionIndex,
+                                        subVariationIndex,
+                                        subOptionIndex,
+                                      )
+                                    }
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                                <div className="flex gap-1">
+                                  {subOption.imageUrl && (
+                                    <Image
+                                      src={subOption.imageUrl}
+                                      alt="subOption"
+                                      height={50}
+                                      width={50}
+                                    />
+                                  )}
+                                  <CustomSelect
+                                    type="text"
+                                    name="imageUrl"
+                                    label="Image Url"
+                                    options={images}
+                                    placeholder="select Image Url"
+                                    value={subOption.imageUrl}
+                                    onChange={(subOption) =>
+                                      updateSubVariationOption(
+                                        variationIndex,
+                                        optionIndex,
+                                        subVariationIndex,
+                                        subOptionIndex,
+                                        "imageUrl",
+                                        subOption,
+                                      )
+                                    }
+                                    optionComponent={(subOption) => (
+                                      <>
+                                        <Image
+                                          src={subOption}
+                                          alt="option"
+                                          height={50}
+                                          width={50}
+                                        />
+                                      </>
+                                    )}
+                                  />
+                                </div>
                               </div>
                             ),
                           )}

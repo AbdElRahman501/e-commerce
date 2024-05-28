@@ -1,5 +1,5 @@
 import { CartProduct } from "@/types";
-import { formatPrice } from ".";
+import { formatPrice, getImageUrl } from ".";
 
 const formatOrderItems = (products: CartProduct[]): string => {
   return products
@@ -63,7 +63,7 @@ const formatOrderItems = (products: CartProduct[]): string => {
                 ><img
                   alt="I'm an image"
                   height="auto"
-                  src="${item.images[item.selectedOptions.color][0]}"
+                  src="${getImageUrl(item.variations, item.selectedOptions) || item.images[0]}"
                   style="
                     display: block;
                     height: auto;

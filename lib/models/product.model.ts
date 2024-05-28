@@ -45,7 +45,7 @@ const productSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     keywords: { type: String, required: true },
-    images: { type: Map, of: Array },
+    images: [String],
     categories: { type: String, required: true },
     collections: [String],
     price: { type: Number, required: true },

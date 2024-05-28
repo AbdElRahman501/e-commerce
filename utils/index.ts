@@ -6,17 +6,10 @@ import {
   Product,
   ProductOnSaleType,
   Variation,
+  VariationOption,
 } from "@/types";
 import formatOrderItems from "./formatOrderItems";
 import { ReadonlyURLSearchParams } from "next/navigation";
-
-export function getAllImages(images: Record<string, string[]>) {
-  let allImages: string[] = [];
-  for (const color in images) {
-    allImages = allImages.concat(images[color]);
-  }
-  return allImages;
-}
 
 export function getTransformedImageUrl(
   originalUrl: string | "",
@@ -562,6 +555,48 @@ export const getFirstOptionsWithSubVariants = (
   return selectedOptions;
 };
 
+export function removeDuplicateOptions(
+  options: VariationOption[],
+): VariationOption[] {
+  const uniqueOptionsMap: Map<string, VariationOption> = new Map();
+
+  // Store unique options in a Map using the option name as the key
+  for (const option of options) {
+    uniqueOptionsMap.set(option.name, option);
+  }
+
+  // Convert Map values back to an array
+  const uniqueOptions: VariationOption[] = Array.from(
+    uniqueOptionsMap.values(),
+  );
+
+  return uniqueOptions;
+}
+
+export function findVariationOptions(
+  variations: Variation[],
+  query: string,
+): VariationOption[] {
+  let matchingOptions: VariationOption[] = [];
+
+  for (const variation of variations) {
+    if (variation.type === query) {
+      matchingOptions = matchingOptions.concat(variation.options);
+    }
+    for (const option of variation.options) {
+      if (option.subVariations) {
+        for (const subVariation of option.subVariations) {
+          if (subVariation.type === query) {
+            matchingOptions = matchingOptions.concat(subVariation.options);
+          }
+        }
+      }
+    }
+  }
+
+  return matchingOptions;
+}
+
 export function validateSelectedOptions(
   selectedOptions: Record<string, string>,
   variationData: Variation[],
@@ -582,7 +617,7 @@ export function validateSelectedOptions(
 
     // If selected option not found or validated to empty string, remove from validated options
     if (!selectedOptionData) {
-      delete validatedOptions[type];
+      validatedOptions[type] = options[0].name;
       continue;
     }
 
@@ -605,7 +640,7 @@ export function validateSelectedOptions(
 
         // If selected sub-option not found or validated to empty string, remove from validated options
         if (!subSelectedOptionData) {
-          delete validatedOptions[subType];
+          validatedOptions[subType] = subVariation.options[0].name;
         }
       }
     }
@@ -630,17 +665,65 @@ export const addToCartCheck = (
 
 export const getSelectedOptionsFromURL = (
   variations: Variation[],
-  searchParams: any,
+  searchParams: URLSearchParams,
 ): Record<string, string> => {
   const selectedOptions: Record<string, string> = {};
-  for (const variation of variations) {
-    const selectedOption = searchParams.get(variation.type);
-    if (selectedOption) {
-      selectedOptions[variation.type] = selectedOption;
+
+  const getSelectedOptions = (
+    variations: Variation[],
+    searchParams: URLSearchParams,
+  ) => {
+    for (const variation of variations) {
+      const selectedOption = searchParams.get(variation.type.trim());
+      if (selectedOption) {
+        selectedOptions[variation.type.trim()] = selectedOption;
+
+        const option = variation.options.find(
+          (opt) => opt.name === selectedOption,
+        );
+        if (option && option.subVariations) {
+          getSelectedOptions(option.subVariations, searchParams);
+        }
+      }
     }
-  }
+  };
+
+  getSelectedOptions(variations, searchParams);
   return validateSelectedOptions(selectedOptions, variations);
 };
+
+export function getImageUrl(
+  variations: Variation[],
+  selectedOptions: Record<string, string>,
+): string | undefined {
+  let imageUrl: string | undefined = undefined;
+
+  for (const variation of variations) {
+    const selectedOption = selectedOptions[variation.type.trim()];
+    if (selectedOption) {
+      const option = variation.options.find(
+        (opt) => opt.name === selectedOption,
+      );
+
+      if (option) {
+        if (option.imageUrl) {
+          imageUrl = option.imageUrl;
+        }
+        if (option.subVariations && option.subVariations.length > 0) {
+          const subVariationUrl = getImageUrl(
+            option.subVariations,
+            selectedOptions,
+          );
+          if (subVariationUrl) {
+            imageUrl = subVariationUrl;
+          }
+        }
+      }
+    }
+  }
+
+  return imageUrl;
+}
 
 const sortObjectKeys = (obj: Record<string, any>): Record<string, any> => {
   const sortedObj: Record<string, any> = {};
@@ -675,4 +758,30 @@ export function getSale(
     return salePrice;
   }
   return null;
+}
+
+export function moveToTop(arr: string[], str: string): string[] {
+  // Find the index of the string in the array
+  const index = arr.indexOf(str);
+
+  // If the string is found
+  if (index !== -1) {
+    // Remove the target string from the array
+    arr.splice(index, 1);
+
+    // If the string is not the last element, get the one following it
+    if (index < arr.length) {
+      const next = arr[index];
+      // Remove the following string from the array
+      arr.splice(index, 1);
+      // Add the following string to the beginning of the array
+      arr.unshift(next);
+    }
+
+    // Add the target string to the beginning of the array
+    arr.unshift(str);
+  }
+
+  // Return the modified array
+  return arr;
 }

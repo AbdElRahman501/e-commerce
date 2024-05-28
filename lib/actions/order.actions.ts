@@ -232,6 +232,6 @@ export const sendEmail = async (
     const info = await transporter.sendMail(mailOptions);
     console.log("order Confirmation Email sent:", info.response);
   } catch (error) {
-    console.error("Email sending error:", error);
+    console.error("order Confirmation Email sending error:", error);
   }
 };

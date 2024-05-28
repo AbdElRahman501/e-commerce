@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import RemoveButton from "./cart/RemoveButton";
 import { EditItemQuantityButton } from "./cart/edit-item-quantity-button";
+import { getImageUrl } from "@/utils";
 
 type Props = CartProduct & {
   readonly?: boolean;
@@ -19,6 +20,7 @@ const BagCard = ({
   id,
   readonly,
   salePrice,
+  variations,
 }: Props) => {
   return (
     <div className=" flex w-full border-b border-gray-200 pb-2 dark:border-gray-700 ">
@@ -30,7 +32,7 @@ const BagCard = ({
         >
           <div className="aspect-card relative h-28 overflow-hidden rounded-md md:h-32">
             <Image
-              src={images[selectedOptions.color][0]}
+              src={getImageUrl(variations, selectedOptions) || images[0]}
               alt="jacket"
               fill
               style={{ objectFit: "cover" }}

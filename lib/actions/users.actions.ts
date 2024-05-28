@@ -85,7 +85,9 @@ export const sendPromoEmail = async (user: {
     });
     const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtppro.zoho.in",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.PAGE_EMAIL,
         pass: process.env.PAGE_PASS,

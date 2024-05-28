@@ -11,20 +11,26 @@ import {
 } from "./icons/socialmedia";
 import { ProductOnSaleType } from "@/types";
 import { IcRoundShare } from "./icons/Share_icon";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import CheckMark from "./icons/CheckMark";
 import Copy_icon from "./icons/Copy_icon";
+import { getImageUrl, getSelectedOptionsFromURL } from "@/utils";
 
 const ShareModal = ({
+  variations,
   images,
   title,
 }: {
+  variations: ProductOnSaleType["variations"];
   images: ProductOnSaleType["images"];
   title: string;
 }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const color = searchParams.get("color")?.replace("HASH:", "#") || "";
+
+  const selectedOptions = getSelectedOptionsFromURL(variations, searchParams);
+
+  const imageUrl = getImageUrl(variations, selectedOptions) || images[0];
 
   const [copied, setCopied] = React.useState(false);
   const copyToClipboard = (url: string) => {
@@ -82,7 +88,7 @@ const ShareModal = ({
           <Link
             target="_blank"
             className="aspect-square rounded-full border border-gray-300 p-3 "
-            href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(images[color]?.[0])}&description=${encodeURIComponent(title)}`}
+            href={`http://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(imageUrl)}&description=${encodeURIComponent(title)}`}
           >
             <LogosPinterest className=" w-6 duration-300 hover:scale-125" />{" "}
           </Link>
