@@ -4,6 +4,7 @@ import { Variation, VariationOption } from "@/types";
 import CustomSelect from "../CustomeSelect";
 import Image from "next/image";
 import { CSS_COLORS } from "@/constants";
+import ThreeDotsMenu from "../ThreeDotsMenu";
 
 interface ContentEditorProps {
   variations: Variation[];
@@ -296,20 +297,21 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                 updateVariation(variationIndex, "type", e.target.value)
               }
             />
-            <button
-              type="button"
-              className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
-              onClick={() => removeVariation(variationIndex)}
-            >
-              Remove
-            </button>
-            <button
-              type="button"
-              className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-green-500 dark:border-gray-700"
-              onClick={() => addOption(variationIndex)}
-            >
-              Add
-            </button>
+            <ThreeDotsMenu className="flex h-14 items-center justify-center rounded-lg border border-gray-300 px-2 dark:border-gray-700 ">
+              <div className="flex flex-col gap-2">
+                <button type="button" onClick={() => addOption(variationIndex)}>
+                  add option
+                </button>
+
+                <button
+                  type="button"
+                  className="text-red-500"
+                  onClick={() => removeVariation(variationIndex)}
+                >
+                  remove variation
+                </button>
+              </div>
+            </ThreeDotsMenu>
           </div>
           <div>
             {variation.options.map((option, optionIndex) => (
@@ -324,12 +326,12 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                         options={CSS_COLORS}
                         placeholder="select Image Url"
                         value={option.name}
-                        onChange={(e) =>
+                        onChange={(option) =>
                           updateOption(
                             variationIndex,
                             optionIndex,
                             "name",
-                            e.target.value,
+                            option,
                           )
                         }
                         optionComponent={(option) => (
@@ -390,24 +392,44 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                         )
                       }
                     />
-                    <button
-                      type="button"
-                      className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
-                      onClick={() => removeOption(variationIndex, optionIndex)}
-                    >
-                      Remove
-                    </button>
-                    <button
-                      type="button"
-                      className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-green-500 dark:border-gray-700"
-                      onClick={() =>
-                        addSubVariation(variationIndex, optionIndex)
-                      }
-                    >
-                      Add
-                    </button>
+                    <ThreeDotsMenu className="flex h-14 items-center justify-center rounded-lg border border-gray-300 px-2 dark:border-gray-700 ">
+                      <div className="flex flex-col gap-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            addSubVariation(variationIndex, optionIndex)
+                          }
+                        >
+                          add sub variation
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateOption(
+                              variationIndex,
+                              optionIndex,
+                              "imageUrl",
+                              "/image",
+                            )
+                          }
+                        >
+                          add image url
+                        </button>
+                        <button
+                          type="button"
+                          className="text-red-500"
+                          onClick={() =>
+                            removeOption(variationIndex, optionIndex)
+                          }
+                        >
+                          remove option
+                        </button>
+                      </div>
+                    </ThreeDotsMenu>
                   </div>
-                  <div className="flex gap-1">
+                  <div
+                    className={`${option.imageUrl ? "" : "hidden"} flex gap-1`}
+                  >
                     {option.imageUrl && (
                       <Image
                         src={option.imageUrl}
@@ -468,32 +490,36 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                               )
                             }
                           />
-                          <button
-                            type="button"
-                            className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
-                            onClick={() =>
-                              removeSubVariation(
-                                variationIndex,
-                                optionIndex,
-                                subVariationIndex,
-                              )
-                            }
-                          >
-                            Remove
-                          </button>
-                          <button
-                            type="button"
-                            className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-green-500 dark:border-gray-700"
-                            onClick={() =>
-                              addSubVariationOption(
-                                variationIndex,
-                                optionIndex,
-                                subVariationIndex,
-                              )
-                            }
-                          >
-                            Add
-                          </button>
+
+                          <ThreeDotsMenu className="flex h-14 items-center justify-center rounded-lg border border-gray-300 px-2 dark:border-gray-700 ">
+                            <div className="flex flex-col gap-2">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  addSubVariationOption(
+                                    variationIndex,
+                                    optionIndex,
+                                    subVariationIndex,
+                                  )
+                                }
+                              >
+                                add option
+                              </button>
+                              <button
+                                type="button"
+                                className="text-red-500"
+                                onClick={() =>
+                                  removeSubVariation(
+                                    variationIndex,
+                                    optionIndex,
+                                    subVariationIndex,
+                                  )
+                                }
+                              >
+                                remove sub variation
+                              </button>
+                            </div>
+                          </ThreeDotsMenu>
                         </div>
                         <div className="ml-4">
                           {subVariation.options.map(
@@ -511,14 +537,14 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                                       options={CSS_COLORS}
                                       placeholder="select Image Url"
                                       value={subOption.name}
-                                      onChange={(e) =>
+                                      onChange={(option) =>
                                         updateSubVariationOption(
                                           variationIndex,
                                           optionIndex,
                                           subVariationIndex,
                                           subOptionIndex,
                                           "name",
-                                          e.target.value,
+                                          option,
                                         )
                                       }
                                       optionComponent={(option) => (
@@ -584,22 +610,43 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
                                       )
                                     }
                                   />
-                                  <button
-                                    type="button"
-                                    className="h-14 text-nowrap rounded-lg border border-gray-300 px-2 text-pink-500 dark:border-gray-700"
-                                    onClick={() =>
-                                      removeSubVariationOption(
-                                        variationIndex,
-                                        optionIndex,
-                                        subVariationIndex,
-                                        subOptionIndex,
-                                      )
-                                    }
-                                  >
-                                    Remove
-                                  </button>
+                                  <ThreeDotsMenu className="flex h-14 items-center justify-center rounded-lg border border-gray-300 px-2 dark:border-gray-700 ">
+                                    <div className="flex flex-col gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          updateSubVariationOption(
+                                            variationIndex,
+                                            optionIndex,
+                                            subVariationIndex,
+                                            subOptionIndex,
+                                            "imageUrl",
+                                            "/images/placeholder.png",
+                                          )
+                                        }
+                                      >
+                                        add image
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="text-red-500"
+                                        onClick={() =>
+                                          removeSubVariationOption(
+                                            variationIndex,
+                                            optionIndex,
+                                            subVariationIndex,
+                                            subOptionIndex,
+                                          )
+                                        }
+                                      >
+                                        remove option
+                                      </button>
+                                    </div>
+                                  </ThreeDotsMenu>
                                 </div>
-                                <div className="flex gap-1">
+                                <div
+                                  className={`${subOption.imageUrl ? "flex" : "hidden"} gap-1`}
+                                >
                                   {subOption.imageUrl && (
                                     <Image
                                       src={subOption.imageUrl}
@@ -655,7 +702,7 @@ const VariationsEditor: React.FC<ContentEditorProps> = ({
         className="h-14 w-full text-nowrap rounded-lg border border-gray-300 px-2 text-green-500 dark:border-gray-700"
         onClick={addVariation}
       >
-        Add
+        Add Variation
       </button>
       {/* <code>{JSON.stringify(variations, null, 2)}</code> */}
     </div>

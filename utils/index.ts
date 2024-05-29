@@ -187,26 +187,6 @@ export function formatPrice(price: number, currency: "EGP" | "USD") {
   }).format(price);
 }
 
-export function checkDateStatus(
-  startDate?: string,
-  endDate?: string,
-): { name: string; color: string } {
-  if (!startDate || !endDate) {
-    return { name: "active", color: "green" };
-  }
-  const currentDate: Date = new Date();
-  const startDateObj: Date = new Date(startDate);
-  const endDateObj: Date = new Date(endDate);
-
-  if (startDateObj > currentDate) {
-    return { name: "pending", color: "yellow" };
-  } else if (startDateObj <= currentDate && currentDate <= endDateObj) {
-    return { name: "active", color: "green" };
-  } else {
-    return { name: "passed", color: "red" };
-  }
-}
-
 export function isFreeShipping(offers: OfferType[], subTotal: number) {
   const freeShippingMinValue: number = Number(
     offers.find((x) => x.title === "FREE_SHIPPING")?.description || 0,
@@ -406,7 +386,25 @@ export const orderStatusColor = (
       return "text-gray-500";
   }
 };
+export function checkDateStatus(
+  startDate?: string,
+  endDate?: string,
+): { name: string; color: string } {
+  if (!startDate || !endDate) {
+    return { name: "active", color: "green" };
+  }
+  const currentDate: Date = new Date();
+  const startDateObj: Date = new Date(startDate);
+  const endDateObj: Date = new Date(endDate);
 
+  if (startDateObj > currentDate) {
+    return { name: "pending", color: "yellow" };
+  } else if (startDateObj <= currentDate && currentDate <= endDateObj) {
+    return { name: "active", color: "green" };
+  } else {
+    return { name: "passed", color: "red" };
+  }
+}
 function formatDayDate(date: Date) {
   var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var dayOfWeek = date.getDay();
@@ -436,9 +434,65 @@ export function getNextWorkingDay(startDate: string | Date, days: number) {
   return formatDayDate(currentDate);
 }
 
+export function generateCombinations(
+  variations: Variation[],
+  basePrice: number,
+): Record<string, string | number>[] {
+  const result: Record<string, string | number>[] = [];
+  const seenCombinations = new Set<string>();
+
+  function recurse(
+    current: Record<string, string | number>,
+    remainingVariations: Variation[],
+  ): void {
+    if (remainingVariations.length === 0) {
+      const combinationString = JSON.stringify(current);
+      if (!seenCombinations.has(combinationString)) {
+        seenCombinations.add(combinationString);
+        result.push(current);
+      }
+      return;
+    }
+
+    const [firstVariation, ...restVariations] = remainingVariations;
+    firstVariation.options.forEach((option) => {
+      const newCombination = {
+        ...current,
+        [firstVariation.type]: option.name,
+      };
+      newCombination.price = calculatePrice(
+        basePrice,
+        newCombination,
+        variations,
+      );
+      if (option.subVariations?.length > 0) {
+        recurse(newCombination, option.subVariations.concat(restVariations));
+      } else {
+        recurse(newCombination, restVariations);
+      }
+    });
+  }
+
+  recurse({}, variations);
+  return result;
+}
+
+export function allValuesEqual<T>(arr: T[]): boolean {
+  if (arr.length === 0) {
+    return true; // Assuming an empty array means all values are "equal"
+  }
+  const firstValue = arr[0];
+  for (const value of arr) {
+    if (value !== firstValue) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function calculatePrice(
   basePrice: number,
-  selectedOptions: Record<string, string>,
+  selectedOptions: Record<string, string | number>,
   variations: Variation[],
 ): number {
   let finalPrice = basePrice;
@@ -736,7 +790,7 @@ const sortObjectKeys = (obj: Record<string, any>): Record<string, any> => {
   return sortedObj;
 };
 
-const deepEqual = (
+export const deepEqual = (
   obj1: Record<string, any>,
   obj2: Record<string, any>,
 ): boolean => {
@@ -785,3 +839,33 @@ export function moveToTop(arr: string[], str: string): string[] {
   // Return the modified array
   return arr;
 }
+
+export const optionPrice = ({
+  variations,
+  variation,
+  selectedOptions,
+  basePrice,
+  option,
+}: {
+  variations: Variation[];
+  variation: Variation;
+  selectedOptions: Record<string, string>;
+  basePrice: number;
+  option: VariationOption;
+}) => {
+  const priceDisplay = !allValuesEqual(
+    variation.options.map((op) => op.priceAdjustment),
+  );
+  const modifiedSelectedOptions = {
+    ...selectedOptions,
+    [variation.type]: option.name,
+  };
+  const optionPrice = generateCombinations(variations, basePrice).find(
+    (combination) => {
+      const { price, ...mdCombination } = combination;
+      return deepEqual(modifiedSelectedOptions, mdCombination);
+    },
+  )?.price;
+
+  return priceDisplay && optionPrice ? optionPrice : null;
+};

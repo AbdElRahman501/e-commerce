@@ -1,8 +1,8 @@
 import { VariationOption, Variation as VariationType } from "@/types";
 import {
   createUrl,
-  formatPrice,
   getSubVariations,
+  optionPrice,
   validateSelectedOptions,
 } from "@/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -19,19 +19,27 @@ type VariationProps = {
 };
 
 const item = ({
+  variations,
   variation,
   option,
   handleSelectionChange,
   selectedOptions,
-  price,
+  basePrice,
 }: {
+  variations: VariationType[];
   handleSelectionChange: (type: string, option: VariationOption) => void;
   selectedOptions: Record<string, string>;
-  variation: any;
-  option: any;
+  variation: VariationType;
+  option: VariationOption;
   basePrice: number;
-  price?: number;
 }) => {
+  const price = optionPrice({
+    variation,
+    option,
+    basePrice,
+    selectedOptions,
+    variations,
+  });
   switch (variation.type) {
     case "color":
       return (
@@ -92,52 +100,6 @@ const Variation = ({
     setParam(newOptions);
   };
 
-  function allValuesEqual<T>(arr: T[]): boolean {
-    if (arr.length === 0) {
-      return true; // Assuming an empty array means all values are "equal"
-    }
-    const firstValue = arr[0];
-    for (const value of arr) {
-      if (value !== firstValue) {
-        return false;
-      }
-    }
-    return true;
-  }
-  const calculatePriceForOption = (
-    option: VariationOption,
-    basePrice: number,
-    selectedOptions: Record<string, string>,
-  ): number => {
-    let price = basePrice + option.priceAdjustment;
-
-    const addSubVariationPrice = (subVariations: VariationType[]) => {
-      subVariations.forEach((subVar) => {
-        const selectedSubOptionName = selectedOptions[subVar.type];
-        if (selectedSubOptionName) {
-          const selectedSubOption = subVar.options.find(
-            (opt) => opt.name === selectedSubOptionName,
-          );
-          if (selectedSubOption) {
-            price += selectedSubOption.priceAdjustment;
-            if (
-              selectedSubOption.subVariations &&
-              selectedSubOption.subVariations.length > 0
-            ) {
-              addSubVariationPrice(selectedSubOption.subVariations);
-            }
-          }
-        }
-      });
-    };
-
-    if (option.subVariations && option.subVariations.length > 0) {
-      addSubVariationPrice(option.subVariations);
-    }
-
-    return price;
-  };
-
   return (
     <>
       {variations.map((variation) => (
@@ -147,25 +109,16 @@ const Variation = ({
             <strong>{selectedOptions[variation.type]}</strong>
           </p>
           <div className="flex flex-wrap gap-2">
-            {variation.options.map((option) => {
-              const priceDisplay = !allValuesEqual(
-                variation.options.map((op) => op.priceAdjustment),
-              );
-              const optionPrice =
-                option.subVariations.length > 0
-                  ? calculatePriceForOption(option, basePrice, selectedOptions)
-                  : option.priceAdjustment + basePrice;
-
-              const price = priceDisplay ? optionPrice : undefined;
-              return item({
+            {variation.options.map((option) =>
+              item({
+                variations,
                 variation,
                 option,
                 handleSelectionChange,
                 selectedOptions,
                 basePrice,
-                price,
-              });
-            })}
+              }),
+            )}
           </div>
         </div>
       ))}
@@ -177,30 +130,16 @@ const Variation = ({
             <strong>{selectedOptions[variation.type]}</strong>
           </p>
           <div className="flex flex-wrap gap-2">
-            {variation.options.map((option) => {
-              const priceDisplay = !allValuesEqual(
-                variation.options.map((op) => op.priceAdjustment),
-              );
-
-              const parentPrice =
-                variations
-                  .find((v) => v.type === option?.parentType)
-                  ?.options.find((o) => o.name === option?.parentName)
-                  ?.priceAdjustment || 0;
-
-              const price = priceDisplay
-                ? basePrice + option.priceAdjustment + parentPrice
-                : undefined;
-
-              return item({
+            {variation.options.map((option) =>
+              item({
+                variations,
                 variation,
                 option,
                 handleSelectionChange,
                 selectedOptions,
                 basePrice,
-                price,
-              });
-            })}
+              }),
+            )}
           </div>
         </div>
       ))}
