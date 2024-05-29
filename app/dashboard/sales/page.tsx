@@ -33,7 +33,7 @@ export default async function SalesPage() {
               image: "image",
               title: "!text",
               sale: "number",
-              description: "text",
+              description: "textarea",
               url: "!text",
               category: "text",
               active: "checkbox",

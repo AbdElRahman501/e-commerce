@@ -74,7 +74,7 @@ export default async function ProductsPage({
             <CustomTable
               data={products.map((item) => ({
                 ...item,
-                image: item.images[item.colors[0]][0],
+                image: item.images[0],
               }))}
               header={["views", "sales", "image", "title", "price"]}
               ActionComponent={ProductsAction}

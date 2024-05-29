@@ -7,8 +7,7 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   amount: { type: Number, required: true },
-  selectedColor: { type: String, required: true },
-  selectedSize: { type: String, required: true },
+  selectedOptions: { type: Map, of: String },
 });
 
 const personalInfoSchema = new mongoose.Schema({

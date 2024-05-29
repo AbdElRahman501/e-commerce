@@ -17,6 +17,13 @@ import {
 import { redirect } from "next/navigation";
 import { checkDateStatus } from "@/utils";
 import { revalidateTag, unstable_cache } from "next/cache";
+import { tags } from "@/constants";
+
+export const revalidateAll = async () => {
+  for (const tag of Object.values(tags)) {
+    revalidateTag(tag);
+  }
+};
 
 export const fetchStories = unstable_cache(
   async (): Promise<StoryType[]> => {
@@ -33,9 +40,9 @@ export const fetchStories = unstable_cache(
       throw error;
     }
   },
-  ["stories"],
+  [tags.stories],
   {
-    tags: ["stories"],
+    tags: [tags.stories],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -63,6 +70,7 @@ export const updateStory = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Story.findByIdAndUpdate(data.id, data);
+    revalidateTag(tags.stories);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -81,6 +89,7 @@ export const addNewStory = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Story.create(data);
+    revalidateTag(tags.stories);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -93,6 +102,7 @@ export const removeStory = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Story.findByIdAndDelete(id);
+    revalidateTag(tags.stories);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -114,9 +124,9 @@ export const fetchReviews = unstable_cache(
       throw error;
     }
   },
-  ["reviews"],
+  [tags.reviews],
   {
-    tags: ["reviews"],
+    tags: [tags.reviews],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -134,6 +144,7 @@ export const addNewReview = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Review.create(data);
+    revalidateTag(tags.reviews);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -147,6 +158,7 @@ export const removeReview = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Review.findByIdAndDelete(id);
+    revalidateTag(tags.reviews);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -168,6 +180,7 @@ export const updateReview = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Review.findByIdAndUpdate(data.id, data);
+    revalidateTag(tags.reviews);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -189,9 +202,9 @@ export const fetchCollections = unstable_cache(
       throw error;
     }
   },
-  ["collections"],
+  [tags.collections],
   {
-    tags: ["collections"],
+    tags: [tags.collections],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -205,6 +218,7 @@ export const addNewCollection = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Collection.create(data);
+    revalidateTag(tags.collections);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -218,6 +232,7 @@ export const removeCollection = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Collection.findByIdAndDelete(id);
+    revalidateTag(tags.collections);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -235,6 +250,7 @@ export const updateCollection = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Collection.findByIdAndUpdate(data.id, data);
+    revalidateTag(tags.collections);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -256,9 +272,9 @@ export const fetchNavbarLinks = unstable_cache(
       throw error;
     }
   },
-  ["navbarLinks"],
+  [tags.navbarLinks],
   {
-    tags: ["navbarLinks"],
+    tags: [tags.navbarLinks],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -272,6 +288,7 @@ export const addNewNavbarLink = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await NavBarLink.create(data);
+    revalidateTag(tags.navbarLinks);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -289,6 +306,7 @@ export const updateNavbarLink = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await NavBarLink.findByIdAndUpdate(data.id, data);
+    revalidateTag(tags.navbarLinks);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -302,6 +320,7 @@ export const removeNavbarLink = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await NavBarLink.findByIdAndDelete(id);
+    revalidateTag(tags.navbarLinks);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -323,10 +342,10 @@ export const fetchFooterLinks = unstable_cache(
       throw error;
     }
   },
-  ["footer"],
+  [tags.footer],
   {
-    tags: ["footer"],
-    revalidate: 60 * 60 * 24,
+    tags: [tags.footer],
+    revalidate: 60 * 60 * 24 * 7,
   },
 );
 
@@ -343,6 +362,7 @@ export const addNewFooterLink = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await FooterLink.create(data);
+    revalidateTag(tags.footer);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -364,7 +384,7 @@ export const updateFooterLink = async (formData: FormData) => {
   try {
     await connectToDatabase();
     const result = await FooterLink.findByIdAndUpdate(id, data);
-    revalidateTag("footer");
+    revalidateTag(tags.footer);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;

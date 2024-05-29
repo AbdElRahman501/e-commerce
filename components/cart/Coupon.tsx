@@ -24,6 +24,9 @@ const Coupon = ({
   const [coupon, setCoupon] = React.useState(initCoupon);
   function submitHandler() {
     setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
     setIsChanged(false);
     const newParams = new URLSearchParams(searchParams.toString());
     if (coupon) {

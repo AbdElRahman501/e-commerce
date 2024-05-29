@@ -9,6 +9,7 @@ import { generateRandomCode } from "@/utils";
 import PromoCode from "../models/promoCode.model";
 import { PromoCodeType, SubscriberType } from "@/types";
 import { cookies } from "next/headers";
+import { fetchOffers } from "./offer.actions";
 
 export async function fetchUsers(): Promise<{ email: string }[]> {
   try {
@@ -43,8 +44,13 @@ export async function subscribe(formData: FormData) {
     if (user) sendPromoEmail(user);
     cookies().set("subscriptionState", "subscribed");
     redirect("/?customer_posted=true");
-  } catch (error) {
-    redirect("/?customer_posted=true");
+  } catch (error: any) {
+    if (error.code === 11000) {
+      cookies().set("subscriptionState", "subscribed");
+      redirect("/?customer_posted=true");
+    }
+    console.log("🚀 ~ subscribe ~ error:", error);
+    throw error;
   }
 }
 
@@ -65,7 +71,12 @@ export const sendPromoEmail = async (user: {
   const email = user.email;
   const id = user._id;
   try {
-    const discounts = 15;
+    const offers = await fetchOffers();
+    const offer = offers.find(
+      (offer) =>
+        offer.title === "subscription" && offer.category === "subscription",
+    );
+    const discounts = offer?.sale || 15;
     const randomCode = generateRandomCode();
     const data: PromoCodeType = await PromoCode.create({
       code: randomCode,
@@ -74,7 +85,9 @@ export const sendPromoEmail = async (user: {
     });
     const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtppro.zoho.in",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.PAGE_EMAIL,
         pass: process.env.PAGE_PASS,

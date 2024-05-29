@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getAllImages, getTransformedImageUrl } from "@/utils";
+import { getImageUrl, getTransformedImageUrl } from "@/utils";
 import dynamic from "next/dynamic";
 import { Footer } from "@/components";
 import {
@@ -23,24 +23,18 @@ export async function generateMetadata({
   searchParams?: { [key: string]: string | string[] | undefined };
 }): Promise<Metadata> {
   const product = await getProduct(params.id);
-  const { color } = searchParams as {
+  const selectedOptions = searchParams as {
     [key: string]: string;
   };
 
   if (!product) return notFound();
-  const images =
-    color && product.images[color]
-      ? product.images[color]
-      : getAllImages(product.images);
-  const url = getTransformedImageUrl(images[0] || "", 200, 300);
-  const colorString = color && !color.includes("HASH:") ? ` (${color})` : "";
+
+  const image =
+    getImageUrl(product.variations, selectedOptions) || product.images[0];
+  const url = getTransformedImageUrl(image, 200, 300);
   return {
     title:
-      product.title +
-      colorString +
-      " (" +
-      (product.salePrice || product.price) +
-      " EGP)",
+      product.title + " (" + (product.salePrice || product.price) + " EGP)",
     description: product.description,
     robots: {
       index: true,

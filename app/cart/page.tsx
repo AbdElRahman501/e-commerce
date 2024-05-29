@@ -25,9 +25,7 @@ export default async function CartComponent({
     <>
       <div className="mx-auto max-w-8xl p-5 lg:px-20">
         <h1 className="pb-5 text-center text-3xl font-extrabold">Cart</h1>
-        {cart.length === 0 ? (
-          <Message message="Your cart is empty" />
-        ) : (
+        {cart.length > 0 && cart.length === cartProducts.length ? (
           <div className="flex w-full flex-col justify-center gap-5 md:flex-row">
             {
               <div className=" flex w-full flex-col gap-5 ">
@@ -39,6 +37,10 @@ export default async function CartComponent({
             }
             <CartPricing cart={cartProducts} coupon={coupon} />
           </div>
+        ) : cart.length === 0 ? (
+          <Message message="Your cart is empty" />
+        ) : (
+          <Message message="Your cart is empty" action={true} />
         )}
       </div>
       <Suspense fallback={<ProductSkeleton />}>

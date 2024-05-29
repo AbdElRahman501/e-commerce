@@ -18,10 +18,10 @@ const NavBar = async () => {
       <MenuBurgerButton cart={cart} navbarLinks={navbarLinks} />
       <div className=" md:flex-1">
         <Link href="/" aria-label="Home link" className="block w-fit">
-          <LogoIcon className="w-16  fill-white md:fill-black md:dark:fill-white" />
+          <LogoIcon className="w-20  fill-white md:fill-black md:dark:fill-white" />
         </Link>
       </div>
-      <div className=" hidden max-w-md flex-1 items-center justify-center gap-4 md:flex">
+      <div className=" hidden max-w-md flex-1 items-center justify-center gap-4 text-lg md:flex">
         {mainNav.map((link, index) => (
           <Link
             key={index}
@@ -33,7 +33,7 @@ const NavBar = async () => {
         ))}
         <DashBoardHomeLink />
       </div>
-      <div className="flex flex-1 items-center justify-end md:gap-6 ">
+      <div className="flex flex-1 items-center justify-end  ">
         <ThemeSwitcher
           className="hidden p-2 text-black duration-200 hover:scale-110 dark:text-white md:flex"
           onlyIcon

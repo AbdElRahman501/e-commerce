@@ -3,7 +3,8 @@ import { OfferType } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import Offer from "../models/offer.model";
 import { redirect } from "next/navigation";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
+import { tags } from "@/constants";
 
 export const fetchOffers = unstable_cache(
   async (): Promise<OfferType[]> => {
@@ -17,9 +18,9 @@ export const fetchOffers = unstable_cache(
       throw error;
     }
   },
-  ["offers"],
+  [tags.offers],
   {
-    tags: ["offers"],
+    tags: [tags.offers],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -32,10 +33,13 @@ export const addNewOffer = async (formData: FormData) => {
     sale: Number(formData.get("sale")) || 0,
     image: formData.get("image")?.toString() || "",
     category: formData.get("category")?.toString() || "",
+    active: formData.get("active")?.toString() === "active" || false,
   };
   try {
     await connectToDatabase();
     await Offer.create(data);
+    revalidateTag(tags.offers);
+    revalidateTag(tags.products);
   } catch (error) {
     console.error("Error adding new Offer:", error);
     throw error;
@@ -48,6 +52,8 @@ export const removeOffer = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Offer.findByIdAndDelete(id);
+    revalidateTag(tags.offers);
+    revalidateTag(tags.products);
   } catch (error) {
     console.error("Error removing Offer:", error);
     throw error;
@@ -64,10 +70,13 @@ export const updateOffer = async (formData: FormData) => {
     sale: Number(formData.get("sale")) || 0,
     image: formData.get("image")?.toString() || "",
     category: formData.get("category")?.toString() || "",
+    active: formData.get("active")?.toString() === "active" || false,
   };
   try {
     await connectToDatabase();
     await Offer.findByIdAndUpdate(data.id, data);
+    revalidateTag(tags.offers);
+    revalidateTag(tags.products);
   } catch (error) {
     console.error("Error updating Offer:", error);
     throw error;

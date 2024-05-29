@@ -5,17 +5,11 @@ import {
   PersonalInfo,
   Product,
   ProductOnSaleType,
+  Variation,
+  VariationOption,
 } from "@/types";
 import formatOrderItems from "./formatOrderItems";
 import { ReadonlyURLSearchParams } from "next/navigation";
-
-export function getAllImages(images: Record<string, string[]>) {
-  let allImages: string[] = [];
-  for (const color in images) {
-    allImages = allImages.concat(images[color]);
-  }
-  return allImages;
-}
 
 export function getTransformedImageUrl(
   originalUrl: string | "",
@@ -103,12 +97,11 @@ export const modifyProducts = (
 
 export const checkIsInCart = (cart: CartItem[], cartItem: CartItem) => {
   if (!cart?.length || !cartItem) return false;
-  const { productId, selectedColor, selectedSize } = cartItem;
+  const { productId, selectedOptions } = cartItem;
   const isInCart = cart.some(
     (item) =>
       item.productId === productId &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize,
+      deepEqual(item.selectedOptions, selectedOptions),
   );
 
   return isInCart;
@@ -126,11 +119,24 @@ export const reformatCartItems = (
       (product: ProductOnSaleType) => product.id === cartItem.productId,
     );
     if (product) {
+      const price = calculatePrice(
+        product.price,
+        cartItem.selectedOptions,
+        product.variations,
+      );
+      const minPrice = calculateMinPrice(
+        product.minPrice,
+        cartItem.selectedOptions,
+        product.variations,
+      );
+      const salePrice = getSale(minPrice, price, product.saleValue);
       cartProducts.push({
         ...product,
+        price,
+        minPrice,
+        salePrice,
         amount: cartItem.amount,
-        selectedColor: cartItem.selectedColor,
-        selectedSize: cartItem.selectedSize,
+        selectedOptions: cartItem.selectedOptions,
       });
     }
   }
@@ -181,26 +187,6 @@ export function formatPrice(price: number, currency: "EGP" | "USD") {
   }).format(price);
 }
 
-export function checkDateStatus(
-  startDate?: string,
-  endDate?: string,
-): { name: string; color: string } {
-  if (!startDate || !endDate) {
-    return { name: "active", color: "green" };
-  }
-  const currentDate: Date = new Date();
-  const startDateObj: Date = new Date(startDate);
-  const endDateObj: Date = new Date(endDate);
-
-  if (startDateObj > currentDate) {
-    return { name: "pending", color: "yellow" };
-  } else if (startDateObj <= currentDate && currentDate <= endDateObj) {
-    return { name: "active", color: "green" };
-  } else {
-    return { name: "passed", color: "red" };
-  }
-}
-
 export function isFreeShipping(offers: OfferType[], subTotal: number) {
   const freeShippingMinValue: number = Number(
     offers.find((x) => x.title === "FREE_SHIPPING")?.description || 0,
@@ -213,12 +199,11 @@ export { formatOrderItems };
 
 export function addToCart(cart: CartItem[], item: CartItem) {
   if (!cart || !item) return [];
-  const { productId, amount, selectedColor, selectedSize } = item;
+  const { productId, amount, selectedOptions } = item;
   let isInCart = cart.some(
     (item) =>
       item.productId === productId &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize,
+      deepEqual(item.selectedOptions, selectedOptions),
   );
   if (!isInCart) {
     const data = [
@@ -226,8 +211,7 @@ export function addToCart(cart: CartItem[], item: CartItem) {
       {
         productId,
         amount,
-        selectedColor,
-        selectedSize,
+        selectedOptions,
       },
     ];
     return data;
@@ -244,8 +228,7 @@ export function editCart(
   const data = cart.map((item) => {
     if (
       item.productId === oldItem.productId &&
-      item.selectedColor === oldItem.selectedColor &&
-      item.selectedSize === oldItem.selectedSize
+      deepEqual(item.selectedOptions, oldItem.selectedOptions)
     ) {
       return newItem;
     }
@@ -256,12 +239,11 @@ export function editCart(
 
 export function removeFromCart(cart: CartItem[], item: CartItem) {
   if (!cart || !item) return [];
-  const { productId, selectedColor, selectedSize } = item;
+  const { productId, selectedOptions } = item;
   const data = cart.filter((item) => {
     const matchItem =
       item.productId === productId &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize;
+      deepEqual(item.selectedOptions, selectedOptions);
 
     if (matchItem) {
       return false;
@@ -279,7 +261,8 @@ export function toggleFavoriteItem(favorite: string[], id: string) {
   return data;
 }
 
-export function firstMatch(arr1: string[], arr2: string[]): string | null {
+export function firstMatch(arr1?: string[], arr2?: string[]): string | null {
+  if (!arr1 || !arr2) return null;
   for (const item1 of arr1) {
     for (const item2 of arr2) {
       if (item1 === item2) {
@@ -403,7 +386,25 @@ export const orderStatusColor = (
       return "text-gray-500";
   }
 };
+export function checkDateStatus(
+  startDate?: string,
+  endDate?: string,
+): { name: string; color: string } {
+  if (!startDate || !endDate) {
+    return { name: "active", color: "green" };
+  }
+  const currentDate: Date = new Date();
+  const startDateObj: Date = new Date(startDate);
+  const endDateObj: Date = new Date(endDate);
 
+  if (startDateObj > currentDate) {
+    return { name: "pending", color: "yellow" };
+  } else if (startDateObj <= currentDate && currentDate <= endDateObj) {
+    return { name: "active", color: "green" };
+  } else {
+    return { name: "passed", color: "red" };
+  }
+}
 function formatDayDate(date: Date) {
   var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var dayOfWeek = date.getDay();
@@ -432,3 +433,439 @@ export function getNextWorkingDay(startDate: string | Date, days: number) {
   // Return the next working day
   return formatDayDate(currentDate);
 }
+
+export function generateCombinations(
+  variations: Variation[],
+  basePrice: number,
+): Record<string, string | number>[] {
+  const result: Record<string, string | number>[] = [];
+  const seenCombinations = new Set<string>();
+
+  function recurse(
+    current: Record<string, string | number>,
+    remainingVariations: Variation[],
+  ): void {
+    if (remainingVariations.length === 0) {
+      const combinationString = JSON.stringify(current);
+      if (!seenCombinations.has(combinationString)) {
+        seenCombinations.add(combinationString);
+        result.push(current);
+      }
+      return;
+    }
+
+    const [firstVariation, ...restVariations] = remainingVariations;
+    firstVariation.options.forEach((option) => {
+      const newCombination = {
+        ...current,
+        [firstVariation.type]: option.name,
+      };
+      newCombination.price = calculatePrice(
+        basePrice,
+        newCombination,
+        variations,
+      );
+      if (option.subVariations?.length > 0) {
+        recurse(newCombination, option.subVariations.concat(restVariations));
+      } else {
+        recurse(newCombination, restVariations);
+      }
+    });
+  }
+
+  recurse({}, variations);
+  return result;
+}
+
+export function allValuesEqual<T>(arr: T[]): boolean {
+  if (arr.length === 0) {
+    return true; // Assuming an empty array means all values are "equal"
+  }
+  const firstValue = arr[0];
+  for (const value of arr) {
+    if (value !== firstValue) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function calculatePrice(
+  basePrice: number,
+  selectedOptions: Record<string, string | number>,
+  variations: Variation[],
+): number {
+  let finalPrice = basePrice;
+
+  for (const [type, selectedOption] of Object.entries(selectedOptions)) {
+    const variation = variations.find((v) => v.type === type);
+    if (variation) {
+      const option = variation.options.find((o) => o.name === selectedOption);
+      if (option) {
+        finalPrice += option.priceAdjustment;
+
+        // Handle sub-variations if any
+        if (option.subVariations) {
+          for (const subVariation of option.subVariations) {
+            const subSelectedOption = selectedOptions[subVariation.type];
+            if (subSelectedOption) {
+              const subOption = subVariation.options.find(
+                (o) => o.name === subSelectedOption,
+              );
+              if (subOption) {
+                finalPrice += subOption.priceAdjustment;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return finalPrice;
+}
+export function calculateMinPrice(
+  basePrice: number,
+  selectedOptions: Record<string, string>,
+  variations: Variation[],
+): number {
+  let finalPrice = basePrice;
+
+  for (const [type, selectedOption] of Object.entries(selectedOptions)) {
+    const variation = variations.find((v) => v.type === type);
+    if (variation) {
+      const option = variation.options.find((o) => o.name === selectedOption);
+      if (option) {
+        finalPrice += option.minPriceAdjustment;
+
+        // Handle sub-variations if any
+        if (option.subVariations) {
+          for (const subVariation of option.subVariations) {
+            const subSelectedOption = selectedOptions[subVariation.type];
+            if (subSelectedOption) {
+              const subOption = subVariation.options.find(
+                (o) => o.name === subSelectedOption,
+              );
+              if (subOption) {
+                finalPrice += subOption.minPriceAdjustment;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return finalPrice;
+}
+
+export const getSubVariations = (
+  variations: Variation[],
+  selectedOptions: Record<string, string>,
+): Variation[] => {
+  const subVariations: Variation[] = [];
+
+  for (const type in selectedOptions) {
+    const variation = variations.find((v) => v.type === type);
+    if (variation) {
+      const selectedOption = variation.options.find(
+        (option) => option.name === selectedOptions[type],
+      );
+      if (selectedOption && selectedOption.subVariations) {
+        selectedOption.subVariations.forEach((subVariation) => {
+          // Assign parent type and name to each option in the subVariation
+          subVariation.options = subVariation.options.map((option) => ({
+            ...option,
+            parentType: type,
+            parentName: selectedOption.name,
+          }));
+          subVariations.push(subVariation);
+        });
+      }
+    }
+  }
+
+  return subVariations;
+};
+
+export const getFirstOptionsWithSubVariants = (
+  variants: Variation[],
+): Record<string, string> => {
+  const selectedOptions: Record<string, string> = {};
+
+  for (const variant of variants) {
+    if (variant.options.length > 0) {
+      selectedOptions[variant.type] = variant.options[0].name;
+      if (variant.options[0].subVariations) {
+        for (const subVariant of variant.options[0].subVariations) {
+          if (subVariant.options.length > 0) {
+            selectedOptions[subVariant.type] = subVariant.options[0].name;
+          }
+        }
+      }
+    }
+  }
+
+  return selectedOptions;
+};
+
+export function removeDuplicateOptions(
+  options: VariationOption[],
+): VariationOption[] {
+  const uniqueOptionsMap: Map<string, VariationOption> = new Map();
+
+  // Store unique options in a Map using the option name as the key
+  for (const option of options) {
+    uniqueOptionsMap.set(option.name, option);
+  }
+
+  // Convert Map values back to an array
+  const uniqueOptions: VariationOption[] = Array.from(
+    uniqueOptionsMap.values(),
+  );
+
+  return uniqueOptions;
+}
+
+export function findVariationOptions(
+  variations: Variation[],
+  query: string,
+): VariationOption[] {
+  let matchingOptions: VariationOption[] = [];
+
+  for (const variation of variations) {
+    if (variation.type === query) {
+      matchingOptions = matchingOptions.concat(variation.options);
+    }
+    for (const option of variation.options) {
+      if (option.subVariations) {
+        for (const subVariation of option.subVariations) {
+          if (subVariation.type === query) {
+            matchingOptions = matchingOptions.concat(subVariation.options);
+          }
+        }
+      }
+    }
+  }
+
+  return matchingOptions;
+}
+
+export function validateSelectedOptions(
+  selectedOptions: Record<string, string>,
+  variationData: Variation[],
+) {
+  const validatedOptions = { ...selectedOptions };
+
+  // Iterate through variation data
+  for (const variation of variationData) {
+    const { type, options } = variation;
+    const selectedOption = selectedOptions[type];
+
+    // If option is not selected, skip validation
+    if (!selectedOption) continue;
+
+    const selectedOptionData = options.find(
+      (option) => option.name === selectedOption,
+    );
+
+    // If selected option not found or validated to empty string, remove from validated options
+    if (!selectedOptionData) {
+      validatedOptions[type] = options[0].name;
+      continue;
+    }
+
+    // Check if sub-variations exist
+    if (
+      selectedOptionData.subVariations &&
+      selectedOptionData.subVariations.length > 0
+    ) {
+      // Iterate through sub-variations
+      for (const subVariation of selectedOptionData.subVariations) {
+        const subType = subVariation.type;
+        const subSelectedOption = selectedOptions[subType];
+
+        // If sub-option is not selected, skip validation
+        if (!subSelectedOption) continue;
+
+        const subSelectedOptionData = subVariation.options.find(
+          (option) => option.name === subSelectedOption,
+        );
+
+        // If selected sub-option not found or validated to empty string, remove from validated options
+        if (!subSelectedOptionData) {
+          validatedOptions[subType] = subVariation.options[0].name;
+        }
+      }
+    }
+  }
+
+  return validatedOptions;
+}
+
+export const addToCartCheck = (
+  references: Record<string, string>,
+  selectedOptions: Record<string, string>,
+) => {
+  const keys1 = Object.keys(references).sort();
+  const keys2 = Object.keys(selectedOptions).sort();
+  for (const key of keys1) {
+    if (selectedOptions[key] === undefined || selectedOptions[key] === "") {
+      return false;
+    }
+  }
+  return JSON.stringify(keys1) === JSON.stringify(keys2);
+};
+
+export const getSelectedOptionsFromURL = (
+  variations: Variation[],
+  searchParams: URLSearchParams,
+): Record<string, string> => {
+  const selectedOptions: Record<string, string> = {};
+
+  const getSelectedOptions = (
+    variations: Variation[],
+    searchParams: URLSearchParams,
+  ) => {
+    for (const variation of variations) {
+      const selectedOption = searchParams.get(variation.type.trim());
+      if (selectedOption) {
+        selectedOptions[variation.type.trim()] = selectedOption;
+
+        const option = variation.options.find(
+          (opt) => opt.name === selectedOption,
+        );
+        if (option && option.subVariations) {
+          getSelectedOptions(option.subVariations, searchParams);
+        }
+      }
+    }
+  };
+
+  getSelectedOptions(variations, searchParams);
+  return validateSelectedOptions(selectedOptions, variations);
+};
+
+export function getImageUrl(
+  variations: Variation[],
+  selectedOptions: Record<string, string>,
+): string | undefined {
+  let imageUrl: string | undefined = undefined;
+
+  for (const variation of variations) {
+    const selectedOption = selectedOptions[variation.type.trim()];
+    if (selectedOption) {
+      const option = variation.options.find(
+        (opt) => opt.name === selectedOption,
+      );
+
+      if (option) {
+        if (option.imageUrl) {
+          imageUrl = option.imageUrl;
+        }
+        if (option.subVariations && option.subVariations.length > 0) {
+          const subVariationUrl = getImageUrl(
+            option.subVariations,
+            selectedOptions,
+          );
+          if (subVariationUrl) {
+            imageUrl = subVariationUrl;
+          }
+        }
+      }
+    }
+  }
+
+  return imageUrl;
+}
+
+const sortObjectKeys = (obj: Record<string, any>): Record<string, any> => {
+  const sortedObj: Record<string, any> = {};
+  const sortedKeys = Object.keys(obj).sort();
+
+  for (const key of sortedKeys) {
+    sortedObj[key] = obj[key];
+  }
+
+  return sortedObj;
+};
+
+export const deepEqual = (
+  obj1: Record<string, any>,
+  obj2: Record<string, any>,
+): boolean => {
+  const sortedObj1 = sortObjectKeys(obj1);
+  const sortedObj2 = sortObjectKeys(obj2);
+
+  return JSON.stringify(sortedObj1) === JSON.stringify(sortedObj2);
+};
+
+export function getSale(
+  minPrice: number,
+  price: number,
+  sale: number | null,
+): number | null {
+  if (!sale) return null;
+  let salePrice = Math.ceil(price - (price * sale) / 100);
+
+  if (salePrice > minPrice) {
+    return salePrice;
+  }
+  return null;
+}
+
+export function moveToTop(arr: string[], str: string): string[] {
+  // Find the index of the string in the array
+  const index = arr.indexOf(str);
+
+  // If the string is found
+  if (index !== -1) {
+    // Remove the target string from the array
+    arr.splice(index, 1);
+
+    // If the string is not the last element, get the one following it
+    if (index < arr.length) {
+      const next = arr[index];
+      // Remove the following string from the array
+      arr.splice(index, 1);
+      // Add the following string to the beginning of the array
+      arr.unshift(next);
+    }
+
+    // Add the target string to the beginning of the array
+    arr.unshift(str);
+  }
+
+  // Return the modified array
+  return arr;
+}
+
+export const optionPrice = ({
+  variations,
+  variation,
+  selectedOptions,
+  basePrice,
+  option,
+}: {
+  variations: Variation[];
+  variation: Variation;
+  selectedOptions: Record<string, string>;
+  basePrice: number;
+  option: VariationOption;
+}) => {
+  const priceDisplay = !allValuesEqual(
+    variation.options.map((op) => op.priceAdjustment),
+  );
+  const modifiedSelectedOptions = {
+    ...selectedOptions,
+    [variation.type]: option.name,
+  };
+  const optionPrice = generateCombinations(variations, basePrice).find(
+    (combination) => {
+      const { price, ...mdCombination } = combination;
+      return deepEqual(modifiedSelectedOptions, mdCombination);
+    },
+  )?.price;
+
+  return priceDisplay && optionPrice ? optionPrice : null;
+};

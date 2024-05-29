@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import RemoveButton from "./cart/RemoveButton";
 import { EditItemQuantityButton } from "./cart/edit-item-quantity-button";
+import { getImageUrl } from "@/utils";
 
 type Props = CartProduct & {
   readonly?: boolean;
@@ -15,11 +16,11 @@ const BagCard = ({
   title,
   price,
   amount,
-  selectedColor,
-  selectedSize,
+  selectedOptions,
   id,
   readonly,
   salePrice,
+  variations,
 }: Props) => {
   return (
     <div className=" flex w-full border-b border-gray-200 pb-2 dark:border-gray-700 ">
@@ -31,7 +32,7 @@ const BagCard = ({
         >
           <div className="aspect-card relative h-28 overflow-hidden rounded-md md:h-32">
             <Image
-              src={images[selectedColor][0]}
+              src={getImageUrl(variations, selectedOptions) || images[0]}
               alt="jacket"
               fill
               style={{ objectFit: "cover" }}
@@ -71,8 +72,9 @@ const BagCard = ({
               </p>
             )}
             <div className="flex items-center gap-1 text-xs xl:text-sm">
-              <p className="text-center"> {selectedColor}</p>
-              <p className="text-center"> / {selectedSize}</p>
+              <p className="text-center">
+                {Object.values(selectedOptions).join(" / ")}
+              </p>
             </div>
           </div>
           {!readonly && (
@@ -81,14 +83,14 @@ const BagCard = ({
                 className={` flex h-8 max-w-max items-center justify-between gap-1 overflow-hidden rounded-xl text-xs outline outline-1 outline-gray-200 dark:outline-gray-700 xl:h-12`}
               >
                 <EditItemQuantityButton
-                  item={{ productId: id, amount, selectedColor, selectedSize }}
+                  item={{ productId: id, amount, selectedOptions }}
                   type="minus"
                 />
 
                 <p className="w-1/3 p-2 text-center ">{amount}</p>
 
                 <EditItemQuantityButton
-                  item={{ productId: id, amount, selectedColor, selectedSize }}
+                  item={{ productId: id, amount, selectedOptions }}
                   type="plus"
                 />
               </div>
@@ -97,9 +99,7 @@ const BagCard = ({
         </div>
       </div>
       {!readonly && (
-        <RemoveButton
-          cartItem={{ productId: id, amount, selectedColor, selectedSize }}
-        />
+        <RemoveButton cartItem={{ productId: id, amount, selectedOptions }} />
       )}
     </div>
   );

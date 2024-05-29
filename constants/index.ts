@@ -1,4 +1,4 @@
-import { DashboardCardProps, SortFilterItem } from "@/types";
+import { DashboardCardProps, ProductOnSaleType, SortFilterItem } from "@/types";
 import { formInputs, productInputs } from "./inputs";
 export const sorting: SortFilterItem[] = [
   {
@@ -283,4 +283,25 @@ const CSS_COLORS = [
   "yellow",
   "yellowgreen",
 ];
-export { CSS_COLORS, dashboardCards, faqSection, formInputs, productInputs };
+
+const tags = {
+  products: "products",
+  collections: "collections",
+  reviews: "reviews",
+  navbarLinks: "navbarLinks",
+  footer: "footer",
+  stories: "stories",
+  offers: "offers",
+  properties: "properties",
+  categories: "categories",
+  coupons: "coupons",
+  shipping: "shipping",
+};
+export {
+  tags,
+  CSS_COLORS,
+  dashboardCards,
+  faqSection,
+  formInputs,
+  productInputs,
+};

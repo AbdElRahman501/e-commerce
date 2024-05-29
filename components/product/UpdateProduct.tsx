@@ -1,5 +1,5 @@
 "use client";
-import { CartItem, Product, ProductOnSaleType } from "@/types";
+import { CartItem, Product, ProductOnSaleType, Variation } from "@/types";
 import React from "react";
 import CustomInput from "../CustomInput";
 import { productInputs } from "@/constants";
@@ -7,35 +7,54 @@ import ProductDetailsComponent from "../ProductDetailsComponent";
 import CustomForm from "../CustomForm";
 import { updateProduct } from "../actions/product.actions";
 import ImageEditor from "./ImageEditor";
-import { useFormStatus } from "react-dom";
 import ContentEditor from "./ContentEditor";
 import SubmitButton from "../SubmitButton";
+import VariationsEditor from "./VariationsEditor";
+
+interface Content {
+  name: string;
+  html: string;
+}
 
 const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
-  const [data, setData] = React.useState<any>({
-    ...product,
-    colors: product.colors.join(","),
-    sizes: product.sizes.join(","),
-  });
+  const [data, setData] = React.useState<any>(product);
+  const [profitRate, setProfitRate] = React.useState<number>(25);
 
-  const [images, setImages] = React.useState<Record<string, string[]>>(
-    product.images,
-  );
   const [preview, setPreview] = React.useState(false);
 
   return (
     <>
       <CustomForm
         action={updateProduct}
-        data={{
-          ...data,
-          colors: Object.keys(images || {}).map((key) => key),
-          sizes: data.sizes.split(",").map((item: string) => item.trim()),
-          images: images,
-        }}
+        data={data}
         className="flex w-full flex-col gap-3 px-5 md:gap-5 lg:px-20"
       >
-        <ImageEditor images={images} setImages={setImages} />
+        <ImageEditor
+          images={data.images}
+          setImages={(images) => setData({ ...data, images })}
+        />
+        <VariationsEditor
+          images={data.images}
+          variations={data.variations}
+          setVariations={(variations: Variation[]) =>
+            setData({ ...data, variations })
+          }
+          profitRate={profitRate}
+        />
+        <div className="flex">
+          <p>
+            estimatePrice :{" "}
+            {(data.minPrice / ((100 - profitRate) / 100)).toFixed(2)}
+          </p>
+          <CustomInput
+            label="profitRate"
+            type="number"
+            placeholder="Enter product profitRate"
+            name="profitRate"
+            value={profitRate}
+            onChange={(e) => setProfitRate(+e.target.value)}
+          />
+        </div>
         {productInputs.map((input, index) => (
           <CustomInput
             key={index}
@@ -57,8 +76,8 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
           />
         ))}
         <ContentEditor
-          content={data.content}
-          setContent={(content) => setData({ ...data, content })}
+          content={data.content as Content[]}
+          setContent={(content: Content[]) => setData({ ...data, content })}
         />
         <SubmitButton
           type="submit"
@@ -79,12 +98,7 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
       </div>
       {preview && (
         <ProductDetailsComponent
-          {...{
-            ...data,
-            colors: Object.keys(images || {}).map((key) => key),
-            sizes: data.sizes.split(",").map((item: string) => item.trim()),
-            images: images,
-          }}
+          {...data}
           isFav={false}
           preview={true}
           cart={[] as CartItem[]}

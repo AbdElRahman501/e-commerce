@@ -14,7 +14,6 @@ import {
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { soldProducts } from "./product.actions";
-import { User } from "../models/users.model";
 import { subscribeWithEmail } from "./users.actions";
 import { promoCodeUse } from "./promo-code.actions";
 
@@ -191,7 +190,9 @@ export const sendEmail = async (
     );
     const cartProducts = reformatCartItems(cart, products);
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.zoho.com",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.PAGE_EMAIL,
         pass: process.env.PAGE_PASS,
@@ -231,6 +232,6 @@ export const sendEmail = async (
     const info = await transporter.sendMail(mailOptions);
     console.log("order Confirmation Email sent:", info.response);
   } catch (error) {
-    console.error("Email sending error:", error);
+    console.error("order Confirmation Email sending error:", error);
   }
 };

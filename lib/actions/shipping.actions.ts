@@ -4,6 +4,7 @@ import { connectToDatabase } from "../mongoose";
 import { City, Governorate } from "../models/shipping.model";
 import { redirect } from "next/navigation";
 import { revalidateTag, unstable_cache } from "next/cache";
+import { tags } from "@/constants";
 
 export const fetchShipping = unstable_cache(
   async (): Promise<{
@@ -24,8 +25,8 @@ export const fetchShipping = unstable_cache(
       throw error;
     }
   },
-  ["shipping"],
-  { tags: ["shipping"], revalidate: 60 * 60 * 24 },
+  [tags.shipping],
+  { tags: [tags.shipping], revalidate: 60 * 60 * 24 },
 );
 
 export const updateGovernorate = async (formData: FormData) => {
@@ -37,7 +38,7 @@ export const updateGovernorate = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Governorate.updateOne({ id: data.id }, data);
-    revalidateTag("shipping");
+    revalidateTag(tags.shipping);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -54,7 +55,7 @@ export const addNewGovernorate = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await Governorate.create(data);
-    revalidateTag("shipping");
+    revalidateTag(tags.shipping);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -71,7 +72,7 @@ export const updateCity = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await City.updateOne({ id: data.id }, data);
-    revalidateTag("shipping");
+    revalidateTag(tags.shipping);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -89,7 +90,7 @@ export const addNewCity = async (formData: FormData) => {
   try {
     await connectToDatabase();
     await City.create(data);
-    revalidateTag("shipping");
+    revalidateTag(tags.shipping);
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;

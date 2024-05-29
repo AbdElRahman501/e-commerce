@@ -7,12 +7,14 @@ import {
   OfferType,
   ProductOnSaleType,
   Product as ProductType,
+  Variation,
 } from "@/types";
 import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { fetchOffers } from "./offer.actions";
+import { tags } from "@/constants";
 
 export const fetchFilteredProducts = unstable_cache(
   async ({
@@ -28,7 +30,6 @@ export const fetchFilteredProducts = unstable_cache(
     sort,
     idsToExclude = [],
     minLimit = 0,
-    containMainProduct = false,
   }: FilterProps): Promise<{
     products: ProductOnSaleType[];
     count: number;
@@ -80,16 +81,19 @@ export const fetchFilteredProducts = unstable_cache(
     const sizeFilterCondition =
       sizeFilter?.length > 0
         ? {
-            sizes: {
+            "variations.options.name": {
               $in: sizeFilter.map(
-                (size: string) =>
-                  new RegExp(`\\b${size.trim().toLowerCase()}\\b`, "i"),
+                (size) => new RegExp(`\\b${size.trim().toLowerCase()}\\b`, "i"),
               ),
             },
           }
         : {};
     const colorFilterCondition =
-      colorsFilter?.length > 0 ? { colors: { $in: colorsFilter } } : {};
+      colorsFilter?.length > 0
+        ? {
+            "variations.options.name": { $in: colorsFilter },
+          }
+        : {};
 
     const genderFilterCondition = genderFilter
       ? genderFilter !== "all"
@@ -100,17 +104,8 @@ export const fetchFilteredProducts = unstable_cache(
     const objectIdArray = idsToObjectId(idsToExclude);
     const excludeCondition = { _id: { $nin: objectIdArray } };
 
-    const notContainMainProduct = !containMainProduct
-      ? {
-          $or: [
-            { mainProduct: { $exists: false } },
-            { mainProduct: { $eq: "" } },
-          ],
-        }
-      : {};
     const finalQuery: any = {
       $and: [
-        notContainMainProduct,
         textSearchCondition,
         categoryFilterCondition,
         keywordFilterCondition,
@@ -164,9 +159,9 @@ export const fetchFilteredProducts = unstable_cache(
       throw error;
     }
   },
-  ["products"],
+  [tags.products],
   {
-    tags: ["products"],
+    tags: [tags.products],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -256,17 +251,30 @@ export const getAllProperties = unstable_cache(
   async () => {
     try {
       await connectToDatabase();
-      const sizes = await Product.distinct("sizes").exec();
-      const colors = await Product.distinct("colors").exec();
-      return { sizes, colors };
+      const products = await Product.find({}, "variations").exec();
+
+      const sizes = new Set<string>();
+      const colors = new Set<string>();
+
+      products.forEach((product) => {
+        product.variations.forEach((variation: Variation) => {
+          if (variation.type === "size") {
+            variation.options.forEach((option) => sizes.add(option.name));
+          } else if (variation.type === "color") {
+            variation.options.forEach((option) => colors.add(option.name));
+          }
+        });
+      });
+
+      return { sizes: Array.from(sizes), colors: Array.from(colors) };
     } catch (error) {
-      console.error("Error fetching sizes:", error);
-      throw new Error("Unable to fetch sizes");
+      console.error("Error fetching properties:", error);
+      throw new Error("Unable to fetch properties");
     }
   },
-  ["properties"],
+  [tags.properties],
   {
-    tags: ["properties"],
+    tags: [tags.properties],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -287,9 +295,9 @@ export const fetchProduct = unstable_cache(
       return null;
     }
   },
-  ["products"],
+  [tags.products],
   {
-    tags: ["products"],
+    tags: [tags.products],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -322,9 +330,9 @@ export const fetchProductsById = unstable_cache(
       throw error;
     }
   },
-  ["products"],
+  [tags.products],
   {
-    tags: ["products"],
+    tags: [tags.products],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -393,9 +401,9 @@ export const getCategories = unstable_cache(
   async (): Promise<CategoryCount[]> => {
     return await getCategoriesWithProductCount();
   },
-  ["categories"],
+  [tags.categories],
   {
-    tags: ["categories"],
+    tags: [tags.categories],
     revalidate: 60 * 60 * 24,
   },
 );
@@ -404,7 +412,9 @@ export async function deleteProduct(id: string) {
   try {
     await connectToDatabase();
     const data = await Product.findByIdAndDelete(id);
-    revalidateTag("products");
+    revalidateTag(tags.products);
+    revalidateTag(tags.properties);
+    revalidateTag(tags.categories);
     return "Product deleted successfully";
   } catch (error) {
     console.error("Error deleting product:", error);
@@ -420,7 +430,9 @@ export async function updateProductById(newProduct: ProductType) {
       new: true,
     });
     const productUpdated: ProductType = JSON.parse(JSON.stringify(data));
-    revalidateTag("products");
+    revalidateTag(tags.products);
+    revalidateTag(tags.properties);
+    revalidateTag(tags.categories);
     return productUpdated;
   } catch (error) {
     console.error("Error updating product:", error);
@@ -438,7 +450,9 @@ export async function duplicateProductById(id: string) {
     delete product.views;
     delete product.sales;
     const newProduct: ProductType = await Product.create(product);
-    revalidateTag("products");
+    revalidateTag(tags.products);
+    revalidateTag(tags.properties);
+    revalidateTag(tags.categories);
     return newProduct;
   } catch (error) {
     console.error("Error updating product:", error);
@@ -446,26 +460,50 @@ export async function duplicateProductById(id: string) {
   }
 }
 
-export const fetchProductVariants = unstable_cache(
-  async (id: string): Promise<ProductOnSaleType[]> => {
+const tokenize = (text: string): string[] => {
+  return text.toLowerCase().match(/\w+/g) || [];
+};
+
+const countKeywordMatches = (keywords: string[], text: string): number => {
+  const keywordSet = new Set(keywords);
+  const textTokens = tokenize(text);
+  return textTokens.filter((token) => keywordSet.has(token)).length;
+};
+
+export const findBestMatchProducts = unstable_cache(
+  async (product: ProductType, limit = 4): Promise<ProductOnSaleType[]> => {
+    const keywords = tokenize(product.keywords);
+
+    const objectIdArray = idsToObjectId([product.id]);
+    const excludeCondition = { _id: { $nin: objectIdArray } };
+
+    const finalQuery: any = {
+      $and: [excludeCondition],
+    };
+
     try {
-      await connectToDatabase();
-      const data = await Product.find({ mainProduct: id });
-      const offers: OfferType[] = await fetchOffers();
+      const data = await Product.find(finalQuery);
       const products: ProductType[] = JSON.parse(JSON.stringify(data));
+      const rankedProducts = products
+        .map((product) => ({
+          product,
+          matchCount: countKeywordMatches(keywords, product.keywords),
+        }))
+        .sort((a, b) => b.matchCount - a.matchCount)
+        .slice(0, limit);
+
+      const offers: OfferType[] = await fetchOffers();
       const modifiedProducts: ProductOnSaleType[] = modifyProducts(
-        products,
+        rankedProducts.map((item) => item.product),
         offers,
       );
+
       return modifiedProducts;
     } catch (error) {
       console.error("Error fetching products:", error);
       throw error;
     }
   },
-  ["products"],
-  {
-    tags: ["products"],
-    revalidate: 60 * 60 * 24,
-  },
+  [tags.products],
+  { tags: [tags.products] },
 );
