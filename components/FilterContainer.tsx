@@ -1,32 +1,33 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Sorting } from ".";
-import { CategoryCount } from "@/types";
+import { CategoryCount, CollectionCount } from "@/types";
 import { createUrl } from "@/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const FilterContainer = ({
   allColors,
   allSizes,
-  categories,
+  collectionsWithCategories,
 }: {
+  collectionsWithCategories: CollectionCount[];
   allColors: string[];
   allSizes: string[];
-  categories: CategoryCount[];
 }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   const genderFilter = searchParams?.get("gf") || "";
+  const collectionFilter = searchParams?.get("cl") || "";
   const categoryFilter = searchParams?.get("ctf")?.length
-    ? searchParams?.get("ctf")?.split(",") || []
+    ? searchParams?.get("ctf")?.toLowerCase()?.trim()?.split(",") || []
     : [];
   const sizeFilter = searchParams?.get("szf")?.length
-    ? searchParams?.get("szf")?.split(",") || []
+    ? searchParams?.get("szf")?.toLowerCase()?.trim()?.split(",") || []
     : [];
 
   const colorFilter = searchParams?.get("clf")?.length
-    ? searchParams?.get("clf")?.split(",") || []
+    ? searchParams?.get("clf")?.toLowerCase()?.trim()?.split(",") || []
     : [];
 
   const minPriceParam = searchParams?.get("minP") || "";
@@ -39,6 +40,8 @@ const FilterContainer = ({
     React.useState<string>(genderFilter);
   const [selectedCategories, setSelectedCategories] =
     React.useState<string[]>(categoryFilter);
+  const [selectedCollection, setSelectedCollection] =
+    React.useState<string>(collectionFilter);
   const [selectedSizes, setSelectedSizes] =
     React.useState<string[]>(sizeFilter);
   const [selectedColors, setSelectedColors] =
@@ -47,11 +50,20 @@ const FilterContainer = ({
   const [maxPriceState, setMaxPriceState] = React.useState<number>(maxPrice);
   const [changed, setChanged] = React.useState<boolean>(false);
 
+  const categories = useMemo(
+    () =>
+      collectionsWithCategories.find((c) => c.name === selectedCollection)
+        ?.categories || [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedCollection],
+  );
+
   function submitHandler() {
     setSubmitChanges(true);
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("gf", selectedGenders);
     newSearchParams.set("ctf", selectedCategories.join(","));
+    newSearchParams.set("cl", selectedCollection);
     newSearchParams.set("szf", selectedSizes.join(","));
     newSearchParams.set("clf", selectedColors.join(","));
     newSearchParams.set("minP", minPriceState.toString());
@@ -81,6 +93,7 @@ const FilterContainer = ({
     router.replace(pathname, { scroll: false });
     setSelectedGenders("");
     setSelectedCategories([]);
+    setSelectedCollection("");
     setSelectedSizes([]);
     setSelectedColors([]);
     setMinPriceState(0);
@@ -90,6 +103,7 @@ const FilterContainer = ({
     if (
       selectedGenders ||
       selectedCategories.length ||
+      selectedCollection ||
       selectedSizes.length ||
       selectedColors.length ||
       minPriceState !== 0 ||
@@ -102,6 +116,7 @@ const FilterContainer = ({
   }, [
     selectedGenders,
     selectedCategories,
+    selectedCollection,
     selectedSizes,
     selectedColors,
     minPriceState,
@@ -136,34 +151,58 @@ const FilterContainer = ({
           <span>women</span>
         </button>
       </div>
-      <div className="flex flex-col gap-3">
-        <h1>Categories</h1>
-        <div className="flex flex-wrap gap-1">
-          {categories.map((item, index) => {
-            const selected = selectedCategories.includes(
-              item.name.toLowerCase(),
-            );
-            return (
+      {collectionsWithCategories.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h1>Collections</h1>
+          <div className="flex flex-wrap gap-1">
+            {collectionsWithCategories.map((item, index) => (
               <button
                 onClick={() => {
                   setSubmitChanges(false);
-                  setSelectedCategories(
-                    selected
-                      ? selectedCategories.filter(
-                          (category) => category !== item.name,
-                        )
-                      : [...selectedCategories, item.name],
+                  setSelectedCollection(
+                    selectedCollection === item.name ? "" : item.name,
                   );
+                  setSelectedCategories([]);
                 }}
                 key={index}
-                className={`${selected ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 text-sm outline duration-200 hover:scale-105 hover:outline-black dark:hover:outline-white`}
+                className={`${selectedCollection === item.name ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 text-sm outline duration-200 hover:scale-105 hover:outline-black dark:hover:outline-white`}
               >
                 <span>{item.name + " (" + item.count + ")"}</span>
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
+      )}{" "}
+      {categories.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h1>Categories</h1>
+          <div className="flex flex-wrap gap-1">
+            {categories.map((item, index) => {
+              const selected = selectedCategories.includes(
+                item.name.trim().toLowerCase(),
+              );
+              return (
+                <button
+                  onClick={() => {
+                    setSubmitChanges(false);
+                    setSelectedCategories(
+                      selected
+                        ? selectedCategories.filter(
+                            (category) => category !== item.name,
+                          )
+                        : [...selectedCategories, item.name],
+                    );
+                  }}
+                  key={index}
+                  className={`${selected ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 text-sm outline duration-200 hover:scale-105 hover:outline-black dark:hover:outline-white`}
+                >
+                  <span>{item.name + " (" + item.count + ")"}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}{" "}
       <div className="flex flex-col gap-3">
         <h1>Sizes</h1>
         <div className="flex flex-wrap gap-1">
@@ -246,7 +285,7 @@ const FilterContainer = ({
         <button
           type="button"
           onClick={submitHandler}
-          className="group mt-2 min-h-12 w-full rounded-2xl  bg-primary_color uppercase  text-white enabled:hover:bg-gray-900"
+          className="group mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-lg bg-black px-4 py-2 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
         >
           <p className="duration-500 group-hover:scale-110">Submit</p>
         </button>
@@ -254,7 +293,7 @@ const FilterContainer = ({
           <button
             type="button"
             onClick={onReset}
-            className="group mt-2 min-h-12 w-full rounded-2xl border-2 uppercase "
+            className="group mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-lg border-2 border-black px-4 py-2 text-center text-black dark:border-white dark:text-white"
           >
             <p className="duration-500 group-hover:scale-110">Reset</p>
           </button>

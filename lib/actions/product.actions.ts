@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { Product } from "@/lib";
 import {
   CategoryCount,
+  CollectionCount,
   FilterProps,
   OfferType,
   ProductOnSaleType,
@@ -15,6 +16,7 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 import { fetchOffers } from "./offer.actions";
 import { tags } from "@/constants";
+import { fetchCollections } from "./store.actions";
 
 export const fetchFilteredProducts = unstable_cache(
   async ({
@@ -30,6 +32,7 @@ export const fetchFilteredProducts = unstable_cache(
     sort,
     idsToExclude = [],
     minLimit = 0,
+    collection = "",
   }: FilterProps): Promise<{
     products: ProductOnSaleType[];
     count: number;
@@ -101,11 +104,14 @@ export const fetchFilteredProducts = unstable_cache(
         : { $or: [{ gender: "male" }, { gender: "female" }, { gender: "all" }] }
       : {};
 
+    const collectionCondition = collection ? { collections: collection } : {};
+
     const objectIdArray = idsToObjectId(idsToExclude);
     const excludeCondition = { _id: { $nin: objectIdArray } };
 
     const finalQuery: any = {
       $and: [
+        collectionCondition,
         textSearchCondition,
         categoryFilterCondition,
         keywordFilterCondition,
@@ -356,13 +362,18 @@ export async function soldProducts(ids: string[]): Promise<void> {
   }
 }
 
-export const getCategoriesWithProductCount = async (): Promise<
-  CategoryCount[]
-> => {
+export const getCategoriesWithProductCount = async (
+  collectionName: string,
+): Promise<CategoryCount[]> => {
   try {
     await connectToDatabase();
     // Aggregate pipeline to group products by categories and count the number of products in each category
     const aggregationPipeline = [
+      {
+        $match: {
+          collections: collectionName, // Match products that contain the collectionName in their collections array
+        },
+      },
       {
         $project: {
           categories: {
@@ -397,13 +408,34 @@ export const getCategoriesWithProductCount = async (): Promise<
   }
 };
 
-export const getCategories = unstable_cache(
-  async (): Promise<CategoryCount[]> => {
-    return await getCategoriesWithProductCount();
+export const getCollectionsWithCategories = unstable_cache(
+  async (): Promise<CollectionCount[]> => {
+    try {
+      const collectionsData = await fetchCollections();
+      const collections = collectionsData.map((collection) => collection.name);
+      const result: CollectionCount[] = [];
+      for (const collection of collections) {
+        const categories = await getCategoriesWithProductCount(collection);
+        const count = categories.reduce(
+          (acc, category) => acc + category.count,
+          0,
+        );
+        result.push({
+          name: collection,
+          count,
+          categories,
+        });
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Error fetching collections with categories:", error);
+      throw error;
+    }
   },
-  [tags.categories],
+  [tags.categories, tags.collections],
   {
-    tags: [tags.categories],
+    tags: [tags.categories, tags.collections],
     revalidate: 60 * 60 * 24,
   },
 );

@@ -1,26 +1,58 @@
 "use client";
 import { createUrl } from "@/utils";
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import React from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
+import LoadingDots from "./loading-dots";
 
-const LoadMore = ({ newLimit }: { newLimit: number }) => {
+const LoadMore = ({
+  newLimit,
+  count,
+  limit,
+  length,
+}: {
+  length: number;
+  limit: number;
+  count: number;
+  newLimit: number;
+}) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
   function updateLimit() {
+    setLoading(true);
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("l", newLimit.toString());
     const optionUrl = createUrl(pathname, newSearchParams);
-    return optionUrl;
+    router.replace(optionUrl, { scroll: false });
   }
+
+  useEffect(() => {
+    if (length === limit || length === count) {
+      setLoading(false);
+    }
+  }, [length, limit, count]);
+
+  if (length === count) return null;
+
   return (
-    <Link
-      href={updateLimit()}
-      scroll={false}
-      className="group mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl bg-primary_color uppercase  text-white hover:bg-gray-900"
+    <button
+      onClick={() => updateLimit()}
+      disabled={loading}
+      type="button"
+      aria-label="Load More"
+      className="group mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-lg bg-black px-4 py-2 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
     >
-      <p className="duration-500 group-hover:scale-110">Load More</p>
-    </Link>
+      <p className="duration-500 group-hover:scale-110">
+        {loading ? (
+          <p className="text-4xl">
+            <LoadingDots />
+          </p>
+        ) : (
+          "Load More"
+        )}
+      </p>
+    </button>
   );
 };
 

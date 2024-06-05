@@ -46,6 +46,7 @@ const ProductDetailsComponent = ({
   preview,
   content,
   variations,
+  collections,
 }: ProductDetailsComponent) => {
   const searchParams = useSearchParams();
 
@@ -92,11 +93,28 @@ const ProductDetailsComponent = ({
             >
               Shop
             </Link>
+            {collections.map((item, index) => (
+              <div key={index} className="inline-block">
+                <span className="mx-1 text-base">&#8250;</span>
+                <Link
+                  href={{
+                    pathname: "/shop",
+                    query: { cl: item.trim() },
+                  }}
+                  className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
+                >
+                  {item}
+                </Link>
+              </div>
+            ))}
             {categories.split(",").map((item, index) => (
               <div key={index} className="inline-block">
                 <span className="mx-1 text-base">&#8250;</span>
                 <Link
-                  href={`/shop?ctf=${item.trim()}`}
+                  href={{
+                    pathname: "/shop",
+                    query: { ctf: item.trim(), cl: collections[0] || "" },
+                  }}
                   className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
                 >
                   {item}

@@ -1,5 +1,11 @@
 "use client";
-import { CartItem, Product, ProductOnSaleType, Variation } from "@/types";
+import {
+  CartItem,
+  CollectionType,
+  Product,
+  ProductOnSaleType,
+  Variation,
+} from "@/types";
 import React from "react";
 import CustomInput from "../CustomInput";
 import { productInputs } from "@/constants";
@@ -10,16 +16,22 @@ import ImageEditor from "./ImageEditor";
 import ContentEditor from "./ContentEditor";
 import SubmitButton from "../SubmitButton";
 import VariationsEditor from "./VariationsEditor";
+import CollectionSelector from "./CollectionSelector";
 
 interface Content {
   name: string;
   html: string;
 }
 
-const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
+const UpdateProduct = ({
+  product,
+  collections,
+}: {
+  collections: CollectionType[];
+  product: ProductOnSaleType;
+}) => {
   const [data, setData] = React.useState<any>(product);
   const [profitRate, setProfitRate] = React.useState<number>(25);
-
   const [preview, setPreview] = React.useState(false);
 
   return (
@@ -75,6 +87,13 @@ const UpdateProduct = ({ product }: { product: ProductOnSaleType }) => {
             }}
           />
         ))}
+        <CollectionSelector
+          selectedOptions={data.collections}
+          setSelectedOptions={(collections) =>
+            setData({ ...data, collections })
+          }
+          collections={collections.map((c) => c.name)}
+        />
         <ContentEditor
           content={data.content as Content[]}
           setContent={(content: Content[]) => setData({ ...data, content })}

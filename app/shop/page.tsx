@@ -33,7 +33,7 @@ export default async function SearchPage({
     minP,
     maxP,
     kw,
-    collection,
+    cl,
   } = searchParams as {
     [key: string]: string;
   };
@@ -60,6 +60,7 @@ export default async function SearchPage({
     colorFilter: colorFilter,
     sizeFilter: sizeFilter,
     limit,
+    collection: cl || "",
   });
   const resultsText = products.length > 1 ? "results" : "result";
   return (
@@ -79,7 +80,13 @@ export default async function SearchPage({
           <ProductCard key={product.id} fav={fav} {...product} />
         ))}
       </div>
-      {count > limit && <LoadMore newLimit={limit + 12} />}
+
+      <LoadMore
+        count={count}
+        length={products.length}
+        limit={limit}
+        newLimit={limit + 12}
+      />
     </>
   );
 }
