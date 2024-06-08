@@ -62,7 +62,7 @@ const Coupon = ({
           disabled={loading || !coupon}
           aria-disabled={loading}
           aria-label="add cart item"
-          className={`${success && !changed ? "bg-green-500" : " bg-black "} h-14 w-14 rounded-lg border-gray-200 text-center text-3xl text-white duration-300 enabled:hover:bg-white enabled:hover:text-black disabled:opacity-50 `}
+          className={`${success && !changed ? "bg-green-500" : " bg-primary_color "} h-14 w-14 rounded-lg border-gray-200 text-center text-3xl text-white duration-300 enabled:hover:bg-white enabled:hover:text-black disabled:opacity-50 `}
         >
           <div className="flex items-center justify-center">
             {loading ? (

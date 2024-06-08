@@ -3,18 +3,20 @@ import mongoose from "mongoose";
 import { Product } from "@/lib";
 import {
   CategoryCount,
+  CollectionCount,
   FilterProps,
   OfferType,
   ProductOnSaleType,
   Product as ProductType,
   Variation,
 } from "@/types";
-import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
+import { getSalePrice, modifyProducts } from "@/utils";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { fetchOffers } from "./offer.actions";
 import { tags } from "@/constants";
+import { fetchCollections } from "./store.actions";
 
 export const fetchFilteredProducts = unstable_cache(
   async ({
@@ -30,10 +32,8 @@ export const fetchFilteredProducts = unstable_cache(
     sort,
     idsToExclude = [],
     minLimit = 0,
-  }: FilterProps): Promise<{
-    products: ProductOnSaleType[];
-    count: number;
-  }> => {
+    collection = "",
+  }: FilterProps): Promise<ProductOnSaleType[]> => {
     const textSearchCondition = query
       ? {
           $or: [
@@ -75,7 +75,7 @@ export const fetchFilteredProducts = unstable_cache(
         : {};
 
     const priceFilterCondition = {
-      price: { $gte: minPrice || 0, $lte: maxPrice || 100000 },
+      price: { $gte: minPrice || 0, $lte: maxPrice + 100 || 100000 },
     };
 
     const sizeFilterCondition =
@@ -101,11 +101,14 @@ export const fetchFilteredProducts = unstable_cache(
         : { $or: [{ gender: "male" }, { gender: "female" }, { gender: "all" }] }
       : {};
 
+    const collectionCondition = collection ? { collections: collection } : {};
+
     const objectIdArray = idsToObjectId(idsToExclude);
     const excludeCondition = { _id: { $nin: objectIdArray } };
 
     const finalQuery: any = {
       $and: [
+        collectionCondition,
         textSearchCondition,
         categoryFilterCondition,
         keywordFilterCondition,
@@ -119,7 +122,6 @@ export const fetchFilteredProducts = unstable_cache(
 
     try {
       await connectToDatabase();
-      let count = await Product.countDocuments(finalQuery);
       const offers: OfferType[] = await fetchOffers();
       const data = await fetchDataBySection({
         sort,
@@ -133,7 +135,7 @@ export const fetchFilteredProducts = unstable_cache(
         offers,
       );
 
-      if (minLimit > count) {
+      if (minLimit > products.length) {
         const countNew = await Product.countDocuments({
           $and: [excludeCondition],
         });
@@ -151,9 +153,8 @@ export const fetchFilteredProducts = unstable_cache(
         );
         products = removeDuplicatesById([...products, ...additionalProducts]);
         modifiedProducts = modifyProducts(products, offers);
-        count = products.length;
       }
-      return { products: modifiedProducts, count };
+      return modifiedProducts;
     } catch (error) {
       console.error("Error fetching products:", error);
       throw error;
@@ -196,10 +197,10 @@ export async function fetchProducts(): Promise<ProductOnSaleType[]> {
   }
 }
 
-export async function likeProduct(id: string, isFave: boolean) {
+export async function likeProduct(id: string) {
   try {
     await connectToDatabase();
-    Product.findByIdAndUpdate(id, { $inc: { likes: isFave ? 1 : -1 } });
+    Product.findByIdAndUpdate(id, { $inc: { likes: 1 } });
   } catch (error) {
     console.log(error);
     throw error;
@@ -228,21 +229,9 @@ async function fetchDataBySection({
     case "Best Sellers":
       return await Product.find(finalQuery).sort({ sales: -1 }).limit(limit);
     case "Price: Low to High":
-      return sorProductPriceOffer({
-        products: await Product.find(finalQuery)
-          .sort({ price: 1 })
-          .limit(limit),
-        offers,
-        ascending: true,
-      });
+      return await Product.find(finalQuery).sort({ price: 1 }).limit(limit);
     case "Price: High to Low":
-      return sorProductPriceOffer({
-        products: await Product.find(finalQuery)
-          .sort({ price: -1 })
-          .limit(limit),
-        offers,
-        ascending: false,
-      });
+      return await Product.find(finalQuery).sort({ price: -1 }).limit(limit);
     default:
       return await Product.find(finalQuery).limit(limit);
   }
@@ -356,13 +345,18 @@ export async function soldProducts(ids: string[]): Promise<void> {
   }
 }
 
-export const getCategoriesWithProductCount = async (): Promise<
-  CategoryCount[]
-> => {
+export const getCategoriesWithProductCount = async (
+  collectionName: string,
+): Promise<CategoryCount[]> => {
   try {
     await connectToDatabase();
     // Aggregate pipeline to group products by categories and count the number of products in each category
     const aggregationPipeline = [
+      {
+        $match: {
+          collections: collectionName, // Match products that contain the collectionName in their collections array
+        },
+      },
       {
         $project: {
           categories: {
@@ -397,13 +391,34 @@ export const getCategoriesWithProductCount = async (): Promise<
   }
 };
 
-export const getCategories = unstable_cache(
-  async (): Promise<CategoryCount[]> => {
-    return await getCategoriesWithProductCount();
+export const getCollectionsWithCategories = unstable_cache(
+  async (): Promise<CollectionCount[]> => {
+    try {
+      const collectionsData = await fetchCollections();
+      const collections = collectionsData.map((collection) => collection.name);
+      const result: CollectionCount[] = [];
+      for (const collection of collections) {
+        const categories = await getCategoriesWithProductCount(collection);
+        const count = categories.reduce(
+          (acc, category) => acc + category.count,
+          0,
+        );
+        result.push({
+          name: collection,
+          count,
+          categories,
+        });
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Error fetching collections with categories:", error);
+      throw error;
+    }
   },
-  [tags.categories],
+  [tags.categories, tags.collections],
   {
-    tags: [tags.categories],
+    tags: [tags.categories, tags.collections],
     revalidate: 60 * 60 * 24,
   },
 );

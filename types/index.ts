@@ -156,6 +156,8 @@ export interface CartItem {
   productId: string;
   amount: number;
   selectedOptions: Record<string, string>;
+  price?: number;
+  minPrice?: number;
 }
 
 export interface FormInput {
@@ -222,10 +224,16 @@ export interface FilterProps extends FilterType {
   minLimit?: number;
   idsToExclude?: string[];
   containMainProduct?: boolean;
+  collection?: string;
 }
 export interface CategoryCount {
   name: string;
   count: number;
+}
+export interface CollectionCount {
+  name: string;
+  count: number;
+  categories: CategoryCount[];
 }
 export interface DashboardCardProps {
   image: string;

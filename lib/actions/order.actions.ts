@@ -1,5 +1,10 @@
 "use server";
-import { CartItem, FilterProps, Order as OrderType } from "@/types";
+import {
+  CartItem,
+  CartProduct,
+  FilterProps,
+  Order as OrderType,
+} from "@/types";
 import { connectToDatabase } from "../mongoose";
 import { fetchProductsById, Order } from "@/lib";
 import nodemailer from "nodemailer";
@@ -9,6 +14,7 @@ import {
   formatOrderItems,
   formatPrice,
   generateCode,
+  getNextWorkingDay,
   reformatCartItems,
 } from "@/utils";
 import { cookies } from "next/headers";
@@ -23,7 +29,19 @@ export async function createOrder(formData: FormData) {
     await connectToDatabase();
     const cartData = cookies().get("cart")?.value;
     const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
-
+    const products = await fetchProductsById(
+      cart.map((item) => item.productId),
+    );
+    const cartProducts: CartProduct[] = reformatCartItems(cart, products);
+    const modifiedCartProducts: CartItem[] = cartProducts.map((item) => {
+      return {
+        price: item.salePrice || item.price,
+        minPrice: item.minPrice,
+        productId: item.id,
+        amount: item.amount,
+        selectedOptions: item.selectedOptions,
+      };
+    });
     const email = formData.get("email")?.toString() || "";
     const phoneNumber = formData.get("phoneNumber")!.toString();
     const messageAccept = formData.get("messageAccept") ? true : false;
@@ -53,7 +71,7 @@ export async function createOrder(formData: FormData) {
 
     const order = {
       id: orderId,
-      products: cart,
+      products: modifiedCartProducts,
       personalInfo: {
         firstName,
         lastName,
@@ -77,7 +95,7 @@ export async function createOrder(formData: FormData) {
     const createdOrder: OrderType = JSON.parse(JSON.stringify(data));
     soldProducts(cart.map((item) => item.productId));
     if (email) {
-      sendEmail(createdOrder, cart);
+      sendEmail(createdOrder, cartProducts);
       if (messageAccept) {
         subscribeWithEmail(email);
       }
@@ -182,13 +200,9 @@ export async function updateOrder(formData: FormData): Promise<void> {
 
 export const sendEmail = async (
   order: OrderType,
-  cart: CartItem[],
+  cartProducts: CartProduct[],
 ): Promise<void> => {
   try {
-    const products = await fetchProductsById(
-      cart.map((item) => item.productId),
-    );
-    const cartProducts = reformatCartItems(cart, products);
     const transporter = nodemailer.createTransport({
       host: "smtp.zoho.com",
       port: 465,
@@ -210,6 +224,7 @@ export const sendEmail = async (
       .replace(/{{LAST_NAME}}/g, order.personalInfo.lastName)
       .replace(/{{EMAIL}}/g, order.personalInfo?.email || "")
       .replace(/{{STATE}}/g, order.personalInfo.state)
+      .replace(/{{EXPECTED_DELIVERY}}/g, getNextWorkingDay(order.createdAt, 4))
       .replace(/{{STREET_ADDRESS}}/g, order.personalInfo.streetAddress)
       .replace(/{{ORDER_ID}}/g, order.id)
       .replace(/{{TOTAL}}/g, formatPrice(order.total, "EGP"))

@@ -2,29 +2,25 @@ import { SectionTitle } from "@/components";
 import CustomTable from "@/components/CustomTable";
 import SubmitButton from "@/components/SubmitButton";
 import TotalCard from "@/components/TotalCard";
-import { fetchFilteredProducts } from "@/lib";
 import { fetchOrders } from "@/lib/actions/order.actions";
+import { fetchProducts } from "@/lib/actions/product.actions";
 import { revalidateAll } from "@/lib/actions/store.actions";
 import { fetchUsers } from "@/lib/actions/users.actions";
 import { findUniqueCustomers, formatPrice, getRevenue } from "@/utils";
 import Link from "next/link";
-import React, { Suspense } from "react";
+import React from "react";
 
 const DashBoardPage = async () => {
   const orders = await fetchOrders();
-  const { products } = await fetchFilteredProducts({
-    containMainProduct: true,
-  });
+  const products = await fetchProducts();
   const pending = orders?.filter((order) => order.status === "Pending").length;
   const deliveredRevenue = getRevenue(
     orders.filter((order) => order.status === "Delivered"),
-    products,
   );
   const pendingRevenue = getRevenue(
     orders.filter(
       (order) => order.status !== "Delivered" && order.status !== "Canceled",
     ),
-    products,
   );
 
   const totalSales = orders
@@ -81,7 +77,7 @@ const DashBoardPage = async () => {
       </div>
       <form action={revalidateAll}>
         <SubmitButton
-          className="rounded-lg bg-black px-4 py-2 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
+          className="group flex h-14 w-full items-center justify-center rounded-lg bg-primary_color px-5 uppercase text-white duration-300 hover:bg-white hover:text-black"
           type="submit"
         >
           revalidate all data

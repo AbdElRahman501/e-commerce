@@ -19,13 +19,13 @@ const Message = ({
             localStorage.removeItem("cartItems");
             window.location.reload();
           }}
-          className="group mx-auto mt-2 flex h-14 w-full max-w-xs items-center justify-center rounded-lg bg-black uppercase   text-white duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white"
+          className="group mx-auto mt-2 flex h-14 w-full max-w-xs items-center justify-center rounded-lg bg-primary_color uppercase   text-white duration-300 hover:bg-white hover:text-black"
         >
           <p className="duration-500 group-hover:scale-110">remove all</p>
         </button>
       ) : (
         <Link href="/shop">
-          <div className="group mx-auto mt-2 flex h-14 w-full max-w-xs items-center justify-center rounded-lg bg-black uppercase   text-white duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white">
+          <div className="group mx-auto mt-2 flex h-14 w-full max-w-xs items-center justify-center rounded-lg bg-primary_color uppercase   text-white duration-300 hover:bg-white hover:text-black">
             <p className="duration-500 group-hover:scale-110">
               continue shopping
             </p>

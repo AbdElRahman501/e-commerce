@@ -494,6 +494,25 @@
                                       mso-line-height-alt: 19.2px;
                                     "
                                   >
+                                    <p
+                                      style="
+                                        margin: 0;
+                                        color: #000000;
+                                        direction: ltr;
+                                        font-family: &quot;Roboto&quot;, Tahoma,
+                                          Verdana, Segoe, sans-serif;
+                                        font-size: 18px;
+                                        font-weight: 700;
+                                        letter-spacing: normal;
+                                        line-height: 120%;
+                                        text-align: center;
+                                        margin-top: 0;
+                                        margin-bottom: 0;
+                                        mso-line-height-alt: 45.6px;
+                                      "
+                                    >
+                                      expected delivery: {{EXPECTED_DELIVERY}}
+                                    </p>
                                     <p style="margin: 0">
                                       Delivery times are estimated. If you're
                                       experiencing difficulty with this order,
@@ -1318,11 +1337,17 @@
                                     "
                                   >
                                     <p
-                                      style="margin: 0; word-break: break-word"
+                                      style="
+                                        margin: 0;
+                                        word-break: break-word;
+                                        overflow: hidden;
+                                        display: -webkit-box;
+                                        -webkit-box-orient: vertical;
+                                        -webkit-line-clamp: 1;
+                                        color: #2b303a;
+                                      "
                                     >
-                                      <span style="color: #2b303a"
-                                        >{{PAYMENT}}</span
-                                      >
+                                      {{PAYMENT}}
                                     </p>
                                     <p
                                       style="margin: 0; word-break: break-word"

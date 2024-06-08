@@ -17,6 +17,7 @@ const config: Config = {
       colors: {
         primary_bg: "var(--background)",
         primary_color: "var(--primary-color)",
+        dark_bg: "var(--dark-background)",
       },
       fontFamily: {
         golos: ["var(--font-golos-ui)"],
@@ -26,6 +27,9 @@ const config: Config = {
       },
       maxWidth: {
         "8xl": "1446px",
+      },
+      dropShadow: {
+        white: "0 0 5px rgba(255, 255, 255, 1)",
       },
     },
   },

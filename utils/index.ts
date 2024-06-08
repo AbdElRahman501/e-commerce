@@ -60,30 +60,6 @@ export function getSalePrice(offers: OfferType[], product: Product) {
   return { salePrice: null, saleValue: null };
 }
 
-export const sorProductPriceOffer = ({
-  offers,
-  products,
-  ascending = true,
-}: {
-  offers: OfferType[];
-  products: Product[];
-  ascending?: boolean;
-}) => {
-  const sorter = products.sort((a: any, b: any) => {
-    const salePriceA = getSalePrice(offers, a).salePrice;
-    const salePriceB = getSalePrice(offers, b).salePrice;
-    const modifiedPriceA = salePriceA !== null ? salePriceA : a.price;
-    const modifiedPriceB = salePriceB !== null ? salePriceB : b.price;
-    if (ascending) {
-      return modifiedPriceA - modifiedPriceB;
-    } else {
-      return modifiedPriceB - modifiedPriceA;
-    }
-  });
-
-  return sorter;
-};
-
 export const modifyProducts = (
   products: Product[],
   offers: OfferType[],
@@ -119,17 +95,22 @@ export const reformatCartItems = (
       (product: ProductOnSaleType) => product.id === cartItem.productId,
     );
     if (product) {
-      const price = calculatePrice(
-        product.price,
-        cartItem.selectedOptions,
-        product.variations,
-      );
-      const minPrice = calculateMinPrice(
-        product.minPrice,
-        cartItem.selectedOptions,
-        product.variations,
-      );
-      const salePrice = getSale(minPrice, price, product.saleValue);
+      const price =
+        cartItem.price ||
+        calculatePrice(
+          product.price,
+          cartItem.selectedOptions,
+          product.variations,
+        );
+      const minPrice =
+        cartItem.minPrice ||
+        calculateMinPrice(
+          product.minPrice,
+          cartItem.selectedOptions,
+          product.variations,
+        );
+      const salePrice =
+        cartItem.price || getSale(minPrice, price, product.saleValue);
       cartProducts.push({
         ...product,
         price,
@@ -323,16 +304,14 @@ export function createInputArray(inputObj: any) {
   return inputArray;
 }
 
-export const getRevenue = (orders: Order[], products: ProductOnSaleType[]) => {
-  if (!orders || !products) return 0;
+export const getRevenue = (orders: Order[]) => {
+  if (!orders) return 0;
   let revenue = 0;
   for (let i = 0; i < orders.length; i++) {
     const order = orders[i];
-    const cart = order.products;
-    const cartProducts = reformatCartItems(cart, products);
     const subTotal = order.subTotal;
-    const minSubTotal = cartProducts.reduce(
-      (acc, item) => acc + item.minPrice * item.amount,
+    const minSubTotal = order.products.reduce(
+      (acc, item) => acc + (item.minPrice || 0) * item.amount,
       0,
     );
     revenue += subTotal - order.discount - minSubTotal;
@@ -418,22 +397,21 @@ function formatDayDate(date: Date) {
 }
 
 export function getNextWorkingDay(startDate: string | Date, days: number) {
-  var currentDate = new Date(startDate);
-  for (var i = 0; i < days; i++) {
+  let currentDate = new Date(startDate);
+  if (currentDate.getHours() < 12) {
+    days--;
+  }
+  while (days > 0) {
     currentDate.setDate(currentDate.getDate() + 1);
     if (currentDate.getDay() === 5) {
       // Friday
-      currentDate.setDate(currentDate.getDate() + 2);
-    } else if (currentDate.getDay() === 6) {
-      // Saturday
       currentDate.setDate(currentDate.getDate() + 1);
     }
+    days--;
   }
 
-  // Return the next working day
   return formatDayDate(currentDate);
 }
-
 export function generateCombinations(
   variations: Variation[],
   basePrice: number,

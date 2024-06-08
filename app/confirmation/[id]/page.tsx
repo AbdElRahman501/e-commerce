@@ -61,7 +61,7 @@ const OrderConfirmationPage = async ({
             {order.status !== "Delivered" && order.status !== "Canceled" && (
               <p>
                 expected delivery:{" "}
-                <strong>{getNextWorkingDay(order.createdAt, 5)}</strong>
+                <strong>{getNextWorkingDay(order.createdAt, 4)}</strong>
               </p>
             )}
           </div>
