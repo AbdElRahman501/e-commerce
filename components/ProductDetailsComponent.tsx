@@ -165,7 +165,7 @@ const ProductDetailsComponent = ({
               selectedOptions,
             }}
           />
-          <div className="flex aspect-square h-14 items-center justify-center rounded-full border border-primary_bg bg-white text-lg text-black dark:border-white ">
+          <div className="flex aspect-square h-14 items-center justify-center rounded-full border border-gray-300 bg-white text-lg text-black dark:border-white ">
             <button
               type="button"
               onClick={async () => {

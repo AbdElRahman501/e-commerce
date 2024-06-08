@@ -110,6 +110,11 @@ export default async function SearchPage({
                 ? b.sortedPrice - a.sortedPrice
                 : 0,
           )
+          .filter(
+            (product) =>
+              product.sortedPrice >= minPrice &&
+              product.sortedPrice <= maxPrice,
+          )
           .map((product) => (
             <ProductCard key={product.id} fav={fav} {...product} />
           ))}

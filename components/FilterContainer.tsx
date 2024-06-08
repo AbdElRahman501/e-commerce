@@ -125,19 +125,19 @@ const FilterContainer = ({
   return (
     <div
       style={{ bottom: searchParams?.get("ft") === "true" ? "0" : "-100vh" }}
-      className=" scroll-bar-hidden fixed  left-0  z-20 flex h-full max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-white px-5 pt-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-primary_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
+      className=" scroll-bar-hidden fixed  left-0  z-20 flex h-full max-h-[calc(100dvh-9.5rem)] w-full flex-col gap-7 overflow-y-auto bg-white px-5 pt-10 outline-1 outline-offset-1 outline-gray-300 duration-500 ease-in-out dark:bg-dark_bg dark:outline-gray-500 md:static md:max-h-none md:w-1/4 md:rounded-3xl md:outline 2xl:w-1/5"
     >
       <Sorting classNames="  min-h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white flex md:hidden" />
       <div className="relative flex h-14 min-h-14 w-full flex-grow-0 rounded-full border md:max-w-xs">
         <div
-          className={`${selectedGenders === "0" ? "left-[50%] border bg-primary_color" : selectedGenders === "1" ? "left-0 border bg-primary_color" : ""} absolute top-0  -z-10 m-[2px] h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full  text-center   text-primary_color duration-200`}
+          className={`${selectedGenders === "0" ? "left-[50%] border bg-primary_color" : selectedGenders === "1" ? "left-0 border bg-primary_color" : ""}  absolute top-0  -z-10 m-[2px] h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full  text-center   text-primary_color duration-200`}
         ></div>
         <button
           onClick={() => {
             setSubmitChanges(false);
             setSelectedGenders(selectedGenders === "1" ? "" : "1");
           }}
-          className={`${selectedGenders === "1" ? "text-white" : "text-primary_color"} m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)]  items-center justify-center text-center  `}
+          className={`${selectedGenders === "1" ? "text-white" : selectedGenders ? "text-gray-400 dark:text-gray-700" : ""} m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)]  items-center justify-center text-center  `}
         >
           <span>men</span>
         </button>
@@ -146,7 +146,7 @@ const FilterContainer = ({
             setSubmitChanges(false);
             setSelectedGenders(selectedGenders === "0" ? "" : "0");
           }}
-          className={`${selectedGenders === "0" ? "text-white" : "text-primary_color"} m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)] items-center justify-center text-center  `}
+          className={`${selectedGenders === "0" ? "text-white" : selectedGenders ? "text-gray-400 dark:text-gray-700" : ""} m-[2px] flex h-[calc(100%-4px)] w-[calc(50%-4px)] items-center justify-center text-center  `}
         >
           <span>women</span>
         </button>
@@ -165,7 +165,7 @@ const FilterContainer = ({
                   setSelectedCategories([]);
                 }}
                 key={index}
-                className={`${selectedCollection === item.name ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 text-sm outline duration-200 hover:scale-105 hover:outline-black dark:hover:outline-white`}
+                className={`${selectedCollection === item.name ? " border-black dark:border-white " : " border-gray-200 dark:border-gray-700 "} rounded-xl border-2 p-2 px-4 text-sm duration-200 hover:scale-105 hover:border-black dark:hover:border-white`}
               >
                 <span>{item.name + " (" + item.count + ")"}</span>
               </button>
@@ -194,7 +194,7 @@ const FilterContainer = ({
                     );
                   }}
                   key={index}
-                  className={`${selected ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 text-sm outline duration-200 hover:scale-105 hover:outline-black dark:hover:outline-white`}
+                  className={`${selected ? " border-black dark:border-white " : " border-gray-200 dark:border-gray-700 "} rounded-xl border-2 p-2 px-4 text-sm duration-200 hover:scale-105 hover:border-black dark:hover:border-white`}
                 >
                   <span>{item.name + " (" + item.count + ")"}</span>
                 </button>
@@ -221,7 +221,7 @@ const FilterContainer = ({
                   );
                 }}
                 key={index}
-                className={`${selected ? " outline-2 outline-black dark:outline-white " : " outline-1 outline-gray-200 dark:outline-gray-700 "} rounded-xl p-2 px-4 outline  duration-200 hover:scale-110 hover:outline-black dark:hover:outline-white`}
+                className={`${selected ? " border-black dark:border-white " : " border-gray-200 dark:border-gray-700 "} rounded-xl border-2 p-2 px-4 text-sm duration-200 hover:scale-105 hover:border-black dark:hover:border-white`}
               >
                 <span>{item}</span>
               </button>
@@ -245,7 +245,7 @@ const FilterContainer = ({
                       : [...selectedColors, item],
                   );
                 }}
-                className={`${selected ? "outline-2 outline-black dark:outline-white " : "outline-1 outline-transparent"} rounded-full outline  outline-offset-2   duration-200 hover:scale-110`}
+                className={`${selected ? " border-black dark:border-white " : "border-transparent"} rounded-full border-2  p-[1px] text-sm duration-200 hover:scale-105 hover:border-black dark:hover:border-white`}
               >
                 <span
                   style={{ backgroundColor: item }}
@@ -266,7 +266,7 @@ const FilterContainer = ({
             name="min"
             value={minPriceState}
             onChange={(e) => setMinPriceState(Number(e.target.value))}
-            className="flex h-10 w-full items-center justify-center rounded-xl border border-primary_bg bg-transparent text-center text-sm text-primary_color dark:border-white dark:text-white"
+            className="flex h-10 w-full items-center justify-center rounded-xl border border-gray-200  bg-transparent  text-center text-sm text-primary_color dark:border-gray-700  dark:text-white"
           />
           <span>to</span>
           <input
@@ -276,12 +276,12 @@ const FilterContainer = ({
             placeholder="max"
             value={maxPriceState}
             onChange={(e) => setMaxPriceState(Number(e.target.value))}
-            className="flex h-10 w-full items-center justify-center rounded-xl border border-primary_bg bg-transparent text-center text-sm text-primary_color dark:border-white dark:text-white"
+            className="flex h-10 w-full items-center justify-center rounded-xl border border-gray-200  bg-transparent text-center text-sm text-primary_color dark:border-gray-700  dark:text-white"
           />
           <input type="submit" className="hidden" />
         </div>
       </div>
-      <div className="sticky bottom-0 flex  flex-col gap-1 bg-white pb-4 dark:bg-primary_bg">
+      <div className="sticky bottom-0 flex  flex-col gap-1 bg-primary_bg pb-4 dark:bg-dark_bg">
         <button
           type="button"
           onClick={submitHandler}

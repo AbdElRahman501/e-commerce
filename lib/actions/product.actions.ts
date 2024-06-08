@@ -75,7 +75,7 @@ export const fetchFilteredProducts = unstable_cache(
         : {};
 
     const priceFilterCondition = {
-      price: { $gte: minPrice || 0, $lte: maxPrice || 100000 },
+      price: { $gte: minPrice || 0, $lte: maxPrice + 100 || 100000 },
     };
 
     const sizeFilterCondition =
