@@ -72,7 +72,7 @@ const SubscriptionSection = ({
           </div>
           <SubmitButton
             type="submit"
-            className="group flex h-14 w-full items-center justify-center rounded-lg bg-black px-5 uppercase text-white duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white sm:w-fit"
+            className="group flex h-14 w-full items-center justify-center rounded-lg bg-primary_color px-5 uppercase text-white duration-300 hover:bg-white hover:text-black  sm:w-fit"
           >
             <MdiLightEmail className="mx-2 h-6 w-6 fill-current" /> Subscribe
           </SubmitButton>

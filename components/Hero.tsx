@@ -21,7 +21,7 @@ const Hero = async () => {
             href={"/collections"}
             className="rounded-4xl relative col-span-2 flex h-32 w-full items-end overflow-hidden bg-primary_color p-5 sm:h-full md:h-1/2 "
           >
-            <h1 className="text-2xl font-bold uppercase text-white dark:text-white">
+            <h1 className="drop-shadow-white text-2xl font-black uppercase text-white dark:text-white md:text-lg">
               All Collections
             </h1>
             <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  hover:bg-black hover:text-white  " />
@@ -44,8 +44,8 @@ const Hero = async () => {
           </Link>
           <div className="relative col-span-3 flex w-full flex-col gap-3 sm:flex-col-reverse">
             <Stories stories={stories} />
-            <div className="rounded-4xl absolute bottom-8 left-5 flex h-16  w-5/12 items-center justify-between overflow-hidden bg-white sm:static sm:w-full sm:bg-primary_color">
-              <h1 className=" w-full text-center font-bold uppercase text-black sm:px-5 sm:text-left sm:text-white sm:dark:text-white">
+            <div className="rounded-4xl absolute bottom-8 left-5 flex h-16  w-5/12 items-center justify-between overflow-hidden bg-primary_color sm:static sm:w-full">
+              <h1 className=" w-full text-center font-bold uppercase text-white sm:px-5 sm:text-left">
                 Shop now
               </h1>
               <div className="aspect-square h-full p-1">

@@ -98,7 +98,7 @@ const ShareModal = ({
           <p className="inline text-wrap">{url}</p>
         </div>
         <button
-          className="my-2 w-full rounded-lg bg-black px-4 py-4 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
+          className="my-2 w-full rounded-lg bg-primary_color px-4 py-4 text-center text-white hover:bg-white hover:text-black"
           onClick={() => copyToClipboard(url)}
           type="button"
         >

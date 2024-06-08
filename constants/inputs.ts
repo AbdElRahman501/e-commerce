@@ -115,6 +115,24 @@ const productInputs: FormInput[] = [
     name: "quantity",
     required: true,
   },
+  {
+    label: "views",
+    type: "number",
+    placeholder: "Enter views",
+    name: "views",
+  },
+  {
+    label: "likes",
+    type: "number",
+    placeholder: "Enter likes",
+    name: "likes",
+  },
+  {
+    label: "sales",
+    type: "number",
+    placeholder: "Enter sales",
+    name: "sales",
+  },
 ];
 
 export { productInputs, formInputs };

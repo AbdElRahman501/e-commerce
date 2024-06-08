@@ -2,7 +2,7 @@ import { SearchField } from "@/components";
 import CustomTable from "@/components/CustomTable";
 import { fetchOrders, updateOrder } from "@/lib/actions/order.actions";
 import { Order } from "@/types";
-import { formatDate } from "@/utils";
+import { formatDate, formatPrice } from "@/utils";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -96,6 +96,27 @@ export default async function OrdersPage({
                   key: "state",
                   Action: OrderStatus,
                 },
+                {
+                  key: "revenue",
+                  Action: (order) => {
+                    const subTotal = order.subTotal;
+                    const minSubTotal = order.products.reduce(
+                      (acc: number, item: any) =>
+                        acc + (item.minPrice || 0) * item.amount,
+                      0,
+                    );
+                    const revenue = subTotal - order.discount - minSubTotal;
+                    return (
+                      <p className="font-bold text-green-500">
+                        {formatPrice(revenue, "EGP")}
+                      </p>
+                    );
+                  },
+                },
+                {
+                  key: "total",
+                  Action: (order) => <p>{formatPrice(order.total, "EGP")}</p>,
+                },
               ]}
               header={[
                 "id",
@@ -104,6 +125,7 @@ export default async function OrdersPage({
                 "city",
                 "streetAddress",
                 "total",
+                "revenue",
                 "state",
                 "date",
               ]}

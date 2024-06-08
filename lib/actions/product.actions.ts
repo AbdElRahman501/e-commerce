@@ -10,7 +10,7 @@ import {
   Product as ProductType,
   Variation,
 } from "@/types";
-import { getSalePrice, modifyProducts, sorProductPriceOffer } from "@/utils";
+import { getSalePrice, modifyProducts } from "@/utils";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { notFound } from "next/navigation";
@@ -33,10 +33,7 @@ export const fetchFilteredProducts = unstable_cache(
     idsToExclude = [],
     minLimit = 0,
     collection = "",
-  }: FilterProps): Promise<{
-    products: ProductOnSaleType[];
-    count: number;
-  }> => {
+  }: FilterProps): Promise<ProductOnSaleType[]> => {
     const textSearchCondition = query
       ? {
           $or: [
@@ -125,7 +122,6 @@ export const fetchFilteredProducts = unstable_cache(
 
     try {
       await connectToDatabase();
-      let count = await Product.countDocuments(finalQuery);
       const offers: OfferType[] = await fetchOffers();
       const data = await fetchDataBySection({
         sort,
@@ -139,7 +135,7 @@ export const fetchFilteredProducts = unstable_cache(
         offers,
       );
 
-      if (minLimit > count) {
+      if (minLimit > products.length) {
         const countNew = await Product.countDocuments({
           $and: [excludeCondition],
         });
@@ -157,9 +153,8 @@ export const fetchFilteredProducts = unstable_cache(
         );
         products = removeDuplicatesById([...products, ...additionalProducts]);
         modifiedProducts = modifyProducts(products, offers);
-        count = products.length;
       }
-      return { products: modifiedProducts, count };
+      return modifiedProducts;
     } catch (error) {
       console.error("Error fetching products:", error);
       throw error;
@@ -202,10 +197,10 @@ export async function fetchProducts(): Promise<ProductOnSaleType[]> {
   }
 }
 
-export async function likeProduct(id: string, isFave: boolean) {
+export async function likeProduct(id: string) {
   try {
     await connectToDatabase();
-    Product.findByIdAndUpdate(id, { $inc: { likes: isFave ? 1 : -1 } });
+    Product.findByIdAndUpdate(id, { $inc: { likes: 1 } });
   } catch (error) {
     console.log(error);
     throw error;
@@ -234,21 +229,9 @@ async function fetchDataBySection({
     case "Best Sellers":
       return await Product.find(finalQuery).sort({ sales: -1 }).limit(limit);
     case "Price: Low to High":
-      return sorProductPriceOffer({
-        products: await Product.find(finalQuery)
-          .sort({ price: 1 })
-          .limit(limit),
-        offers,
-        ascending: true,
-      });
+      return await Product.find(finalQuery).sort({ price: 1 }).limit(limit);
     case "Price: High to Low":
-      return sorProductPriceOffer({
-        products: await Product.find(finalQuery)
-          .sort({ price: -1 })
-          .limit(limit),
-        offers,
-        ascending: false,
-      });
+      return await Product.find(finalQuery).sort({ price: -1 }).limit(limit);
     default:
       return await Product.find(finalQuery).limit(limit);
   }

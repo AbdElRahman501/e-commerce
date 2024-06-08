@@ -40,7 +40,7 @@ const AddModal = ({
               required={item.required}
             />
           ))}
-          <SubmitButton className="rounded-lg bg-black px-4 py-2 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white">
+          <SubmitButton className="rounded-lg bg-primary_color px-4 py-2 text-center text-white hover:bg-white hover:text-black">
             create
           </SubmitButton>
         </form>

@@ -8,6 +8,8 @@ const productSchema = new mongoose.Schema({
   },
   amount: { type: Number, required: true },
   selectedOptions: { type: Map, of: String },
+  price: { type: Number },
+  minPrice: { type: Number },
 });
 
 const personalInfoSchema = new mongoose.Schema({

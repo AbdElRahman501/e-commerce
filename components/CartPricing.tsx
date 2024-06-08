@@ -89,7 +89,7 @@ const CartPricing = async ({
         Taxes and shipping calculated at checkout
       </p>
       <Link href={discount > 0 ? `/checkout?coupon=${coupon}` : "/checkout"}>
-        <div className="group mt-2 flex h-14 w-full items-center justify-center rounded-lg bg-black px-5 uppercase  text-white duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white ">
+        <div className="group mt-2 flex h-14 w-full items-center justify-center rounded-lg bg-primary_color px-5 uppercase text-white duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white">
           <p className="duration-500 group-hover:scale-110">
             Proceed To Checkout
           </p>

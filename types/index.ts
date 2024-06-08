@@ -156,6 +156,8 @@ export interface CartItem {
   productId: string;
   amount: number;
   selectedOptions: Record<string, string>;
+  price?: number;
+  minPrice?: number;
 }
 
 export interface FormInput {

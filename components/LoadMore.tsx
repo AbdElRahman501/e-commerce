@@ -6,13 +6,11 @@ import LoadingDots from "./loading-dots";
 
 const LoadMore = ({
   newLimit,
-  count,
   limit,
   length,
 }: {
   length: number;
   limit: number;
-  count: number;
   newLimit: number;
 }) => {
   const pathname = usePathname();
@@ -28,12 +26,12 @@ const LoadMore = ({
   }
 
   useEffect(() => {
-    if (length === limit || length === count) {
+    if (length === limit) {
       setLoading(false);
     }
-  }, [length, limit, count]);
+  }, [length, limit]);
 
-  if (length === count) return null;
+  if (length < limit) return null;
 
   return (
     <button
@@ -41,7 +39,7 @@ const LoadMore = ({
       disabled={loading}
       type="button"
       aria-label="Load More"
-      className="group mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-lg bg-black px-4 py-2 text-center text-white hover:bg-white hover:text-black dark:bg-white  dark:text-black dark:hover:bg-black dark:hover:text-white"
+      className="group mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-lg bg-primary_color px-4 py-2 text-center text-white hover:bg-white hover:text-black"
     >
       <p className="duration-500 group-hover:scale-110">
         {loading ? (

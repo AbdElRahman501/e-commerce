@@ -19,8 +19,8 @@ async function ProductsRow({
 }) {
   const favData = cookies().get("favorite")?.value;
   const fav: string[] = favData ? JSON.parse(favData) : [];
-  const { products } = initialProducts
-    ? { products: initialProducts }
+  const products = initialProducts
+    ? initialProducts
     : await fetchFilteredProducts({
         sort: title,
         limit: 4,

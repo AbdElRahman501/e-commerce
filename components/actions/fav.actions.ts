@@ -9,7 +9,7 @@ export async function toggleFav(id: string) {
   const favorite: string[] = favData ? JSON.parse(favData) : [];
   const data = toggleFavoriteItem(favorite, id);
   const isFave = data.includes(id);
-  likeProduct(id, isFave);
+  isFave && likeProduct(id);
   cookies().set("favorite", JSON.stringify(data));
   revalidateTag("favorite");
 }

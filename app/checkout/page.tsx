@@ -8,16 +8,11 @@ import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
 import { fetchOffers } from "@/lib/actions/offer.actions";
 import Coupon from "@/components/cart/Coupon";
+import { BagCard, CustomInput } from "@/components";
+import ShippingAddress from "@/components/checkOut/ShippingAddress";
+import SubmitButton from "@/components/checkOut/SubmitButton";
 
-const BagCard = dynamic(() => import("@/components/BagCard"));
-const ShippingAddress = dynamic(
-  () => import("@/components/checkOut/ShippingAddress"),
-);
-const SubmitButton = dynamic(
-  () => import("@/components/checkOut/SubmitButton"),
-);
 const Message = dynamic(() => import("@/components/Message"));
-const CustomInput = dynamic(() => import("@/components/CustomInput"));
 
 const CheckOutPage = async ({
   searchParams,

@@ -1,6 +1,5 @@
 import { FilterButton, SearchField, Sorting } from "@/components";
 import CustomTable from "@/components/CustomTable";
-import FilterSection from "@/components/FilterSection";
 import ProductsAction from "@/components/ProductsAction";
 import { fetchFilteredProducts } from "@/lib";
 import { Suspense } from "react";
@@ -10,41 +9,13 @@ export default async function ProductsPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const {
-    q: searchValue,
-    sort,
-    gf,
-    ctf,
-    szf,
-    clf,
-    minP,
-    maxP,
-  } = searchParams as {
+  const { q: searchValue, sort } = searchParams as {
     [key: string]: string;
   };
-  const genderParams = gf ? parseInt(gf) : null;
-  const gender =
-    genderParams === null ? "all" : genderParams === 1 ? "male" : "female";
-  const colorFilter = clf ? clf.split(",") : [];
-  const sizeFilter = szf ? szf.split(",") : [];
-  const categoryFilter = ctf ? ctf.split(",") : [];
-
-  const minPrice = minP ? parseInt(minP) : 0;
-  const maxPrice = maxP ? parseInt(maxP) : 1000;
-
-  const { products } = await fetchFilteredProducts({
+  const products = await fetchFilteredProducts({
     query: searchValue,
     sort: sort || "",
-    selectedCategories: categoryFilter,
-    keywordFilter: "",
-    minPrice: minPrice,
-    originFilter: [],
-    maxPrice: maxPrice,
-    genderFilter: gender,
-    colorFilter: colorFilter,
-    sizeFilter: sizeFilter,
     limit: 99999,
-    containMainProduct: true,
   });
   const resultsText = products.length > 1 ? "results" : "result";
   return (
@@ -58,9 +29,6 @@ export default async function ProductsPage({
         <Sorting classNames=" ml-auto hidden h-14  min-w-max flex-nowrap items-center gap-3 rounded-3xl  border border-black px-2 dark:border-white md:flex" />
       </div>
       <div className="flex gap-4 p-5 lg:px-20">
-        <Suspense>
-          <FilterSection />
-        </Suspense>
         <div className="flex w-full flex-col gap-5">
           {searchValue ? (
             <p className="mb-4">

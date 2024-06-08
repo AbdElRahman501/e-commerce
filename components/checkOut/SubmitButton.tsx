@@ -25,7 +25,7 @@ export default function SubmitButton({
       onClick={() => setSubmitted(true)}
       aria-label="checkout"
       disabled={pending || disable}
-      className="max-h-14 w-full rounded-lg border bg-black p-4 text-center uppercase text-white  duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white"
+      className="group mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-lg bg-primary_color px-4 py-2 text-center text-white hover:bg-white hover:text-black"
     >
       {pending ? (
         <p className="text-4xl duration-300 ">
