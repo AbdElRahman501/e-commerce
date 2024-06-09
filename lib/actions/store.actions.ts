@@ -36,7 +36,7 @@ export const fetchStories = unstable_cache(
       );
       return filteredStories;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching active stories:", error);
       throw error;
     }
   },
@@ -54,7 +54,7 @@ export async function fetchAllStories(): Promise<StoryType[]> {
     const stories: StoryType[] = JSON.parse(JSON.stringify(data));
     return stories;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching stories:", error);
     throw error;
   }
 }
@@ -72,7 +72,7 @@ export const updateStory = async (formData: FormData) => {
     await Story.findByIdAndUpdate(data.id, data);
     revalidateTag(tags.stories);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error updating story:", error);
     throw error;
   }
   redirect("/dashboard/store");
@@ -91,7 +91,7 @@ export const addNewStory = async (formData: FormData) => {
     await Story.create(data);
     revalidateTag(tags.stories);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error adding new story:", error);
     throw error;
   }
   redirect("/dashboard/store");
@@ -104,7 +104,7 @@ export const removeStory = async (formData: FormData) => {
     await Story.findByIdAndDelete(id);
     revalidateTag(tags.stories);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error removing story:", error);
     throw error;
   }
   redirect("/dashboard/store");
@@ -120,7 +120,7 @@ export const fetchReviews = unstable_cache(
       const reviews: ReviewType[] = JSON.parse(JSON.stringify(data));
       return reviews;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching reviews:", error);
       throw error;
     }
   },
@@ -146,7 +146,7 @@ export const addNewReview = async (formData: FormData) => {
     await Review.create(data);
     revalidateTag(tags.reviews);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error adding new review:", error);
     throw error;
   }
   redirect("/dashboard/reviews");
@@ -160,7 +160,7 @@ export const removeReview = async (formData: FormData) => {
     await Review.findByIdAndDelete(id);
     revalidateTag(tags.reviews);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error removing review:", error);
     throw error;
   }
   redirect("/dashboard/reviews");
@@ -182,7 +182,7 @@ export const updateReview = async (formData: FormData) => {
     await Review.findByIdAndUpdate(data.id, data);
     revalidateTag(tags.reviews);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error updating review:", error);
     throw error;
   }
   redirect("/dashboard/reviews");
@@ -220,7 +220,7 @@ export const addNewCollection = async (formData: FormData) => {
     await Collection.create(data);
     revalidateTag(tags.collections);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error adding new collection:", error);
     throw error;
   }
   redirect("/dashboard/store/collections");
@@ -234,7 +234,7 @@ export const removeCollection = async (formData: FormData) => {
     await Collection.findByIdAndDelete(id);
     revalidateTag(tags.collections);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error removing collection:", error);
     throw error;
   }
   redirect("/dashboard/store/collections");
@@ -252,7 +252,7 @@ export const updateCollection = async (formData: FormData) => {
     await Collection.findByIdAndUpdate(data.id, data);
     revalidateTag(tags.collections);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error updating collection:", error);
     throw error;
   }
   redirect("/dashboard/store/collections");
@@ -268,7 +268,7 @@ export const fetchNavbarLinks = unstable_cache(
       const navbarLinks: NavbarType[] = JSON.parse(JSON.stringify(data));
       return navbarLinks;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching navbar links:", error);
       throw error;
     }
   },
@@ -290,7 +290,7 @@ export const addNewNavbarLink = async (formData: FormData) => {
     await NavBarLink.create(data);
     revalidateTag(tags.navbarLinks);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error adding new navbar link:", error);
     throw error;
   }
   redirect("/dashboard/store");
@@ -308,7 +308,7 @@ export const updateNavbarLink = async (formData: FormData) => {
     await NavBarLink.findByIdAndUpdate(data.id, data);
     revalidateTag(tags.navbarLinks);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error updating navbar link:", error);
     throw error;
   }
   redirect("/dashboard/store");
@@ -322,7 +322,7 @@ export const removeNavbarLink = async (formData: FormData) => {
     await NavBarLink.findByIdAndDelete(id);
     revalidateTag(tags.navbarLinks);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error removing navbar link:", error);
     throw error;
   }
   redirect("/dashboard/store");
@@ -338,7 +338,7 @@ export const fetchFooterLinks = unstable_cache(
       const footerLinks: FooterType[] = JSON.parse(JSON.stringify(data));
       return footerLinks;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching footer links:", error);
       throw error;
     }
   },
@@ -364,7 +364,7 @@ export const addNewFooterLink = async (formData: FormData) => {
     await FooterLink.create(data);
     revalidateTag(tags.footer);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error adding new footer link:", error);
     throw error;
   }
   redirect("/dashboard/store");
@@ -386,7 +386,7 @@ export const updateFooterLink = async (formData: FormData) => {
     const result = await FooterLink.findByIdAndUpdate(id, data);
     revalidateTag(tags.footer);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error updating footer link:", error);
     throw error;
   }
   redirect("/dashboard/store");

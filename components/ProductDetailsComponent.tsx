@@ -113,7 +113,7 @@ const ProductDetailsComponent = ({
                 <Link
                   href={{
                     pathname: "/shop",
-                    query: { ctf: item.trim(), cl: collections[0] || "" },
+                    query: { ctf: item.trim() },
                   }}
                   className="duration-75 hover:!border-gray-600 hover:!text-gray-600 group-hover:border-gray-300 group-hover:text-gray-300  dark:hover:!border-gray-300 dark:hover:!text-gray-300 dark:group-hover:border-gray-600 dark:group-hover:text-gray-600"
                 >

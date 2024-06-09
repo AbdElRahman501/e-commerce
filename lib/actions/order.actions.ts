@@ -26,90 +26,79 @@ import { promoCodeUse } from "./promo-code.actions";
 export async function createOrder(formData: FormData) {
   let redirectPath = "";
   try {
+    // Establish a database connection
     await connectToDatabase();
+
+    // Retrieve cart data from cookies and parse it
     const cartData = cookies().get("cart")?.value;
     const cart: CartItem[] = cartData ? JSON.parse(cartData) : [];
+
+    // Fetch product details based on product IDs in the cart
     const products = await fetchProductsById(
       cart.map((item) => item.productId),
     );
+
+    // Reformat cart items with product details
     const cartProducts: CartProduct[] = reformatCartItems(cart, products);
-    const modifiedCartProducts: CartItem[] = cartProducts.map((item) => {
-      return {
-        price: item.salePrice || item.price,
-        minPrice: item.minPrice,
-        productId: item.id,
-        amount: item.amount,
-        selectedOptions: item.selectedOptions,
-      };
-    });
-    const email = formData.get("email")?.toString() || "";
-    const phoneNumber = formData.get("phoneNumber")!.toString();
-    const messageAccept = formData.get("messageAccept") ? true : false;
-    const firstName = formData.get("firstName")!.toString();
-    const lastName = formData.get("lastName")!.toString();
-    const state = formData.get("state")!.toString();
-    const city = formData.get("city")!.toString();
-    const streetAddress = formData.get("streetAddress")!.toString();
-    const comment = formData.get("comment")?.toString() || "";
-    const promoCode = formData.get("promoCode")?.toString() || "";
-    const paymentMethod = formData.get("paymentMethod")!.toString();
-    const total = Number(formData.get("total")!);
-    const subTotal = Number(formData.get("subTotal")!);
-    const shipping = Number(formData.get("shipping")!);
-    const discount = Number(formData.get("discount")!);
 
-    let orderId: string = "";
-    let uniqueIdFound = false;
+    // Modify cart products to include necessary pricing information
+    const modifiedCartProducts: CartItem[] = cartProducts.map((item) => ({
+      price: item.salePrice || item.price,
+      minPrice: item.minPrice,
+      productId: item.id,
+      amount: item.amount,
+      selectedOptions: item.selectedOptions,
+    }));
 
-    while (!uniqueIdFound) {
-      orderId = generateCode("EG-", 6);
-      const existingOrder = await Order.findOne({ id: orderId });
-      if (!existingOrder) {
-        uniqueIdFound = true;
-      }
-    }
-
+    // Construct the order object
     const order = {
-      id: orderId,
+      id: generateCode("EG-", 6),
       products: modifiedCartProducts,
       personalInfo: {
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        state,
-        city,
-        streetAddress,
-        comment,
-        paymentMethod,
-        promoCode,
-        messageAccept,
+        firstName: formData.get("firstName")!.toString(),
+        lastName: formData.get("lastName")!.toString(),
+        email: formData.get("email")?.toString() || "",
+        phoneNumber: formData.get("phoneNumber")!.toString(),
+        state: formData.get("state")!.toString(),
+        city: formData.get("city")!.toString(),
+        streetAddress: formData.get("streetAddress")!.toString(),
+        comment: formData.get("comment")?.toString() || "",
+        paymentMethod: formData.get("paymentMethod")!.toString(),
+        promoCode: formData.get("promoCode")?.toString() || "",
+        messageAccept: formData.get("messageAccept") ? true : false,
       },
-      shipping,
-      total,
-      subTotal,
-      discount,
+      shipping: Number(formData.get("shipping")!),
+      total: Number(formData.get("total")!),
+      subTotal: Number(formData.get("subTotal")!),
+      discount: Number(formData.get("discount")!),
     } as OrderType;
-    const orderNew = new Order(order);
-    const data = await orderNew.save();
-    const createdOrder: OrderType = JSON.parse(JSON.stringify(data));
-    soldProducts(cart.map((item) => item.productId));
-    if (email) {
+
+    // Save the order to the database
+    const createdOrder = await Order.create(order);
+
+    if (order.personalInfo.email) {
       sendEmail(createdOrder, cartProducts);
-      if (messageAccept) {
-        subscribeWithEmail(email);
+      // Subscribe user to email list if they accept
+      if (order.personalInfo.messageAccept) {
+        subscribeWithEmail(order.personalInfo.email);
       }
     }
-    if (promoCode) {
-      promoCodeUse(promoCode);
+    // Mark products as sold
+    soldProducts(cart.map((item) => item.productId));
+    // Send confirmation email if an email is provided
+    // Use promo code if provided
+    if (order.personalInfo.promoCode) {
+      promoCodeUse(order.personalInfo.promoCode);
     }
+    // Clear the cart cookies
     cookies().delete("cart");
+    // Set redirect path to the order confirmation page
     redirectPath = "/confirmation/" + createdOrder.id;
   } catch (error) {
     console.error("Error creating order:", error);
     throw error;
   }
-
+  // Redirect to the confirmation page
   redirect(redirectPath);
 }
 
@@ -198,10 +187,7 @@ export async function updateOrder(formData: FormData): Promise<void> {
   redirect("/dashboard/orders");
 }
 
-export const sendEmail = async (
-  order: OrderType,
-  cartProducts: CartProduct[],
-): Promise<void> => {
+export const sendEmail = (order: OrderType, cartProducts: CartProduct[]) => {
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp.zoho.com",
@@ -231,7 +217,6 @@ export const sendEmail = async (
       .replace(/{{SUBTOTAL}}/g, formatPrice(order.subTotal, "EGP"))
       .replace(/{{DISCOUNTS}}/g, formatPrice(order.discount, "EGP"))
       .replace(/{{SHIPPING}}/g, formatPrice(order.shipping, "EGP"))
-      .replace(/{{INVOICE_DATE}}/g, "August 1, 2024")
       .replace(/{{PAYMENT}}/g, order.personalInfo.paymentMethod)
       .replace(/{{ITEMS}}/g, formatOrderItems(cartProducts))
       .replace(/{{COUNT}}/g, cartProducts.length.toString())
@@ -244,8 +229,10 @@ export const sendEmail = async (
       html: replacedHtml,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("order Confirmation Email sent:", info.response);
+    transporter.sendMail(mailOptions).then((info) => {
+      console.log("order Confirmation Email sent:", info.response);
+    });
+    // console.log("order Confirmation Email sent:", info.response);
   } catch (error) {
     console.error("order Confirmation Email sending error:", error);
   }
