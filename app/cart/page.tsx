@@ -40,7 +40,10 @@ export default async function CartComponent({
         ) : cart.length === 0 ? (
           <Message message="Your cart is empty" />
         ) : (
-          <Message message="Your cart is empty" action={true} />
+          <Message
+            message="Something went wrong with your cart please remove all items"
+            action={true}
+          />
         )}
       </div>
       <Suspense fallback={<ProductSkeleton />}>

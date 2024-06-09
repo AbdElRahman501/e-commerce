@@ -21,7 +21,7 @@ export const fetchShipping = unstable_cache(
       const cities: CityType[] = JSON.parse(JSON.stringify(citiesData));
       return { governorate, cities };
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching shipping data:", error);
       throw error;
     }
   },
@@ -40,7 +40,7 @@ export const updateGovernorate = async (formData: FormData) => {
     await Governorate.updateOne({ id: data.id }, data);
     revalidateTag(tags.shipping);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error updating governorate:", error);
     throw error;
   }
   redirect("/dashboard/shipping");
@@ -57,7 +57,7 @@ export const addNewGovernorate = async (formData: FormData) => {
     await Governorate.create(data);
     revalidateTag(tags.shipping);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error adding new governorate:", error);
     throw error;
   }
   redirect("/dashboard/shipping");
@@ -74,7 +74,7 @@ export const updateCity = async (formData: FormData) => {
     await City.updateOne({ id: data.id }, data);
     revalidateTag(tags.shipping);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error updating city:", error);
     throw error;
   }
   redirect("/dashboard/shipping");
@@ -92,7 +92,7 @@ export const addNewCity = async (formData: FormData) => {
     await City.create(data);
     revalidateTag(tags.shipping);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error adding new city:", error);
     throw error;
   }
   redirect("/dashboard/shipping");

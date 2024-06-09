@@ -33,7 +33,7 @@ export function SubmitButton({
     <button
       type="submit"
       aria-label="add cart item"
-      disabled={disabled}
+      disabled={disabled || pending}
       aria-disabled={pending}
       className=" flex h-14 w-full items-center gap-3 rounded-full bg-primary_color p-1  text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
     >

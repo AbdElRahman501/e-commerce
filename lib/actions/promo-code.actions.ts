@@ -39,7 +39,7 @@ export async function fetchPromoCodeById(id: string): Promise<PromoCodeType> {
     const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
     return promoCode;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching Promo Code by id:", error);
     throw error;
   }
 }
@@ -51,7 +51,7 @@ export async function fetchPromoCodes() {
     const promoCodes: PromoCodeType[] = JSON.parse(JSON.stringify(data));
     return promoCodes;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching promo codes:", error);
     throw error;
   }
 }
@@ -59,17 +59,14 @@ export async function fetchPromoCodes() {
 export async function promoCodeUse(code: string) {
   try {
     await connectToDatabase();
-    const data = await PromoCode.findOneAndUpdate(
+    await PromoCode.findOneAndUpdate(
       { code },
       { $inc: { limit: -1 } },
       { new: true },
     );
-    if (!data) return;
-    const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
     revalidateTag(tags.coupons);
-    return promoCode;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error using promo code:", error);
     throw error;
   }
 }

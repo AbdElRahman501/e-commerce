@@ -156,7 +156,7 @@ export const fetchFilteredProducts = unstable_cache(
       }
       return modifiedProducts;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching filtered products:", error);
       throw error;
     }
   },
@@ -315,7 +315,7 @@ export const fetchProductsById = unstable_cache(
       );
       return modifiedProducts;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching products by id:", error);
       throw error;
     }
   },
@@ -340,7 +340,7 @@ export async function soldProducts(ids: string[]): Promise<void> {
       { $inc: { sales: 1 } },
     );
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error sold products:", error);
     throw error;
   }
 }
@@ -484,7 +484,6 @@ const countKeywordMatches = (keywords: string[], text: string): number => {
   const textTokens = tokenize(text);
   return textTokens.filter((token) => keywordSet.has(token)).length;
 };
-
 export const findBestMatchProducts = unstable_cache(
   async (product: ProductType, limit = 4): Promise<ProductOnSaleType[]> => {
     const keywords = tokenize(product.keywords);
@@ -497,6 +496,7 @@ export const findBestMatchProducts = unstable_cache(
     };
 
     try {
+      await connectToDatabase();
       const data = await Product.find(finalQuery);
       const products: ProductType[] = JSON.parse(JSON.stringify(data));
       const rankedProducts = products
@@ -515,7 +515,7 @@ export const findBestMatchProducts = unstable_cache(
 
       return modifiedProducts;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching best match products:", error);
       throw error;
     }
   },

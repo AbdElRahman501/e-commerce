@@ -15,7 +15,7 @@ export const ProductSkeleton: React.FC = () => {
     <section className="mx-auto max-w-8xl p-5  text-transparent lg:px-20">
       <div className="rounded-4xl flex flex-col gap-4">
         <div className={`title flex items-center justify-between`}>
-          <h1 className="min-w-52 animate-pulse rounded-md bg-gray-300 text-3xl font-bold uppercase md:text-4xl ">
+          <h1 className="min-w-52 animate-pulse rounded-md bg-gray-300 text-3xl font-bold uppercase dark:bg-gray-700 md:text-4xl ">
             &nbsp;
           </h1>
           <div
@@ -23,11 +23,11 @@ export const ProductSkeleton: React.FC = () => {
               "group flex items-center justify-between  gap-2 rounded-full text-sm md:text-base"
             }
           >
-            <p className="w-20 animate-pulse text-nowrap rounded-md bg-gray-300 uppercase group-hover:underline">
+            <p className="w-20 animate-pulse text-nowrap rounded-md bg-gray-300 uppercase group-hover:underline dark:bg-gray-700">
               &nbsp;
             </p>
             <div
-              className={` flex h-6 w-6 animate-pulse items-center justify-center rounded-full bg-gray-300 duration-300 group-hover:bg-black group-hover:text-white dark:bg-primary_color dark:group-hover:bg-gray-200 dark:group-hover:text-black `}
+              className={` flex h-6 w-6 animate-pulse items-center justify-center rounded-full bg-gray-300 duration-300 group-hover:bg-black group-hover:text-white dark:bg-gray-700 dark:bg-primary_color dark:group-hover:bg-gray-200 dark:group-hover:text-black `}
             >
               <div className="h-4 w-4 -rotate-[135deg] fill-current  "></div>
             </div>
@@ -43,18 +43,18 @@ export const ProductSkeleton: React.FC = () => {
                 >
                   <div className="relative">
                     <div className="relative block">
-                      <div className="aspect-card group relative animate-pulse overflow-hidden rounded-3xl bg-gray-300 "></div>
+                      <div className="aspect-card group relative animate-pulse overflow-hidden rounded-3xl bg-gray-300 dark:bg-gray-700 "></div>
                     </div>
                     <div className="absolute bottom-2  right-2 rounded-full bg-white p-2 text-black ">
                       <div className="h-5 w-5"></div>
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 p-4 text-center">
-                    <p className="line-clamp-2  w-full animate-pulse rounded-md bg-gray-300 text-sm font-bold">
+                    <p className="line-clamp-2  w-full animate-pulse rounded-md bg-gray-300 text-sm font-bold dark:bg-gray-700">
                       &nbsp;
                     </p>
                     <div className="relative flex items-center justify-center pt-2">
-                      <p className="w-20 animate-pulse rounded-md bg-gray-300 text-sm md:text-base">
+                      <p className="w-20 animate-pulse rounded-md bg-gray-300 text-sm dark:bg-gray-700 md:text-base">
                         &nbsp;
                       </p>
                     </div>
@@ -65,7 +65,7 @@ export const ProductSkeleton: React.FC = () => {
                           key={index}
                           type="button"
                           aria-label={"Select color " + item}
-                          className="max-w-6 flex-1 animate-pulse rounded-full border-transparent bg-gray-300 p-[1px] duration-200 hover:scale-110"
+                          className="max-w-6 flex-1 animate-pulse rounded-full border-transparent bg-gray-300 p-[1px] duration-200 hover:scale-110 dark:bg-gray-700"
                         >
                           <span
                             style={{ backgroundColor: item }}
@@ -89,17 +89,17 @@ export const CartSkeleton = ({ array }: { array: CartItem[] }) => {
     <div className=" flex w-full flex-col gap-5 md:max-w-lg ">
       {array.map((_, index) => (
         <div key={index} className="relative flex w-full gap-5  pb-2 ">
-          <div className="aspect-card h-28 animate-pulse rounded-2xl bg-gray-300"></div>
+          <div className="aspect-card h-28 animate-pulse rounded-2xl bg-gray-300 dark:bg-gray-700"></div>
           <div className="flex flex-1 flex-col justify-between">
-            <div className="h-8 w-[40%] animate-pulse rounded-md bg-gray-300"></div>
-            <div className="h-8 w-[40%] animate-pulse rounded-md bg-gray-300"></div>
+            <div className="h-8 w-[40%] animate-pulse rounded-md bg-gray-300 dark:bg-gray-700"></div>
+            <div className="h-8 w-[40%] animate-pulse rounded-md bg-gray-300 dark:bg-gray-700"></div>
             <div className="flex  gap-2">
-              <div className="h-8  w-16 animate-pulse rounded-xl bg-gray-300"></div>
-              <div className="h-8  w-16 animate-pulse rounded-xl bg-gray-300"></div>
-              <div className="h-8  w-16 animate-pulse rounded-xl bg-gray-300"></div>
+              <div className="h-8  w-16 animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700"></div>
+              <div className="h-8  w-16 animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700"></div>
+              <div className="h-8  w-16 animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700"></div>
             </div>
           </div>
-          <div className="absolute right-0 top-0 h-6 w-5 animate-pulse rounded-md bg-gray-300"></div>
+          <div className="absolute right-0 top-0 h-6 w-5 animate-pulse rounded-md bg-gray-300 dark:bg-gray-700"></div>
         </div>
       ))}
     </div>
@@ -107,7 +107,7 @@ export const CartSkeleton = ({ array }: { array: CartItem[] }) => {
 };
 export const FilterSkeleton = () => {
   return (
-    <div className="scroll-bar-hidden h-{75vh}  fixed bottom-[-100vh] left-0  z-20  flex max-h-[calc(100dvh-9.5rem)] w-full animate-pulse flex-col gap-7 overflow-y-auto bg-gray-300 px-5 py-10  md:static md:max-h-none md:w-1/4 md:rounded-3xl 2xl:w-1/5"></div>
+    <div className="scroll-bar-hidden h-{75vh}  fixed bottom-[-100vh] left-0  z-20  flex max-h-[calc(100dvh-9.5rem)] w-full animate-pulse flex-col gap-7 overflow-y-auto bg-gray-300 px-5 py-10 dark:bg-gray-700  md:static md:max-h-none md:w-1/4 md:rounded-3xl 2xl:w-1/5"></div>
   );
 };
 
@@ -127,7 +127,7 @@ export const ProductDetailSkeleton = () => {
           {[...Array(4)].map((item, index) => (
             <div
               key={index}
-              className={`area-${index + 1}  aspect-card relative min-w-[100vw] snap-center overflow-hidden bg-gradient-to-r from-slate-100 to-slate-200 sm:min-w-full sm:rounded-3xl`}
+              className={`area-${index + 1}  aspect-card relative min-w-[100vw] animate-pulse snap-center overflow-hidden bg-gray-300 dark:bg-gray-700 sm:min-w-full sm:rounded-3xl`}
             ></div>
           ))}
         </div>
@@ -151,31 +151,35 @@ export const ProductDetailSkeleton = () => {
       </div>
       <div className="z-10 flex w-full flex-col gap-3 p-5 sm:w-5/12 md:col-span-2 md:py-0">
         <div className="nav group w-fit text-xs">
-          <p className="inline-block animate-pulse rounded-md bg-gray-300 ">
+          <p className="inline-block animate-pulse rounded-md bg-gray-300 dark:bg-gray-700 ">
             shop
           </p>
           <div className="inline-block">
             <span className="mx-1 inline-block text-base text-gray-500">
               &#8250;
             </span>
-            <div className=" inline-block animate-pulse rounded-md bg-gray-300">
+            <div className=" inline-block animate-pulse rounded-md bg-gray-300 dark:bg-gray-700">
               anything
             </div>
           </div>
         </div>
-        <h6 className="animate-pulse rounded-md bg-gray-300 ">title</h6>
+        <h6 className="animate-pulse rounded-md bg-gray-300 dark:bg-gray-700 ">
+          title
+        </h6>
 
-        <p className="w-1/2 animate-pulse  rounded-md bg-gray-300 text-sm ">
+        <p className="w-1/2 animate-pulse  rounded-md bg-gray-300 text-sm dark:bg-gray-700 ">
           name
         </p>
-        <p className=" animate-pulse  rounded-md bg-gray-300 font-bold md:text-base ">
+        <p className=" animate-pulse  rounded-md bg-gray-300 font-bold dark:bg-gray-700 md:text-base ">
           1000 EGP
         </p>
 
         <div className="flex flex-col gap-2">
           <p className="text-sm ">
-            <span className="animate-pulse rounded-xl bg-gray-300">Color:</span>{" "}
-            <strong className="animate-pulse rounded-xl bg-gray-300">
+            <span className="animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700">
+              Color:
+            </span>{" "}
+            <strong className="animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700">
               Color
             </strong>
           </p>
@@ -183,7 +187,7 @@ export const ProductDetailSkeleton = () => {
             {["XS", "S", "M", "L", "XL"].map((item, index) => (
               <div
                 key={index}
-                className="animate-pulse rounded-xl bg-gray-300 p-2 px-4 text-sm "
+                className="animate-pulse rounded-xl bg-gray-300 p-2 px-4 text-sm dark:bg-gray-700 "
               >
                 <span>{item}</span>
               </div>
@@ -192,8 +196,10 @@ export const ProductDetailSkeleton = () => {
         </div>
         <div className="flex flex-col gap-3">
           <p className="text-sm ">
-            <span className="animate-pulse rounded-xl bg-gray-300">Color:</span>{" "}
-            <strong className="animate-pulse rounded-xl bg-gray-300">
+            <span className="animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700">
+              Color:
+            </span>{" "}
+            <strong className="animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700">
               Color
             </strong>
           </p>
@@ -201,7 +207,7 @@ export const ProductDetailSkeleton = () => {
             {["red", "green", "blue", "yellow"].map((item, index) => (
               <div
                 key={index}
-                className="animate-pulse rounded-full bg-gray-300  "
+                className="animate-pulse rounded-full bg-gray-300 dark:bg-gray-700  "
               >
                 <span className="block h-7 w-7 rounded-full"></span>
               </div>
@@ -210,36 +216,38 @@ export const ProductDetailSkeleton = () => {
         </div>
         <div className="flex flex-col gap-3">
           <p className="text-sm ">
-            <span className="animate-pulse rounded-xl bg-gray-300">Color:</span>{" "}
-            <strong className="animate-pulse rounded-xl bg-gray-300">
+            <span className="animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700">
+              Color:
+            </span>{" "}
+            <strong className="animate-pulse rounded-xl bg-gray-300 dark:bg-gray-700">
               Color
             </strong>
           </p>
         </div>
-        <div className="h-10  w-1/2 animate-pulse rounded-md bg-gray-300"></div>
+        <div className="h-10  w-1/2 animate-pulse rounded-md bg-gray-300 dark:bg-gray-700"></div>
         <div
           className={` mt-3 flex max-w-md items-center justify-between gap-3`}
         >
-          <div className=" flex h-14 w-full animate-pulse items-center gap-3 rounded-full bg-gray-300  p-1  ">
-            <div className="flex aspect-square h-12 w-12 items-center justify-center rounded-full bg-white text-3xl ">
-              <div className="w-10"></div>
+          <div className=" flex h-14 w-full animate-pulse items-center gap-3 rounded-full bg-gray-300 p-1  dark:bg-gray-700  ">
+            <div className="flex aspect-square h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-3xl dark:bg-gray-600 ">
+              <div className="h-12 w-12"></div>
             </div>
             <p className="w-full text-center uppercase  md:text-lg">
               Go See In Cart
             </p>
           </div>
-          <div className="flex aspect-square h-14 w-14 animate-pulse items-center  justify-center rounded-full bg-gray-300  py-1 text-lg ">
-            <div className="w-8"></div>
+          <div className="flex aspect-square h-14 w-14 animate-pulse items-center  justify-center rounded-full bg-gray-300 py-1  text-lg dark:bg-gray-700 ">
+            <div className="h-14 w-14"></div>
           </div>
         </div>
         <div className="mt-10 flex flex-col gap-4">
           {["question1", "question2", "question3"].map((x) => (
             <div key={x} className="-200 px-2 ">
               <div className="group flex  items-center justify-between gap-3 pb-3 ">
-                <h1 className=" question w-1/2 animate-pulse rounded-md bg-gray-300 text-base font-bold">
+                <h1 className=" question w-1/2 animate-pulse rounded-md bg-gray-300 text-base font-bold dark:bg-gray-700">
                   question
                 </h1>
-                <div className="rounded-full bg-gray-200 p-1 ">
+                <div className="rounded-full bg-gray-300 p-1 dark:bg-gray-700 ">
                   <div className="aspect-square h-4 w-4"></div>
                 </div>
               </div>

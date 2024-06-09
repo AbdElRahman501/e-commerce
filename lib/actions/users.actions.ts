@@ -18,7 +18,7 @@ export async function fetchUsers(): Promise<{ email: string }[]> {
     const users: { email: string }[] = JSON.parse(JSON.stringify(data));
     return users;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error(":Error fetching users:", error);
     throw error;
   }
 }
