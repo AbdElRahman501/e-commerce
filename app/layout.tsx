@@ -6,6 +6,7 @@ import React, { Suspense } from "react";
 import LocalStorage from "@/components/LocalStorage";
 import { NextAuthProvider } from "@/NextAuthProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const golos = localFont({
   src: [
@@ -68,6 +69,7 @@ export default function RootLayout({
           </ThemeProvider>
         </Suspense>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
