@@ -229,11 +229,48 @@ export const sendEmail = (order: OrderType, cartProducts: CartProduct[]) => {
       html: replacedHtml,
     };
 
-    transporter.sendMail(mailOptions).then((info) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.error("order Confirmation Email sending error:", error);
+      }
       console.log("order Confirmation Email sent:", info.response);
     });
-    // console.log("order Confirmation Email sent:", info.response);
+
+    const notificationMailOptions = {
+      from: process.env.PAGE_EMAIL,
+      to: process.env.NOTIFICATION_EMAIL,
+      subject: "New Order Notification",
+      html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+      <h1 style="color: #333;">New Order Notification</h1>
+      <p style="font-size: 16px;">A new order has been placed by <strong>${order.personalInfo.firstName} ${order.personalInfo.lastName}</strong>,
+      with total of <strong>${formatPrice(order.total, "EGP")}</strong>.</p>
+      <p><a href="${process.env.NEXT_PUBLIC_VERCEL_URL}/confirmation/${order.id}" style="color: #4CAF50; text-decoration: none;">View the new order</a></p>
+      <p><a href="${process.env.NEXT_PUBLIC_VERCEL_URL}/dashboard/orders" style="color: #4CAF50; text-decoration: none;">View all orders</a></p>
+      <br />
+      <p style="font-size: 14px;"><strong>Total:</strong> ${formatPrice(order.total, "EGP")}</p>
+      <p style="font-size: 14px;"><strong>SubTotal:</strong> ${formatPrice(order.subTotal, "EGP")}</p>
+      <p style="font-size: 14px;"><strong>Shipping:</strong> ${formatPrice(order.shipping, "EGP")}</p>
+      <p style="font-size: 14px;"><strong>Discount:</strong> ${formatPrice(order.discount, "EGP")}</p>
+      <br />
+      <h2 style="color: #333;">Personal Info</h2>
+      <p style="font-size: 14px;"><strong>Name:</strong> ${order.personalInfo.firstName} ${order.personalInfo.lastName}</p>
+      <p style="font-size: 14px;"><strong>Phone Number:</strong> <a  href="tel:${order.personalInfo.phoneNumber}">${order.personalInfo.phoneNumber}</a></p>
+      <p style="font-size: 14px;"><strong>Email:</strong> <a  href="mailto:${order.personalInfo.email}">${order.personalInfo.email}</a></p>
+      <p style="font-size: 14px;"><strong>Address:</strong> ${order.personalInfo.streetAddress}, ${order.personalInfo.city}, ${order.personalInfo.state}</p>
+      <p style="font-size: 14px;"><strong>Comment:</strong> ${order.personalInfo.comment}</p>
+      <p style="font-size: 14px;"><strong>Promo Code:</strong> ${order.personalInfo.promoCode}</p>
+      <p style="font-size: 14px;"><strong>Payment Method:</strong> ${order.personalInfo.paymentMethod}</p>
+    </div>`,
+    };
+
+    transporter.sendMail(notificationMailOptions, (error, info) => {
+      if (error) {
+        return console.log("Error sending notification email:", error);
+      }
+      console.log("Notification email sent to self:", info.response);
+    });
   } catch (error) {
-    console.error("order Confirmation Email sending error:", error);
+    console.error("order Emails error:", error);
   }
 };

@@ -127,7 +127,6 @@ export const fetchFilteredProducts = unstable_cache(
         sort,
         finalQuery,
         limit,
-        offers,
       });
       let products: ProductType[] = JSON.parse(JSON.stringify(data));
       let modifiedProducts: ProductOnSaleType[] = modifyProducts(
@@ -146,7 +145,6 @@ export const fetchFilteredProducts = unstable_cache(
           sort,
           finalQuery: updatedFinalQuery,
           limit: minLimit,
-          offers,
         });
         const additionalProducts: ProductType[] = JSON.parse(
           JSON.stringify(additionalData),
@@ -211,12 +209,10 @@ async function fetchDataBySection({
   sort,
   limit,
   finalQuery,
-  offers,
 }: {
   sort?: string;
   limit: number;
   finalQuery: any;
-  offers: OfferType[];
 }) {
   ["Price: Low to High", "Price: High to Low"];
   switch (sort) {
