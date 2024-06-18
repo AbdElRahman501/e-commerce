@@ -5,6 +5,7 @@ import { NavBar } from "@/components";
 import React, { Suspense } from "react";
 import LocalStorage from "@/components/LocalStorage";
 import { NextAuthProvider } from "@/NextAuthProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const golos = localFont({
   src: [
@@ -50,7 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${golos.variable} dark:bg-dark_bg bg-primary_bg font-golos duration-200 `}
+        className={`${golos.variable} bg-primary_bg font-golos duration-200 dark:bg-dark_bg `}
       >
         <LocalStorage />
         <Suspense>
@@ -66,6 +67,7 @@ export default function RootLayout({
             </NextAuthProvider>
           </ThemeProvider>
         </Suspense>
+        <SpeedInsights />
       </body>
     </html>
   );
