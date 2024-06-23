@@ -4,6 +4,7 @@ import { FAQSection, Footer, Hero, Testimonials } from "@/components";
 import SubscriptionSection from "@/components/SubscriptionSection";
 import ProductsRows from "@/components/ProductsRows";
 import { ProductSkeleton } from "@/components/LoadingSkeleton";
+import WhatsAppButton from "../components/WhatsAppButton";
 
 export const metadata = {
   description:
@@ -51,6 +52,7 @@ export default function Home({
           <Footer />
         </Suspense>
       </Suspense>
+      <WhatsAppButton />
     </>
   );
 }

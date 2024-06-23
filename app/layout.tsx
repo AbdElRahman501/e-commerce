@@ -34,7 +34,7 @@ const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
 export const metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: SITE_NAME! + " | Brand made just for you",
+    default: SITE_NAME! + " | Made just for YOU.",
     template: `%s | ${SITE_NAME}`,
   },
   robots: {

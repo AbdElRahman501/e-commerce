@@ -1,6 +1,7 @@
 "use client";
 import Link, { LinkProps } from "next/link";
 import React, { useEffect } from "react";
+import Ex_icon from "./icons/Ex_icon";
 
 interface ModalProps {
   isOpen: boolean;
@@ -72,6 +73,12 @@ const Modal: React.FC<ModalProps> = ({
             : "relative z-10 max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-lg bg-white p-8 shadow-lg dark:bg-[#0d1117] sm:max-w-md"
         }
       >
+        <button
+          onClick={() => setIsOpened(false)}
+          className=" absolute right-0 top-0 p-2 "
+        >
+          <Ex_icon className="h-8 w-8 text-black" />
+        </button>
         {children}
       </div>
     </div>

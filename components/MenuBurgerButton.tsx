@@ -4,16 +4,18 @@ import { useEffect, useState } from "react";
 import { ThemeSwitcher } from ".";
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import useLongPress from "./useLongPress";
-import { CartItem, NavbarType } from "@/types";
-import { FaceBookIcon, InstagramIcon, ThreadsIcon } from "./icons/socialmedia";
+import { CartItem, FooterType, NavbarType } from "@/types";
+import SocialMedia from "./icons/socialmedia";
 import BurgerMenu_icon from "./icons/BurgerMenu_icon";
 import Ex_icon from "./icons/Ex_icon";
 
 const MenuBurgerButton = ({
   navbarLinks,
   cart,
+  footerLinks,
 }: {
   cart: CartItem[];
+  footerLinks: FooterType[];
   navbarLinks: NavbarType[];
 }) => {
   const [menu, setMenu] = useState(false);
@@ -66,6 +68,9 @@ const MenuBurgerButton = ({
   };
   const longPressEvent = useLongPress(onLongPress, openMenu, defaultOptions);
 
+  const socialMediaLinks = footerLinks.find(
+    (link) => link.title === "Social Media",
+  )?.links;
   return (
     <>
       <div className="flex flex-1 items-center justify-start md:hidden">
@@ -117,18 +122,19 @@ const MenuBurgerButton = ({
               additionalFunction={openMenu}
             />
             <div className="mb-5 mt-auto flex w-full justify-center gap-2">
-              <Link href="https://www.instagram.com/eh.egyy/" target="_blank">
-                <InstagramIcon className="h-7 w-7 fill-black dark:fill-white" />
-              </Link>
-              <Link
-                href="https://www.facebook.com/profile.php?id=100084787940589"
-                target="_blank"
-              >
-                <FaceBookIcon className="h-7 w-7 fill-black dark:fill-white" />
-              </Link>
-              <Link href="https://www.threads.net/@eh.egyy" target="_blank">
-                <ThreadsIcon className="h-7 w-7 fill-black dark:fill-white" />
-              </Link>
+              {socialMediaLinks?.map((link, index) => (
+                <Link
+                  key={index}
+                  className="p-1"
+                  href={link.url}
+                  target="_blank"
+                >
+                  <SocialMedia
+                    type={link.name}
+                    className="h-7 w-7 fill-black duration-300 hover:scale-105 dark:fill-white"
+                  />
+                </Link>
+              ))}
             </div>
           </ul>
         </div>

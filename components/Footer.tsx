@@ -48,7 +48,7 @@ const Footer = async () => {
           <div className="flex flex-col items-center gap-2">
             <GoUpButton />
             <p className="text-base font-medium text-gray-500">
-              @2024 eh! All Rights reserved
+              @2024 EH! All Rights reserved
             </p>
           </div>
         </div>
