@@ -7,7 +7,6 @@ const SocialMedia = ({
 }: {
   type: string;
 } & SVGProps<SVGSVGElement>) => {
-  console.log("🚀 ~ type:", type);
   switch (type.toLocaleLowerCase()) {
     case "facebook":
       return <FaceBookIcon {...props} />;

@@ -77,7 +77,7 @@ export async function createOrder(formData: FormData) {
     const createdOrder = await Order.create(order);
 
     if (order.personalInfo.email) {
-      sendEmail(createdOrder, cartProducts);
+      emailHandler(createdOrder, cartProducts);
       // Subscribe user to email list if they accept
       if (order.personalInfo.messageAccept) {
         subscribeWithEmail(order.personalInfo.email);
@@ -187,7 +187,20 @@ export async function updateOrder(formData: FormData): Promise<void> {
   redirect("/dashboard/orders");
 }
 
-export const sendEmail = (order: OrderType, cartProducts: CartProduct[]) => {
+const emailHandler = (order: OrderType, cartProducts: CartProduct[]) => {
+  fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/send`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ order, cartProducts }),
+  });
+};
+
+export const sendEmail = async (
+  order: OrderType,
+  cartProducts: CartProduct[],
+): Promise<void> => {
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp.zoho.com",
@@ -229,12 +242,8 @@ export const sendEmail = (order: OrderType, cartProducts: CartProduct[]) => {
       html: replacedHtml,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return console.error("order Confirmation Email sending error:", error);
-      }
-      console.log("order Confirmation Email sent:", info.response);
-    });
+    const info = await transporter.sendMail(mailOptions);
+    console.log("order Confirmation Email sent:", info.response);
 
     const notificationMailOptions = {
       from: process.env.PAGE_EMAIL,
@@ -264,12 +273,10 @@ export const sendEmail = (order: OrderType, cartProducts: CartProduct[]) => {
     </div>`,
     };
 
-    transporter.sendMail(notificationMailOptions, (error, info) => {
-      if (error) {
-        return console.log("Error sending notification email:", error);
-      }
-      console.log("Notification email sent to self:", info.response);
-    });
+    const notificationInfo = await transporter.sendMail(
+      notificationMailOptions,
+    );
+    console.log("Notification email sent to self:", notificationInfo.response);
   } catch (error) {
     console.error("order Emails error:", error);
   }
