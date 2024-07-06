@@ -1,5 +1,5 @@
 import "./globals.css";
-import localFont from "next/font/local";
+import { Roboto } from "next/font/google";
 import { ThemeProvider } from "@/theme-provider";
 import { NavBar } from "@/components";
 import React, { Suspense } from "react";
@@ -8,22 +8,9 @@ import { NextAuthProvider } from "@/NextAuthProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 
-const golos = localFont({
-  src: [
-    {
-      path: "../fonts/Golos-UI_Regular.ttf",
-      weight: "400",
-    },
-    {
-      path: "../fonts/Golos-UI_Medium.ttf",
-      weight: "500",
-    },
-    {
-      path: "../fonts/Golos-UI_Bold.ttf",
-      weight: "700",
-    },
-  ],
-  variable: "--font-golos-ui",
+const roboto = Roboto({
+  weight: "400",
+  subsets: ["latin"],
 });
 
 const { SITE_NAME } = process.env;
@@ -52,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${golos.variable} bg-primary_bg font-golos duration-200 dark:bg-dark_bg `}
+        className={`${roboto.className} bg-primary_bg font-golos duration-200 dark:bg-dark_bg `}
       >
         <LocalStorage />
         <Suspense>

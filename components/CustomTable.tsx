@@ -5,6 +5,8 @@ import EditModal from "./dashboard/EditModal";
 import RemoveModal from "./dashboard/RemoveModal";
 import { CustomActionType } from "@/types";
 import AddModal from "./dashboard/AddModal";
+import Link from "next/link";
+import SelectTableItem from "./SelectTableItem";
 
 const CustomTable = ({
   data,
@@ -17,6 +19,7 @@ const CustomTable = ({
   ActionComponent,
   CustomActions,
   CustomInputs,
+  isSelect,
 }: {
   name?: string;
   data: any;
@@ -28,6 +31,7 @@ const CustomTable = ({
   CustomActions?: CustomActionType[];
   ActionComponent?: (item: any) => JSX.Element;
   CustomInputs?: React.ReactNode;
+  isSelect?: boolean;
 }) => {
   if (!data) return null;
 
@@ -94,9 +98,37 @@ const CustomTable = ({
       </AddModal>
       <RemoveModal name={name} action={removeAction} />
       <div className="scroll-bar-hidden overflow-x-scroll rounded-3xl border border-blue-300 bg-white p-5 shadow-md  dark:border-gray-700 dark:bg-primary_color  ">
+        <div className="mb-2 flex flex-row-reverse items-center justify-between">
+          <Link
+            href={{
+              pathname: "/dashboard/products",
+              query: { select: !isSelect },
+            }}
+            className="rounded-3xl bg-primary_color p-2 px-4 text-white dark:bg-white dark:text-black"
+          >
+            {isSelect ? "deselect" : "Select"}
+          </Link>
+          {isSelect && (
+            <Link
+              href={{
+                pathname: "/dashboard/products",
+                query: {
+                  select: "true",
+                  selectedIds: data
+                    .map((item: any) => item.id || item._id)
+                    .join(","),
+                },
+              }}
+              className="text-blue-500"
+            >
+              Select All
+            </Link>
+          )}
+        </div>
         <table className="w-full">
           <thead className="border-b">
             <tr>
+              {isSelect && <th> select </th>}
               {header.map((item, index) => (
                 <th
                   key={index}
@@ -117,6 +149,11 @@ const CustomTable = ({
           <tbody>
             {data.map((item: any, index: number) => (
               <tr key={index} className="rounded-3xl border-b-2 ">
+                {isSelect && (
+                  <td>
+                    <SelectTableItem id={item.id || item._id} />
+                  </td>
+                )}
                 {header.map((header, index) => (
                   <td key={index} className="p-2">
                     {cell(header, item)}

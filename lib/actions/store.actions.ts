@@ -4,6 +4,7 @@ import {
   FooterType,
   NavbarType,
   ReviewType,
+  StoreType,
   StoryType,
 } from "@/types";
 import { connectToDatabase } from "../mongoose";
@@ -12,6 +13,7 @@ import {
   FooterLink,
   NavBarLink,
   Review,
+  Store,
   Story,
 } from "../models/store.model";
 import { redirect } from "next/navigation";
@@ -387,6 +389,40 @@ export const updateFooterLink = async (formData: FormData) => {
     revalidateTag(tags.footer);
   } catch (error) {
     console.error("Error updating footer link:", error);
+    throw error;
+  }
+  redirect("/dashboard/store");
+};
+
+export const fetchStore = unstable_cache(
+  async () => {
+    try {
+      await connectToDatabase();
+      const data = await Store.findOne({});
+      const store: StoreType = JSON.parse(JSON.stringify(data));
+      return store;
+    } catch (error) {
+      console.error("Error fetching store:", error);
+      throw error;
+    }
+  },
+  [tags.store],
+  {
+    tags: [tags.store],
+    revalidate: 60 * 60 * 24,
+  },
+);
+
+export const updateStore = async (formData: FormData) => {
+  const data = {
+    ...JSON.parse(formData.get("json")?.toString() || "{}"),
+  };
+  try {
+    await connectToDatabase();
+    const result = await Store.findOneAndUpdate({}, data);
+    revalidateTag(tags.store);
+  } catch (error) {
+    console.error("Error updating store:", error);
     throw error;
   }
   redirect("/dashboard/store");

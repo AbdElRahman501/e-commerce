@@ -21,7 +21,7 @@ const Hero = async () => {
             href={"/collections"}
             className="rounded-4xl relative col-span-2 flex h-32 w-full items-end overflow-hidden bg-primary_color p-5 sm:h-full md:h-1/2 "
           >
-            <h1 className="drop-shadow-white text-2xl font-black uppercase text-white dark:text-white md:text-lg">
+            <h1 className="text-2xl font-black uppercase text-white drop-shadow-white dark:text-white md:text-lg">
               All Collections
             </h1>
             <ArrowButton className="absolute right-3 top-3 bg-white  text-3xl text-black  hover:bg-black hover:text-white  " />

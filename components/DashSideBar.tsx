@@ -52,7 +52,7 @@ const DashSideBar = () => {
           <Link
             onClick={openMenu}
             href={"/dashboard"}
-            className="duration-200 group-hover:scale-110"
+            className="text-black duration-200 group-hover:scale-110 dark:text-white"
           >
             <li className="w-full  overflow-hidden border-b border-gray-200 p-4 uppercase duration-200 hover:bg-primary_color hover:text-white dark:border-gray-700 dark:hover:bg-white dark:hover:text-black  ">
               <AkarIconsDashboard className="inline-block w-6 object-contain text-red-500" />
@@ -66,7 +66,7 @@ const DashSideBar = () => {
               href={"/dashboard" + link.url}
               className="duration-200 group-hover:scale-110"
             >
-              <li className="w-full  overflow-hidden border-b border-gray-200 p-4 uppercase duration-200 hover:bg-primary_color hover:text-white dark:border-gray-700 dark:hover:bg-white dark:hover:text-black  ">
+              <li className="w-full  overflow-hidden border-b border-gray-200 p-4 uppercase text-black duration-200 hover:bg-primary_color hover:text-white dark:border-gray-700 dark:text-white dark:hover:bg-white dark:hover:text-black  ">
                 <Image
                   src={link.image}
                   width={24}

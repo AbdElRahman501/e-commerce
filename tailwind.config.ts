@@ -26,7 +26,7 @@ const config: Config = {
         "8xl": "1446px",
       },
       maxWidth: {
-        "8xl": "1446px",
+        "8xl": "3000px",
       },
       dropShadow: {
         white: "0 0 5px rgba(255, 255, 255, 1)",

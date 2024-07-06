@@ -450,6 +450,24 @@ export async function updateProductById(newProduct: ProductType) {
     throw error;
   }
 }
+
+export async function updateMultipleProducts(
+  productIds: string[],
+  productData: ProductType,
+) {
+  try {
+    await Product.updateMany(
+      { _id: { $in: productIds.map((id) => new mongoose.Types.ObjectId(id)) } },
+      { $set: productData },
+    );
+    revalidateTag(tags.products);
+    revalidateTag(tags.properties);
+    revalidateTag(tags.categories);
+  } catch (error) {
+    console.error("Error updating products:", error);
+  }
+}
+
 export async function duplicateProductById(id: string) {
   try {
     await connectToDatabase();
@@ -461,9 +479,6 @@ export async function duplicateProductById(id: string) {
     delete product.views;
     delete product.sales;
     const newProduct: ProductType = await Product.create(product);
-    revalidateTag(tags.products);
-    revalidateTag(tags.properties);
-    revalidateTag(tags.categories);
     return newProduct;
   } catch (error) {
     console.error("Error updating product:", error);
