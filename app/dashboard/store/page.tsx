@@ -1,6 +1,7 @@
 import { CustomInput } from "@/components";
 import CustomTable from "@/components/CustomTable";
 import ActionButtons from "@/components/dashboard/ActionButtons";
+import SubmitButton from "@/components/SubmitButton";
 
 import {
   addNewFooterLink,
@@ -9,10 +10,12 @@ import {
   fetchAllStories,
   fetchFooterLinks,
   fetchNavbarLinks,
+  fetchStore,
   removeNavbarLink,
   removeStory,
   updateFooterLink,
   updateNavbarLink,
+  updateStore,
   updateStory,
 } from "@/lib/actions/store.actions";
 import { checkDateStatus } from "@/utils";
@@ -29,6 +32,7 @@ export default async function OrdersPage({
   const stories = await fetchAllStories();
   const navBarLinks = await fetchNavbarLinks();
   const footerLinks = await fetchFooterLinks();
+  const store = await fetchStore();
   const selectedFooterLink = footerLinks.find(
     (x: any) => x._id === editFOOTERId || x.id === editFOOTERId,
   );
@@ -132,6 +136,21 @@ export default async function OrdersPage({
               <ActionButtons name="footer" id={item._id} />
             )}
           />
+        </div>
+        <div className="rounded-3xl border border-blue-300  p-5   dark:border-gray-700   ">
+          <form action={updateStore}>
+            <h1 className="text-center text-2xl font-bold">JSON Editor</h1>
+            <textarea
+              defaultValue={JSON.stringify(store, null, 2)}
+              rows={20}
+              cols={80}
+              style={{ width: "100%" }}
+              name="json"
+            />
+            <SubmitButton className="rounded-lg bg-primary_color px-4 py-2 text-center text-white hover:bg-white hover:text-black">
+              Update
+            </SubmitButton>
+          </form>
         </div>
       </div>
     </Suspense>

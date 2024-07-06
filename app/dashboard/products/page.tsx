@@ -2,6 +2,7 @@ import { FilterButton, SearchField, Sorting } from "@/components";
 import CustomTable from "@/components/CustomTable";
 import ProductsAction from "@/components/ProductsAction";
 import { fetchFilteredProducts } from "@/lib";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export default async function ProductsPage({
@@ -9,7 +10,12 @@ export default async function ProductsPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { q: searchValue, sort } = searchParams as {
+  const {
+    q: searchValue,
+    sort,
+    select,
+    selectedIds,
+  } = searchParams as {
     [key: string]: string;
   };
   const products = await fetchFilteredProducts({
@@ -39,7 +45,19 @@ export default async function ProductsPage({
             </p>
           ) : null}
           <div className="flex flex-col gap-2">
+            {selectedIds && (
+              <Link
+                className="rounded-lg bg-primary_color px-4 py-2 text-center text-white hover:bg-white hover:text-black"
+                href={{
+                  pathname: "/dashboard/products/update",
+                  query: { selectedIds: selectedIds },
+                }}
+              >
+                update
+              </Link>
+            )}
             <CustomTable
+              isSelect={select === "true"}
               data={products.map((item) => ({
                 ...item,
                 image: item.images[0],

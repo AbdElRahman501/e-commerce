@@ -1,4 +1,4 @@
-import { DashboardCardProps, ProductOnSaleType, SortFilterItem } from "@/types";
+import { DashboardCardProps, SortFilterItem } from "@/types";
 import { formInputs, productInputs } from "./inputs";
 export const sorting: SortFilterItem[] = [
   {
@@ -27,37 +27,6 @@ export const sorting: SortFilterItem[] = [
   },
 ];
 
-const faqSection = [
-  {
-    question: "How do I place an order?",
-    answer:
-      "To place an order, simply browse the products, and add the desired items to your cart. Follow the checkout process to complete your purchase.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer:
-      "Currently, we are operating on a cash-on-delivery basis. However, we’re excited to announce that we will soon be accepting all major payment methods to make your shopping experience even smoother.",
-  },
-  {
-    question: "Can I modify or cancel my order after placing it?",
-    answer:
-      "Once an order is placed, it enters our processing system quickly. Unfortunately, we cannot guarantee modifications or cancellations. Please double-check your order before completing the purchase.",
-  },
-  {
-    question: "How can I track my order?",
-    answer:
-      "Once your order is shipped, you will receive a confirmation email with a tracking number. You can use this tracking number on our website or the carrier's site to monitor the status of your delivery. Keep an eye on your email for updates",
-  },
-  {
-    question: "What is your return policy?",
-    answer: `Your satisfaction matters to us. If you receive a defective product due to manufacturing, you have the right to replace it within 14 days of receiving it. Please note that returns outside this window are not eligible for replacement or refund.
-      When returning a product, you’ll likely receive a refund, which may take 3-7 working days. Kindly bear in mind that the initial shipping costs are nonrefundable. We apologize for any inconvenience.`,
-  },
-  {
-    question: "What’s the EH! Insider Club?",
-    answer: `The EH! Insider Club is an exclusive circle for our most passionate fans. As a member, you get early access to new collections, limited-edition designs, and special surprises. Join the club and be part of the inner circle!`,
-  },
-];
 const dashboardCards: DashboardCardProps[] = [
   {
     image: "/icons/order.svg",
@@ -296,12 +265,6 @@ const tags = {
   categories: "categories",
   coupons: "coupons",
   shipping: "shipping",
+  store: "store",
 };
-export {
-  tags,
-  CSS_COLORS,
-  dashboardCards,
-  faqSection,
-  formInputs,
-  productInputs,
-};
+export { tags, CSS_COLORS, dashboardCards, formInputs, productInputs };

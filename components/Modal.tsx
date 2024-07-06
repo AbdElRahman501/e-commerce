@@ -77,7 +77,7 @@ const Modal: React.FC<ModalProps> = ({
           onClick={() => setIsOpened(false)}
           className=" absolute right-0 top-0 p-2 "
         >
-          <Ex_icon className="h-8 w-8 text-black" />
+          <Ex_icon className="h-8 w-8 text-black sm:dark:text-white" />
         </button>
         {children}
       </div>

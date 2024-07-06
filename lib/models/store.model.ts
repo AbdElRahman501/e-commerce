@@ -61,3 +61,20 @@ export const collectionSchema = new mongoose.Schema({
 
 export const Collection =
   mongoose.models.Collection || mongoose.model("Collection", collectionSchema);
+
+export const contentSchema = new mongoose.Schema({
+  name: String,
+  html: String,
+});
+
+export const storeSchema = new mongoose.Schema({
+  about: [contentSchema],
+  faq: {
+    image: String,
+    questions: [contentSchema],
+  },
+  phone: String,
+});
+
+export const Store =
+  mongoose.models.Store || mongoose.model("Store", storeSchema);

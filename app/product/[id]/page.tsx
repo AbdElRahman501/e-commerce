@@ -1,7 +1,13 @@
 import React, { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getImageUrl, getTransformedImageUrl } from "@/utils";
+import {
+  calculateMinPrice,
+  calculatePrice,
+  getImageUrl,
+  getSale,
+  getTransformedImageUrl,
+} from "@/utils";
 import dynamic from "next/dynamic";
 import { Footer } from "@/components";
 import {
@@ -32,9 +38,21 @@ export async function generateMetadata({
   const image =
     getImageUrl(product.variations, selectedOptions) || product.images[0];
   const url = getTransformedImageUrl(image, 200, 300);
+
+  const price = calculatePrice(
+    product.price,
+    selectedOptions,
+    product.variations,
+  );
+  const minPrice = calculateMinPrice(
+    product.minPrice,
+    selectedOptions,
+    product.variations,
+  );
+  const salePrice = getSale(minPrice, price, product.saleValue);
+
   return {
-    title:
-      product.title + " (" + (product.salePrice || product.price) + " EGP)",
+    title: product.title + " (" + (salePrice || price) + " EGP)",
     description: product.description,
     robots: {
       index: true,

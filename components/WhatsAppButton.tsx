@@ -1,14 +1,15 @@
+import { fetchStore } from "@/lib/actions/store.actions";
 import Link from "next/link";
 import React from "react";
 
-const WhatsAppButton = () => {
-  const phoneNumber = process.env.PHONE_NUMBER;
-  if (!phoneNumber) return null;
+const WhatsAppButton = async () => {
+  const { phone } = await fetchStore();
+  if (!phone) return null;
   return (
     <div className="group fixed bottom-0 right-0 z-20 m-4">
       <Link
         target="_blank"
-        href={`https://api.whatsapp.com/send?phone=${phoneNumber}&text=Hello%2C%20I%20would%20like%20to%20know%20more%20about%20your%20products.`}
+        href={`https://api.whatsapp.com/send?phone=${phone}&text=Hello%2C%20I%20would%20like%20to%20know%20more%20about%20your%20products.`}
         className="relative cursor-pointer"
       >
         <div>

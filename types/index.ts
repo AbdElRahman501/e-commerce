@@ -3,6 +3,21 @@ export interface ArrowButtonProps {
   href?: string;
 }
 
+export interface ContentType {
+  name: string;
+  html: string;
+  _id?: string;
+}
+
+export interface StoreType {
+  about: ContentType[];
+  faq: {
+    image: string;
+    questions: ContentType[];
+  };
+  phone: string;
+}
+
 export interface FooterType {
   title: string;
   links: {
