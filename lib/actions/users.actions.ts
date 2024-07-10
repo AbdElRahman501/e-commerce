@@ -43,7 +43,7 @@ export async function subscribe(formData: FormData) {
   try {
     await connectToDatabase();
     const user = await User.create({ email });
-    if (user) emailHandler(user.email);
+    if (user) await sendPromoEmail(user.email);
     cookies().set("subscriptionState", "subscribed");
     path = path.includes("?")
       ? path + "&customer_posted=true"
@@ -65,21 +65,11 @@ export async function subscribeWithEmail(email: string) {
   try {
     await connectToDatabase();
     const user = await User.create({ email });
-    if (user) emailHandler(user.email);
+    if (user) await sendPromoEmail(user.email);
   } catch (error) {
     console.log(error);
   }
 }
-
-const emailHandler = (email: string) => {
-  fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/subscribe`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email }),
-  });
-};
 
 export const sendPromoEmail = async (email: string): Promise<void> => {
   try {
