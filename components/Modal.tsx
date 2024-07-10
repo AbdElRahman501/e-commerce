@@ -73,12 +73,26 @@ const Modal: React.FC<ModalProps> = ({
             : "relative z-10 max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-lg bg-white p-8 shadow-lg dark:bg-[#0d1117] sm:max-w-md"
         }
       >
-        <button
-          onClick={() => setIsOpened(false)}
-          className=" absolute right-0 top-0 p-2 "
-        >
-          <Ex_icon className="h-8 w-8 text-black sm:dark:text-white" />
-        </button>
+        {onCloseBath ? (
+          <Link
+            href={onCloseBath}
+            replace
+            scroll={false}
+            className=" absolute right-0 top-0 p-2 "
+          >
+            <Ex_icon className="h-8 w-8 text-black sm:dark:text-white" />
+          </Link>
+        ) : (
+          <button
+            onClick={() => {
+              setIsOpened(false);
+              onClose && onClose();
+            }}
+            className=" absolute right-0 top-0 p-2 "
+          >
+            <Ex_icon className="h-8 w-8 text-black sm:dark:text-white" />
+          </button>
+        )}
         {children}
       </div>
     </div>

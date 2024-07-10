@@ -8,7 +8,7 @@ import nodemailer from "nodemailer";
 import { generateRandomCode } from "@/utils";
 import PromoCode from "../models/promoCode.model";
 import { PromoCodeType, SubscriberType } from "@/types";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { fetchOffers } from "./offer.actions";
 
 export async function fetchUsers(): Promise<{ email: string }[]> {
@@ -37,21 +37,27 @@ export async function fetchSubscriber(id: string): Promise<SubscriberType> {
 
 export async function subscribe(formData: FormData) {
   const email = formData.get("email")?.toString()?.toLowerCase()?.trim() || "";
+  const headerList = headers();
+  let path = headerList.get("referer") || "/";
   if (!email) return;
   try {
     await connectToDatabase();
     const user = await User.create({ email });
-    if (user) sendPromoEmail(user);
+    if (user) emailHandler(user.email);
     cookies().set("subscriptionState", "subscribed");
-    redirect("/?customer_posted=true");
+    path = path.includes("?")
+      ? path + "&customer_posted=true"
+      : path + "?customer_posted=true";
   } catch (error: any) {
     if (error.code === 11000) {
       cookies().set("subscriptionState", "subscribed");
-      redirect("/?customer_posted=true");
+      path = path.includes("?")
+        ? path + "&customer_posted=true"
+        : path + "?customer_posted=true";
     }
     console.log("🚀 ~ subscribe ~ error:", error);
-    throw error;
   }
+  redirect(path);
 }
 
 export async function subscribeWithEmail(email: string) {
@@ -59,17 +65,23 @@ export async function subscribeWithEmail(email: string) {
   try {
     await connectToDatabase();
     const user = await User.create({ email });
-    if (user) sendPromoEmail(user);
+    if (user) emailHandler(user.email);
   } catch (error) {
     console.log(error);
   }
 }
-export const sendPromoEmail = async (user: {
-  email: string;
-  _id: string;
-}): Promise<void> => {
-  const email = user.email;
-  const id = user._id;
+
+const emailHandler = (email: string) => {
+  fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/subscribe`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+};
+
+export const sendPromoEmail = async (email: string): Promise<void> => {
   try {
     const offers = await fetchOffers();
     const offer = offers.find(
@@ -85,7 +97,7 @@ export const sendPromoEmail = async (user: {
     });
     const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
     const transporter = nodemailer.createTransport({
-      host: "smtppro.zoho.in",
+      host: "smtp.zoho.com",
       port: 465,
       secure: true,
       auth: {

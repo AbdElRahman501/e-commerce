@@ -104,14 +104,12 @@ export default async function OrdersPage({
                         placeholder="Enter footer link name"
                         name="linkName[]"
                         defaultValue={link.name}
-                        required
                         type="text"
                       />
                       <CustomInput
                         placeholder="Enter footer link url"
                         name="linkURL[]"
                         defaultValue={link.url}
-                        required
                         type="text"
                       />
                     </div>

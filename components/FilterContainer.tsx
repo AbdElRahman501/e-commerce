@@ -75,6 +75,7 @@ const FilterContainer = ({
 
   useEffect(() => {
     setSelectedGenders(genderFilter);
+    setSelectedCollection(collectionFilter);
     setSelectedCategories(categoryFilter);
     setSelectedSizes(sizeFilter);
     setSelectedColors(colorFilter);
@@ -287,7 +288,7 @@ const FilterContainer = ({
           onClick={submitHandler}
           className="group mt-2 flex h-12 w-full items-center justify-center overflow-hidden rounded-lg bg-primary_color px-4 py-2 text-center text-white hover:bg-white hover:text-black"
         >
-          <p className="duration-500 group-hover:scale-110">Submit</p>
+          <p className="duration-500 group-hover:scale-110">Apply Filters</p>
         </button>
         {changed && (
           <button
