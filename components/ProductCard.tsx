@@ -35,6 +35,7 @@ const ProductCard = ({
   fav = [],
   className,
   index = 0,
+  quantity,
 }: ProductCardProps) => {
   const [isFav, setIsFav] = React.useState(!!fav.find((item) => item === id));
   const searchParams = useSearchParams();
@@ -82,14 +83,13 @@ const ProductCard = ({
     );
   };
 
+  const isInStock = quantity > 0;
   return (
     <div className={` relative  flex-col gap-4 ${className}`}>
-      {saleValue && (
-        <div className="absolute left-2 top-2 z-10 text-center text-[10px] uppercase text-white md:text-xs">
-          <p className="mb-3 h-full w-full  rounded-full bg-gray-950 p-1 px-4">
-            Sale
-          </p>
-        </div>
+      {isInStock ? (
+        saleValue && <ProductNote message={"SALE"} type="normal" />
+      ) : (
+        <ProductNote message={"OUT OF STOCK"} type="error" />
       )}
       <div className="relative">
         <Link
@@ -176,6 +176,22 @@ const ProductCard = ({
             ))}
         </div>
       </div>
+    </div>
+  );
+};
+
+const ProductNote = ({
+  message,
+  type,
+}: {
+  message: string;
+  type: "normal" | "success" | "warning" | "error";
+}) => {
+  let className = ` ${type === "success" ? "bg-green-500" : type === "warning" ? "bg-yellow-500" : type === "error" ? "bg-red-500" : "bg-gray-950"} mb-3 h-full w-full rounded-md  p-1 px-5`;
+
+  return (
+    <div className="absolute left-3 top-3 z-10 text-center text-xs uppercase text-white md:text-xs">
+      <p className={className}>{message}</p>
     </div>
   );
 };

@@ -44,6 +44,8 @@ const CartPricing = async ({
 
   const restShipping =
     subTotal + 50 < freeShippingMinValue ? freeShippingMinValue - subTotal : 0;
+
+  const isAllInStock = cart.every((x) => x.quantity > 0);
   return (
     <div className="flex h-fit w-full flex-col gap-2 rounded-3xl border border-gray-300 p-5 dark:border-gray-700 md:max-w-lg ">
       <Coupon coupon={coupon} success={discount > 0} error={!!errorMessage} />
@@ -88,13 +90,21 @@ const CartPricing = async ({
       <p className="text-xs text-gray-500 dark:text-gray-300 md:text-base">
         Taxes and shipping calculated at checkout
       </p>
-      <Link href={discount > 0 ? `/checkout?coupon=${coupon}` : "/checkout"}>
-        <div className="group mt-2 flex h-14 w-full items-center justify-center rounded-lg bg-primary_color px-5 uppercase text-white duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white">
-          <p className="duration-500 group-hover:scale-110">
-            Proceed To Checkout
-          </p>
+      {isAllInStock ? (
+        <Link href={discount > 0 ? `/checkout?coupon=${coupon}` : "/checkout"}>
+          <div className="group mt-2 flex h-14 w-full items-center justify-center rounded-lg bg-primary_color px-5 uppercase text-white duration-300 hover:bg-white hover:text-black dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white">
+            <p className="duration-500 group-hover:scale-110">
+              Proceed To Checkout
+            </p>
+          </div>
+        </Link>
+      ) : (
+        <div>
+          <div className="mt-2 flex h-14 w-full items-center justify-center rounded-lg bg-gray-600 px-5 font-bold uppercase  text-red-500 ">
+            <p>You have item out of stock</p>
+          </div>
         </div>
-      </Link>
+      )}
       {freeShippingMinValue > 0 &&
         (restShipping ? (
           <Link

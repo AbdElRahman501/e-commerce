@@ -87,6 +87,8 @@ const CheckOutPage = async ({
         ? ""
         : "You are having our best price!";
 
+  const isAllInStock = cartProducts.every((x) => x.quantity > 0);
+
   return cart.length === 0 ? (
     <div className="p-5 lg:px-20">
       <h2 className="pb-5 text-xl font-semibold md:text-3xl">Check Out</h2>
@@ -233,7 +235,14 @@ const CheckOutPage = async ({
             </p>
           </div>
 
-          <SubmitButton title={`Place Order ${total.toFixed(0)} EGP`} />
+          <SubmitButton
+            disable={!isAllInStock}
+            title={
+              isAllInStock
+                ? `Place Order ${total.toFixed(0)} EGP`
+                : "You have item out of stock"
+            }
+          />
         </div>
       </form>
     </div>
