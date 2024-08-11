@@ -5,6 +5,7 @@ import Link from "next/link";
 import React from "react";
 import Coupon from "./cart/Coupon";
 import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
+import { getPricesData } from "@/utils";
 
 const CartPricing = async ({
   cart,
@@ -20,27 +21,12 @@ const CartPricing = async ({
   );
 
   const promoCode = await fetchPromoCode(coupon);
-  const discountPercentage = promoCode.discount / 100 || 0;
 
-  const subTotal = cart.reduce(
-    (acc, item) => acc + (item.salePrice || item.price) * item.amount,
-    0,
-  );
-  const minSubTotal = cart.reduce(
-    (acc, item) => acc + item.minPrice * item.amount,
-    0,
-  );
-  const shipping = subTotal > 100 ? 0 : 10;
-  const discountValue = Math.ceil(discountPercentage * subTotal);
-  const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
-  const total = subTotal + shipping - discount;
-
-  const errorMessage =
-    coupon && !promoCode?.code
-      ? "this coupon is not valid"
-      : subTotal - discountValue > minSubTotal
-        ? ""
-        : "You are having our best price!";
+  const { subTotal, discount, total, errorMessage } = getPricesData({
+    cart,
+    promoCode,
+    coupon,
+  });
 
   const restShipping =
     subTotal + 50 < freeShippingMinValue ? freeShippingMinValue - subTotal : 0;

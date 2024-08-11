@@ -7,6 +7,8 @@ const promoCodeSchema = new mongoose.Schema(
     limit: { type: Number, required: true },
     active: { type: Boolean, default: true },
     maxDiscount: { type: Number },
+    forced: { type: Boolean, default: false },
+    numItems: { type: Number },
   },
   {
     timestamps: true,

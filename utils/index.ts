@@ -1,10 +1,12 @@
 import {
   CartItem,
+  CartProduct,
   OfferType,
   Order,
   PersonalInfo,
   Product,
   ProductOnSaleType,
+  PromoCodeType,
   Variation,
   VariationOption,
 } from "@/types";
@@ -254,21 +256,6 @@ export function firstMatch(arr1?: string[], arr2?: string[]): string | null {
   return null; // Return null if no match is found
 }
 
-export function checkDiscount({
-  discount,
-  minSubTotal,
-  subTotal,
-}: {
-  discount: number;
-  minSubTotal: number;
-  subTotal: number;
-}) {
-  const discountPercentage = discount / 100;
-  const discountValue = Math.ceil(discountPercentage * subTotal);
-  if (discountValue > 0 && subTotal - discountValue > minSubTotal)
-    return discountValue;
-  return 0;
-}
 function parseInputType(type: string) {
   if (type.startsWith("!")) {
     const innerType = type.slice(1);
@@ -846,4 +833,79 @@ export const optionPrice = ({
   )?.price;
 
   return priceDisplay && optionPrice ? optionPrice : null;
+};
+
+export const getPricesData = ({
+  promoCode,
+  cart,
+  coupon,
+  freeShippingMinValue,
+  shippingPrice,
+}: {
+  promoCode: PromoCodeType;
+  cart: CartProduct[];
+  coupon: string;
+  freeShippingMinValue?: number | null;
+  shippingPrice?: number;
+}) => {
+  const discountPercentage = promoCode.discount / 100 || 0;
+
+  const subTotal = cart.reduce(
+    (acc, item) => acc + (item.salePrice || item.price) * item.amount,
+    0,
+  );
+  const minSubTotal = cart.reduce(
+    (acc, item) => acc + item.minPrice * item.amount,
+    0,
+  );
+  let discountValue = Math.ceil(discountPercentage * subTotal);
+  let errorMessage =
+    coupon && !promoCode?.code ? "this coupon is not valid" : "";
+
+  if (promoCode.forced) {
+    errorMessage = "";
+    if (
+      promoCode.numItems &&
+      promoCode.numItems > 0 &&
+      cart.length >= promoCode.numItems
+    ) {
+      const discountItemSub = cart
+        .slice(0, promoCode.numItems)
+        .reduce(
+          (acc, item) => acc + (item.salePrice || item.price) * item.amount,
+          0,
+        );
+      discountValue = discountItemSub
+        ? Math.ceil(discountPercentage * discountItemSub)
+        : discountValue;
+      errorMessage = `this coupon is applied to only ${promoCode.numItems} items`;
+    } else if (promoCode.maxDiscount && promoCode.maxDiscount < discountValue) {
+      discountValue = 0;
+    }
+  } else if (subTotal - discountValue < minSubTotal) {
+    errorMessage = "You are having our best price!";
+    discountValue = 0;
+  }
+
+  let total = subTotal - discountValue;
+  let shipping = 0;
+
+  if (freeShippingMinValue && shippingPrice) {
+    const restShipping =
+      freeShippingMinValue && subTotal + 50 < freeShippingMinValue
+        ? freeShippingMinValue - subTotal
+        : 0;
+    shipping =
+      restShipping === 0 && freeShippingMinValue ? restShipping : shippingPrice;
+
+    total = subTotal + shipping - discountValue;
+  }
+
+  return {
+    subTotal,
+    discount: discountValue,
+    total,
+    errorMessage,
+    shipping,
+  };
 };

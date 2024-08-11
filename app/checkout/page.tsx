@@ -3,7 +3,7 @@ import { createOrder, fetchProductsById } from "@/lib";
 import { fetchPromoCode } from "@/lib/actions/promo-code.actions";
 import { fetchShipping } from "@/lib/actions/shipping.actions";
 import { CartItem } from "@/types";
-import { checkDiscount, isFreeShipping, reformatCartItems } from "@/utils";
+import { getPricesData, isFreeShipping, reformatCartItems } from "@/utils";
 import { cookies } from "next/headers";
 import dynamic from "next/dynamic";
 import { fetchOffers } from "@/lib/actions/offer.actions";
@@ -32,34 +32,6 @@ const CheckOutPage = async ({
 
   const offers = await fetchOffers();
 
-  const city = cities.find((item) => item.id === cityId)?.city_name_en;
-  const cityOffer = offers.find((x) => x.category === city);
-
-  const freeShippingMin = offers.find(
-    (x) => x.title === "FREE_SHIPPING",
-  )?.description;
-
-  const freeShippingMinValue = Number(freeShippingMin) || null;
-  const subTotal = cartProducts.reduce(
-    (acc, item) => acc + (item.salePrice || item.price) * item.amount,
-    0,
-  );
-  const minSubTotal = cartProducts.reduce(
-    (acc, item) => acc + item.minPrice * item.amount,
-    0,
-  );
-
-  const cityDiscount = checkDiscount({
-    discount: cityOffer?.sale || 0,
-    minSubTotal,
-    subTotal,
-  });
-  const couponDiscount = checkDiscount({
-    discount: promoCode.discount,
-    minSubTotal,
-    subTotal,
-  });
-
   const stateShipping = governorate.find(
     (item) => item.id === statId,
   )?.shipping_price;
@@ -67,25 +39,17 @@ const CheckOutPage = async ({
     (item) => item.id === cityId,
   )?.shipping_price;
 
-  const discountValue = Math.max(cityDiscount, couponDiscount);
-  const discount = subTotal - discountValue > minSubTotal ? discountValue : 0;
-  const restShipping =
-    freeShippingMinValue && subTotal + 50 < freeShippingMinValue
-      ? freeShippingMinValue - subTotal
-      : 0;
+  const freeShippingMinValue =
+    Number(offers.find((x) => x.title === "FREE_SHIPPING")?.description) ||
+    null;
 
-  const shipping =
-    restShipping === 0 && freeShippingMinValue
-      ? restShipping
-      : cityShipping || stateShipping || 0;
-  const total = subTotal + shipping - discount;
-
-  const errorMessage =
-    coupon && !promoCode?.code
-      ? "this coupon is not valid"
-      : subTotal - discountValue > minSubTotal
-        ? ""
-        : "You are having our best price!";
+  const { subTotal, discount, total, errorMessage, shipping } = getPricesData({
+    cart: cartProducts,
+    promoCode,
+    coupon,
+    freeShippingMinValue,
+    shippingPrice: stateShipping || cityShipping || 0,
+  });
 
   const isAllInStock = cartProducts.every((x) => x.quantity > 0);
 
