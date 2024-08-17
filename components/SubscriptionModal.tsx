@@ -26,7 +26,7 @@ const SubscriptionModal = async () => {
     <Modal
       formAction={actionWithVariant}
       isOpen={!(state === "subscribed") && !(state === "ignored")}
-      delay={5000}
+      delay={10000}
       className="relative z-10 max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-lg bg-white shadow-lg dark:bg-[#0d1117] md:max-w-3xl xl:max-w-5xl"
     >
       <div className="flex flex-col items-center sm:flex-row">

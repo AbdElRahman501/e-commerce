@@ -14,6 +14,7 @@ export const fetchPromoCode = unstable_cache(
       const data = await PromoCode.findOne({
         code,
         limit: { $gt: 0 },
+        active: true,
       });
       if (!data) return {} as PromoCodeType;
       const promoCode: PromoCodeType = JSON.parse(JSON.stringify(data));
@@ -76,8 +77,10 @@ export async function updatePromoCode(formData: FormData) {
     id: formData.get("id")?.toString() || "",
     code: formData.get("code")?.toString() || "",
     discount: Number(formData.get("discount")) || 0,
+    numItems: Number(formData.get("numItems")) || 0,
     limit: Number(formData.get("limit")) || 0,
     active: formData.get("active")?.toString() === "active" || false,
+    forced: formData.get("forced")?.toString() === "forced" || false,
     maxDiscount: Number(formData.get("maxDiscount")) || 0,
   };
 
@@ -96,8 +99,10 @@ export async function addNewPromoCode(formData: FormData) {
   const data = {
     code: formData.get("code")?.toString() || "",
     discount: Number(formData.get("discount")) || 0,
+    numItems: Number(formData.get("numItems")) || 0,
     limit: Number(formData.get("limit")) || 0,
     active: formData.get("active")?.toString() === "active" || false,
+    forced: formData.get("forced")?.toString() === "forced" || false,
     maxDiscount: Number(formData.get("maxDiscount")) || 0,
   };
   try {

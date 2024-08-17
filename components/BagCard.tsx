@@ -21,7 +21,10 @@ const BagCard = ({
   readonly,
   salePrice,
   variations,
+  quantity,
 }: Props) => {
+  const isInStock = quantity > 0;
+
   return (
     <div className=" flex w-full border-b border-gray-200 pb-2 dark:border-gray-700 ">
       <div className=" flex w-full gap-5 ">
@@ -31,6 +34,11 @@ const BagCard = ({
           className="relative"
         >
           <div className="aspect-card relative h-28 overflow-hidden rounded-md md:h-32">
+            {!isInStock && (
+              <div className="absolute z-10 flex h-full w-full items-center justify-center bg-black text-center  font-extrabold text-white opacity-40 ">
+                OUT OF STOCK
+              </div>
+            )}
             <Image
               src={getImageUrl(variations, selectedOptions) || images[0]}
               alt="jacket"

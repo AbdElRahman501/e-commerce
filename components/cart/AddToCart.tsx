@@ -11,13 +11,31 @@ import CheckMark from "../icons/CheckMark";
 export function SubmitButton({
   isInCart,
   disabled,
+  customContent,
 }: {
   isInCart: boolean;
   disabled: boolean;
+  customContent?: string;
 }) {
   const { pending } = useFormStatus();
 
-  return isInCart ? (
+  return customContent ? (
+    <button
+      type="submit"
+      aria-label="add cart item"
+      disabled={disabled || pending}
+      aria-disabled={pending}
+      className=" flex h-14 w-full items-center gap-3 rounded-full bg-primary_color p-1  text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
+    >
+      <div className="flex aspect-square h-12 items-center justify-center rounded-full bg-white text-3xl text-black ">
+        {pending ? <LoadingDots /> : <ShoppingBag_icon className="w-8" />}
+      </div>
+
+      <p className="w-full text-center text-lg uppercase duration-500">
+        {customContent}
+      </p>
+    </button>
+  ) : isInCart ? (
     <Link
       href="/cart"
       className=" flex h-14 w-full items-center gap-3 rounded-full bg-primary_color p-1  text-white duration-300 enabled:hover:bg-gray-900 disabled:opacity-70 "
@@ -52,10 +70,12 @@ const AddToCart = ({
   cart,
   cartItem,
   disabled,
+  customContent,
 }: {
   disabled: boolean;
   cart: CartItem[];
   cartItem: CartItem;
+  customContent?: string;
 }) => {
   const [message, formAction] = useFormState(addItem, null);
   const actionWithVariant = formAction.bind(null, cartItem);
@@ -76,6 +96,7 @@ const AddToCart = ({
     <form action={addItemAction} className="w-full">
       <SubmitButton
         isInCart={checkIsInCart(cart, cartItem)}
+        customContent={customContent}
         disabled={disabled || cartItem.amount < 1}
       />
     </form>

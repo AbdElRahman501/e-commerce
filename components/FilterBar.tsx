@@ -16,11 +16,6 @@ export const FilterBar = () => {
   });
 
   const allKeysHaveValues = (obj: Record<string, any>) => {
-    console.log(
-      "🚀 ~ allKeysHaveValues ~ Object.entries(obj):",
-      Object.entries(obj),
-    );
-
     return (
       Object.entries(obj).length > 0 &&
       Object.entries(obj)

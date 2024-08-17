@@ -82,6 +82,12 @@ const Modal: React.FC<ModalProps> = ({
           >
             <Ex_icon className="h-8 w-8 text-black sm:dark:text-white" />
           </Link>
+        ) : formAction ? (
+          <form action={formAction}>
+            <button type="submit" className=" absolute right-0 top-0 p-2 ">
+              <Ex_icon className="h-8 w-8 text-black sm:dark:text-white" />
+            </button>
+          </form>
         ) : (
           <button
             onClick={() => {

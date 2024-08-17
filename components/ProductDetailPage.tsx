@@ -9,6 +9,7 @@ import {
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { CartItem } from "@/types";
+import Script from "next/script";
 
 const ProductDetailPage = async ({ id }: { id: string }) => {
   const cartData = cookies().get("cart")?.value;
@@ -53,7 +54,8 @@ const ProductDetailPage = async ({ id }: { id: string }) => {
 
   return (
     <>
-      <script
+      <Script
+        id="productJsonLd"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(productJsonLd),

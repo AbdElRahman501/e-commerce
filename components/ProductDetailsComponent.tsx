@@ -47,6 +47,7 @@ const ProductDetailsComponent = ({
   content,
   variations,
   collections,
+  quantity,
 }: ProductDetailsComponent) => {
   const searchParams = useSearchParams();
 
@@ -76,6 +77,7 @@ const ProductDetailsComponent = ({
       JSON.stringify(toggleFavoriteItem(favorite, id)),
     );
   };
+  const isInStock = quantity > 0;
 
   return (
     <div className="relative mx-auto flex w-full max-w-8xl flex-col sm:flex-row sm:p-5 md:gap-4 lg:px-20">
@@ -158,12 +160,15 @@ const ProductDetailsComponent = ({
         >
           <AddToCart
             cart={cart}
-            disabled={!addToCartCheck(baseVariants, selectedOptions)}
+            disabled={
+              !isInStock || !addToCartCheck(baseVariants, selectedOptions)
+            }
             cartItem={{
               amount: amountValue,
               productId: id,
               selectedOptions,
             }}
+            customContent={!isInStock ? "OUT OF STOCK" : undefined}
           />
           <div className="flex aspect-square h-14 items-center justify-center rounded-full border border-gray-300 bg-white text-lg text-black dark:border-white ">
             <button

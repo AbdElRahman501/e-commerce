@@ -57,6 +57,8 @@ export default async function SalesPage() {
               limit: "!number",
               maxDiscount: "number",
               active: "checkbox",
+              numItems: "number",
+              forced: "checkbox",
             }}
             addAction={addNewPromoCode}
             editAction={updatePromoCode}
@@ -67,7 +69,27 @@ export default async function SalesPage() {
                 ? { name: "active", color: "green" }
                 : { name: "inactive", color: "red" },
             }))}
-            header={["code", "discount", "limit", "maxDiscount", "status"]}
+            header={[
+              "code",
+              "discount",
+              "limit",
+              "maxDiscount",
+              "status",
+              "numItems",
+              "forced",
+            ]}
+            CustomActions={[
+              {
+                key: "forced",
+                Action: (item) => (
+                  <p
+                    className={`${item.forced ? "text-green-500" : "text-red-500"}`}
+                  >
+                    {item.forced ? "forced" : "not forced"}
+                  </p>
+                ),
+              },
+            ]}
             ActionComponent={(item) => (
               <ActionButtons name="promoCode" id={item._id} />
             )}

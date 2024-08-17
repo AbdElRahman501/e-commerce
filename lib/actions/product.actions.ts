@@ -331,10 +331,11 @@ export async function soldProducts(ids: string[]): Promise<void> {
   try {
     const objectIdArray = ids.map((id) => new mongoose.Types.ObjectId(id));
     await connectToDatabase();
-    const data = await Product.updateMany(
+    await Product.updateMany(
       { _id: { $in: objectIdArray } },
-      { $inc: { sales: 1 } },
+      { $inc: { sales: 1, quantity: -1 } },
     );
+    revalidateTag(tags.products);
   } catch (error) {
     console.error("Error sold products:", error);
     throw error;

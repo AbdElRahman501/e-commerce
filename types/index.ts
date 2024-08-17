@@ -136,6 +136,8 @@ export interface PromoCodeType {
   limit: number;
   active: boolean;
   maxDiscount: number;
+  forced: boolean;
+  numItems: number;
   _id: string;
 }
 export interface SubscriberType {
