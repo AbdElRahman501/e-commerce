@@ -49,6 +49,15 @@ const UpdateProducts = ({
             onChange={(e) => setProfitRate(+e.target.value)}
           />
         </div>
+        <CustomInput
+          label="active"
+          type="checkbox"
+          placeholder="active"
+          name="active"
+          required={false}
+          value={data.active}
+          onChange={(e) => setData({ ...data, active: !data.active })}
+        />
         {productInputs.map((input, index) => (
           <CustomInput
             key={index}
