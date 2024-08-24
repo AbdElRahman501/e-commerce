@@ -68,7 +68,7 @@ const UpdateProduct = ({
           type="checkbox"
           placeholder="active"
           name="active"
-          required={true}
+          required={false}
           value={data.active}
           onChange={(e) => setData({ ...data, active: !data.active })}
         />
