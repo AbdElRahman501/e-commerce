@@ -32,10 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const products = await fetchProducts();
-    const productsRoutes: Route[] = products.map((product) => ({
-      url: `${baseUrl}/product/${product.id}`,
-      lastModified: product.updatedAt,
-    }));
+    const productsRoutes: Route[] = products
+      .filter((product) => product.active)
+      .map((product) => ({
+        url: `${baseUrl}/product/${product.id}`,
+        lastModified: product.updatedAt,
+      }));
 
     return [...routesMap, ...productsRoutes];
   } catch (error) {
