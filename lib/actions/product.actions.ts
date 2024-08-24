@@ -117,6 +117,7 @@ export const fetchFilteredProducts = unstable_cache(
         colorFilterCondition,
         genderFilterCondition,
         excludeCondition,
+        { active: true },
       ],
     };
 

@@ -87,6 +87,7 @@ export interface Product {
   sales?: number;
   minPrice: number;
   content: { name: string; html: string }[];
+  active: boolean;
 }
 
 export interface CustomActionType {

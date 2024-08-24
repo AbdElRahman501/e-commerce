@@ -58,12 +58,12 @@ const productSchema = new mongoose.Schema(
     likes: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
     sales: { type: Number, default: 0 },
+    active: { type: Boolean, default: true },
     content: [contentSchema],
   },
   {
     timestamps: true,
     toJSON: {
-      virtuals: true, // Include virtual properties if any
       transform: function (doc, ret: any) {
         ret.id = ret._id;
         delete ret._id;
