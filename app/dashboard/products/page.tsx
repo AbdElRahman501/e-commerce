@@ -1,7 +1,7 @@
 import { FilterButton, SearchField, Sorting } from "@/components";
 import CustomTable from "@/components/CustomTable";
 import ProductsAction from "@/components/ProductsAction";
-import { fetchFilteredProducts } from "@/lib";
+import { fetchProducts } from "@/lib/actions/product.actions";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -12,17 +12,12 @@ export default async function ProductsPage({
 }) {
   const {
     q: searchValue,
-    sort,
     select,
     selectedIds,
   } = searchParams as {
     [key: string]: string;
   };
-  const products = await fetchFilteredProducts({
-    query: searchValue,
-    sort: sort || "",
-    limit: 99999,
-  });
+  const products = await fetchProducts(searchValue);
   const resultsText = products.length > 1 ? "results" : "result";
   return (
     <Suspense>
