@@ -179,10 +179,21 @@ function removeDuplicatesById<T extends { id: string | number }>(
   });
 }
 
-export async function fetchProducts(): Promise<ProductOnSaleType[]> {
+export async function fetchProducts(query = ""): Promise<ProductOnSaleType[]> {
+  const textSearchCondition = query
+    ? {
+        $or: [
+          { name: { $regex: `\\b${query}`, $options: "i" } },
+          { title: { $regex: `\\b${query}`, $options: "i" } },
+          { keywords: { $regex: `\\b${query}`, $options: "i" } },
+          { categories: { $regex: `\\b${query}`, $options: "i" } },
+        ],
+      }
+    : {};
+
   try {
     await connectToDatabase();
-    const data = await Product.find({});
+    const data = await Product.find(textSearchCondition);
     const products: ProductType[] = JSON.parse(JSON.stringify(data));
     const offers: OfferType[] = await fetchOffers();
     const modifiedProducts: ProductOnSaleType[] = modifyProducts(
@@ -505,7 +516,7 @@ export const findBestMatchProducts = unstable_cache(
     const excludeCondition = { _id: { $nin: objectIdArray } };
 
     const finalQuery: any = {
-      $and: [excludeCondition],
+      $and: [excludeCondition, { active: true }],
     };
 
     try {
